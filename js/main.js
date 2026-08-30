@@ -21,12 +21,14 @@
     header.classList.remove("nav-open");
     navToggle.classList.remove("is-open");
     navToggle.setAttribute("aria-expanded", "false");
+    document.body.style.overflow = "";
   }
 
   navToggle.addEventListener("click", function () {
     var isOpen = header.classList.toggle("nav-open");
     navToggle.classList.toggle("is-open", isOpen);
     navToggle.setAttribute("aria-expanded", String(isOpen));
+    document.body.style.overflow = isOpen ? "hidden" : "";
   });
 
   navMenu.addEventListener("click", function (e) {
