@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ahlalarabiyah.github.io/ahlalarabiyah-site/sitemap.xml
