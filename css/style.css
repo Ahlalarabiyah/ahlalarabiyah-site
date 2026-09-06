@@ -22,7 +22,7 @@
 
   --font-heading: 'Poppins', 'Cairo', sans-serif;
   --font-body: 'Inter', 'Cairo', sans-serif;
-  --font-arabic: 'Cairo', 'Inter', sans-serif;
+  --font-arabic: 'Amiri', 'Cairo', 'Inter', serif;
 
   --radius-sm: 10px;
   --radius-md: 16px;
