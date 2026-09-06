@@ -83,39 +83,43 @@
     if (e.key === "Escape") closeLightbox();
   });
 
-  // ---- Reader: lecture en ligne du fascicule 1 ----
-  var openReaderBtn = document.getElementById("openReaderBtn");
-  if (openReaderBtn) {
+  // ---- Reader: lecture en ligne des fascicules (partage entre plusieurs) ----
+  var readerBtns = document.querySelectorAll(".js-open-reader");
+  if (readerBtns.length) {
     var reader = document.getElementById("reader");
     var readerImg = document.getElementById("readerImg");
+    var readerTitle = document.getElementById("readerTitle");
     var readerIndicator = document.getElementById("readerPageIndicator");
     var readerClose = document.getElementById("readerClose");
     var readerPrev = document.getElementById("readerPrev");
     var readerNext = document.getElementById("readerNext");
-    var READER_PAGE_COUNT = 22;
-    var READER_BASE = ROOT_BASE + "assets/img/fascicule-1/page-";
+    var readerPageCount = 1;
+    var readerBase = "";
     var readerPage = 1;
 
     function readerPagePath(n) {
-      return READER_BASE + String(n).padStart(2, "0") + ".jpg";
+      return readerBase + String(n).padStart(2, "0") + ".jpg";
     }
 
     function preload(n) {
-      if (n < 1 || n > READER_PAGE_COUNT) return;
+      if (n < 1 || n > readerPageCount) return;
       var img = new Image();
       img.src = readerPagePath(n);
     }
 
     function renderReaderPage() {
       readerImg.src = readerPagePath(readerPage);
-      readerIndicator.textContent = readerPage + " / " + READER_PAGE_COUNT;
+      readerIndicator.textContent = readerPage + " / " + readerPageCount;
       readerPrev.disabled = readerPage <= 1;
-      readerNext.disabled = readerPage >= READER_PAGE_COUNT;
+      readerNext.disabled = readerPage >= readerPageCount;
       preload(readerPage + 1);
       preload(readerPage - 1);
     }
 
-    function openReader() {
+    function openReader(pages, base, title) {
+      readerPageCount = pages;
+      readerBase = ROOT_BASE + base;
+      readerTitle.textContent = title;
       readerPage = 1;
       renderReaderPage();
       reader.classList.add("is-open");
@@ -128,12 +132,20 @@
     }
 
     function goToPage(n) {
-      if (n < 1 || n > READER_PAGE_COUNT) return;
+      if (n < 1 || n > readerPageCount) return;
       readerPage = n;
       renderReaderPage();
     }
 
-    openReaderBtn.addEventListener("click", openReader);
+    readerBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        openReader(
+          parseInt(btn.getAttribute("data-pages"), 10),
+          btn.getAttribute("data-base"),
+          btn.getAttribute("data-title")
+        );
+      });
+    });
     readerClose.addEventListener("click", closeReader);
     readerPrev.addEventListener("click", function () { goToPage(readerPage - 1); });
     readerNext.addEventListener("click", function () { goToPage(readerPage + 1); });
@@ -146,11 +158,37 @@
     });
   }
 
-  // ---- Letter lab: prononciation interactive des 7 premières lettres ----
-  var openLetterLabBtn = document.getElementById("openLetterLabBtn");
-  if (openLetterLabBtn) {
-    var AUDIO_BASE = ROOT_BASE + "assets/audio/fascicule-1/";
-    var LETTERS = [
+  // ---- Letter lab: prononciation interactive des lettres, par fascicule ----
+  var letterLabBtns = document.querySelectorAll(".js-open-letterlab");
+  if (letterLabBtns.length) {
+    // Construit mecaniquement harakat/moudoud/tanwin a partir d'une consonne
+    // de base (utilise pour les fascicules 2 et 3 ; alif du fascicule 1 reste
+    // ecrit a la main car porte par la hamza, cas particulier).
+    function buildForms(id, char) {
+      return {
+        harakat: [
+          [char + "َ", id + "-fatha"],
+          [char + "ُ", id + "-damma"],
+          [char + "ِ", id + "-kasra"]
+        ],
+        moudoud: [
+          [char + "َ" + "ا", id + "-madd-fatha"],
+          [char + "ُ" + "و", id + "-madd-damma"],
+          [char + "ِ" + "ي", id + "-madd-kasra"]
+        ],
+        tanwin: [
+          [char + "ً" + "ا", id + "-tanwin-fatha"],
+          [char + "ٌ", id + "-tanwin-damma"],
+          [char + "ٍ", id + "-tanwin-kasra"]
+        ]
+      };
+    }
+    function buildLetter(id, char, name) {
+      var forms = buildForms(id, char);
+      return { id: id, char: char, name: name, harakat: forms.harakat, moudoud: forms.moudoud, tanwin: forms.tanwin };
+    }
+
+    var LETTERS_F1 = [
       {
         id: "alif", char: "أ", name: "أَلِف",
         harakat: [["أَ", "alif-fatha"], ["أُ", "alif-damma"], ["إِ", "alif-kasra"]],
@@ -195,18 +233,49 @@
       }
     ];
 
+    var LETTERS_F2 = [
+      buildLetter("dal",   "د", "دَال"),
+      buildLetter("thal",  "ذ", "ذَال"),
+      buildLetter("reh",   "ر", "رَاء"),
+      buildLetter("zain",  "ز", "زَاي"),
+      buildLetter("seen",  "س", "سِين"),
+      buildLetter("sheen", "ش", "شِين"),
+      buildLetter("sad",   "ص", "صَاد"),
+      buildLetter("dad",   "ض", "ضَاد"),
+      buildLetter("tah",   "ط", "طَاء"),
+      buildLetter("zah",   "ظ", "ظَاء")
+    ];
+
+    var LETTERS_F3 = [
+      buildLetter("ain",   "ع", "عَيْن"),
+      buildLetter("ghain", "غ", "غَيْن"),
+      buildLetter("feh",   "ف", "فَاء"),
+      buildLetter("qaf",   "ق", "قَاف"),
+      buildLetter("kaf",   "ك", "كَاف"),
+      buildLetter("lam",   "ل", "لَام"),
+      buildLetter("meem",  "م", "مِيم"),
+      buildLetter("noon",  "ن", "نُون"),
+      buildLetter("heh",   "ه", "هَاء"),
+      buildLetter("waw",   "و", "وَاو"),
+      buildLetter("yeh",   "ي", "يَاء")
+    ];
+
+    var LETTERS_BY_FASCICULE = { "1": LETTERS_F1, "2": LETTERS_F2, "3": LETTERS_F3 };
+
     var letterLab = document.getElementById("letterLab");
     var letterLabTabs = document.getElementById("letterLabTabs");
+    var letterLabTitle = document.getElementById("letterLabTitle");
     var letterLabName = document.getElementById("letterLabName");
     var letterLabGroups = document.getElementById("letterLabGroups");
     var letterLabClose = document.getElementById("letterLabClose");
     var currentAudio = null;
     var currentPlayingCell = null;
+    var currentAudioBase = "";
 
     function playForm(id, cellEl) {
       if (currentAudio) { currentAudio.pause(); }
       if (currentPlayingCell) { currentPlayingCell.classList.remove("is-playing"); }
-      currentAudio = new Audio(AUDIO_BASE + id + ".m4a");
+      currentAudio = new Audio(currentAudioBase + id + ".m4a");
       currentPlayingCell = cellEl;
       cellEl.classList.add("is-playing");
       currentAudio.addEventListener("ended", function () {
@@ -253,18 +322,26 @@
       });
     }
 
-    LETTERS.forEach(function (letter, index) {
-      var tab = document.createElement("button");
-      tab.type = "button";
-      tab.className = "letterlab-tab";
-      tab.setAttribute("data-letter", letter.id);
-      tab.textContent = letter.char;
-      tab.addEventListener("click", function () { renderLetter(letter); });
-      letterLabTabs.appendChild(tab);
-    });
+    function buildTabs(letters) {
+      letterLabTabs.innerHTML = "";
+      letters.forEach(function (letter) {
+        var tab = document.createElement("button");
+        tab.type = "button";
+        tab.className = "letterlab-tab";
+        tab.setAttribute("data-letter", letter.id);
+        tab.textContent = letter.char;
+        tab.addEventListener("click", function () { renderLetter(letter); });
+        letterLabTabs.appendChild(tab);
+      });
+    }
 
-    function openLetterLab() {
-      renderLetter(LETTERS[0]);
+    function openLetterLab(fascicule, title) {
+      var letters = LETTERS_BY_FASCICULE[fascicule];
+      if (!letters) return;
+      currentAudioBase = ROOT_BASE + "assets/audio/fascicule-" + fascicule + "/";
+      letterLabTitle.textContent = title;
+      buildTabs(letters);
+      renderLetter(letters[0]);
       letterLab.classList.add("is-open");
       document.body.style.overflow = "hidden";
     }
@@ -276,7 +353,11 @@
       if (currentPlayingCell) { currentPlayingCell.classList.remove("is-playing"); }
     }
 
-    openLetterLabBtn.addEventListener("click", openLetterLab);
+    letterLabBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        openLetterLab(btn.getAttribute("data-fascicule"), btn.getAttribute("data-title"));
+      });
+    });
     letterLabClose.addEventListener("click", closeLetterLab);
     document.addEventListener("keydown", function (e) {
       if (letterLab.classList.contains("is-open") && e.key === "Escape") closeLetterLab();
