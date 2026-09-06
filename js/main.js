@@ -234,7 +234,57 @@
       buildLetter("yeh",   "ي", "يَاء")
     ];
 
-    var LETTERS_BY_FASCICULE = { "1": LETTERS_F1, "2": LETTERS_F2, "3": LETTERS_F3 };
+    // Fascicule 4 : sukun et shadda. Chaque lettre est presentee dans le
+    // contexte "بَ" + lettre (comme dans le cahier), en sukun puis en
+    // shadda ; seule la lettre cible et sa marque restent la partie
+    // "nouvelle" mise en rouge, "بَ" servant de simple support de lecture.
+    function buildLetterF4(id, char, name) {
+      return {
+        id: id, char: char, name: name,
+        sukun: [["بَ" + char + "ْ", id + "-sukun", 3]],
+        shadda: [["بَ" + char + "ّ" + "َ", id + "-shadda", 3]]
+      };
+    }
+
+    var LETTERS_F4 = [
+      buildLetterF4("alif", "أ", "أَلِف"),
+      buildLetterF4("baa", "ب", "بَاء"),
+      buildLetterF4("taa", "ت", "تَاء"),
+      buildLetterF4("thaa", "ث", "ثَاء"),
+      buildLetterF4("jim", "ج", "جِيم"),
+      buildLetterF4("haa", "ح", "حَاء"),
+      buildLetterF4("khaa", "خ", "خَاء"),
+      buildLetterF4("dal", "د", "دَال"),
+      buildLetterF4("thal", "ذ", "ذَال"),
+      buildLetterF4("reh", "ر", "رَاء"),
+      buildLetterF4("zain", "ز", "زَاي"),
+      buildLetterF4("seen", "س", "سِين"),
+      buildLetterF4("sheen", "ش", "شِين"),
+      buildLetterF4("sad", "ص", "صَاد"),
+      buildLetterF4("dad", "ض", "ضَاد"),
+      buildLetterF4("tah", "ط", "طَاء"),
+      buildLetterF4("zah", "ظ", "ظَاء"),
+      buildLetterF4("ain", "ع", "عَيْن"),
+      buildLetterF4("ghain", "غ", "غَيْن"),
+      buildLetterF4("feh", "ف", "فَاء"),
+      buildLetterF4("qaf", "ق", "قَاف"),
+      buildLetterF4("kaf", "ك", "كَاف"),
+      buildLetterF4("lam", "ل", "لَام"),
+      buildLetterF4("meem", "م", "مِيم"),
+      buildLetterF4("noon", "ن", "نُون"),
+      buildLetterF4("heh", "ه", "هَاء"),
+      buildLetterF4("waw", "و", "وَاو"),
+      buildLetterF4("yeh", "ي", "يَاء")
+    ];
+
+    var LETTERS_BY_FASCICULE = { "1": LETTERS_F1, "2": LETTERS_F2, "3": LETTERS_F3, "4": LETTERS_F4 };
+    var GROUPS_BY_FASCICULE = {
+      "1": ["harakat", "moudoud", "tanwin"],
+      "2": ["harakat", "moudoud", "tanwin"],
+      "3": ["harakat", "moudoud", "tanwin"],
+      "4": ["sukun", "shadda"]
+    };
+    var currentGroupKeys = GROUPS_BY_FASCICULE["1"];
 
     var letterLab = document.getElementById("letterLab");
     var letterLabTabs = document.getElementById("letterLabTabs");
@@ -263,29 +313,79 @@
       group.className = "letterlab-group";
       group.setAttribute("data-group", groupKey);
       var h4 = document.createElement("h4");
-      h4.textContent = title;
+      var arabicMatch = /\s*(\([؀-ۿ\s]+\))\s*$/.exec(title);
+      if (arabicMatch) {
+        h4.appendChild(document.createTextNode(title.slice(0, arabicMatch.index) + " "));
+        var arabicSpan = document.createElement("span");
+        arabicSpan.className = "letterlab-group-arabic";
+        arabicSpan.textContent = arabicMatch[1];
+        h4.appendChild(arabicSpan);
+      } else {
+        h4.textContent = title;
+      }
       group.appendChild(h4);
       var grid = document.createElement("div");
       grid.className = "letterlab-grid";
       // Sur alif porteur d'une hamza superieure (أ), la fatha/damma/tanwin
       // du dessus vient visuellement toucher la hamza avec certaines
       // polices/tailles : on remonte legerement la marque dans ce cas precis.
-      var RAISE_AFTER_HAMZA_ABOVE = /^[‌]?[ًٌَُ]/;
+      var RAISE_AFTER_HAMZA_ABOVE = /^[‌]?[ًٌَُّْ]/;
+      // Sur les autres lettres, cette meme famille de marques (au-dessus)
+      // laisse un blanc trop genereux avec la police : on la rapproche.
+      var TIGHTEN_ABOVE = /^[ًٌَُ]/;
+      // La kasra/kasratain (en dessous) est a l'inverse trop rapprochee par
+      // defaut : on l'ecarte davantage, plus encore sur jim/ha/kha dont la
+      // queue descend sous la ligne de base.
+      var WIDEN_BELOW = /^[ٍِ]/;
+      var TAILED_LETTERS = { "ج": true, "ح": true, "خ": true };
+      // Un diacritique combinant qui suit (ex. la fatha apres la shadda)
+      // doit rester colle au meme span que le premier, sinon il perd la
+      // lettre porteuse a laquelle s'accrocher visuellement.
+      var COMBINING_MARKS = { "َ": 1, "ُ": 1, "ِ": 1, "ً": 1, "ٌ": 1, "ٍ": 1, "ْ": 1, "ّ": 1 };
       forms.forEach(function (pair) {
         var btn = document.createElement("button");
         btn.type = "button";
         btn.className = "letterlab-cell";
         var text = pair[0];
-        var baseChar = text.length > 1 ? text.charAt(0) : "";
-        var markContent = text.length > 1 ? text.slice(1) : text;
+        // pair[2] indique la longueur du support de lecture (1 lettre en
+        // temps normal ; 3 pour le fascicule 4 ou la lettre cible est
+        // precedee du support fixe "بَ").
+        var baseLen = pair.length > 2 ? pair[2] : 1;
+        var baseChar = text.length > baseLen ? text.slice(0, baseLen) : "";
+        var markContent = text.length > baseLen ? text.slice(baseLen) : text;
+        var baseLast = baseChar.charAt(baseChar.length - 1);
+        // Le diacritique lui-meme (1 caractere) est seul repositionne pour
+        // la lisibilite ; ce qui suit reste sur la ligne normale s'il
+        // s'agit d'une vraie lettre de prolongation (ا/و/ي), pour garder
+        // sa liaison cursive correcte avec la lettre de base. Un second
+        // diacritique combinant (ex. shadda+fatha) reste au contraire
+        // colle au premier, sans quoi il ne s'affiche plus correctement.
+        var diacritic = markContent.charAt(0);
+        var rest = markContent.slice(1);
+        if (rest && COMBINING_MARKS[rest.charAt(0)]) {
+          diacritic += rest;
+          rest = "";
+        }
+        var trailing = rest;
         var mark = document.createElement("span");
         mark.className = "letterlab-mark";
-        if (baseChar === "أ" && RAISE_AFTER_HAMZA_ABOVE.test(markContent)) {
+        if (baseLast === "أ" && RAISE_AFTER_HAMZA_ABOVE.test(diacritic)) {
           mark.classList.add("letterlab-mark-raised");
+        } else if (TIGHTEN_ABOVE.test(diacritic)) {
+          mark.classList.add("letterlab-mark-tightened");
         }
-        mark.textContent = markContent;
+        if (WIDEN_BELOW.test(diacritic)) {
+          mark.classList.add(TAILED_LETTERS[baseLast] ? "letterlab-mark-widened-tailed" : "letterlab-mark-widened");
+        }
+        mark.textContent = diacritic;
         if (baseChar) btn.appendChild(document.createTextNode(baseChar));
         btn.appendChild(mark);
+        if (trailing) {
+          var trailingSpan = document.createElement("span");
+          trailingSpan.className = "letterlab-mark";
+          trailingSpan.textContent = trailing;
+          btn.appendChild(trailingSpan);
+        }
         btn.addEventListener("click", function () { playForm(pair[1], btn); });
         grid.appendChild(btn);
       });
@@ -295,15 +395,21 @@
 
     var isEnglish = document.documentElement.lang === "en";
     var GROUP_TITLES = isEnglish
-      ? { harakat: "Vowels (الحركات)", moudoud: "Prolongations (المدود)", tanwin: "Tanwīn (التنوين)" }
-      : { harakat: "Voyelles (الحركات)", moudoud: "Prolongations (المدود)", tanwin: "Tanwīn (التنوين)" };
+      ? {
+          harakat: "Vowels (الْحَرَكَات)", moudoud: "Prolongations (الْمُدُود)", tanwin: "Tanwīn (التَّنْوِين)",
+          sukun: "Sukūn (السُّكُون)", shadda: "Shadda (الشَّدَّة)"
+        }
+      : {
+          harakat: "Voyelles (الْحَرَكَات)", moudoud: "Prolongations (الْمُدُود)", tanwin: "Tanwīn (التَّنْوِين)",
+          sukun: "Sukūn (السُّكُون)", shadda: "Shadda (الشَّدَّة)"
+        };
 
     function renderLetter(letter) {
       letterLabName.textContent = letter.name;
       letterLabGroups.innerHTML = "";
-      letterLabGroups.appendChild(buildGroup(GROUP_TITLES.harakat, "harakat", letter.harakat));
-      letterLabGroups.appendChild(buildGroup(GROUP_TITLES.moudoud, "moudoud", letter.moudoud));
-      letterLabGroups.appendChild(buildGroup(GROUP_TITLES.tanwin, "tanwin", letter.tanwin));
+      currentGroupKeys.forEach(function (key) {
+        letterLabGroups.appendChild(buildGroup(GROUP_TITLES[key], key, letter[key]));
+      });
 
       Array.prototype.forEach.call(letterLabTabs.children, function (tab) {
         tab.classList.toggle("is-active", tab.getAttribute("data-letter") === letter.id);
@@ -317,7 +423,10 @@
         tab.type = "button";
         tab.className = "letterlab-tab";
         tab.setAttribute("data-letter", letter.id);
-        tab.textContent = letter.char;
+        var tabChar = document.createElement("span");
+        tabChar.className = "letterlab-tab-char";
+        tabChar.textContent = letter.char;
+        tab.appendChild(tabChar);
         tab.addEventListener("click", function () { renderLetter(letter); });
         letterLabTabs.appendChild(tab);
       });
@@ -326,6 +435,7 @@
     function openLetterLab(fascicule, title) {
       var letters = LETTERS_BY_FASCICULE[fascicule];
       if (!letters) return;
+      currentGroupKeys = GROUPS_BY_FASCICULE[fascicule] || GROUPS_BY_FASCICULE["1"];
       currentAudioBase = ROOT_BASE + "assets/audio/fascicule-" + fascicule + "/";
       letterLabTitle.textContent = title;
       buildTabs(letters);

@@ -694,6 +694,10 @@ section[id] { scroll-margin-top: 88px; }
   width: 56px;
   height: 56px;
   flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   border-radius: 14px;
   border: 2px solid transparent;
   background: rgba(255,255,255,0.08);
@@ -703,6 +707,7 @@ section[id] { scroll-margin-top: 88px; }
   cursor: pointer;
   transition: background .15s ease, border-color .15s ease;
 }
+.letterlab-tab-char { display: block; transform: translateY(-50%); }
 .letterlab-tab:hover { background: rgba(255,255,255,0.16); }
 .letterlab-tab.is-active { background: var(--color-teal); border-color: #fff; }
 
@@ -734,6 +739,9 @@ section[id] { scroll-margin-top: 88px; }
 }
 .letterlab-group[data-group="tanwin"] h4 { color: var(--color-orange); }
 .letterlab-group[data-group="harakat"] h4 { color: var(--color-teal-dark); }
+.letterlab-group[data-group="sukun"] h4 { color: var(--color-teal-dark); }
+.letterlab-group[data-group="shadda"] h4 { color: var(--color-orange); }
+.letterlab-group-arabic { font-family: var(--font-arabic); text-transform: none; letter-spacing: 0; font-size: 2.3em; }
 .letterlab-grid { display: flex; gap: 10px; flex-wrap: wrap; direction: rtl; }
 .letterlab-cell {
   min-width: 64px;
@@ -753,6 +761,9 @@ section[id] { scroll-margin-top: 88px; }
 .letterlab-mark { color: var(--color-harakat-red); font-weight: 700; }
 .letterlab-cell.is-playing .letterlab-mark { color: #fff; }
 .letterlab-mark-raised { position: relative; top: -0.34em; }
+.letterlab-mark-tightened { position: relative; top: 0.1em; }
+.letterlab-mark-widened { position: relative; top: 0.3em; }
+.letterlab-mark-widened-tailed { position: relative; top: 0.55em; }
 
 @media (max-width: 680px) {
   .letterlab-body { flex-direction: column; padding: 0 12px 16px; }
