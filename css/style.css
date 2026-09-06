@@ -12,6 +12,7 @@
   --color-navy-10: rgba(16, 60, 70, 0.08);
   --color-orange: #EE9A45;
   --color-orange-10: rgba(238, 154, 69, 0.14);
+  --color-harakat-red: #C6362E;
 
   --color-bg: #F6FAFA;
   --color-bg-alt: #EFF6F6;
@@ -22,7 +23,7 @@
 
   --font-heading: 'Poppins', 'Cairo', sans-serif;
   --font-body: 'Inter', 'Cairo', sans-serif;
-  --font-arabic: 'Amiri', 'Cairo', 'Inter', serif;
+  --font-arabic: 'Amiri Quran', 'Amiri', 'Cairo', 'Inter', serif;
 
   --radius-sm: 10px;
   --radius-md: 16px;
@@ -749,6 +750,9 @@ section[id] { scroll-margin-top: 88px; }
 }
 .letterlab-cell:hover { border-color: var(--color-teal); transform: translateY(-2px); }
 .letterlab-cell.is-playing { background: var(--color-teal); border-color: var(--color-teal); color: #fff; transform: scale(1.06); }
+.letterlab-mark { color: var(--color-harakat-red); font-weight: 700; }
+.letterlab-cell.is-playing .letterlab-mark { color: #fff; }
+.letterlab-mark-raised { position: relative; top: -0.34em; }
 
 @media (max-width: 680px) {
   .letterlab-body { flex-direction: column; padding: 0 12px 16px; }

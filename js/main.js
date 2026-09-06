@@ -164,6 +164,10 @@
     // Construit mecaniquement harakat/moudoud/tanwin a partir d'une consonne
     // de base (utilise pour les fascicules 2 et 3 ; alif du fascicule 1 reste
     // ecrit a la main car porte par la hamza, cas particulier).
+    // Les lettres se lient normalement a la prolongation qui suit (forme
+    // cursive connectee), conformement aux regles d'ecriture arabe ; seule
+    // la couleur/graisse de la marque (cf. .letterlab-mark) distingue la
+    // consonne de base de la voyelle/prolongation.
     function buildForms(id, char) {
       return {
         harakat: [
@@ -195,42 +199,12 @@
         moudoud: [["آ", "alif-madd-fatha"], ["أُو", "alif-madd-damma"], ["إِي", "alif-madd-kasra"]],
         tanwin: [["أً", "alif-tanwin-fatha"], ["أٌ", "alif-tanwin-damma"], ["إٍ", "alif-tanwin-kasra"]]
       },
-      {
-        id: "baa", char: "ب", name: "بَاء",
-        harakat: [["بَ", "baa-fatha"], ["بُ", "baa-damma"], ["بِ", "baa-kasra"]],
-        moudoud: [["بَا", "baa-madd-fatha"], ["بُو", "baa-madd-damma"], ["بِي", "baa-madd-kasra"]],
-        tanwin: [["بًا", "baa-tanwin-fatha"], ["بٌ", "baa-tanwin-damma"], ["بٍ", "baa-tanwin-kasra"]]
-      },
-      {
-        id: "taa", char: "ت", name: "تَاء",
-        harakat: [["تَ", "taa-fatha"], ["تُ", "taa-damma"], ["تِ", "taa-kasra"]],
-        moudoud: [["تَا", "taa-madd-fatha"], ["تُو", "taa-madd-damma"], ["تِي", "taa-madd-kasra"]],
-        tanwin: [["تًا", "taa-tanwin-fatha"], ["تٌ", "taa-tanwin-damma"], ["تٍ", "taa-tanwin-kasra"]]
-      },
-      {
-        id: "thaa", char: "ث", name: "ثَاء",
-        harakat: [["ثَ", "thaa-fatha"], ["ثُ", "thaa-damma"], ["ثِ", "thaa-kasra"]],
-        moudoud: [["ثَا", "thaa-madd-fatha"], ["ثُو", "thaa-madd-damma"], ["ثِي", "thaa-madd-kasra"]],
-        tanwin: [["ثًا", "thaa-tanwin-fatha"], ["ثٌ", "thaa-tanwin-damma"], ["ثٍ", "thaa-tanwin-kasra"]]
-      },
-      {
-        id: "jim", char: "ج", name: "جِيم",
-        harakat: [["جَ", "jim-fatha"], ["جُ", "jim-damma"], ["جِ", "jim-kasra"]],
-        moudoud: [["جَا", "jim-madd-fatha"], ["جُو", "jim-madd-damma"], ["جِي", "jim-madd-kasra"]],
-        tanwin: [["جًا", "jim-tanwin-fatha"], ["جٌ", "jim-tanwin-damma"], ["جٍ", "jim-tanwin-kasra"]]
-      },
-      {
-        id: "haa", char: "ح", name: "حَاء",
-        harakat: [["حَ", "haa-fatha"], ["حُ", "haa-damma"], ["حِ", "haa-kasra"]],
-        moudoud: [["حَا", "haa-madd-fatha"], ["حُو", "haa-madd-damma"], ["حِي", "haa-madd-kasra"]],
-        tanwin: [["حًا", "haa-tanwin-fatha"], ["حٌ", "haa-tanwin-damma"], ["حٍ", "haa-tanwin-kasra"]]
-      },
-      {
-        id: "khaa", char: "خ", name: "خَاء",
-        harakat: [["خَ", "khaa-fatha"], ["خُ", "khaa-damma"], ["خِ", "khaa-kasra"]],
-        moudoud: [["خَا", "khaa-madd-fatha"], ["خُو", "khaa-madd-damma"], ["خِي", "khaa-madd-kasra"]],
-        tanwin: [["خًا", "khaa-tanwin-fatha"], ["خٌ", "khaa-tanwin-damma"], ["خٍ", "khaa-tanwin-kasra"]]
-      }
+      buildLetter("baa", "ب", "بَاء"),
+      buildLetter("taa", "ت", "تَاء"),
+      buildLetter("thaa", "ث", "ثَاء"),
+      buildLetter("jim", "ج", "جِيم"),
+      buildLetter("haa", "ح", "حَاء"),
+      buildLetter("khaa", "خ", "خَاء")
     ];
 
     var LETTERS_F2 = [
@@ -293,11 +267,25 @@
       group.appendChild(h4);
       var grid = document.createElement("div");
       grid.className = "letterlab-grid";
+      // Sur alif porteur d'une hamza superieure (أ), la fatha/damma/tanwin
+      // du dessus vient visuellement toucher la hamza avec certaines
+      // polices/tailles : on remonte legerement la marque dans ce cas precis.
+      var RAISE_AFTER_HAMZA_ABOVE = /^[‌]?[ًٌَُ]/;
       forms.forEach(function (pair) {
         var btn = document.createElement("button");
         btn.type = "button";
         btn.className = "letterlab-cell";
-        btn.textContent = pair[0];
+        var text = pair[0];
+        var baseChar = text.length > 1 ? text.charAt(0) : "";
+        var markContent = text.length > 1 ? text.slice(1) : text;
+        var mark = document.createElement("span");
+        mark.className = "letterlab-mark";
+        if (baseChar === "أ" && RAISE_AFTER_HAMZA_ABOVE.test(markContent)) {
+          mark.classList.add("letterlab-mark-raised");
+        }
+        mark.textContent = markContent;
+        if (baseChar) btn.appendChild(document.createTextNode(baseChar));
+        btn.appendChild(mark);
         btn.addEventListener("click", function () { playForm(pair[1], btn); });
         grid.appendChild(btn);
       });
