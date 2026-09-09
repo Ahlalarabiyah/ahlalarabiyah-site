@@ -295,11 +295,15 @@
     var currentAudio = null;
     var currentPlayingCell = null;
     var currentAudioBase = "";
+    // Casse le cache navigateur quand un fichier audio est remplace sur le
+    // serveur (meme piege deja rencontre avec le CSS/JS) : a incrementer
+    // a chaque nouveau remplacement d'enregistrements.
+    var AUDIO_VERSION = "2";
 
     function playForm(id, cellEl) {
       if (currentAudio) { currentAudio.pause(); }
       if (currentPlayingCell) { currentPlayingCell.classList.remove("is-playing"); }
-      currentAudio = new Audio(currentAudioBase + id + ".m4a");
+      currentAudio = new Audio(currentAudioBase + id + ".m4a?v=" + AUDIO_VERSION);
       currentPlayingCell = cellEl;
       cellEl.classList.add("is-playing");
       currentAudio.addEventListener("ended", function () {
