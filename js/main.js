@@ -526,7 +526,11 @@
     var gameBtns = document.querySelectorAll(".js-open-game");
     if (gameBtns.length) {
       var QUESTIONS_PER_ROUND = 5; // facilement modifiable
-      var GAMES_READY = { "1": true };
+      var ANSWER_COUNT = 9; // nombre de propositions par question, ecran pas surcharge
+      var GAMES_READY = {
+        "1": true, "2": true, "3": true, "4": true, "5": true, "6": true,
+        "7": true, "8": true, "9": true, "10": true, "11": true, "12": true
+      };
 
       function buildSoundPool(moduleNumber) {
         var module = MODULES.filter(function (m) { return String(m.number) === String(moduleNumber); })[0];
@@ -599,7 +603,14 @@
         }
         var pool = gameState.pool;
         var correct = pool[Math.floor(Math.random() * pool.length)];
-        var choices = shuffle(pool);
+        // Limite le nombre de propositions affichees (ecran pas surcharge),
+        // meme quand un module regroupe plusieurs lettres et donc plus de
+        // sons possibles que ANSWER_COUNT : on tire des distracteurs au
+        // hasard dans le reste du bassin, en gardant toujours la bonne
+        // reponse parmi eux.
+        var others = pool.filter(function (item) { return item.audioId !== correct.audioId; });
+        var distractors = shuffle(others).slice(0, ANSWER_COUNT - 1);
+        var choices = shuffle(distractors.concat([correct]));
         gameState.questionIndex += 1;
         gameState.current = { correct: correct, choices: choices, answered: false };
 
