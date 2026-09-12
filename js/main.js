@@ -342,6 +342,58 @@
       currentAudio.play();
     }
 
+    // Sur alif porteur d'une hamza superieure (أ), la fatha/damma/tanwin
+    // du dessus vient visuellement toucher la hamza avec certaines
+    // polices/tailles : on remonte legerement la marque dans ce cas precis.
+    var RAISE_AFTER_HAMZA_ABOVE = /^[‌]?[ًٌَُّْ]/;
+    // Sur les autres lettres, cette meme famille de marques (au-dessus)
+    // laisse un blanc trop genereux avec la police : on la rapproche.
+    var TIGHTEN_ABOVE = /^[ًٌَُ]/;
+    // La kasra/kasratain (en dessous) est a l'inverse trop rapprochee par
+    // defaut : on l'ecarte davantage, plus encore sur jim/ha/kha dont la
+    // queue descend sous la ligne de base.
+    var WIDEN_BELOW = /^[ٍِ]/;
+    var TAILED_LETTERS = { "ج": true, "ح": true, "خ": true };
+    // Un diacritique combinant qui suit (ex. la fatha apres la shadda)
+    // doit rester colle au meme span que le premier, sinon il perd la
+    // lettre porteuse a laquelle s'accrocher visuellement.
+    var COMBINING_MARKS = { "َ": 1, "ُ": 1, "ِ": 1, "ً": 1, "ٌ": 1, "ٍ": 1, "ْ": 1, "ّ": 1 };
+
+    // Dessine une forme (lettre de base + voyelle/marque en rouge) dans un
+    // conteneur donne. Partage entre le labo de lettres et le jeu, pour
+    // garantir le meme rendu (espacements, positionnement) partout.
+    function renderLetterForm(container, text, baseLen) {
+      var baseChar = text.length > baseLen ? text.slice(0, baseLen) : "";
+      var markContent = text.length > baseLen ? text.slice(baseLen) : text;
+      var baseLast = baseChar.charAt(baseChar.length - 1);
+      var diacritic = markContent.charAt(0);
+      var rest = markContent.slice(1);
+      if (rest && COMBINING_MARKS[rest.charAt(0)]) {
+        diacritic += rest;
+        rest = "";
+      }
+      var trailing = rest;
+      var mark = document.createElement("span");
+      mark.className = "letterlab-mark";
+      if (baseLast === "أ" && RAISE_AFTER_HAMZA_ABOVE.test(diacritic)) {
+        mark.classList.add("letterlab-mark-raised");
+      } else if (TIGHTEN_ABOVE.test(diacritic)) {
+        mark.classList.add("letterlab-mark-tightened");
+      }
+      if (WIDEN_BELOW.test(diacritic)) {
+        mark.classList.add(TAILED_LETTERS[baseLast] ? "letterlab-mark-widened-tailed" : "letterlab-mark-widened");
+      }
+      mark.textContent = diacritic;
+      if (baseChar) container.appendChild(document.createTextNode(baseChar));
+      container.appendChild(mark);
+      if (trailing) {
+        var trailingSpan = document.createElement("span");
+        trailingSpan.className = "letterlab-mark";
+        trailingSpan.textContent = trailing;
+        container.appendChild(trailingSpan);
+      }
+    }
+
     function buildGroup(title, groupKey, forms) {
       var group = document.createElement("div");
       group.className = "letterlab-group";
@@ -360,66 +412,11 @@
       group.appendChild(h4);
       var grid = document.createElement("div");
       grid.className = "letterlab-grid";
-      // Sur alif porteur d'une hamza superieure (أ), la fatha/damma/tanwin
-      // du dessus vient visuellement toucher la hamza avec certaines
-      // polices/tailles : on remonte legerement la marque dans ce cas precis.
-      var RAISE_AFTER_HAMZA_ABOVE = /^[‌]?[ًٌَُّْ]/;
-      // Sur les autres lettres, cette meme famille de marques (au-dessus)
-      // laisse un blanc trop genereux avec la police : on la rapproche.
-      var TIGHTEN_ABOVE = /^[ًٌَُ]/;
-      // La kasra/kasratain (en dessous) est a l'inverse trop rapprochee par
-      // defaut : on l'ecarte davantage, plus encore sur jim/ha/kha dont la
-      // queue descend sous la ligne de base.
-      var WIDEN_BELOW = /^[ٍِ]/;
-      var TAILED_LETTERS = { "ج": true, "ح": true, "خ": true };
-      // Un diacritique combinant qui suit (ex. la fatha apres la shadda)
-      // doit rester colle au meme span que le premier, sinon il perd la
-      // lettre porteuse a laquelle s'accrocher visuellement.
-      var COMBINING_MARKS = { "َ": 1, "ُ": 1, "ِ": 1, "ً": 1, "ٌ": 1, "ٍ": 1, "ْ": 1, "ّ": 1 };
       forms.forEach(function (pair) {
         var btn = document.createElement("button");
         btn.type = "button";
         btn.className = "letterlab-cell";
-        var text = pair[0];
-        // pair[2] indique la longueur du support de lecture (1 lettre en
-        // temps normal ; 3 pour le fascicule 4 ou la lettre cible est
-        // precedee du support fixe "بَ").
-        var baseLen = pair.length > 2 ? pair[2] : 1;
-        var baseChar = text.length > baseLen ? text.slice(0, baseLen) : "";
-        var markContent = text.length > baseLen ? text.slice(baseLen) : text;
-        var baseLast = baseChar.charAt(baseChar.length - 1);
-        // Le diacritique lui-meme (1 caractere) est seul repositionne pour
-        // la lisibilite ; ce qui suit reste sur la ligne normale s'il
-        // s'agit d'une vraie lettre de prolongation (ا/و/ي), pour garder
-        // sa liaison cursive correcte avec la lettre de base. Un second
-        // diacritique combinant (ex. shadda+fatha) reste au contraire
-        // colle au premier, sans quoi il ne s'affiche plus correctement.
-        var diacritic = markContent.charAt(0);
-        var rest = markContent.slice(1);
-        if (rest && COMBINING_MARKS[rest.charAt(0)]) {
-          diacritic += rest;
-          rest = "";
-        }
-        var trailing = rest;
-        var mark = document.createElement("span");
-        mark.className = "letterlab-mark";
-        if (baseLast === "أ" && RAISE_AFTER_HAMZA_ABOVE.test(diacritic)) {
-          mark.classList.add("letterlab-mark-raised");
-        } else if (TIGHTEN_ABOVE.test(diacritic)) {
-          mark.classList.add("letterlab-mark-tightened");
-        }
-        if (WIDEN_BELOW.test(diacritic)) {
-          mark.classList.add(TAILED_LETTERS[baseLast] ? "letterlab-mark-widened-tailed" : "letterlab-mark-widened");
-        }
-        mark.textContent = diacritic;
-        if (baseChar) btn.appendChild(document.createTextNode(baseChar));
-        btn.appendChild(mark);
-        if (trailing) {
-          var trailingSpan = document.createElement("span");
-          trailingSpan.className = "letterlab-mark";
-          trailingSpan.textContent = trailing;
-          btn.appendChild(trailingSpan);
-        }
+        renderLetterForm(btn, pair[0], pair.length > 2 ? pair[2] : 1);
         btn.addEventListener("click", function () { playForm(pair[1], btn); });
         grid.appendChild(btn);
       });
@@ -521,5 +518,178 @@
     document.addEventListener("keydown", function (e) {
       if (letterLab.classList.contains("is-open") && e.key === "Escape") closeLetterLab();
     });
+
+    // ---- Jeux : "Quel son as-tu entendu ?", par module ----
+    // Architecture prevue pour les 12 modules (buildSoundPool marche pour
+    // n'importe lequel), mais seul le module 1 (Alif) a ses questions
+    // activees pour l'instant ; les autres restent "Bientot disponible".
+    var gameBtns = document.querySelectorAll(".js-open-game");
+    if (gameBtns.length) {
+      var QUESTIONS_PER_ROUND = 5; // facilement modifiable
+      var GAMES_READY = { "1": true };
+
+      function buildSoundPool(moduleNumber) {
+        var module = MODULES.filter(function (m) { return String(m.number) === String(moduleNumber); })[0];
+        if (!module) return [];
+        var pool = [];
+        module.letterIds.forEach(function (id) {
+          var letter = ALL_LETTERS_BY_ID[id];
+          if (!letter) return;
+          ["harakat", "moudoud", "tanwin"].forEach(function (key) {
+            (letter[key] || []).forEach(function (pair) {
+              pool.push({
+                text: pair[0],
+                baseLen: pair.length > 2 ? pair[2] : 1,
+                audioId: pair[1],
+                fascicule: letter.fascicule
+              });
+            });
+          });
+        });
+        return pool;
+      }
+
+      function shuffle(list) {
+        var arr = list.slice();
+        for (var i = arr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+        return arr;
+      }
+
+      var gameModal = document.getElementById("gameModal");
+      var gameModalTitle = document.getElementById("gameModalTitle");
+      var gameModalClose = document.getElementById("gameModalClose");
+      var gameBody = document.getElementById("gameBody");
+      var gameEnd = document.getElementById("gameEnd");
+      var gameScoreEl = document.getElementById("gameScore");
+      var gamePlayBtn = document.getElementById("gamePlayBtn");
+      var gameAnswers = document.getElementById("gameAnswers");
+      var gameFeedback = document.getElementById("gameFeedback");
+      var gameNextBtn = document.getElementById("gameNextBtn");
+      var gameEndScore = document.getElementById("gameEndScore");
+      var gameReplayBtn = document.getElementById("gameReplayBtn");
+
+      var gameAudio = null;
+      var gameState = null;
+
+      function playSound(sound) {
+        if (gameAudio) { gameAudio.pause(); }
+        var base = ROOT_BASE + "assets/audio/fascicule-" + sound.fascicule + "/";
+        gameAudio = new Audio(base + sound.audioId + ".m4a?v=" + AUDIO_VERSION);
+        gameAudio.play();
+      }
+
+      function renderScore() {
+        gameScoreEl.textContent = gameState.score + " / " + gameState.questionIndex +
+          (isEnglish ? " correct" : " bonnes réponses");
+      }
+
+      function showEnd() {
+        gameBody.hidden = true;
+        gameEnd.hidden = false;
+        gameEndScore.textContent = gameState.score + " / " + QUESTIONS_PER_ROUND;
+      }
+
+      function nextQuestion() {
+        if (gameState.questionIndex >= QUESTIONS_PER_ROUND) {
+          showEnd();
+          return;
+        }
+        var pool = gameState.pool;
+        var correct = pool[Math.floor(Math.random() * pool.length)];
+        var choices = shuffle(pool);
+        gameState.questionIndex += 1;
+        gameState.current = { correct: correct, choices: choices, answered: false };
+
+        gameFeedback.hidden = true;
+        gameFeedback.className = "game-feedback";
+        gameFeedback.textContent = "";
+        gameNextBtn.hidden = true;
+        renderScore();
+
+        gameAnswers.innerHTML = "";
+        choices.forEach(function (choice) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "letterlab-cell game-answer";
+          renderLetterForm(btn, choice.text, choice.baseLen);
+          btn.addEventListener("click", function () { onAnswer(choice, btn); });
+          gameAnswers.appendChild(btn);
+        });
+
+        playSound(correct);
+      }
+
+      function onAnswer(choice, btnEl) {
+        if (gameState.current.answered) return;
+        gameState.current.answered = true;
+        var isCorrect = choice.audioId === gameState.current.correct.audioId;
+        if (isCorrect) { gameState.score += 1; }
+
+        Array.prototype.forEach.call(gameAnswers.children, function (btn) {
+          btn.disabled = true;
+        });
+        btnEl.classList.add(isCorrect ? "is-correct" : "is-wrong");
+        if (!isCorrect) {
+          Array.prototype.forEach.call(gameAnswers.children, function (btn, idx) {
+            if (gameState.current.choices[idx].audioId === gameState.current.correct.audioId) {
+              btn.classList.add("is-correct");
+            }
+          });
+        }
+
+        gameFeedback.hidden = false;
+        gameFeedback.className = "game-feedback " + (isCorrect ? "is-correct" : "is-wrong");
+        gameFeedback.textContent = isCorrect
+          ? (isEnglish ? "Correct!" : "Bravo, c'est la bonne réponse !")
+          : (isEnglish ? "Not quite — here is the right answer." : "Ce n'était pas ça — voici la bonne réponse.");
+
+        gameNextBtn.hidden = false;
+        renderScore();
+      }
+
+      function startGame(moduleNumber, title) {
+        var pool = buildSoundPool(moduleNumber);
+        if (!pool.length) return;
+        gameState = { pool: pool, questionIndex: 0, score: 0, current: null };
+        gameModalTitle.textContent = title;
+        gameBody.hidden = false;
+        gameEnd.hidden = true;
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        nextQuestion();
+      }
+
+      function closeGame() {
+        gameModal.classList.remove("is-open");
+        document.body.style.overflow = "";
+        if (gameAudio) { gameAudio.pause(); }
+      }
+
+      gameBtns.forEach(function (btn) {
+        var moduleNumber = btn.getAttribute("data-module");
+        if (!GAMES_READY[moduleNumber]) return;
+        btn.addEventListener("click", function () {
+          startGame(moduleNumber, btn.getAttribute("data-title"));
+        });
+      });
+      gamePlayBtn.addEventListener("click", function () {
+        if (gameState && gameState.current) playSound(gameState.current.correct);
+      });
+      gameNextBtn.addEventListener("click", nextQuestion);
+      gameReplayBtn.addEventListener("click", function () {
+        gameState.questionIndex = 0;
+        gameState.score = 0;
+        gameBody.hidden = false;
+        gameEnd.hidden = true;
+        nextQuestion();
+      });
+      gameModalClose.addEventListener("click", closeGame);
+      document.addEventListener("keydown", function (e) {
+        if (gameModal.classList.contains("is-open") && e.key === "Escape") closeGame();
+      });
+    }
   }
 })();

@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=19">
+<link rel="stylesheet" href="../css/style.css?v=21">
 </head>
 <body>
 
@@ -37,6 +37,7 @@
         <li><a href="#methode" class="nav-link">The Method</a></li>
         <li><a href="#programmes" class="nav-link">Programs</a></li>
         <li><a href="#modules" class="nav-link">Modules</a></li>
+        <li><a href="#jeux" class="nav-link">Games</a></li>
         <li><a href="#pour-qui" class="nav-link">Who&nbsp;it's&nbsp;for</a></li>
         <li><a href="#contact" class="nav-link">Contact</a></li>
       </ul>
@@ -428,6 +429,98 @@
     </div>
   </section>
 
+  <!-- ===================== GAMES ===================== -->
+  <section class="section" id="jeux">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow eyebrow-center">Games</p>
+        <h2>Practice by playing, module by module</h2>
+        <p class="section-lead">
+          Listen to a sound, then find the right letter among the choices.
+          The games follow the same organization as the 12 modules.
+        </p>
+      </div>
+
+      <div class="module-grid">
+        <article class="module-card">
+          <span class="module-number">Module 1</span>
+          <p class="module-letters">أ</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
+                  data-module="1" data-title="Module 1 — Which sound did you hear?">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
+            Play
+          </button>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 2</span>
+          <p class="module-letters">ب ت ث</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 3</span>
+          <p class="module-letters">ج ح خ</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 4</span>
+          <p class="module-letters">د ذ</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 5</span>
+          <p class="module-letters">ر ز</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 6</span>
+          <p class="module-letters">س ش</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 7</span>
+          <p class="module-letters">ص ض</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 8</span>
+          <p class="module-letters">ط ظ</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 9</span>
+          <p class="module-letters">ع غ</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 10</span>
+          <p class="module-letters">ف ق ك</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 11</span>
+          <p class="module-letters">ل م ن</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+
+        <article class="module-card module-card-locked">
+          <span class="module-number">Module 12</span>
+          <p class="module-letters">ه و ي</p>
+          <span class="module-badge-soon">Coming soon</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== WHO IT'S FOR ===================== -->
   <section class="section" id="pour-qui">
     <div class="container">
@@ -549,6 +642,7 @@
         <li><a href="#methode">The method</a></li>
         <li><a href="#programmes">Programs</a></li>
         <li><a href="#modules">Modules</a></li>
+        <li><a href="#jeux">Games</a></li>
         <li><a href="#pour-qui">Who it's for</a></li>
         <li><a href="#apercu">Preview</a></li>
       </ul>
@@ -608,6 +702,32 @@
   </div>
 </div>
 
-<script src="../js/main.js?v=21"></script>
+<!-- Game: "Which sound did you hear?" (shared between modules) -->
+<div class="reader" id="gameModal" role="dialog" aria-modal="true" aria-label="Game: Which sound did you hear?">
+  <div class="reader-bar">
+    <span class="reader-title" id="gameModalTitle"></span>
+    <button class="reader-close" id="gameModalClose" aria-label="Close">&times;</button>
+  </div>
+  <div class="game-body" id="gameBody">
+    <div class="game-panel">
+      <span class="game-score" id="gameScore"></span>
+      <p class="game-instruction">Listen, then choose the sound you heard.</p>
+      <button type="button" class="btn btn-primary btn-sm game-play-btn" id="gamePlayBtn">
+        <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M4 10v4a1 1 0 0 0 1 1h2l4 4V5L7 9H5a1 1 0 0 0-1 1Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Listen to the sound
+      </button>
+      <div class="game-answers" id="gameAnswers"></div>
+      <p class="game-feedback" id="gameFeedback" hidden></p>
+      <button type="button" class="btn btn-primary btn-sm" id="gameNextBtn" hidden>Next question</button>
+    </div>
+  </div>
+  <div class="game-end" id="gameEnd" hidden>
+    <h3>Round complete!</h3>
+    <p id="gameEndScore"></p>
+    <button type="button" class="btn btn-white" id="gameReplayBtn">Play again</button>
+  </div>
+</div>
+
+<script src="../js/main.js?v=22"></script>
 </body>
 </html>
