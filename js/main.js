@@ -234,6 +234,36 @@
       buildLetter("yeh",   "ي", "يَاء")
     ];
 
+    // Index de toutes les lettres (harakat/moudoud/tanwin) par id, quel que
+    // soit leur fascicule d'origine : sert de base aux modules ci-dessous,
+    // qui reorganisent les memes lettres/audios sans les dupliquer.
+    var ALL_LETTERS_BY_ID = {};
+    [["1", LETTERS_F1], ["2", LETTERS_F2], ["3", LETTERS_F3]].forEach(function (pair) {
+      var fascicule = pair[0];
+      pair[1].forEach(function (letter) {
+        letter.fascicule = fascicule;
+        ALL_LETTERS_BY_ID[letter.id] = letter;
+      });
+    });
+
+    // Les 28 lettres reparties en 12 modules pedagogiques (regroupement
+    // different des fascicules, a des fins de revision cible). L'ordre et
+    // la composition de chaque module sont fixes.
+    var MODULES = [
+      { number: 1, letterIds: ["alif"] },
+      { number: 2, letterIds: ["baa", "taa", "thaa"] },
+      { number: 3, letterIds: ["jim", "haa", "khaa"] },
+      { number: 4, letterIds: ["dal", "thal"] },
+      { number: 5, letterIds: ["reh", "zain"] },
+      { number: 6, letterIds: ["seen", "sheen"] },
+      { number: 7, letterIds: ["sad", "dad"] },
+      { number: 8, letterIds: ["tah", "zah"] },
+      { number: 9, letterIds: ["ain", "ghain"] },
+      { number: 10, letterIds: ["feh", "qaf", "kaf"] },
+      { number: 11, letterIds: ["lam", "meem", "noon"] },
+      { number: 12, letterIds: ["heh", "waw", "yeh"] }
+    ];
+
     // Fascicule 4 : sukun et shadda. Chaque lettre est presentee dans le
     // contexte "بَ" + lettre (comme dans le cahier), en sukun puis en
     // shadda ; seule la lettre cible et sa marque restent la partie
@@ -409,6 +439,12 @@
         };
 
     function renderLetter(letter) {
+      // Un module peut regrouper des lettres de plusieurs fascicules
+      // d'origine (audio) ; chaque lettre porte donc son propre fascicule
+      // et la base audio est recalculee a chaque affichage.
+      if (letter.fascicule) {
+        currentAudioBase = ROOT_BASE + "assets/audio/fascicule-" + letter.fascicule + "/";
+      }
       letterLabName.textContent = letter.name;
       letterLabGroups.innerHTML = "";
       currentGroupKeys.forEach(function (key) {
@@ -448,6 +484,22 @@
       document.body.style.overflow = "hidden";
     }
 
+    // Module de revision : reutilise les memes lettres (harakat/moudoud/
+    // tanwin) et la meme modale que les fascicules, juste reparties selon
+    // un decoupage pedagogique different. Aucune donnee ni audio propre.
+    function openModuleLab(moduleNumber, title) {
+      var module = MODULES.filter(function (m) { return String(m.number) === String(moduleNumber); })[0];
+      if (!module) return;
+      var letters = module.letterIds.map(function (id) { return ALL_LETTERS_BY_ID[id]; }).filter(Boolean);
+      if (!letters.length) return;
+      currentGroupKeys = GROUPS_BY_FASCICULE["1"];
+      letterLabTitle.textContent = title;
+      buildTabs(letters);
+      renderLetter(letters[0]);
+      letterLab.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+    }
+
     function closeLetterLab() {
       letterLab.classList.remove("is-open");
       document.body.style.overflow = "";
@@ -458,6 +510,11 @@
     letterLabBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
         openLetterLab(btn.getAttribute("data-fascicule"), btn.getAttribute("data-title"));
+      });
+    });
+    document.querySelectorAll(".js-open-module").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        openModuleLab(btn.getAttribute("data-module"), btn.getAttribute("data-title"));
       });
     });
     letterLabClose.addEventListener("click", closeLetterLab);
