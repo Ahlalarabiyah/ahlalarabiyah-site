@@ -518,6 +518,13 @@ section[id] { scroll-margin-top: 88px; }
   color: var(--color-navy);
   margin: 0 0 14px;
 }
+.module-progress {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.76rem;
+  color: var(--color-orange);
+  margin: -6px 0 14px;
+}
 .module-listen { width: 100%; }
 
 /* ---------- Audience ---------- */
@@ -848,6 +855,7 @@ section[id] { scroll-margin-top: 88px; }
   border-radius: 999px;
   margin-bottom: 18px;
 }
+.game-level-info { color: var(--color-orange); font-family: var(--font-heading); font-weight: 600; font-size: 0.8rem; margin: 0 0 6px; }
 .game-instruction { color: var(--color-text-light); font-size: 0.95rem; margin: 0 0 22px; }
 .game-play-btn { margin: 0 auto 26px; }
 .game-answers {

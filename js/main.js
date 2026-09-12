@@ -363,6 +363,13 @@
     // conteneur donne. Partage entre le labo de lettres et le jeu, pour
     // garantir le meme rendu (espacements, positionnement) partout.
     function renderLetterForm(container, text, baseLen) {
+      // Tout le texte (lettre de base + marque + prolongation eventuelle)
+      // est regroupe dans UN SEUL element inline. Necessaire quand le
+      // conteneur est en display:flex (cartes du jeu) : sans ce wrapper,
+      // chaque morceau de texte devient un item flex separe et la liaison
+      // cursive arabe entre la lettre et sa prolongation se casse.
+      var wrap = document.createElement("span");
+      wrap.className = "letterlab-form";
       var baseChar = text.length > baseLen ? text.slice(0, baseLen) : "";
       var markContent = text.length > baseLen ? text.slice(baseLen) : text;
       var baseLast = baseChar.charAt(baseChar.length - 1);
@@ -384,14 +391,15 @@
         mark.classList.add(TAILED_LETTERS[baseLast] ? "letterlab-mark-widened-tailed" : "letterlab-mark-widened");
       }
       mark.textContent = diacritic;
-      if (baseChar) container.appendChild(document.createTextNode(baseChar));
-      container.appendChild(mark);
+      if (baseChar) wrap.appendChild(document.createTextNode(baseChar));
+      wrap.appendChild(mark);
       if (trailing) {
         var trailingSpan = document.createElement("span");
         trailingSpan.className = "letterlab-mark";
         trailingSpan.textContent = trailing;
-        container.appendChild(trailingSpan);
+        wrap.appendChild(trailingSpan);
       }
+      container.appendChild(wrap);
     }
 
     function buildGroup(title, groupKey, forms) {
@@ -532,11 +540,28 @@
         "7": true, "8": true, "9": true, "10": true, "11": true, "12": true
       };
 
+      // Progression cumulative : le module N revise ses propres lettres
+      // ET toutes celles des modules precedents (jamais l'inverse). Chaque
+      // module de MODULES ne liste que ses lettres propres ; on cumule ici
+      // au moment de jouer, sans dupliquer aucune liste.
+      function cumulativeLetterIds(moduleNumber) {
+        var ids = [];
+        MODULES.forEach(function (m) {
+          if (m.number <= Number(moduleNumber)) {
+            ids = ids.concat(m.letterIds);
+          }
+        });
+        return ids;
+      }
+
+      function cumulativeLetterCount(moduleNumber) {
+        return cumulativeLetterIds(moduleNumber).length;
+      }
+
       function buildSoundPool(moduleNumber) {
-        var module = MODULES.filter(function (m) { return String(m.number) === String(moduleNumber); })[0];
-        if (!module) return [];
+        var letterIds = cumulativeLetterIds(moduleNumber);
         var pool = [];
-        module.letterIds.forEach(function (id) {
+        letterIds.forEach(function (id) {
           var letter = ALL_LETTERS_BY_ID[id];
           if (!letter) return;
           ["harakat", "moudoud", "tanwin"].forEach(function (key) {
@@ -568,6 +593,7 @@
       var gameBody = document.getElementById("gameBody");
       var gameEnd = document.getElementById("gameEnd");
       var gameScoreEl = document.getElementById("gameScore");
+      var gameLevelInfo = document.getElementById("gameLevelInfo");
       var gamePlayBtn = document.getElementById("gamePlayBtn");
       var gameAnswers = document.getElementById("gameAnswers");
       var gameFeedback = document.getElementById("gameFeedback");
@@ -666,6 +692,10 @@
         if (!pool.length) return;
         gameState = { pool: pool, questionIndex: 0, score: 0, current: null };
         gameModalTitle.textContent = title;
+        var letterCount = cumulativeLetterCount(moduleNumber);
+        gameLevelInfo.textContent = isEnglish
+          ? "Letters learned so far: " + letterCount
+          : "Lettres apprises : " + letterCount;
         gameBody.hidden = false;
         gameEnd.hidden = true;
         gameModal.classList.add("is-open");
