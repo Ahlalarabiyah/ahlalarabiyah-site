@@ -328,7 +328,7 @@
     // Casse le cache navigateur quand un fichier audio est remplace sur le
     // serveur (meme piege deja rencontre avec le CSS/JS) : a incrementer
     // a chaque nouveau remplacement d'enregistrements.
-    var AUDIO_VERSION = "6";
+    var AUDIO_VERSION = "7";
 
     function playForm(id, cellEl) {
       if (currentAudio) { currentAudio.pause(); }
@@ -591,82 +591,69 @@
       }
 
       // Mots pour le jeu "Reconnaitre un mot", disponible a partir du
-      // Module 2. Contrairement aux lettres (vrais enregistrements), les
-      // audios de mots sont generes une fois par synthese vocale (voix
-      // ar-SA-HamedNeural, arabe standard) puis reutilises tels quels -
-      // jamais regeneres a la volee. audioId reste null tant que le
-      // fichier n'existe pas encore : le mot n'apparait alors dans aucun
-      // pool (voir buildWordPool). Le module minimal d'un mot est deduit
-      // automatiquement de ses lettres (jamais saisi a la main) : un mot
-      // ne peut donc jamais apparaitre avant que toutes ses lettres
-      // soient apprises.
+      // Module 2. AUCUNE synthese vocale : ce sont tous des vrais verbes
+      // arabes (passe, forme dictionnaire) dont l'orthographe est
+      // entierement voyellee (chaque lettre porte fatha/damma/kasra ou une
+      // prolongation), donc assemblables proprement a partir des vrais
+      // enregistrements de lettres - exactement comme les pseudo-mots
+      // (voir PSEUDO_WORDS). Les noms/mots se terminant par une consonne
+      // muette (sukun) sont volontairement exclus : cette coupe n'existe
+      // pas proprement dans les enregistrements fournis (pas de silence
+      // entre le contexte et la lettre cible dans les fichiers sukun du
+      // fascicule 4). Le module minimal d'un mot est deduit automatiquement
+      // de ses lettres (jamais saisi a la main).
       var WORDS = [
-        { id: "bab", arabic: "بَاب", letters: ["baa", "alif"], audioId: "bab" },
-        { id: "ab", arabic: "أَب", letters: ["alif", "baa"], audioId: "ab" },
-        { id: "taba", arabic: "تَابَ", letters: ["taa", "alif", "baa"], audioId: "taba" },
-        { id: "thabit", arabic: "ثَابِت", letters: ["thaa", "alif", "baa", "taa"], audioId: "thabit" },
-        { id: "taj", arabic: "تَاج", letters: ["taa", "alif", "jim"], audioId: "taj" },
-        { id: "haj", arabic: "حَاج", letters: ["haa", "alif", "jim"], audioId: "haj" },
-        { id: "akh", arabic: "أَخ", letters: ["alif", "khaa"], audioId: "akh" },
-        { id: "ukht", arabic: "أُخْت", letters: ["alif", "khaa", "taa"], audioId: "ukht" },
-        { id: "hubb", arabic: "حُبّ", letters: ["haa", "baa"], audioId: "hubb" },
-        { id: "tahta", arabic: "تَحْتَ", letters: ["taa", "haa"], audioId: "tahta" },
-        { id: "jadd", arabic: "جَدّ", letters: ["jim", "dal"], audioId: "jadd" },
-        { id: "khudh", arabic: "خُذْ", letters: ["khaa", "thal"], audioId: "khudh" },
-        { id: "akhadha", arabic: "أَخَذَ", letters: ["alif", "khaa", "thal"], audioId: "akhadha" },
-        { id: "hadd", arabic: "حَدّ", letters: ["haa", "dal"], audioId: "hadd" },
-        { id: "hadith", arabic: "حَادِث", letters: ["haa", "alif", "dal", "thaa"], audioId: "hadith" },
-        { id: "bard", arabic: "بَرْد", letters: ["baa", "reh", "dal"], audioId: "bard" },
-        { id: "zad", arabic: "زَاد", letters: ["zain", "alif", "dal"], audioId: "zad" },
-        { id: "hathar", arabic: "حَذَر", letters: ["haa", "thal", "reh"], audioId: "hathar" },
-        { id: "tajir", arabic: "تَاجِر", letters: ["taa", "alif", "jim", "reh"], audioId: "tajir" },
-        { id: "rah", arabic: "رَاح", letters: ["reh", "alif", "haa"], audioId: "rah" },
-        { id: "zajar", arabic: "زَجَر", letters: ["zain", "jim", "reh"], audioId: "zajar" },
-        { id: "khubz", arabic: "خُبْز", letters: ["khaa", "baa", "zain"], audioId: "khubz" },
-        { id: "shajar", arabic: "شَجَر", letters: ["sheen", "jim", "reh"], audioId: "shajar" },
-        { id: "haris", arabic: "حَارِس", letters: ["haa", "alif", "reh", "seen"], audioId: "haris" },
-        { id: "dars", arabic: "دَرْس", letters: ["dal", "reh", "seen"], audioId: "dars" },
-        { id: "shariba", arabic: "شَرِبَ", letters: ["sheen", "reh", "baa"], audioId: "shariba" },
-        { id: "sabab", arabic: "سَبَب", letters: ["seen", "baa"], audioId: "sabab" },
-        { id: "khashab", arabic: "خَشَب", letters: ["khaa", "sheen", "baa"], audioId: "khashab" },
-        { id: "daraba", arabic: "ضَرَب", letters: ["dad", "reh", "baa"], audioId: "daraba" },
-        { id: "sahh", arabic: "صَحّ", letters: ["sad", "haa"], audioId: "sahh" },
-        { id: "sadr", arabic: "صَدْر", letters: ["sad", "dal", "reh"], audioId: "sadr" },
-        { id: "basar", arabic: "بَصَر", letters: ["baa", "sad", "reh"], audioId: "basar" },
-        { id: "dabab", arabic: "ضَبَاب", letters: ["dad", "baa", "alif"], audioId: "dabab" },
-        { id: "khatt", arabic: "خَط", letters: ["khaa", "tah"], audioId: "khatt" },
-        { id: "batt", arabic: "بَطّ", letters: ["baa", "tah"], audioId: "batt" },
-        { id: "hazz", arabic: "حَظّ", letters: ["haa", "zah"], audioId: "hazz" },
-        { id: "shart", arabic: "شَرْط", letters: ["sheen", "reh", "tah"], audioId: "shart" },
-        { id: "dabt", arabic: "ضَبْط", letters: ["dad", "baa", "tah"], audioId: "dabt" },
-        { id: "adda", arabic: "عَضّ", letters: ["ain", "dad"], audioId: "adda" },
-        { id: "ghadab", arabic: "غَضَب", letters: ["ghain", "dad", "baa"], audioId: "ghadab" },
-        { id: "arab", arabic: "عَرَب", letters: ["ain", "reh", "baa"], audioId: "arab" },
-        { id: "ghar", arabic: "غَار", letters: ["ghain", "alif", "reh"], audioId: "ghar" },
-        { id: "shuja", arabic: "شُجَاع", letters: ["sheen", "jim", "alif", "ain"], audioId: "shuja" },
-        { id: "kataba", arabic: "كَتَبَ", letters: ["kaf", "taa", "baa"], audioId: "kataba" },
-        { id: "fataha", arabic: "فَتَح", letters: ["feh", "taa", "haa"], audioId: "fataha" },
-        { id: "kabura", arabic: "كَبُر", letters: ["kaf", "baa", "reh"], audioId: "kabura" },
-        { id: "farah", arabic: "فَرَح", letters: ["feh", "reh", "haa"], audioId: "farah" },
-        { id: "qafaza", arabic: "قَفَزَ", letters: ["qaf", "feh", "zain"], audioId: "qafaza" },
-        { id: "baqar", arabic: "بَقَر", letters: ["baa", "qaf", "reh"], audioId: "baqar" },
-        { id: "kadhab", arabic: "كَذَب", letters: ["kaf", "thal", "baa"], audioId: "kadhab" },
-        { id: "qalam", arabic: "قَلَم", letters: ["qaf", "lam", "meem"], audioId: "qalam" },
-        { id: "nama", arabic: "نَام", letters: ["noon", "alif", "meem"], audioId: "nama" },
-        { id: "laiba", arabic: "لَعِب", letters: ["lam", "ain", "baa"], audioId: "laiba" },
-        { id: "jamal", arabic: "جَمَل", letters: ["jim", "meem", "lam"], audioId: "jamal" },
-        { id: "najaha", arabic: "نَجَح", letters: ["noon", "jim", "haa"], audioId: "najaha" },
-        { id: "kalb", arabic: "كَلْب", letters: ["kaf", "lam", "baa"], audioId: "kalb" },
-        { id: "qamar", arabic: "قَمَر", letters: ["qaf", "meem", "reh"], audioId: "qamar" },
-        { id: "bint", arabic: "بِنْت", letters: ["baa", "noon", "taa"], audioId: "bint" },
-        { id: "bayt", arabic: "بَيْت", letters: ["baa", "yeh", "taa"], audioId: "bayt" },
-        { id: "walad", arabic: "وَلَد", letters: ["waw", "lam", "dal"], audioId: "walad" },
-        { id: "haraba", arabic: "هَرَب", letters: ["heh", "reh", "baa"], audioId: "haraba" },
-        { id: "yad", arabic: "يَد", letters: ["yeh", "dal"], audioId: "yad" },
-        { id: "wajh", arabic: "وَجْه", letters: ["waw", "jim", "heh"], audioId: "wajh" },
-        { id: "nahr", arabic: "نَهْر", letters: ["noon", "heh", "reh"], audioId: "nahr" },
-        { id: "yawm", arabic: "يَوْم", letters: ["yeh", "waw", "meem"], audioId: "yawm" },
-        { id: "ward", arabic: "وَرْد", letters: ["waw", "reh", "dal"], audioId: "ward" }
+        { id: "taba", arabic: "تَابَ", letters: ["baa", "taa"], audioId: "taba", units: ["taa-madd-fatha", "baa-fatha"] },
+        { id: "thabata", arabic: "ثَبَتَ", letters: ["baa", "taa", "thaa"], audioId: "thabata", units: ["thaa-fatha", "baa-fatha", "taa-fatha"] },
+        { id: "baata", arabic: "بَاتَ", letters: ["baa", "taa"], audioId: "baata", units: ["baa-madd-fatha", "taa-fatha"] },
+        { id: "thaaba", arabic: "ثَابَ", letters: ["baa", "thaa"], audioId: "thaaba", units: ["thaa-madd-fatha", "baa-fatha"] },
+        { id: "bahatha", arabic: "بَحَثَ", letters: ["baa", "haa", "thaa"], audioId: "bahatha", units: ["baa-fatha", "haa-fatha", "thaa-fatha"] },
+        { id: "khaba", arabic: "خَابَ", letters: ["baa", "khaa"], audioId: "khaba", units: ["khaa-madd-fatha", "baa-fatha"] },
+        { id: "jaba", arabic: "جَابَ", letters: ["baa", "jim"], audioId: "jaba", units: ["jim-madd-fatha", "baa-fatha"] },
+        { id: "hajaba", arabic: "حَجَبَ", letters: ["baa", "haa", "jim"], audioId: "hajaba", units: ["haa-fatha", "jim-fatha", "baa-fatha"] },
+        { id: "akhadha", arabic: "أَخَذَ", letters: ["alif", "khaa", "thal"], audioId: "akhadha", units: ["alif-fatha", "khaa-fatha", "thal-fatha"] },
+        { id: "dhaba", arabic: "ذَابَ", letters: ["baa", "thal"], audioId: "dhaba", units: ["thal-madd-fatha", "baa-fatha"] },
+        { id: "bada", arabic: "بَدَا", letters: ["baa", "dal"], audioId: "bada", units: ["baa-fatha", "dal-madd-fatha"] },
+        { id: "jadhaba", arabic: "جَذَبَ", letters: ["baa", "jim", "thal"], audioId: "jadhaba", units: ["jim-fatha", "thal-fatha", "baa-fatha"] },
+        { id: "hadatha", arabic: "حَدَثَ", letters: ["dal", "haa", "thaa"], audioId: "hadatha", units: ["haa-fatha", "dal-fatha", "thaa-fatha"] },
+        { id: "zajara", arabic: "زَجَرَ", letters: ["jim", "reh", "zain"], audioId: "zajara", units: ["zain-fatha", "jim-fatha", "reh-fatha"] },
+        { id: "kharaja", arabic: "خَرَجَ", letters: ["jim", "khaa", "reh"], audioId: "kharaja", units: ["khaa-fatha", "reh-fatha", "jim-fatha"] },
+        { id: "baraza", arabic: "بَرَزَ", letters: ["baa", "reh", "zain"], audioId: "baraza", units: ["baa-fatha", "reh-fatha", "zain-fatha"] },
+        { id: "zara", arabic: "زَارَ", letters: ["reh", "zain"], audioId: "zara", units: ["zain-madd-fatha", "reh-fatha"] },
+        { id: "shariba", arabic: "شَرِبَ", letters: ["baa", "reh", "sheen"], audioId: "shariba", units: ["sheen-fatha", "reh-kasra", "baa-fatha"] },
+        { id: "darasa", arabic: "دَرَسَ", letters: ["dal", "reh", "seen"], audioId: "darasa", units: ["dal-fatha", "reh-fatha", "seen-fatha"] },
+        { id: "sharaha", arabic: "شَرَحَ", letters: ["haa", "reh", "sheen"], audioId: "sharaha", units: ["sheen-fatha", "reh-fatha", "haa-fatha"] },
+        { id: "sahaba", arabic: "سَحَبَ", letters: ["baa", "haa", "seen"], audioId: "sahaba", units: ["seen-fatha", "haa-fatha", "baa-fatha"] },
+        { id: "daraba", arabic: "ضَرَبَ", letters: ["baa", "dad", "reh"], audioId: "daraba", units: ["dad-fatha", "reh-fatha", "baa-fatha"] },
+        { id: "rasada", arabic: "رَصَدَ", letters: ["dal", "reh", "sad"], audioId: "rasada", units: ["reh-fatha", "sad-fatha", "dal-fatha"] },
+        { id: "hadara", arabic: "حَضَرَ", letters: ["dad", "haa", "reh"], audioId: "hadara", units: ["haa-fatha", "dad-fatha", "reh-fatha"] },
+        { id: "sarakha", arabic: "صَرَخَ", letters: ["khaa", "reh", "sad"], audioId: "sarakha", units: ["sad-fatha", "reh-fatha", "khaa-fatha"] },
+        { id: "khataba", arabic: "خَطَبَ", letters: ["baa", "khaa", "tah"], audioId: "khataba", units: ["khaa-fatha", "tah-fatha", "baa-fatha"] },
+        { id: "dabata", arabic: "ضَبَطَ", letters: ["baa", "dad", "tah"], audioId: "dabata", units: ["dad-fatha", "baa-fatha", "tah-fatha"] },
+        { id: "khatara", arabic: "خَطَرَ", letters: ["khaa", "reh", "tah"], audioId: "khatara", units: ["khaa-fatha", "tah-fatha", "reh-fatha"] },
+        { id: "taraha", arabic: "طَرَحَ", letters: ["haa", "reh", "tah"], audioId: "taraha", units: ["tah-fatha", "reh-fatha", "haa-fatha"] },
+        { id: "ghadiba", arabic: "غَضِبَ", letters: ["baa", "dad", "ghain"], audioId: "ghadiba", units: ["ghain-fatha", "dad-kasra", "baa-fatha"] },
+        { id: "gharaba", arabic: "غَرَبَ", letters: ["baa", "ghain", "reh"], audioId: "gharaba", units: ["ghain-fatha", "reh-fatha", "baa-fatha"] },
+        { id: "abara", arabic: "عَبَرَ", letters: ["ain", "baa", "reh"], audioId: "abara", units: ["ain-fatha", "baa-fatha", "reh-fatha"] },
+        { id: "ghaza", arabic: "غَزَا", letters: ["ghain", "zain"], audioId: "ghaza", units: ["ghain-fatha", "zain-madd-fatha"] },
+        { id: "kataba", arabic: "كَتَبَ", letters: ["baa", "kaf", "taa"], audioId: "kataba", units: ["kaf-fatha", "taa-fatha", "baa-fatha"] },
+        { id: "qafaza", arabic: "قَفَزَ", letters: ["feh", "qaf", "zain"], audioId: "qafaza", units: ["qaf-fatha", "feh-fatha", "zain-fatha"] },
+        { id: "fataha", arabic: "فَتَحَ", letters: ["feh", "haa", "taa"], audioId: "fataha", units: ["feh-fatha", "taa-fatha", "haa-fatha"] },
+        { id: "arafa", arabic: "عَرَفَ", letters: ["ain", "feh", "reh"], audioId: "arafa", units: ["ain-fatha", "reh-fatha", "feh-fatha"] },
+        { id: "kabura", arabic: "كَبُرَ", letters: ["baa", "kaf", "reh"], audioId: "kabura", units: ["kaf-fatha", "baa-damma", "reh-fatha"] },
+        { id: "fariha", arabic: "فَرِحَ", letters: ["feh", "haa", "reh"], audioId: "fariha", units: ["feh-fatha", "reh-kasra", "haa-fatha"] },
+        { id: "amila", arabic: "عَمِلَ", letters: ["ain", "lam", "meem"], audioId: "amila", units: ["ain-fatha", "meem-kasra", "lam-fatha"] },
+        { id: "nazama", arabic: "نَظَمَ", letters: ["meem", "noon", "zah"], audioId: "nazama", units: ["noon-fatha", "zah-fatha", "meem-fatha"] },
+        { id: "laiba", arabic: "لَعِبَ", letters: ["ain", "baa", "lam"], audioId: "laiba", units: ["lam-fatha", "ain-kasra", "baa-fatha"] },
+        { id: "najaha", arabic: "نَجَحَ", letters: ["haa", "jim", "noon"], audioId: "najaha", units: ["noon-fatha", "jim-fatha", "haa-fatha"] },
+        { id: "hamala", arabic: "حَمَلَ", letters: ["haa", "lam", "meem"], audioId: "hamala", units: ["haa-fatha", "meem-fatha", "lam-fatha"] },
+        { id: "dakhala", arabic: "دَخَلَ", letters: ["dal", "khaa", "lam"], audioId: "dakhala", units: ["dal-fatha", "khaa-fatha", "lam-fatha"] },
+        { id: "jalasa", arabic: "جَلَسَ", letters: ["jim", "lam", "seen"], audioId: "jalasa", units: ["jim-fatha", "lam-fatha", "seen-fatha"] },
+        { id: "dhahaba", arabic: "ذَهَبَ", letters: ["baa", "heh", "thal"], audioId: "dhahaba", units: ["thal-fatha", "heh-fatha", "baa-fatha"] },
+        { id: "wajada", arabic: "وَجَدَ", letters: ["dal", "jim", "waw"], audioId: "wajada", units: ["waw-fatha", "jim-fatha", "dal-fatha"] },
+        { id: "wasala", arabic: "وَصَلَ", letters: ["lam", "sad", "waw"], audioId: "wasala", units: ["waw-fatha", "sad-fatha", "lam-fatha"] },
+        { id: "wahaba", arabic: "وَهَبَ", letters: ["baa", "heh", "waw"], audioId: "wahaba", units: ["waw-fatha", "heh-fatha", "baa-fatha"] },
+        { id: "haraba", arabic: "هَرَبَ", letters: ["baa", "heh", "reh"], audioId: "haraba", units: ["heh-fatha", "reh-fatha", "baa-fatha"] }
       ];
 
       // Pseudo-mots : combinaisons phonetiquement valides construites en
@@ -677,183 +664,183 @@
       // niveaux egalises, fondu enchaine sinusoidal 30ms entre unites) et
       // reutilise tel quel - jamais regenere pendant que l'enfant joue.
       var PSEUDO_WORDS = [
-        { id: "tatha", arabic: "تَثَ", letters: ["taa", "thaa"], audioId: "tatha" },
-        { id: "batatha", arabic: "بَتَثَ", letters: ["baa", "taa", "thaa"], audioId: "batatha" },
-        { id: "abatatha", arabic: "أَبَتَثَ", letters: ["alif", "baa", "taa", "thaa"], audioId: "abatatha" },
-        { id: "bata", arabic: "بَتَ", letters: ["baa", "taa"], audioId: "bata" },
-        { id: "thaba", arabic: "ثَبَ", letters: ["baa", "thaa"], audioId: "thaba" },
-        { id: "tuthi", arabic: "تُثِ", letters: ["taa", "thaa"], audioId: "tuthi" },
-        { id: "abu2", arabic: "أَبُ", letters: ["alif", "baa"], audioId: "abu2" },
-        { id: "tabatha", arabic: "تَبَثَ", letters: ["baa", "taa", "thaa"], audioId: "tabatha" },
-        { id: "baatatha", arabic: "بَاتَثَ", letters: ["baa", "taa", "thaa"], audioId: "baatatha" },
-        { id: "ibiti", arabic: "إِبِتِ", letters: ["alif", "baa", "taa"], audioId: "ibiti" },
-        { id: "m3_01", arabic: "جِيخُتِ", letters: ["jim", "khaa", "taa"], audioId: "m3_01" },
-        { id: "m3_02", arabic: "خِحَ", letters: ["haa", "khaa"], audioId: "m3_02" },
-        { id: "m3_03", arabic: "جُخَ", letters: ["jim", "khaa"], audioId: "m3_03" },
-        { id: "m3_04", arabic: "حُوجَ", letters: ["haa", "jim"], audioId: "m3_04" },
-        { id: "m3_05", arabic: "أَخِحُ", letters: ["alif", "haa", "khaa"], audioId: "m3_05" },
-        { id: "m3_06", arabic: "إِثَخِ", letters: ["alif", "khaa", "thaa"], audioId: "m3_06" },
-        { id: "m3_07", arabic: "آجَ", letters: ["alif", "jim"], audioId: "m3_07" },
-        { id: "m3_08", arabic: "تُحَثُخُ", letters: ["haa", "khaa", "taa", "thaa"], audioId: "m3_08" },
-        { id: "m3_09", arabic: "خَاحِ", letters: ["haa", "khaa"], audioId: "m3_09" },
-        { id: "m3_10", arabic: "حَجَ", letters: ["haa", "jim"], audioId: "m3_10" },
-        { id: "m3_11", arabic: "أُجَخَاحَ", letters: ["alif", "haa", "jim", "khaa"], audioId: "m3_11" },
-        { id: "m3_12", arabic: "ثَاخِبُ", letters: ["baa", "khaa", "thaa"], audioId: "m3_12" },
-        { id: "m3_13", arabic: "حَاثَجَ", letters: ["haa", "jim", "thaa"], audioId: "m3_13" },
-        { id: "m3_14", arabic: "حُخِ", letters: ["haa", "khaa"], audioId: "m3_14" },
-        { id: "m3_15", arabic: "أُبِجُخُو", letters: ["alif", "baa", "jim", "khaa"], audioId: "m3_15" },
-        { id: "m3_16", arabic: "بُتِجِي", letters: ["baa", "jim", "taa"], audioId: "m3_16" },
-        { id: "m3_17", arabic: "خُحِتَ", letters: ["haa", "khaa", "taa"], audioId: "m3_17" },
-        { id: "m3_18", arabic: "خَجُو", letters: ["jim", "khaa"], audioId: "m3_18" },
-        { id: "m3_19", arabic: "ثُبُوجِ", letters: ["baa", "jim", "thaa"], audioId: "m3_19" },
-        { id: "m3_20", arabic: "حُخَجَ", letters: ["haa", "jim", "khaa"], audioId: "m3_20" },
-        { id: "m4_01", arabic: "دَاتِحَ", letters: ["dal", "haa", "taa"], audioId: "m4_01" },
-        { id: "m4_02", arabic: "دُذَ", letters: ["dal", "thal"], audioId: "m4_02" },
-        { id: "m4_03", arabic: "أُدُبَذَ", letters: ["alif", "baa", "dal", "thal"], audioId: "m4_03" },
-        { id: "m4_04", arabic: "ذُودِتُ", letters: ["dal", "taa", "thal"], audioId: "m4_04" },
-        { id: "m4_05", arabic: "إِدَجُحَ", letters: ["alif", "dal", "haa", "jim"], audioId: "m4_05" },
-        { id: "m4_06", arabic: "دَذُو", letters: ["dal", "thal"], audioId: "m4_06" },
-        { id: "m4_07", arabic: "بِذُدِ", letters: ["baa", "dal", "thal"], audioId: "m4_07" },
-        { id: "m4_08", arabic: "ذُدُ", letters: ["dal", "thal"], audioId: "m4_08" },
-        { id: "m4_09", arabic: "ذُودَ", letters: ["dal", "thal"], audioId: "m4_09" },
-        { id: "m4_10", arabic: "دِتُذِيثِ", letters: ["dal", "taa", "thaa", "thal"], audioId: "m4_10" },
-        { id: "m4_11", arabic: "ذِدَا", letters: ["dal", "thal"], audioId: "m4_11" },
-        { id: "m4_12", arabic: "ذُوجَبِ", letters: ["baa", "jim", "thal"], audioId: "m4_12" },
-        { id: "m4_13", arabic: "أُتَدَ", letters: ["alif", "dal", "taa"], audioId: "m4_13" },
-        { id: "m4_14", arabic: "ذِدِتُ", letters: ["dal", "taa", "thal"], audioId: "m4_14" },
-        { id: "m5_01", arabic: "حِرَدَ", letters: ["dal", "haa", "reh"], audioId: "m5_01" },
-        { id: "m5_02", arabic: "زِرَ", letters: ["reh", "zain"], audioId: "m5_02" },
-        { id: "m5_03", arabic: "ثَرُ", letters: ["reh", "thaa"], audioId: "m5_03" },
-        { id: "m5_04", arabic: "زَاذَ", letters: ["thal", "zain"], audioId: "m5_04" },
-        { id: "m5_05", arabic: "رِزَدِ", letters: ["dal", "reh", "zain"], audioId: "m5_05" },
-        { id: "m5_06", arabic: "زُوجِ", letters: ["jim", "zain"], audioId: "m5_06" },
-        { id: "m5_07", arabic: "رِحَ", letters: ["haa", "reh"], audioId: "m5_07" },
-        { id: "m5_08", arabic: "رَدُوزُ", letters: ["dal", "reh", "zain"], audioId: "m5_08" },
-        { id: "m5_09", arabic: "أُرِيبَ", letters: ["alif", "baa", "reh"], audioId: "m5_09" },
-        { id: "m5_10", arabic: "زِرُ", letters: ["reh", "zain"], audioId: "m5_10" },
-        { id: "m5_11", arabic: "إِرَثُ", letters: ["alif", "reh", "thaa"], audioId: "m5_11" },
-        { id: "m5_12", arabic: "زِرِتُو", letters: ["reh", "taa", "zain"], audioId: "m5_12" },
-        { id: "m5_13", arabic: "رُخُ", letters: ["khaa", "reh"], audioId: "m5_13" },
-        { id: "m5_14", arabic: "رَزِي", letters: ["reh", "zain"], audioId: "m5_14" },
-        { id: "m6_01", arabic: "شَسُ", letters: ["seen", "sheen"], audioId: "m6_01" },
-        { id: "m6_02", arabic: "شُسُو", letters: ["seen", "sheen"], audioId: "m6_02" },
-        { id: "m6_03", arabic: "ثَخَسَابِ", letters: ["baa", "khaa", "seen", "thaa"], audioId: "m6_03" },
-        { id: "m6_04", arabic: "جَذُشَ", letters: ["jim", "sheen", "thal"], audioId: "m6_04" },
-        { id: "m6_05", arabic: "سِتَ", letters: ["seen", "taa"], audioId: "m6_05" },
-        { id: "m6_06", arabic: "سِشَ", letters: ["seen", "sheen"], audioId: "m6_06" },
-        { id: "m6_07", arabic: "سِيشَ", letters: ["seen", "sheen"], audioId: "m6_07" },
-        { id: "m6_08", arabic: "شِزَرَا", letters: ["reh", "sheen", "zain"], audioId: "m6_08" },
-        { id: "m6_09", arabic: "سُرِ", letters: ["reh", "seen"], audioId: "m6_09" },
-        { id: "m6_10", arabic: "شَخُ", letters: ["khaa", "sheen"], audioId: "m6_10" },
-        { id: "m6_11", arabic: "خَسَشِ", letters: ["khaa", "seen", "sheen"], audioId: "m6_11" },
-        { id: "m6_12", arabic: "رِتِحُشِ", letters: ["haa", "reh", "sheen", "taa"], audioId: "m6_12" },
-        { id: "m6_13", arabic: "سِشُ", letters: ["seen", "sheen"], audioId: "m6_13" },
-        { id: "m6_14", arabic: "ذِجُشَسُ", letters: ["jim", "seen", "sheen", "thal"], audioId: "m6_14" },
-        { id: "m7_01", arabic: "بَذَثِيصَ", letters: ["baa", "sad", "thaa", "thal"], audioId: "m7_01" },
-        { id: "m7_02", arabic: "حُرَضُثَا", letters: ["dad", "haa", "reh", "thaa"], audioId: "m7_02" },
-        { id: "m7_03", arabic: "خُصُ", letters: ["khaa", "sad"], audioId: "m7_03" },
-        { id: "m7_04", arabic: "أُثَدَضِ", letters: ["alif", "dad", "dal", "thaa"], audioId: "m7_04" },
-        { id: "m7_05", arabic: "ضَذِصُ", letters: ["dad", "sad", "thal"], audioId: "m7_05" },
-        { id: "m7_06", arabic: "جَصُضُ", letters: ["dad", "jim", "sad"], audioId: "m7_06" },
-        { id: "m7_07", arabic: "صَضِي", letters: ["dad", "sad"], audioId: "m7_07" },
-        { id: "m7_08", arabic: "ضَجُ", letters: ["dad", "jim"], audioId: "m7_08" },
-        { id: "m7_09", arabic: "ثِيصِ", letters: ["sad", "thaa"], audioId: "m7_09" },
-        { id: "m7_10", arabic: "ضِزِسَصُ", letters: ["dad", "sad", "seen", "zain"], audioId: "m7_10" },
-        { id: "m7_11", arabic: "صَضِ", letters: ["dad", "sad"], audioId: "m7_11" },
-        { id: "m7_12", arabic: "ضُسِيصَ", letters: ["dad", "sad", "seen"], audioId: "m7_12" },
-        { id: "m7_13", arabic: "صِثِ", letters: ["sad", "thaa"], audioId: "m7_13" },
-        { id: "m7_14", arabic: "ضُصُدِ", letters: ["dad", "dal", "sad"], audioId: "m7_14" },
-        { id: "m8_01", arabic: "أَطَارَ", letters: ["alif", "reh", "tah"], audioId: "m8_01" },
-        { id: "m8_02", arabic: "ظِطُ", letters: ["tah", "zah"], audioId: "m8_02" },
-        { id: "m8_03", arabic: "طُحَزَ", letters: ["haa", "tah", "zain"], audioId: "m8_03" },
-        { id: "m8_04", arabic: "ظَسُودَتُ", letters: ["dal", "seen", "taa", "zah"], audioId: "m8_04" },
-        { id: "m8_05", arabic: "طَظَ", letters: ["tah", "zah"], audioId: "m8_05" },
-        { id: "m8_06", arabic: "دِرِيطَظِ", letters: ["dal", "reh", "tah", "zah"], audioId: "m8_06" },
-        { id: "m8_07", arabic: "طُظِ", letters: ["tah", "zah"], audioId: "m8_07" },
-        { id: "m8_08", arabic: "أَحُطَظَا", letters: ["alif", "haa", "tah", "zah"], audioId: "m8_08" },
-        { id: "m8_09", arabic: "جَاطَ", letters: ["jim", "tah"], audioId: "m8_09" },
-        { id: "m8_10", arabic: "طِظَ", letters: ["tah", "zah"], audioId: "m8_10" },
-        { id: "m8_11", arabic: "طُودِ", letters: ["dal", "tah"], audioId: "m8_11" },
-        { id: "m8_12", arabic: "تُوظَ", letters: ["taa", "zah"], audioId: "m8_12" },
-        { id: "m8_13", arabic: "طَسَظُتِ", letters: ["seen", "taa", "tah", "zah"], audioId: "m8_13" },
-        { id: "m8_14", arabic: "ظَجِي", letters: ["jim", "zah"], audioId: "m8_14" },
-        { id: "m9_01", arabic: "بَعُ", letters: ["ain", "baa"], audioId: "m9_01" },
-        { id: "m9_02", arabic: "غُزِي", letters: ["ghain", "zain"], audioId: "m9_02" },
-        { id: "m9_03", arabic: "غُعُ", letters: ["ain", "ghain"], audioId: "m9_03" },
-        { id: "m9_04", arabic: "رَغُذَشُ", letters: ["ghain", "reh", "sheen", "thal"], audioId: "m9_04" },
-        { id: "m9_05", arabic: "إِظِيعِرَ", letters: ["ain", "alif", "reh", "zah"], audioId: "m9_05" },
-        { id: "m9_06", arabic: "أُوبَغِطِ", letters: ["alif", "baa", "ghain", "tah"], audioId: "m9_06" },
-        { id: "m9_07", arabic: "عُوغِحُ", letters: ["ain", "ghain", "haa"], audioId: "m9_07" },
-        { id: "m9_08", arabic: "غَعَا", letters: ["ain", "ghain"], audioId: "m9_08" },
-        { id: "m9_09", arabic: "عُغُو", letters: ["ain", "ghain"], audioId: "m9_09" },
-        { id: "m9_10", arabic: "صَاطُغِ", letters: ["ghain", "sad", "tah"], audioId: "m9_10" },
-        { id: "m9_11", arabic: "شُزُثَاعُ", letters: ["ain", "sheen", "thaa", "zain"], audioId: "m9_11" },
-        { id: "m9_12", arabic: "شُدَغِي", letters: ["dal", "ghain", "sheen"], audioId: "m9_12" },
-        { id: "m9_13", arabic: "ذُغِعِ", letters: ["ain", "ghain", "thal"], audioId: "m9_13" },
-        { id: "m9_14", arabic: "صِغَ", letters: ["ghain", "sad"], audioId: "m9_14" },
-        { id: "m10_01", arabic: "حِيفِطِ", letters: ["feh", "haa", "tah"], audioId: "m10_01" },
-        { id: "m10_02", arabic: "تَقِ", letters: ["qaf", "taa"], audioId: "m10_02" },
-        { id: "m10_03", arabic: "جُكَ", letters: ["jim", "kaf"], audioId: "m10_03" },
-        { id: "m10_04", arabic: "فُصَزُكَا", letters: ["feh", "kaf", "sad", "zain"], audioId: "m10_04" },
-        { id: "m10_05", arabic: "قَغُجُ", letters: ["ghain", "jim", "qaf"], audioId: "m10_05" },
-        { id: "m10_06", arabic: "كُغِقِ", letters: ["ghain", "kaf", "qaf"], audioId: "m10_06" },
-        { id: "m10_07", arabic: "صِحِفَتُ", letters: ["feh", "haa", "sad", "taa"], audioId: "m10_07" },
-        { id: "m10_08", arabic: "قَضِ", letters: ["dad", "qaf"], audioId: "m10_08" },
-        { id: "m10_09", arabic: "كُفِ", letters: ["feh", "kaf"], audioId: "m10_09" },
-        { id: "m10_10", arabic: "كِفَ", letters: ["feh", "kaf"], audioId: "m10_10" },
-        { id: "m10_11", arabic: "فُقُو", letters: ["feh", "qaf"], audioId: "m10_11" },
-        { id: "m10_12", arabic: "ظَكُو", letters: ["kaf", "zah"], audioId: "m10_12" },
-        { id: "m10_13", arabic: "فَحَ", letters: ["feh", "haa"], audioId: "m10_13" },
-        { id: "m10_14", arabic: "بَقُسِخِي", letters: ["baa", "khaa", "qaf", "seen"], audioId: "m10_14" },
-        { id: "m10_15", arabic: "كَصَ", letters: ["kaf", "sad"], audioId: "m10_15" },
-        { id: "m10_16", arabic: "دَافُضِ", letters: ["dad", "dal", "feh"], audioId: "m10_16" },
-        { id: "m10_17", arabic: "كُقُذَسُ", letters: ["kaf", "qaf", "seen", "thal"], audioId: "m10_17" },
-        { id: "m10_18", arabic: "إِيكُ", letters: ["alif", "kaf"], audioId: "m10_18" },
-        { id: "m10_19", arabic: "زَثَقَافَ", letters: ["feh", "qaf", "thaa", "zain"], audioId: "m10_19" },
-        { id: "m10_20", arabic: "فُضِقُ", letters: ["dad", "feh", "qaf"], audioId: "m10_20" },
-        { id: "m10_21", arabic: "جُكُ", letters: ["jim", "kaf"], audioId: "m10_21" },
-        { id: "m11_01", arabic: "لَمِ", letters: ["lam", "meem"], audioId: "m11_01" },
-        { id: "m11_02", arabic: "قَامَ", letters: ["meem", "qaf"], audioId: "m11_02" },
-        { id: "m11_03", arabic: "نَلَ", letters: ["lam", "noon"], audioId: "m11_03" },
-        { id: "m11_04", arabic: "لَغُومَ", letters: ["ghain", "lam", "meem"], audioId: "m11_04" },
-        { id: "m11_05", arabic: "نُذُعِيمُ", letters: ["ain", "meem", "noon", "thal"], audioId: "m11_05" },
-        { id: "m11_06", arabic: "نَتُ", letters: ["noon", "taa"], audioId: "m11_06" },
-        { id: "m11_07", arabic: "لِقُو", letters: ["lam", "qaf"], audioId: "m11_07" },
-        { id: "m11_08", arabic: "سَمُ", letters: ["meem", "seen"], audioId: "m11_08" },
-        { id: "m11_09", arabic: "نِلَ", letters: ["lam", "noon"], audioId: "m11_09" },
-        { id: "m11_10", arabic: "حِصُلَ", letters: ["haa", "lam", "sad"], audioId: "m11_10" },
-        { id: "m11_11", arabic: "أَمِي", letters: ["alif", "meem"], audioId: "m11_11" },
-        { id: "m11_12", arabic: "أُلَانَ", letters: ["alif", "lam", "noon"], audioId: "m11_12" },
-        { id: "m11_13", arabic: "دَمَلِ", letters: ["dal", "lam", "meem"], audioId: "m11_13" },
-        { id: "m11_14", arabic: "دُولُمُ", letters: ["dal", "lam", "meem"], audioId: "m11_14" },
-        { id: "m11_15", arabic: "بَانُ", letters: ["baa", "noon"], audioId: "m11_15" },
-        { id: "m11_16", arabic: "ضِلِ", letters: ["dad", "lam"], audioId: "m11_16" },
-        { id: "m11_17", arabic: "أُمُرَثُ", letters: ["alif", "meem", "reh", "thaa"], audioId: "m11_17" },
-        { id: "m11_18", arabic: "نَزَ", letters: ["noon", "zain"], audioId: "m11_18" },
-        { id: "m11_19", arabic: "مِلُ", letters: ["lam", "meem"], audioId: "m11_19" },
-        { id: "m11_20", arabic: "قِمِ", letters: ["meem", "qaf"], audioId: "m11_20" },
-        { id: "m11_21", arabic: "مِنِ", letters: ["meem", "noon"], audioId: "m11_21" },
-        { id: "m12_01", arabic: "وِهَ", letters: ["heh", "waw"], audioId: "m12_01" },
-        { id: "m12_02", arabic: "قَوَخَا", letters: ["khaa", "qaf", "waw"], audioId: "m12_02" },
-        { id: "m12_03", arabic: "أُيِمِهُ", letters: ["alif", "heh", "meem", "yeh"], audioId: "m12_03" },
-        { id: "m12_04", arabic: "هَرِ", letters: ["heh", "reh"], audioId: "m12_04" },
-        { id: "m12_05", arabic: "تَظِوَ", letters: ["taa", "waw", "zah"], audioId: "m12_05" },
-        { id: "m12_06", arabic: "يُصُ", letters: ["sad", "yeh"], audioId: "m12_06" },
-        { id: "m12_07", arabic: "طُهُو", letters: ["heh", "tah"], audioId: "m12_07" },
-        { id: "m12_08", arabic: "يَوِكُو", letters: ["kaf", "waw", "yeh"], audioId: "m12_08" },
-        { id: "m12_09", arabic: "ثِيَاهَوِ", letters: ["heh", "thaa", "waw", "yeh"], audioId: "m12_09" },
-        { id: "m12_10", arabic: "هِوُ", letters: ["heh", "waw"], audioId: "m12_10" },
-        { id: "m12_11", arabic: "وِيرَغُ", letters: ["ghain", "reh", "waw"], audioId: "m12_11" },
-        { id: "m12_12", arabic: "ظُويِ", letters: ["yeh", "zah"], audioId: "m12_12" },
-        { id: "m12_13", arabic: "هُذُ", letters: ["heh", "thal"], audioId: "m12_13" },
-        { id: "m12_14", arabic: "قَوَمِ", letters: ["meem", "qaf", "waw"], audioId: "m12_14" },
-        { id: "m12_15", arabic: "يُوُ", letters: ["waw", "yeh"], audioId: "m12_15" },
-        { id: "m12_16", arabic: "يَاذَهِسِ", letters: ["heh", "seen", "thal", "yeh"], audioId: "m12_16" },
-        { id: "m12_17", arabic: "نُزِيوِ", letters: ["noon", "waw", "zain"], audioId: "m12_17" },
-        { id: "m12_18", arabic: "يَاعِزُ", letters: ["ain", "yeh", "zain"], audioId: "m12_18" },
-        { id: "m12_19", arabic: "زِدُطَهُو", letters: ["dal", "heh", "tah", "zain"], audioId: "m12_19" },
-        { id: "m12_20", arabic: "وُيُ", letters: ["waw", "yeh"], audioId: "m12_20" },
-        { id: "m12_21", arabic: "يِقُو", letters: ["qaf", "yeh"], audioId: "m12_21" }
+        { id: "tatha", arabic: "تَثَ", letters: ["taa", "thaa"], audioId: "tatha", units: ["taa-fatha", "thaa-fatha"] },
+        { id: "batatha", arabic: "بَتَثَ", letters: ["baa", "taa", "thaa"], audioId: "batatha", units: ["baa-fatha", "taa-fatha", "thaa-fatha"] },
+        { id: "abatatha", arabic: "أَبَتَثَ", letters: ["alif", "baa", "taa", "thaa"], audioId: "abatatha", units: ["alif-fatha", "baa-fatha", "taa-fatha", "thaa-fatha"] },
+        { id: "bata", arabic: "بَتَ", letters: ["baa", "taa"], audioId: "bata", units: ["baa-fatha", "taa-fatha"] },
+        { id: "thaba", arabic: "ثَبَ", letters: ["baa", "thaa"], audioId: "thaba", units: ["thaa-fatha", "baa-fatha"] },
+        { id: "tuthi", arabic: "تُثِ", letters: ["taa", "thaa"], audioId: "tuthi", units: ["taa-damma", "thaa-kasra"] },
+        { id: "abu2", arabic: "أَبُ", letters: ["alif", "baa"], audioId: "abu2", units: ["alif-fatha", "baa-damma"] },
+        { id: "tabatha", arabic: "تَبَثَ", letters: ["baa", "taa", "thaa"], audioId: "tabatha", units: ["taa-fatha", "baa-fatha", "thaa-fatha"] },
+        { id: "baatatha", arabic: "بَاتَثَ", letters: ["baa", "taa", "thaa"], audioId: "baatatha", units: ["baa-madd-fatha", "taa-fatha", "thaa-fatha"] },
+        { id: "ibiti", arabic: "إِبِتِ", letters: ["alif", "baa", "taa"], audioId: "ibiti", units: ["alif-kasra", "baa-kasra", "taa-kasra"] },
+        { id: "m3_01", arabic: "جِيخُتِ", letters: ["jim", "khaa", "taa"], audioId: "m3_01", units: ["jim-madd-kasra", "khaa-damma", "taa-kasra"] },
+        { id: "m3_02", arabic: "خِحَ", letters: ["haa", "khaa"], audioId: "m3_02", units: ["khaa-kasra", "haa-fatha"] },
+        { id: "m3_03", arabic: "جُخَ", letters: ["jim", "khaa"], audioId: "m3_03", units: ["jim-damma", "khaa-fatha"] },
+        { id: "m3_04", arabic: "حُوجَ", letters: ["haa", "jim"], audioId: "m3_04", units: ["haa-madd-damma", "jim-fatha"] },
+        { id: "m3_05", arabic: "أَخِحُ", letters: ["alif", "haa", "khaa"], audioId: "m3_05", units: ["alif-fatha", "khaa-kasra", "haa-damma"] },
+        { id: "m3_06", arabic: "إِثَخِ", letters: ["alif", "khaa", "thaa"], audioId: "m3_06", units: ["alif-kasra", "thaa-fatha", "khaa-kasra"] },
+        { id: "m3_07", arabic: "آجَ", letters: ["alif", "jim"], audioId: "m3_07", units: ["alif-madd-fatha", "jim-fatha"] },
+        { id: "m3_08", arabic: "تُحَثُخُ", letters: ["haa", "khaa", "taa", "thaa"], audioId: "m3_08", units: ["taa-damma", "haa-fatha", "thaa-damma", "khaa-damma"] },
+        { id: "m3_09", arabic: "خَاحِ", letters: ["haa", "khaa"], audioId: "m3_09", units: ["khaa-madd-fatha", "haa-kasra"] },
+        { id: "m3_10", arabic: "حَجَ", letters: ["haa", "jim"], audioId: "m3_10", units: ["haa-fatha", "jim-fatha"] },
+        { id: "m3_11", arabic: "أُجَخَاحَ", letters: ["alif", "haa", "jim", "khaa"], audioId: "m3_11", units: ["alif-damma", "jim-fatha", "khaa-madd-fatha", "haa-fatha"] },
+        { id: "m3_12", arabic: "ثَاخِبُ", letters: ["baa", "khaa", "thaa"], audioId: "m3_12", units: ["thaa-madd-fatha", "khaa-kasra", "baa-damma"] },
+        { id: "m3_13", arabic: "حَاثَجَ", letters: ["haa", "jim", "thaa"], audioId: "m3_13", units: ["haa-madd-fatha", "thaa-fatha", "jim-fatha"] },
+        { id: "m3_14", arabic: "حُخِ", letters: ["haa", "khaa"], audioId: "m3_14", units: ["haa-damma", "khaa-kasra"] },
+        { id: "m3_15", arabic: "أُبِجُخُو", letters: ["alif", "baa", "jim", "khaa"], audioId: "m3_15", units: ["alif-damma", "baa-kasra", "jim-damma", "khaa-madd-damma"] },
+        { id: "m3_16", arabic: "بُتِجِي", letters: ["baa", "jim", "taa"], audioId: "m3_16", units: ["baa-damma", "taa-kasra", "jim-madd-kasra"] },
+        { id: "m3_17", arabic: "خُحِتَ", letters: ["haa", "khaa", "taa"], audioId: "m3_17", units: ["khaa-damma", "haa-kasra", "taa-fatha"] },
+        { id: "m3_18", arabic: "خَجُو", letters: ["jim", "khaa"], audioId: "m3_18", units: ["khaa-fatha", "jim-madd-damma"] },
+        { id: "m3_19", arabic: "ثُبُوجِ", letters: ["baa", "jim", "thaa"], audioId: "m3_19", units: ["thaa-damma", "baa-madd-damma", "jim-kasra"] },
+        { id: "m3_20", arabic: "حُخَجَ", letters: ["haa", "jim", "khaa"], audioId: "m3_20", units: ["haa-damma", "khaa-fatha", "jim-fatha"] },
+        { id: "m4_01", arabic: "دَاتِحَ", letters: ["dal", "haa", "taa"], audioId: "m4_01", units: ["dal-madd-fatha", "taa-kasra", "haa-fatha"] },
+        { id: "m4_02", arabic: "دُذَ", letters: ["dal", "thal"], audioId: "m4_02", units: ["dal-damma", "thal-fatha"] },
+        { id: "m4_03", arabic: "أُدُبَذَ", letters: ["alif", "baa", "dal", "thal"], audioId: "m4_03", units: ["alif-damma", "dal-damma", "baa-fatha", "thal-fatha"] },
+        { id: "m4_04", arabic: "ذُودِتُ", letters: ["dal", "taa", "thal"], audioId: "m4_04", units: ["thal-madd-damma", "dal-kasra", "taa-damma"] },
+        { id: "m4_05", arabic: "إِدَجُحَ", letters: ["alif", "dal", "haa", "jim"], audioId: "m4_05", units: ["alif-kasra", "dal-fatha", "jim-damma", "haa-fatha"] },
+        { id: "m4_06", arabic: "دَذُو", letters: ["dal", "thal"], audioId: "m4_06", units: ["dal-fatha", "thal-madd-damma"] },
+        { id: "m4_07", arabic: "بِذُدِ", letters: ["baa", "dal", "thal"], audioId: "m4_07", units: ["baa-kasra", "thal-damma", "dal-kasra"] },
+        { id: "m4_08", arabic: "ذُدُ", letters: ["dal", "thal"], audioId: "m4_08", units: ["thal-damma", "dal-damma"] },
+        { id: "m4_09", arabic: "ذُودَ", letters: ["dal", "thal"], audioId: "m4_09", units: ["thal-madd-damma", "dal-fatha"] },
+        { id: "m4_10", arabic: "دِتُذِيثِ", letters: ["dal", "taa", "thaa", "thal"], audioId: "m4_10", units: ["dal-kasra", "taa-damma", "thal-madd-kasra", "thaa-kasra"] },
+        { id: "m4_11", arabic: "ذِدَا", letters: ["dal", "thal"], audioId: "m4_11", units: ["thal-kasra", "dal-madd-fatha"] },
+        { id: "m4_12", arabic: "ذُوجَبِ", letters: ["baa", "jim", "thal"], audioId: "m4_12", units: ["thal-madd-damma", "jim-fatha", "baa-kasra"] },
+        { id: "m4_13", arabic: "أُتَدَ", letters: ["alif", "dal", "taa"], audioId: "m4_13", units: ["alif-damma", "taa-fatha", "dal-fatha"] },
+        { id: "m4_14", arabic: "ذِدِتُ", letters: ["dal", "taa", "thal"], audioId: "m4_14", units: ["thal-kasra", "dal-kasra", "taa-damma"] },
+        { id: "m5_01", arabic: "حِرَدَ", letters: ["dal", "haa", "reh"], audioId: "m5_01", units: ["haa-kasra", "reh-fatha", "dal-fatha"] },
+        { id: "m5_02", arabic: "زِرَ", letters: ["reh", "zain"], audioId: "m5_02", units: ["zain-kasra", "reh-fatha"] },
+        { id: "m5_03", arabic: "ثَرُ", letters: ["reh", "thaa"], audioId: "m5_03", units: ["thaa-fatha", "reh-damma"] },
+        { id: "m5_04", arabic: "زَاذَ", letters: ["thal", "zain"], audioId: "m5_04", units: ["zain-madd-fatha", "thal-fatha"] },
+        { id: "m5_05", arabic: "رِزَدِ", letters: ["dal", "reh", "zain"], audioId: "m5_05", units: ["reh-kasra", "zain-fatha", "dal-kasra"] },
+        { id: "m5_06", arabic: "زُوجِ", letters: ["jim", "zain"], audioId: "m5_06", units: ["zain-madd-damma", "jim-kasra"] },
+        { id: "m5_07", arabic: "رِحَ", letters: ["haa", "reh"], audioId: "m5_07", units: ["reh-kasra", "haa-fatha"] },
+        { id: "m5_08", arabic: "رَدُوزُ", letters: ["dal", "reh", "zain"], audioId: "m5_08", units: ["reh-fatha", "dal-madd-damma", "zain-damma"] },
+        { id: "m5_09", arabic: "أُرِيبَ", letters: ["alif", "baa", "reh"], audioId: "m5_09", units: ["alif-damma", "reh-madd-kasra", "baa-fatha"] },
+        { id: "m5_10", arabic: "زِرُ", letters: ["reh", "zain"], audioId: "m5_10", units: ["zain-kasra", "reh-damma"] },
+        { id: "m5_11", arabic: "إِرَثُ", letters: ["alif", "reh", "thaa"], audioId: "m5_11", units: ["alif-kasra", "reh-fatha", "thaa-damma"] },
+        { id: "m5_12", arabic: "زِرِتُو", letters: ["reh", "taa", "zain"], audioId: "m5_12", units: ["zain-kasra", "reh-kasra", "taa-madd-damma"] },
+        { id: "m5_13", arabic: "رُخُ", letters: ["khaa", "reh"], audioId: "m5_13", units: ["reh-damma", "khaa-damma"] },
+        { id: "m5_14", arabic: "رَزِي", letters: ["reh", "zain"], audioId: "m5_14", units: ["reh-fatha", "zain-madd-kasra"] },
+        { id: "m6_01", arabic: "شَسُ", letters: ["seen", "sheen"], audioId: "m6_01", units: ["sheen-fatha", "seen-damma"] },
+        { id: "m6_02", arabic: "شُسُو", letters: ["seen", "sheen"], audioId: "m6_02", units: ["sheen-damma", "seen-madd-damma"] },
+        { id: "m6_03", arabic: "ثَخَسَابِ", letters: ["baa", "khaa", "seen", "thaa"], audioId: "m6_03", units: ["thaa-fatha", "khaa-fatha", "seen-madd-fatha", "baa-kasra"] },
+        { id: "m6_04", arabic: "جَذُشَ", letters: ["jim", "sheen", "thal"], audioId: "m6_04", units: ["jim-fatha", "thal-damma", "sheen-fatha"] },
+        { id: "m6_05", arabic: "سِتَ", letters: ["seen", "taa"], audioId: "m6_05", units: ["seen-kasra", "taa-fatha"] },
+        { id: "m6_06", arabic: "سِشَ", letters: ["seen", "sheen"], audioId: "m6_06", units: ["seen-kasra", "sheen-fatha"] },
+        { id: "m6_07", arabic: "سِيشَ", letters: ["seen", "sheen"], audioId: "m6_07", units: ["seen-madd-kasra", "sheen-fatha"] },
+        { id: "m6_08", arabic: "شِزَرَا", letters: ["reh", "sheen", "zain"], audioId: "m6_08", units: ["sheen-kasra", "zain-fatha", "reh-madd-fatha"] },
+        { id: "m6_09", arabic: "سُرِ", letters: ["reh", "seen"], audioId: "m6_09", units: ["seen-damma", "reh-kasra"] },
+        { id: "m6_10", arabic: "شَخُ", letters: ["khaa", "sheen"], audioId: "m6_10", units: ["sheen-fatha", "khaa-damma"] },
+        { id: "m6_11", arabic: "خَسَشِ", letters: ["khaa", "seen", "sheen"], audioId: "m6_11", units: ["khaa-fatha", "seen-fatha", "sheen-kasra"] },
+        { id: "m6_12", arabic: "رِتِحُشِ", letters: ["haa", "reh", "sheen", "taa"], audioId: "m6_12", units: ["reh-kasra", "taa-kasra", "haa-damma", "sheen-kasra"] },
+        { id: "m6_13", arabic: "سِشُ", letters: ["seen", "sheen"], audioId: "m6_13", units: ["seen-kasra", "sheen-damma"] },
+        { id: "m6_14", arabic: "ذِجُشَسُ", letters: ["jim", "seen", "sheen", "thal"], audioId: "m6_14", units: ["thal-kasra", "jim-damma", "sheen-fatha", "seen-damma"] },
+        { id: "m7_01", arabic: "بَذَثِيصَ", letters: ["baa", "sad", "thaa", "thal"], audioId: "m7_01", units: ["baa-fatha", "thal-fatha", "thaa-madd-kasra", "sad-fatha"] },
+        { id: "m7_02", arabic: "حُرَضُثَا", letters: ["dad", "haa", "reh", "thaa"], audioId: "m7_02", units: ["haa-damma", "reh-fatha", "dad-damma", "thaa-madd-fatha"] },
+        { id: "m7_03", arabic: "خُصُ", letters: ["khaa", "sad"], audioId: "m7_03", units: ["khaa-damma", "sad-damma"] },
+        { id: "m7_04", arabic: "أُثَدَضِ", letters: ["alif", "dad", "dal", "thaa"], audioId: "m7_04", units: ["alif-damma", "thaa-fatha", "dal-fatha", "dad-kasra"] },
+        { id: "m7_05", arabic: "ضَذِصُ", letters: ["dad", "sad", "thal"], audioId: "m7_05", units: ["dad-fatha", "thal-kasra", "sad-damma"] },
+        { id: "m7_06", arabic: "جَصُضُ", letters: ["dad", "jim", "sad"], audioId: "m7_06", units: ["jim-fatha", "sad-damma", "dad-damma"] },
+        { id: "m7_07", arabic: "صَضِي", letters: ["dad", "sad"], audioId: "m7_07", units: ["sad-fatha", "dad-madd-kasra"] },
+        { id: "m7_08", arabic: "ضَجُ", letters: ["dad", "jim"], audioId: "m7_08", units: ["dad-fatha", "jim-damma"] },
+        { id: "m7_09", arabic: "ثِيصِ", letters: ["sad", "thaa"], audioId: "m7_09", units: ["thaa-madd-kasra", "sad-kasra"] },
+        { id: "m7_10", arabic: "ضِزِسَصُ", letters: ["dad", "sad", "seen", "zain"], audioId: "m7_10", units: ["dad-kasra", "zain-kasra", "seen-fatha", "sad-damma"] },
+        { id: "m7_11", arabic: "صَضِ", letters: ["dad", "sad"], audioId: "m7_11", units: ["sad-fatha", "dad-kasra"] },
+        { id: "m7_12", arabic: "ضُسِيصَ", letters: ["dad", "sad", "seen"], audioId: "m7_12", units: ["dad-damma", "seen-madd-kasra", "sad-fatha"] },
+        { id: "m7_13", arabic: "صِثِ", letters: ["sad", "thaa"], audioId: "m7_13", units: ["sad-kasra", "thaa-kasra"] },
+        { id: "m7_14", arabic: "ضُصُدِ", letters: ["dad", "dal", "sad"], audioId: "m7_14", units: ["dad-damma", "sad-damma", "dal-kasra"] },
+        { id: "m8_01", arabic: "أَطَارَ", letters: ["alif", "reh", "tah"], audioId: "m8_01", units: ["alif-fatha", "tah-madd-fatha", "reh-fatha"] },
+        { id: "m8_02", arabic: "ظِطُ", letters: ["tah", "zah"], audioId: "m8_02", units: ["zah-kasra", "tah-damma"] },
+        { id: "m8_03", arabic: "طُحَزَ", letters: ["haa", "tah", "zain"], audioId: "m8_03", units: ["tah-damma", "haa-fatha", "zain-fatha"] },
+        { id: "m8_04", arabic: "ظَسُودَتُ", letters: ["dal", "seen", "taa", "zah"], audioId: "m8_04", units: ["zah-fatha", "seen-madd-damma", "dal-fatha", "taa-damma"] },
+        { id: "m8_05", arabic: "طَظَ", letters: ["tah", "zah"], audioId: "m8_05", units: ["tah-fatha", "zah-fatha"] },
+        { id: "m8_06", arabic: "دِرِيطَظِ", letters: ["dal", "reh", "tah", "zah"], audioId: "m8_06", units: ["dal-kasra", "reh-madd-kasra", "tah-fatha", "zah-kasra"] },
+        { id: "m8_07", arabic: "طُظِ", letters: ["tah", "zah"], audioId: "m8_07", units: ["tah-damma", "zah-kasra"] },
+        { id: "m8_08", arabic: "أَحُطَظَا", letters: ["alif", "haa", "tah", "zah"], audioId: "m8_08", units: ["alif-fatha", "haa-damma", "tah-fatha", "zah-madd-fatha"] },
+        { id: "m8_09", arabic: "جَاطَ", letters: ["jim", "tah"], audioId: "m8_09", units: ["jim-madd-fatha", "tah-fatha"] },
+        { id: "m8_10", arabic: "طِظَ", letters: ["tah", "zah"], audioId: "m8_10", units: ["tah-kasra", "zah-fatha"] },
+        { id: "m8_11", arabic: "طُودِ", letters: ["dal", "tah"], audioId: "m8_11", units: ["tah-madd-damma", "dal-kasra"] },
+        { id: "m8_12", arabic: "تُوظَ", letters: ["taa", "zah"], audioId: "m8_12", units: ["taa-madd-damma", "zah-fatha"] },
+        { id: "m8_13", arabic: "طَسَظُتِ", letters: ["seen", "taa", "tah", "zah"], audioId: "m8_13", units: ["tah-fatha", "seen-fatha", "zah-damma", "taa-kasra"] },
+        { id: "m8_14", arabic: "ظَجِي", letters: ["jim", "zah"], audioId: "m8_14", units: ["zah-fatha", "jim-madd-kasra"] },
+        { id: "m9_01", arabic: "بَعُ", letters: ["ain", "baa"], audioId: "m9_01", units: ["baa-fatha", "ain-damma"] },
+        { id: "m9_02", arabic: "غُزِي", letters: ["ghain", "zain"], audioId: "m9_02", units: ["ghain-damma", "zain-madd-kasra"] },
+        { id: "m9_03", arabic: "غُعُ", letters: ["ain", "ghain"], audioId: "m9_03", units: ["ghain-damma", "ain-damma"] },
+        { id: "m9_04", arabic: "رَغُذَشُ", letters: ["ghain", "reh", "sheen", "thal"], audioId: "m9_04", units: ["reh-fatha", "ghain-damma", "thal-fatha", "sheen-damma"] },
+        { id: "m9_05", arabic: "إِظِيعِرَ", letters: ["ain", "alif", "reh", "zah"], audioId: "m9_05", units: ["alif-kasra", "zah-madd-kasra", "ain-kasra", "reh-fatha"] },
+        { id: "m9_06", arabic: "أُوبَغِطِ", letters: ["alif", "baa", "ghain", "tah"], audioId: "m9_06", units: ["alif-madd-damma", "baa-fatha", "ghain-kasra", "tah-kasra"] },
+        { id: "m9_07", arabic: "عُوغِحُ", letters: ["ain", "ghain", "haa"], audioId: "m9_07", units: ["ain-madd-damma", "ghain-kasra", "haa-damma"] },
+        { id: "m9_08", arabic: "غَعَا", letters: ["ain", "ghain"], audioId: "m9_08", units: ["ghain-fatha", "ain-madd-fatha"] },
+        { id: "m9_09", arabic: "عُغُو", letters: ["ain", "ghain"], audioId: "m9_09", units: ["ain-damma", "ghain-madd-damma"] },
+        { id: "m9_10", arabic: "صَاطُغِ", letters: ["ghain", "sad", "tah"], audioId: "m9_10", units: ["sad-madd-fatha", "tah-damma", "ghain-kasra"] },
+        { id: "m9_11", arabic: "شُزُثَاعُ", letters: ["ain", "sheen", "thaa", "zain"], audioId: "m9_11", units: ["sheen-damma", "zain-damma", "thaa-madd-fatha", "ain-damma"] },
+        { id: "m9_12", arabic: "شُدَغِي", letters: ["dal", "ghain", "sheen"], audioId: "m9_12", units: ["sheen-damma", "dal-fatha", "ghain-madd-kasra"] },
+        { id: "m9_13", arabic: "ذُغِعِ", letters: ["ain", "ghain", "thal"], audioId: "m9_13", units: ["thal-damma", "ghain-kasra", "ain-kasra"] },
+        { id: "m9_14", arabic: "صِغَ", letters: ["ghain", "sad"], audioId: "m9_14", units: ["sad-kasra", "ghain-fatha"] },
+        { id: "m10_01", arabic: "حِيفِطِ", letters: ["feh", "haa", "tah"], audioId: "m10_01", units: ["haa-madd-kasra", "feh-kasra", "tah-kasra"] },
+        { id: "m10_02", arabic: "تَقِ", letters: ["qaf", "taa"], audioId: "m10_02", units: ["taa-fatha", "qaf-kasra"] },
+        { id: "m10_03", arabic: "جُكَ", letters: ["jim", "kaf"], audioId: "m10_03", units: ["jim-damma", "kaf-fatha"] },
+        { id: "m10_04", arabic: "فُصَزُكَا", letters: ["feh", "kaf", "sad", "zain"], audioId: "m10_04", units: ["feh-damma", "sad-fatha", "zain-damma", "kaf-madd-fatha"] },
+        { id: "m10_05", arabic: "قَغُجُ", letters: ["ghain", "jim", "qaf"], audioId: "m10_05", units: ["qaf-fatha", "ghain-damma", "jim-damma"] },
+        { id: "m10_06", arabic: "كُغِقِ", letters: ["ghain", "kaf", "qaf"], audioId: "m10_06", units: ["kaf-damma", "ghain-kasra", "qaf-kasra"] },
+        { id: "m10_07", arabic: "صِحِفَتُ", letters: ["feh", "haa", "sad", "taa"], audioId: "m10_07", units: ["sad-kasra", "haa-kasra", "feh-fatha", "taa-damma"] },
+        { id: "m10_08", arabic: "قَضِ", letters: ["dad", "qaf"], audioId: "m10_08", units: ["qaf-fatha", "dad-kasra"] },
+        { id: "m10_09", arabic: "كُفِ", letters: ["feh", "kaf"], audioId: "m10_09", units: ["kaf-damma", "feh-kasra"] },
+        { id: "m10_10", arabic: "كِفَ", letters: ["feh", "kaf"], audioId: "m10_10", units: ["kaf-kasra", "feh-fatha"] },
+        { id: "m10_11", arabic: "فُقُو", letters: ["feh", "qaf"], audioId: "m10_11", units: ["feh-damma", "qaf-madd-damma"] },
+        { id: "m10_12", arabic: "ظَكُو", letters: ["kaf", "zah"], audioId: "m10_12", units: ["zah-fatha", "kaf-madd-damma"] },
+        { id: "m10_13", arabic: "فَحَ", letters: ["feh", "haa"], audioId: "m10_13", units: ["feh-fatha", "haa-fatha"] },
+        { id: "m10_14", arabic: "بَقُسِخِي", letters: ["baa", "khaa", "qaf", "seen"], audioId: "m10_14", units: ["baa-fatha", "qaf-damma", "seen-kasra", "khaa-madd-kasra"] },
+        { id: "m10_15", arabic: "كَصَ", letters: ["kaf", "sad"], audioId: "m10_15", units: ["kaf-fatha", "sad-fatha"] },
+        { id: "m10_16", arabic: "دَافُضِ", letters: ["dad", "dal", "feh"], audioId: "m10_16", units: ["dal-madd-fatha", "feh-damma", "dad-kasra"] },
+        { id: "m10_17", arabic: "كُقُذَسُ", letters: ["kaf", "qaf", "seen", "thal"], audioId: "m10_17", units: ["kaf-damma", "qaf-damma", "thal-fatha", "seen-damma"] },
+        { id: "m10_18", arabic: "إِيكُ", letters: ["alif", "kaf"], audioId: "m10_18", units: ["alif-madd-kasra", "kaf-damma"] },
+        { id: "m10_19", arabic: "زَثَقَافَ", letters: ["feh", "qaf", "thaa", "zain"], audioId: "m10_19", units: ["zain-fatha", "thaa-fatha", "qaf-madd-fatha", "feh-fatha"] },
+        { id: "m10_20", arabic: "فُضِقُ", letters: ["dad", "feh", "qaf"], audioId: "m10_20", units: ["feh-damma", "dad-kasra", "qaf-damma"] },
+        { id: "m10_21", arabic: "جُكُ", letters: ["jim", "kaf"], audioId: "m10_21", units: ["jim-damma", "kaf-damma"] },
+        { id: "m11_01", arabic: "لَمِ", letters: ["lam", "meem"], audioId: "m11_01", units: ["lam-fatha", "meem-kasra"] },
+        { id: "m11_02", arabic: "قَامَ", letters: ["meem", "qaf"], audioId: "m11_02", units: ["qaf-madd-fatha", "meem-fatha"] },
+        { id: "m11_03", arabic: "نَلَ", letters: ["lam", "noon"], audioId: "m11_03", units: ["noon-fatha", "lam-fatha"] },
+        { id: "m11_04", arabic: "لَغُومَ", letters: ["ghain", "lam", "meem"], audioId: "m11_04", units: ["lam-fatha", "ghain-madd-damma", "meem-fatha"] },
+        { id: "m11_05", arabic: "نُذُعِيمُ", letters: ["ain", "meem", "noon", "thal"], audioId: "m11_05", units: ["noon-damma", "thal-damma", "ain-madd-kasra", "meem-damma"] },
+        { id: "m11_06", arabic: "نَتُ", letters: ["noon", "taa"], audioId: "m11_06", units: ["noon-fatha", "taa-damma"] },
+        { id: "m11_07", arabic: "لِقُو", letters: ["lam", "qaf"], audioId: "m11_07", units: ["lam-kasra", "qaf-madd-damma"] },
+        { id: "m11_08", arabic: "سَمُ", letters: ["meem", "seen"], audioId: "m11_08", units: ["seen-fatha", "meem-damma"] },
+        { id: "m11_09", arabic: "نِلَ", letters: ["lam", "noon"], audioId: "m11_09", units: ["noon-kasra", "lam-fatha"] },
+        { id: "m11_10", arabic: "حِصُلَ", letters: ["haa", "lam", "sad"], audioId: "m11_10", units: ["haa-kasra", "sad-damma", "lam-fatha"] },
+        { id: "m11_11", arabic: "أَمِي", letters: ["alif", "meem"], audioId: "m11_11", units: ["alif-fatha", "meem-madd-kasra"] },
+        { id: "m11_12", arabic: "أُلَانَ", letters: ["alif", "lam", "noon"], audioId: "m11_12", units: ["alif-damma", "lam-madd-fatha", "noon-fatha"] },
+        { id: "m11_13", arabic: "دَمَلِ", letters: ["dal", "lam", "meem"], audioId: "m11_13", units: ["dal-fatha", "meem-fatha", "lam-kasra"] },
+        { id: "m11_14", arabic: "دُولُمُ", letters: ["dal", "lam", "meem"], audioId: "m11_14", units: ["dal-madd-damma", "lam-damma", "meem-damma"] },
+        { id: "m11_15", arabic: "بَانُ", letters: ["baa", "noon"], audioId: "m11_15", units: ["baa-madd-fatha", "noon-damma"] },
+        { id: "m11_16", arabic: "ضِلِ", letters: ["dad", "lam"], audioId: "m11_16", units: ["dad-kasra", "lam-kasra"] },
+        { id: "m11_17", arabic: "أُمُرَثُ", letters: ["alif", "meem", "reh", "thaa"], audioId: "m11_17", units: ["alif-damma", "meem-damma", "reh-fatha", "thaa-damma"] },
+        { id: "m11_18", arabic: "نَزَ", letters: ["noon", "zain"], audioId: "m11_18", units: ["noon-fatha", "zain-fatha"] },
+        { id: "m11_19", arabic: "مِلُ", letters: ["lam", "meem"], audioId: "m11_19", units: ["meem-kasra", "lam-damma"] },
+        { id: "m11_20", arabic: "قِمِ", letters: ["meem", "qaf"], audioId: "m11_20", units: ["qaf-kasra", "meem-kasra"] },
+        { id: "m11_21", arabic: "مِنِ", letters: ["meem", "noon"], audioId: "m11_21", units: ["meem-kasra", "noon-kasra"] },
+        { id: "m12_01", arabic: "وِهَ", letters: ["heh", "waw"], audioId: "m12_01", units: ["waw-kasra", "heh-fatha"] },
+        { id: "m12_02", arabic: "قَوَخَا", letters: ["khaa", "qaf", "waw"], audioId: "m12_02", units: ["qaf-fatha", "waw-fatha", "khaa-madd-fatha"] },
+        { id: "m12_03", arabic: "أُيِمِهُ", letters: ["alif", "heh", "meem", "yeh"], audioId: "m12_03", units: ["alif-damma", "yeh-kasra", "meem-kasra", "heh-damma"] },
+        { id: "m12_04", arabic: "هَرِ", letters: ["heh", "reh"], audioId: "m12_04", units: ["heh-fatha", "reh-kasra"] },
+        { id: "m12_05", arabic: "تَظِوَ", letters: ["taa", "waw", "zah"], audioId: "m12_05", units: ["taa-fatha", "zah-kasra", "waw-fatha"] },
+        { id: "m12_06", arabic: "يُصُ", letters: ["sad", "yeh"], audioId: "m12_06", units: ["yeh-damma", "sad-damma"] },
+        { id: "m12_07", arabic: "طُهُو", letters: ["heh", "tah"], audioId: "m12_07", units: ["tah-damma", "heh-madd-damma"] },
+        { id: "m12_08", arabic: "يَوِكُو", letters: ["kaf", "waw", "yeh"], audioId: "m12_08", units: ["yeh-fatha", "waw-kasra", "kaf-madd-damma"] },
+        { id: "m12_09", arabic: "ثِيَاهَوِ", letters: ["heh", "thaa", "waw", "yeh"], audioId: "m12_09", units: ["thaa-kasra", "yeh-madd-fatha", "heh-fatha", "waw-kasra"] },
+        { id: "m12_10", arabic: "هِوُ", letters: ["heh", "waw"], audioId: "m12_10", units: ["heh-kasra", "waw-damma"] },
+        { id: "m12_11", arabic: "وِيرَغُ", letters: ["ghain", "reh", "waw"], audioId: "m12_11", units: ["waw-madd-kasra", "reh-fatha", "ghain-damma"] },
+        { id: "m12_12", arabic: "ظُويِ", letters: ["yeh", "zah"], audioId: "m12_12", units: ["zah-madd-damma", "yeh-kasra"] },
+        { id: "m12_13", arabic: "هُذُ", letters: ["heh", "thal"], audioId: "m12_13", units: ["heh-damma", "thal-damma"] },
+        { id: "m12_14", arabic: "قَوَمِ", letters: ["meem", "qaf", "waw"], audioId: "m12_14", units: ["qaf-fatha", "waw-fatha", "meem-kasra"] },
+        { id: "m12_15", arabic: "يُوُ", letters: ["waw", "yeh"], audioId: "m12_15", units: ["yeh-damma", "waw-damma"] },
+        { id: "m12_16", arabic: "يَاذَهِسِ", letters: ["heh", "seen", "thal", "yeh"], audioId: "m12_16", units: ["yeh-madd-fatha", "thal-fatha", "heh-kasra", "seen-kasra"] },
+        { id: "m12_17", arabic: "نُزِيوِ", letters: ["noon", "waw", "zain"], audioId: "m12_17", units: ["noon-damma", "zain-madd-kasra", "waw-kasra"] },
+        { id: "m12_18", arabic: "يَاعِزُ", letters: ["ain", "yeh", "zain"], audioId: "m12_18", units: ["yeh-madd-fatha", "ain-kasra", "zain-damma"] },
+        { id: "m12_19", arabic: "زِدُطَهُو", letters: ["dal", "heh", "tah", "zain"], audioId: "m12_19", units: ["zain-kasra", "dal-damma", "tah-fatha", "heh-madd-damma"] },
+        { id: "m12_20", arabic: "وُيُ", letters: ["waw", "yeh"], audioId: "m12_20", units: ["waw-damma", "yeh-damma"] },
+        { id: "m12_21", arabic: "يِقُو", letters: ["qaf", "yeh"], audioId: "m12_21", units: ["yeh-kasra", "qaf-madd-damma"] }
       ];
 
       function wordMinModule(word) {
@@ -871,11 +858,214 @@
             return {
               kind: "word", key: w.id, arabic: w.arabic, audioId: w.audioId,
               audioBase: ROOT_BASE + "assets/audio/" + audioFolder + "/",
-              minModule: wordMinModule(w)
+              minModule: wordMinModule(w), units: w.units
             };
           });
         }
         return eligible(WORDS, "words").concat(eligible(PSEUDO_WORDS, "pseudowords"));
+      }
+
+      // Texte affiche pour chaque unite son (lettre + harakat/prolongation),
+      // utilise pour reconstruire des variantes proches d'un mot a des fins
+      // de distracteurs (jamais pour l'audio : seule la bonne reponse est
+      // jouee, les propositions ne sont que du texte). Couvre uniquement
+      // les formes reellement utilisees par WORDS/PSEUDO_WORDS (harakat +
+      // prolongations, jamais le tanwin, reserve au jeu de sons).
+      var UNIT_TEXT = {
+        "ain-damma": "عُ", "ain-fatha": "عَ", "ain-kasra": "عِ",
+        "ain-madd-damma": "عُو", "ain-madd-fatha": "عَا", "ain-madd-kasra": "عِي",
+        "alif-damma": "أُ", "alif-fatha": "أَ", "alif-kasra": "إِ",
+        "alif-madd-damma": "أُو", "alif-madd-fatha": "آ", "alif-madd-kasra": "إِي",
+        "baa-damma": "بُ", "baa-fatha": "بَ", "baa-kasra": "بِ",
+        "baa-madd-damma": "بُو", "baa-madd-fatha": "بَا", "baa-madd-kasra": "بِي",
+        "dad-damma": "ضُ", "dad-fatha": "ضَ", "dad-kasra": "ضِ",
+        "dad-madd-damma": "ضُو", "dad-madd-fatha": "ضَا", "dad-madd-kasra": "ضِي",
+        "dal-damma": "دُ", "dal-fatha": "دَ", "dal-kasra": "دِ",
+        "dal-madd-damma": "دُو", "dal-madd-fatha": "دَا", "dal-madd-kasra": "دِي",
+        "feh-damma": "فُ", "feh-fatha": "فَ", "feh-kasra": "فِ",
+        "feh-madd-damma": "فُو", "feh-madd-fatha": "فَا", "feh-madd-kasra": "فِي",
+        "ghain-damma": "غُ", "ghain-fatha": "غَ", "ghain-kasra": "غِ",
+        "ghain-madd-damma": "غُو", "ghain-madd-fatha": "غَا", "ghain-madd-kasra": "غِي",
+        "haa-damma": "حُ", "haa-fatha": "حَ", "haa-kasra": "حِ",
+        "haa-madd-damma": "حُو", "haa-madd-fatha": "حَا", "haa-madd-kasra": "حِي",
+        "heh-damma": "هُ", "heh-fatha": "هَ", "heh-kasra": "هِ",
+        "heh-madd-damma": "هُو", "heh-madd-fatha": "هَا", "heh-madd-kasra": "هِي",
+        "jim-damma": "جُ", "jim-fatha": "جَ", "jim-kasra": "جِ",
+        "jim-madd-damma": "جُو", "jim-madd-fatha": "جَا", "jim-madd-kasra": "جِي",
+        "kaf-damma": "كُ", "kaf-fatha": "كَ", "kaf-kasra": "كِ",
+        "kaf-madd-damma": "كُو", "kaf-madd-fatha": "كَا", "kaf-madd-kasra": "كِي",
+        "khaa-damma": "خُ", "khaa-fatha": "خَ", "khaa-kasra": "خِ",
+        "khaa-madd-damma": "خُو", "khaa-madd-fatha": "خَا", "khaa-madd-kasra": "خِي",
+        "lam-damma": "لُ", "lam-fatha": "لَ", "lam-kasra": "لِ",
+        "lam-madd-damma": "لُو", "lam-madd-fatha": "لَا", "lam-madd-kasra": "لِي",
+        "meem-damma": "مُ", "meem-fatha": "مَ", "meem-kasra": "مِ",
+        "meem-madd-damma": "مُو", "meem-madd-fatha": "مَا", "meem-madd-kasra": "مِي",
+        "noon-damma": "نُ", "noon-fatha": "نَ", "noon-kasra": "نِ",
+        "noon-madd-damma": "نُو", "noon-madd-fatha": "نَا", "noon-madd-kasra": "نِي",
+        "qaf-damma": "قُ", "qaf-fatha": "قَ", "qaf-kasra": "قِ",
+        "qaf-madd-damma": "قُو", "qaf-madd-fatha": "قَا", "qaf-madd-kasra": "قِي",
+        "reh-damma": "رُ", "reh-fatha": "رَ", "reh-kasra": "رِ",
+        "reh-madd-damma": "رُو", "reh-madd-fatha": "رَا", "reh-madd-kasra": "رِي",
+        "sad-damma": "صُ", "sad-fatha": "صَ", "sad-kasra": "صِ",
+        "sad-madd-damma": "صُو", "sad-madd-fatha": "صَا", "sad-madd-kasra": "صِي",
+        "seen-damma": "سُ", "seen-fatha": "سَ", "seen-kasra": "سِ",
+        "seen-madd-damma": "سُو", "seen-madd-fatha": "سَا", "seen-madd-kasra": "سِي",
+        "sheen-damma": "شُ", "sheen-fatha": "شَ", "sheen-kasra": "شِ",
+        "sheen-madd-damma": "شُو", "sheen-madd-fatha": "شَا", "sheen-madd-kasra": "شِي",
+        "taa-damma": "تُ", "taa-fatha": "تَ", "taa-kasra": "تِ",
+        "taa-madd-damma": "تُو", "taa-madd-fatha": "تَا", "taa-madd-kasra": "تِي",
+        "tah-damma": "طُ", "tah-fatha": "طَ", "tah-kasra": "طِ",
+        "tah-madd-damma": "طُو", "tah-madd-fatha": "طَا", "tah-madd-kasra": "طِي",
+        "thaa-damma": "ثُ", "thaa-fatha": "ثَ", "thaa-kasra": "ثِ",
+        "thaa-madd-damma": "ثُو", "thaa-madd-fatha": "ثَا", "thaa-madd-kasra": "ثِي",
+        "thal-damma": "ذُ", "thal-fatha": "ذَ", "thal-kasra": "ذِ",
+        "thal-madd-damma": "ذُو", "thal-madd-fatha": "ذَا", "thal-madd-kasra": "ذِي",
+        "waw-damma": "وُ", "waw-fatha": "وَ", "waw-kasra": "وِ",
+        "waw-madd-damma": "وُو", "waw-madd-fatha": "وَا", "waw-madd-kasra": "وِي",
+        "yeh-damma": "يُ", "yeh-fatha": "يَ", "yeh-kasra": "يِ",
+        "yeh-madd-damma": "يُو", "yeh-madd-fatha": "يَا", "yeh-madd-kasra": "يِي",
+        "zah-damma": "ظُ", "zah-fatha": "ظَ", "zah-kasra": "ظِ",
+        "zah-madd-damma": "ظُو", "zah-madd-fatha": "ظَا", "zah-madd-kasra": "ظِي",
+        "zain-damma": "زُ", "zain-fatha": "زَ", "zain-kasra": "زِ",
+        "zain-madd-damma": "زُو", "zain-madd-fatha": "زَا", "zain-madd-kasra": "زِي"
+      };
+
+      // Lettres pouvant etre confondues a l'oreille (choix pedagogique,
+      // ajustable) : utilisees pour fabriquer des distracteurs "piege" en
+      // substituant une seule lettre du mot entendu par une lettre proche.
+      var CONFUSABLE_LETTERS = {
+        alif: ["ain"], baa: ["meem", "waw"], taa: ["thaa", "tah"],
+        thaa: ["taa", "seen"], jim: ["sheen"], haa: ["khaa", "heh"],
+        khaa: ["haa", "ghain"], dal: ["thal", "dad"], thal: ["dal", "zah", "zain"],
+        reh: ["lam"], zain: ["thal", "zah"], seen: ["sad", "thaa"],
+        sheen: ["jim", "seen"], sad: ["seen", "dad"], dad: ["dal", "zah", "tah"],
+        tah: ["taa", "dad"], zah: ["thal", "dad", "zain"], ain: ["ghain", "haa", "alif"],
+        ghain: ["khaa", "ain"], feh: [], qaf: ["kaf"], kaf: ["qaf"],
+        lam: ["noon", "reh"], meem: ["noon", "baa"], noon: ["meem", "lam"],
+        heh: ["haa"], waw: ["baa"], yeh: []
+      };
+
+      function unitLetter(unitId) { return unitId.split("-")[0]; }
+      function unitForm(unitId) { return unitId.slice(unitLetter(unitId).length + 1); }
+      var OPEN_FORMS = ["fatha", "damma", "kasra"];
+
+      function unitsToArabic(units) {
+        return units.map(function (u) { return UNIT_TEXT[u]; }).join("");
+      }
+
+      // Genere des variantes "proches" d'une sequence d'unites, en
+      // appliquant un seul type de transformation a la fois (voyelle
+      // changee, prolongation ajoutee/retiree, ordre inverse, lettre
+      // confondue) : c'est ce qui rend chaque distracteur un vrai piege
+      // phonetique plutot qu'un mot au hasard.
+      function generateCloseVariants(units, cumSet) {
+        var variants = [];
+
+        function addVariant(newUnits) {
+          variants.push(newUnits);
+        }
+
+        // 1) Une voyelle differente sur une unite (fatha/damma/kasra).
+        units.forEach(function (u, i) {
+          var letter = unitLetter(u), form = unitForm(u);
+          if (OPEN_FORMS.indexOf(form) === -1) return;
+          OPEN_FORMS.forEach(function (alt) {
+            if (alt === form) return;
+            var copy = units.slice();
+            copy[i] = letter + "-" + alt;
+            addVariant(copy);
+          });
+        });
+
+        // 2) Prolongation ajoutee ou retiree sur une unite.
+        units.forEach(function (u, i) {
+          var letter = unitLetter(u), form = unitForm(u);
+          var copy = units.slice();
+          if (OPEN_FORMS.indexOf(form) !== -1) {
+            copy[i] = letter + "-madd-" + form;
+            addVariant(copy);
+          } else if (form.indexOf("madd-") === 0) {
+            copy[i] = letter + "-" + form.slice(5);
+            addVariant(copy);
+          }
+        });
+
+        // 3) Ordre des unites inverse (deux a deux, et inversion complete).
+        if (units.length >= 2) {
+          for (var i = 0; i < units.length; i++) {
+            for (var j = i + 1; j < units.length; j++) {
+              var swapped = units.slice();
+              var tmp = swapped[i]; swapped[i] = swapped[j]; swapped[j] = tmp;
+              addVariant(swapped);
+            }
+          }
+          addVariant(units.slice().reverse());
+        }
+
+        // 4) Une seule lettre remplacee par une lettre proche a l'oreille,
+        // en gardant la meme voyelle/prolongation, et seulement si cette
+        // lettre est deja apprise dans le module en cours.
+        units.forEach(function (u, i) {
+          var letter = unitLetter(u), form = unitForm(u);
+          (CONFUSABLE_LETTERS[letter] || []).forEach(function (alt) {
+            if (!cumSet[alt]) return;
+            var altUnit = alt + "-" + form;
+            if (!UNIT_TEXT[altUnit]) return;
+            var copy = units.slice();
+            copy[i] = altUnit;
+            addVariant(copy);
+          });
+        });
+
+        return variants;
+      }
+
+      // Construit les 4 propositions d'une question "mot" : la bonne
+      // reponse, au moins deux distracteurs phonetiquement proches (pour
+      // empecher de deviner sans ecouter), et le reste en distracteurs plus
+      // eloignes tires du pool habituel. Les distracteurs proches ne
+      // portent jamais d'audio : seule la bonne reponse est ecoutee, les
+      // propositions ne servent qu'a l'affichage (texte).
+      function buildWordChoices(correct, pool, moduleNumber, answerCount) {
+        var cumSet = {};
+        cumulativeLetterIds(moduleNumber).forEach(function (id) { cumSet[id] = true; });
+
+        var seenArabic = {};
+        seenArabic[correct.arabic] = true;
+
+        var closeCandidates = [];
+        if (correct.units) {
+          var rawVariants = generateCloseVariants(correct.units, cumSet);
+          shuffle(rawVariants).forEach(function (variantUnits) {
+            var allKnown = variantUnits.every(function (u) { return cumSet[unitLetter(u)]; });
+            if (!allKnown) return;
+            var arabic = unitsToArabic(variantUnits);
+            if (seenArabic[arabic]) return;
+            seenArabic[arabic] = true;
+            closeCandidates.push({ kind: "word", key: "d:" + variantUnits.join("-"), arabic: arabic });
+          });
+        }
+
+        var neededClose = Math.min(2, answerCount - 1);
+        var closeChoices = closeCandidates.slice(0, Math.max(neededClose, Math.min(closeCandidates.length, answerCount - 2)));
+
+        var chosenKeys = {};
+        chosenKeys[correct.key] = true;
+        closeChoices.forEach(function (c) { chosenKeys[c.key] = true; });
+
+        var farPoolChoices = shuffle(pool.filter(function (item) {
+          return !chosenKeys[item.key] && !seenArabic[item.arabic];
+        }));
+
+        var choices = [correct].concat(closeChoices);
+        var idx = 0;
+        while (choices.length < answerCount && idx < farPoolChoices.length) {
+          choices.push(farPoolChoices[idx]);
+          seenArabic[farPoolChoices[idx].arabic] = true;
+          idx += 1;
+        }
+
+        return shuffle(choices);
       }
 
       function shuffle(list) {
@@ -977,14 +1167,18 @@
           : candidates[Math.floor(Math.random() * candidates.length)];
         gameState.usedKeys[correct.key] = true;
 
-        // Limite le nombre de propositions affichees (ecran pas surcharge),
-        // meme quand un module regroupe plusieurs lettres et donc plus de
-        // sons possibles que ANSWER_COUNT : on tire des distracteurs au
-        // hasard dans le reste du bassin (peu importe s'ils ont deja servi
-        // de bonne reponse), en gardant toujours la bonne reponse parmi eux.
-        var others = pool.filter(function (item) { return item.key !== correct.key; });
-        var distractors = shuffle(others).slice(0, answerCount - 1);
-        var choices = shuffle(distractors.concat([correct]));
+        // Pour "Reconnaitre le mot", les distracteurs sont construits a
+        // partir de la bonne reponse elle-meme (voyelle changee, ordre
+        // inverse, lettre confondue...) pour empecher de deviner sans
+        // ecouter. Pour les sons, on garde le tirage au hasard habituel.
+        var choices;
+        if (gameState.category === "word") {
+          choices = buildWordChoices(correct, pool, gameState.moduleNumber, answerCount);
+        } else {
+          var others = pool.filter(function (item) { return item.key !== correct.key; });
+          var distractors = shuffle(others).slice(0, answerCount - 1);
+          choices = shuffle(distractors.concat([correct]));
+        }
         gameState.questionIndex += 1;
         gameState.current = { correct: correct, choices: choices, answered: false };
 
