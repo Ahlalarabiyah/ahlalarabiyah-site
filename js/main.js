@@ -328,7 +328,7 @@
     // Casse le cache navigateur quand un fichier audio est remplace sur le
     // serveur (meme piege deja rencontre avec le CSS/JS) : a incrementer
     // a chaque nouveau remplacement d'enregistrements.
-    var AUDIO_VERSION = "3";
+    var AUDIO_VERSION = "5";
 
     function playForm(id, cellEl) {
       if (currentAudio) { currentAudio.pause(); }
@@ -534,7 +534,8 @@
     var gameBtns = document.querySelectorAll(".js-open-game");
     if (gameBtns.length) {
       var QUESTIONS_PER_ROUND = 5; // facilement modifiable
-      var ANSWER_COUNT = 9; // nombre de propositions par question, ecran pas surcharge
+      var ANSWER_COUNT = 9; // nombre de propositions par question (sons), ecran pas surcharge
+      var WORD_ANSWER_COUNT = 4; // nombre de propositions pour "Reconnaitre un mot"
       var GAMES_READY = {
         "1": true, "2": true, "3": true, "4": true, "5": true, "6": true,
         "7": true, "8": true, "9": true, "10": true, "11": true, "12": true
@@ -558,6 +559,15 @@
         return cumulativeLetterIds(moduleNumber).length;
       }
 
+      // Module ou chaque lettre apparait pour la premiere fois, deduit de
+      // MODULES (jamais saisi a la main).
+      var LETTER_INTRODUCED_IN_MODULE = {};
+      MODULES.forEach(function (m) {
+        m.letterIds.forEach(function (id) {
+          if (!(id in LETTER_INTRODUCED_IN_MODULE)) { LETTER_INTRODUCED_IN_MODULE[id] = m.number; }
+        });
+      });
+
       function buildSoundPool(moduleNumber) {
         var letterIds = cumulativeLetterIds(moduleNumber);
         var pool = [];
@@ -567,15 +577,72 @@
           ["harakat", "moudoud", "tanwin"].forEach(function (key) {
             (letter[key] || []).forEach(function (pair) {
               pool.push({
+                kind: "sound",
+                key: pair[1],
                 text: pair[0],
                 baseLen: pair.length > 2 ? pair[2] : 1,
                 audioId: pair[1],
-                fascicule: letter.fascicule
+                audioBase: ROOT_BASE + "assets/audio/fascicule-" + letter.fascicule + "/"
               });
             });
           });
         });
         return pool;
+      }
+
+      // Mots pour le jeu "Reconnaitre un mot", disponible a partir du
+      // Module 2. Contrairement aux lettres (vrais enregistrements), les
+      // audios de mots sont generes une fois par synthese vocale (voix
+      // ar-SA-HamedNeural, arabe standard) puis reutilises tels quels -
+      // jamais regeneres a la volee. audioId reste null tant que le
+      // fichier n'existe pas encore : le mot n'apparait alors dans aucun
+      // pool (voir buildWordPool). Le module minimal d'un mot est deduit
+      // automatiquement de ses lettres (jamais saisi a la main) : un mot
+      // ne peut donc jamais apparaitre avant que toutes ses lettres
+      // soient apprises.
+      var WORDS = [
+        { id: "bab", arabic: "بَاب", letters: ["baa", "alif"], audioId: "bab" },
+        { id: "ab", arabic: "أَب", letters: ["alif", "baa"], audioId: "ab" },
+        { id: "taba", arabic: "تَابَ", letters: ["taa", "alif", "baa"], audioId: "taba" },
+        { id: "thabit", arabic: "ثَابِت", letters: ["thaa", "alif", "baa", "taa"], audioId: "thabit" }
+      ];
+
+      // Pseudo-mots : combinaisons phonetiquement valides construites en
+      // assemblant de vrais enregistrements de lettres (jamais de TTS).
+      // But pedagogique different des vrais mots : entrainer l'oreille a
+      // distinguer des sons, pas necessairement apprendre du vocabulaire.
+      // Chaque audio est assemble une seule fois (silences retires,
+      // niveaux egalises, fondu enchaine sinusoidal 30ms entre unites) et
+      // reutilise tel quel - jamais regenere pendant que l'enfant joue.
+      var PSEUDO_WORDS = [
+        { id: "tatha", arabic: "تَثَ", letters: ["taa", "thaa"], audioId: "tatha" },
+        { id: "batatha", arabic: "بَتَثَ", letters: ["baa", "taa", "thaa"], audioId: "batatha" },
+        { id: "abatatha", arabic: "أَبَتَثَ", letters: ["alif", "baa", "taa", "thaa"], audioId: "abatatha" },
+        { id: "bata", arabic: "بَتَ", letters: ["baa", "taa"], audioId: "bata" },
+        { id: "thaba", arabic: "ثَبَ", letters: ["baa", "thaa"], audioId: "thaba" },
+        { id: "tuthi", arabic: "تُثِ", letters: ["taa", "thaa"], audioId: "tuthi" },
+        { id: "abu2", arabic: "أَبُ", letters: ["alif", "baa"], audioId: "abu2" },
+        { id: "tabatha", arabic: "تَبَثَ", letters: ["baa", "taa", "thaa"], audioId: "tabatha" },
+        { id: "baatatha", arabic: "بَاتَثَ", letters: ["baa", "taa", "thaa"], audioId: "baatatha" },
+        { id: "ibiti", arabic: "إِبِتِ", letters: ["alif", "baa", "taa"], audioId: "ibiti" }
+      ];
+
+      function wordMinModule(word) {
+        return word.letters.reduce(function (max, id) {
+          var m = LETTER_INTRODUCED_IN_MODULE[id] || 1;
+          return m > max ? m : max;
+        }, 1);
+      }
+
+      function buildWordPool(moduleNumber) {
+        function eligible(list, audioFolder) {
+          return list.filter(function (w) {
+            return w.audioId && wordMinModule(w) <= Number(moduleNumber);
+          }).map(function (w) {
+            return { kind: "word", key: w.id, arabic: w.arabic, audioId: w.audioId, audioBase: ROOT_BASE + "assets/audio/" + audioFolder + "/" };
+          });
+        }
+        return eligible(WORDS, "words").concat(eligible(PSEUDO_WORDS, "pseudowords"));
       }
 
       function shuffle(list) {
@@ -594,6 +661,10 @@
       var gameEnd = document.getElementById("gameEnd");
       var gameScoreEl = document.getElementById("gameScore");
       var gameLevelInfo = document.getElementById("gameLevelInfo");
+      var gameCategoryTabs = document.getElementById("gameCategoryTabs");
+      var gameSoundTab = document.getElementById("gameSoundTab");
+      var gameWordTab = document.getElementById("gameWordTab");
+      var gameInstruction = document.getElementById("gameInstruction");
       var gamePlayBtn = document.getElementById("gamePlayBtn");
       var gameAnswers = document.getElementById("gameAnswers");
       var gameFeedback = document.getElementById("gameFeedback");
@@ -601,13 +672,17 @@
       var gameEndScore = document.getElementById("gameEndScore");
       var gameReplayBtn = document.getElementById("gameReplayBtn");
 
+      var INSTRUCTION_TEXT = {
+        sound: isEnglish ? "Listen, then choose the sound you heard." : "Écoute puis choisis le son que tu as entendu.",
+        word: isEnglish ? "Listen, then choose the word you heard." : "Écoute puis choisis le mot que tu as entendu."
+      };
+
       var gameAudio = null;
       var gameState = null;
 
-      function playSound(sound) {
+      function playSound(item) {
         if (gameAudio) { gameAudio.pause(); }
-        var base = ROOT_BASE + "assets/audio/fascicule-" + sound.fascicule + "/";
-        gameAudio = new Audio(base + sound.audioId + ".m4a?v=" + AUDIO_VERSION);
+        gameAudio = new Audio(item.audioBase + item.audioId + ".m4a?v=" + AUDIO_VERSION);
         gameAudio.play();
       }
 
@@ -628,14 +703,15 @@
           return;
         }
         var pool = gameState.pool;
+        var answerCount = gameState.category === "word" ? WORD_ANSWER_COUNT : ANSWER_COUNT;
         var correct = pool[Math.floor(Math.random() * pool.length)];
         // Limite le nombre de propositions affichees (ecran pas surcharge),
         // meme quand un module regroupe plusieurs lettres et donc plus de
         // sons possibles que ANSWER_COUNT : on tire des distracteurs au
         // hasard dans le reste du bassin, en gardant toujours la bonne
         // reponse parmi eux.
-        var others = pool.filter(function (item) { return item.audioId !== correct.audioId; });
-        var distractors = shuffle(others).slice(0, ANSWER_COUNT - 1);
+        var others = pool.filter(function (item) { return item.key !== correct.key; });
+        var distractors = shuffle(others).slice(0, answerCount - 1);
         var choices = shuffle(distractors.concat([correct]));
         gameState.questionIndex += 1;
         gameState.current = { correct: correct, choices: choices, answered: false };
@@ -647,11 +723,17 @@
         renderScore();
 
         gameAnswers.innerHTML = "";
+        gameAnswers.classList.toggle("game-answers-word", gameState.category === "word");
         choices.forEach(function (choice) {
           var btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "letterlab-cell game-answer";
-          renderLetterForm(btn, choice.text, choice.baseLen);
+          if (choice.kind === "word") {
+            btn.className = "letterlab-cell game-answer game-answer-word";
+            btn.textContent = choice.arabic;
+          } else {
+            btn.className = "letterlab-cell game-answer";
+            renderLetterForm(btn, choice.text, choice.baseLen);
+          }
           btn.addEventListener("click", function () { onAnswer(choice, btn); });
           gameAnswers.appendChild(btn);
         });
@@ -662,7 +744,7 @@
       function onAnswer(choice, btnEl) {
         if (gameState.current.answered) return;
         gameState.current.answered = true;
-        var isCorrect = choice.audioId === gameState.current.correct.audioId;
+        var isCorrect = choice.key === gameState.current.correct.key;
         if (isCorrect) { gameState.score += 1; }
 
         Array.prototype.forEach.call(gameAnswers.children, function (btn) {
@@ -671,7 +753,7 @@
         btnEl.classList.add(isCorrect ? "is-correct" : "is-wrong");
         if (!isCorrect) {
           Array.prototype.forEach.call(gameAnswers.children, function (btn, idx) {
-            if (gameState.current.choices[idx].audioId === gameState.current.correct.audioId) {
+            if (gameState.current.choices[idx].key === gameState.current.correct.key) {
               btn.classList.add("is-correct");
             }
           });
@@ -687,10 +769,26 @@
         renderScore();
       }
 
-      function startGame(moduleNumber, title) {
-        var pool = buildSoundPool(moduleNumber);
-        if (!pool.length) return;
-        gameState = { pool: pool, questionIndex: 0, score: 0, current: null };
+      function setActiveTab(category) {
+        gameSoundTab.classList.toggle("is-active", category === "sound");
+        gameWordTab.classList.toggle("is-active", category === "word");
+        gameInstruction.textContent = INSTRUCTION_TEXT[category];
+      }
+
+      function updateCategoryTabs(moduleNumber) {
+        var showTabs = Number(moduleNumber) > 1;
+        gameCategoryTabs.hidden = !showTabs;
+        if (!showTabs) return;
+        var wordPool = buildWordPool(moduleNumber);
+        var wordReady = wordPool.length >= 2;
+        gameWordTab.disabled = !wordReady;
+        gameWordTab.classList.toggle("is-disabled", !wordReady);
+      }
+
+      function startRound(moduleNumber, title, category) {
+        var pool = category === "word" ? buildWordPool(moduleNumber) : buildSoundPool(moduleNumber);
+        if (!pool.length) return false;
+        gameState = { moduleNumber: moduleNumber, title: title, category: category, pool: pool, questionIndex: 0, score: 0, current: null };
         gameModalTitle.textContent = title;
         var letterCount = cumulativeLetterCount(moduleNumber);
         gameLevelInfo.textContent = isEnglish
@@ -698,9 +796,16 @@
           : "Lettres apprises : " + letterCount;
         gameBody.hidden = false;
         gameEnd.hidden = true;
+        setActiveTab(category);
+        nextQuestion();
+        return true;
+      }
+
+      function startGame(moduleNumber, title) {
+        if (!startRound(moduleNumber, title, "sound")) return;
+        updateCategoryTabs(moduleNumber);
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
-        nextQuestion();
       }
 
       function closeGame() {
@@ -716,16 +821,20 @@
           startGame(moduleNumber, btn.getAttribute("data-title"));
         });
       });
+      gameSoundTab.addEventListener("click", function () {
+        if (!gameState || gameState.category === "sound") return;
+        startRound(gameState.moduleNumber, gameState.title, "sound");
+      });
+      gameWordTab.addEventListener("click", function () {
+        if (!gameState || gameWordTab.disabled || gameState.category === "word") return;
+        startRound(gameState.moduleNumber, gameState.title, "word");
+      });
       gamePlayBtn.addEventListener("click", function () {
         if (gameState && gameState.current) playSound(gameState.current.correct);
       });
       gameNextBtn.addEventListener("click", nextQuestion);
       gameReplayBtn.addEventListener("click", function () {
-        gameState.questionIndex = 0;
-        gameState.score = 0;
-        gameBody.hidden = false;
-        gameEnd.hidden = true;
-        nextQuestion();
+        startRound(gameState.moduleNumber, gameState.title, gameState.category);
       });
       gameModalClose.addEventListener("click", closeGame);
       document.addEventListener("keydown", function (e) {
