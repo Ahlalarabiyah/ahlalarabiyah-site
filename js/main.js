@@ -544,6 +544,280 @@
       });
     }
 
+    // ---- Section pedagogique "Formes des lettres selon leur position" ----
+    // Page Modules uniquement (#formLab absent des autres pages). Montre,
+    // pour chaque lettre, sa forme au debut/milieu/fin D'UN VRAI MOT, la
+    // lettre etudiee coloree en rouge. Pas un jeu : aucun score, aucune
+    // validation - uniquement de l'observation visuelle.
+    var formLab = document.getElementById("formLab");
+    if (formLab) {
+      var formLabClose = document.getElementById("formLabClose");
+      var formLabPrev = document.getElementById("formLabPrev");
+      var formLabNext = document.getElementById("formLabNext");
+      var formLabLetter = document.getElementById("formLabLetter");
+      var formLabName = document.getElementById("formLabName");
+      var formLabExamples = document.getElementById("formLabExamples");
+
+      // Lettres qui ne se lient jamais a la lettre suivante (regle reelle
+      // de l'ecriture arabe, pas une simplification) : leurs formes
+      // "milieu" et "fin" sont donc visuellement identiques - seule la
+      // connexion par la droite existe pour elles.
+      var NON_FORWARD_JOINING = { alif: true, dal: true, thal: true, reh: true, zain: true, waw: true };
+
+      // Mots-exemples reels pour chaque lettre, decoupes en segments :
+      // texte normal, ou lettre etudiee (h:true, coloree en rouge). Les
+      // harakat du mot restent en couleur normale ici (pas de double
+      // codage avec le rouge des voyelles utilise ailleurs sur le site) -
+      // seul le rouge signale la lettre dont on etudie la forme.
+      var LETTER_FORM_EXAMPLES = {
+        alif: {
+          start: [{ t: "أَ", h: true }, { t: "سَد" }],
+          middle: [{ t: "نَ" }, { t: "ا", h: true }, { t: "مَ" }],
+          end: [{ t: "دَعَ" }, { t: "ا", h: true }]
+        },
+        baa: {
+          start: [{ t: "بَ", h: true }, { t: "اب" }],
+          middle: [{ t: "حَ" }, { t: "بِ", h: true }, { t: "يب" }],
+          end: [{ t: "كِتَا" }, { t: "ب", h: true }]
+        },
+        taa: {
+          start: [{ t: "تَ", h: true }, { t: "مْر" }],
+          middle: [{ t: "كِ" }, { t: "تَ", h: true }, { t: "اب" }],
+          end: [{ t: "بَيْ" }, { t: "ت", h: true }]
+        },
+        thaa: {
+          start: [{ t: "ثَ", h: true }, { t: "عْلَب" }],
+          middle: [{ t: "كَ" }, { t: "ثِ", h: true }, { t: "ير" }],
+          end: [{ t: "حَدِي" }, { t: "ث", h: true }]
+        },
+        jim: {
+          start: [{ t: "جَ", h: true }, { t: "مَل" }],
+          middle: [{ t: "مَسْ" }, { t: "جِ", h: true }, { t: "د" }],
+          end: [{ t: "ثَلْ" }, { t: "ج", h: true }]
+        },
+        haa: {
+          start: [{ t: "حِ", h: true }, { t: "صَان" }],
+          middle: [{ t: "بَ" }, { t: "حْ", h: true }, { t: "ر" }],
+          end: [{ t: "مِلْ" }, { t: "ح", h: true }]
+        },
+        khaa: {
+          start: [{ t: "خُ", h: true }, { t: "بْز" }],
+          middle: [{ t: "بُ" }, { t: "خَ", h: true }, { t: "ار" }],
+          end: [{ t: "شَيْ" }, { t: "خ", h: true }]
+        },
+        dal: {
+          start: [{ t: "دُ", h: true }, { t: "ب" }],
+          middle: [{ t: "مَ" }, { t: "دْ", h: true }, { t: "رَسَة" }],
+          end: [{ t: "بَرِي" }, { t: "د", h: true }]
+        },
+        thal: {
+          start: [{ t: "ذُ", h: true }, { t: "بَاب" }],
+          middle: [{ t: "نَافِ" }, { t: "ذَ", h: true }, { t: "ة" }],
+          end: [{ t: "تِلْمِي" }, { t: "ذ", h: true }]
+        },
+        reh: {
+          start: [{ t: "رَ", h: true }, { t: "جُل" }],
+          middle: [{ t: "كَ" }, { t: "رِ", h: true }, { t: "يم" }],
+          end: [{ t: "قَمَ" }, { t: "ر", h: true }]
+        },
+        zain: {
+          start: [{ t: "زَ", h: true }, { t: "هْرَة" }],
+          middle: [{ t: "غَ" }, { t: "زَ", h: true }, { t: "ال" }],
+          end: [{ t: "كَنْ" }, { t: "ز", h: true }]
+        },
+        seen: {
+          start: [{ t: "سَ", h: true }, { t: "مَك" }],
+          middle: [{ t: "مِ" }, { t: "سْ", h: true }, { t: "مَار" }],
+          end: [{ t: "شَمْ" }, { t: "س", h: true }]
+        },
+        sheen: {
+          start: [{ t: "شَ", h: true }, { t: "جَرَة" }],
+          middle: [{ t: "قِ" }, { t: "شْ", h: true }, { t: "رَة" }],
+          end: [{ t: "عَطْ" }, { t: "ش", h: true }]
+        },
+        sad: {
+          start: [{ t: "صَ", h: true }, { t: "قْر" }],
+          middle: [{ t: "قَ" }, { t: "صِ", h: true }, { t: "ير" }],
+          end: [{ t: "قَمِي" }, { t: "ص", h: true }]
+        },
+        dad: {
+          start: [{ t: "ضَ", h: true }, { t: "فْدَع" }],
+          middle: [{ t: "بَيْ" }, { t: "ضَ", h: true }, { t: "ة" }],
+          end: [{ t: "بَعْ" }, { t: "ض", h: true }]
+        },
+        tah: {
+          start: [{ t: "طِ", h: true }, { t: "فْل" }],
+          middle: [{ t: "بَ" }, { t: "طَّ", h: true }, { t: "ة" }],
+          end: [{ t: "خَيْ" }, { t: "ط", h: true }]
+        },
+        zah: {
+          start: [{ t: "ظُ", h: true }, { t: "هْر" }],
+          middle: [{ t: "نَ" }, { t: "ظَ", h: true }, { t: "ر" }],
+          end: [{ t: "حِفْ" }, { t: "ظ", h: true }]
+        },
+        ain: {
+          start: [{ t: "عَ", h: true }, { t: "يْن" }],
+          middle: [{ t: "بَ" }, { t: "عِ", h: true }, { t: "يد" }],
+          end: [{ t: "جَمِي" }, { t: "ع", h: true }]
+        },
+        ghain: {
+          start: [{ t: "غُ", h: true }, { t: "رَاب" }],
+          middle: [{ t: "صَ" }, { t: "غِ", h: true }, { t: "ير" }],
+          end: [{ t: "بَلَ" }, { t: "غ", h: true }]
+        },
+        feh: {
+          start: [{ t: "فِ", h: true }, { t: "يل" }],
+          middle: [{ t: "قَ" }, { t: "فَ", h: true }, { t: "ص" }],
+          end: [{ t: "سَقْ" }, { t: "ف", h: true }]
+        },
+        qaf: {
+          start: [{ t: "قَ", h: true }, { t: "لَم" }],
+          middle: [{ t: "بَ" }, { t: "قَ", h: true }, { t: "رَة" }],
+          end: [{ t: "طَرِي" }, { t: "ق", h: true }]
+        },
+        kaf: {
+          start: [{ t: "كَ", h: true }, { t: "لْب" }],
+          middle: [{ t: "مَ" }, { t: "كْ", h: true }, { t: "تَب" }],
+          end: [{ t: "سَمَ" }, { t: "ك", h: true }]
+        },
+        lam: {
+          start: [{ t: "لَ", h: true }, { t: "يْمُون" }],
+          middle: [{ t: "قَ" }, { t: "لَ", h: true }, { t: "م" }],
+          end: [{ t: "جَمَ" }, { t: "ل", h: true }]
+        },
+        meem: {
+          start: [{ t: "مَ", h: true }, { t: "وْز" }],
+          middle: [{ t: "قَ" }, { t: "مَ", h: true }, { t: "ر" }],
+          end: [{ t: "قَلَ" }, { t: "م", h: true }]
+        },
+        noon: {
+          start: [{ t: "نَ", h: true }, { t: "جْم" }],
+          middle: [{ t: "بِ" }, { t: "نْ", h: true }, { t: "ت" }],
+          end: [{ t: "لَبَ" }, { t: "ن", h: true }]
+        },
+        heh: {
+          start: [{ t: "هِ", h: true }, { t: "لَال" }],
+          middle: [{ t: "نَ" }, { t: "هْ", h: true }, { t: "ر" }],
+          end: [{ t: "وَجْ" }, { t: "ه", h: true }],
+          endAlt: [{ t: "مِيَا" }, { t: "ه", h: true }]
+        },
+        waw: {
+          start: [{ t: "وَ", h: true }, { t: "رْدَة" }],
+          middle: [{ t: "نَ" }, { t: "وْ", h: true }, { t: "م" }],
+          end: [{ t: "جَ" }, { t: "و", h: true }]
+        },
+        yeh: {
+          start: [{ t: "يَ", h: true }, { t: "د" }],
+          middle: [{ t: "بَ" }, { t: "يْ", h: true }, { t: "ت" }],
+          end: [{ t: "كُرْسِ" }, { t: "ي", h: true }]
+        }
+      };
+
+      var FORM_LABEL = {
+        start: isEnglish ? "At the start" : "Au début",
+        middle: isEnglish ? "In the middle" : "Au milieu",
+        end: isEnglish ? "At the end" : "À la fin",
+        endAlt: isEnglish ? "At the end (after a non-connecting letter)" : "À la fin (après une lettre qui ne se lie pas)"
+      };
+
+      var formLabState = { ids: [], index: 0 };
+
+      function renderFormSegments(container, segments) {
+        container.innerHTML = "";
+        segments.forEach(function (seg) {
+          if (seg.h) {
+            var mark = document.createElement("span");
+            mark.className = "formlab-highlight";
+            mark.textContent = seg.t;
+            container.appendChild(mark);
+          } else {
+            container.appendChild(document.createTextNode(seg.t));
+          }
+        });
+      }
+
+      function addFormCard(labelKey, segments) {
+        var card = document.createElement("div");
+        card.className = "formlab-card";
+        var label = document.createElement("p");
+        label.className = "formlab-card-label";
+        label.textContent = FORM_LABEL[labelKey];
+        var word = document.createElement("p");
+        word.className = "formlab-word";
+        renderFormSegments(word, segments);
+        card.appendChild(label);
+        card.appendChild(word);
+        formLabExamples.appendChild(card);
+      }
+
+      function renderFormLab() {
+        var id = formLabState.ids[formLabState.index];
+        var letter = ALL_LETTERS_BY_ID[id];
+        var examples = LETTER_FORM_EXAMPLES[id];
+        formLabLetter.textContent = letter.char;
+        formLabName.textContent = letter.name;
+        formLabExamples.innerHTML = "";
+        if (!examples) return;
+
+        addFormCard("start", examples.start);
+        addFormCard("middle", examples.middle);
+        addFormCard("end", examples.end);
+        if (examples.endAlt) { addFormCard("endAlt", examples.endAlt); }
+
+        if (NON_FORWARD_JOINING[id]) {
+          var note = document.createElement("p");
+          note.className = "formlab-note";
+          note.textContent = isEnglish
+            ? "This letter never connects to the one after it, so its “middle” and “end” shapes look the same."
+            : "Cette lettre ne se lie jamais à la lettre suivante : ses formes « milieu » et « fin » se ressemblent donc.";
+          formLabExamples.appendChild(note);
+        }
+
+        formLabPrev.disabled = formLabState.index === 0;
+        formLabNext.disabled = formLabState.index === formLabState.ids.length - 1;
+      }
+
+      function cumulativeFormLetterIds(moduleNumber) {
+        var ids = [];
+        MODULES.forEach(function (m) {
+          if (m.number <= Number(moduleNumber)) { ids = ids.concat(m.letterIds); }
+        });
+        return ids;
+      }
+
+      function openFormLab(moduleNumber) {
+        var module = MODULES.filter(function (m) { return String(m.number) === String(moduleNumber); })[0];
+        if (!module) return;
+        var allIds = cumulativeFormLetterIds(moduleNumber);
+        formLabState.ids = allIds;
+        formLabState.index = allIds.indexOf(module.letterIds[0]);
+        renderFormLab();
+        formLab.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeFormLab() {
+        formLab.classList.remove("is-open");
+        document.body.style.overflow = "";
+      }
+
+      document.querySelectorAll(".js-open-formlab").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          openFormLab(btn.getAttribute("data-module"));
+        });
+      });
+      formLabClose.addEventListener("click", closeFormLab);
+      formLabPrev.addEventListener("click", function () {
+        if (formLabState.index > 0) { formLabState.index -= 1; renderFormLab(); }
+      });
+      formLabNext.addEventListener("click", function () {
+        if (formLabState.index < formLabState.ids.length - 1) { formLabState.index += 1; renderFormLab(); }
+      });
+      document.addEventListener("keydown", function (e) {
+        if (formLab.classList.contains("is-open") && e.key === "Escape") closeFormLab();
+      });
+    }
+
     // ---- Jeux : "Quel son as-tu entendu ?", par module ----
     // Architecture prevue pour les 12 modules (buildSoundPool marche pour
     // n'importe lequel), mais seul le module 1 (Alif) a ses questions
