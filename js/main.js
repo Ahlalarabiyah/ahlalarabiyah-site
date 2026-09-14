@@ -1385,6 +1385,10 @@
       var gameEndMessage = document.getElementById("gameEndMessage");
       var gameReplayBtn = document.getElementById("gameReplayBtn");
       var gameContinueBtn = document.getElementById("gameContinueBtn");
+      var gamePrestartWarning = document.getElementById("gamePrestartWarning");
+      var gamePrestartMessage = document.getElementById("gamePrestartMessage");
+      var gamePrestartBackBtn = document.getElementById("gamePrestartBackBtn");
+      var gamePrestartContinueBtn = document.getElementById("gamePrestartContinueBtn");
       var gameDicteeTab = document.getElementById("gameDicteeTab");
       var gameHarakatTab = document.getElementById("gameHarakatTab");
       var gameDicteePanel = document.getElementById("gameDicteePanel");
@@ -1441,6 +1445,105 @@
         return entry ? entry.has : {};
       }
 
+      // Meilleur score (%) obtenu par module, toutes categories notees
+      // confondues (sound/word/harakat) : persiste entre les visites via
+      // localStorage, pour savoir si un module a deja ete "maitrise" (>=80%)
+      // quand l'enfant revient sur le site plus tard. Ne bloque jamais rien
+      // par lui-meme - sert uniquement a afficher un rappel non contraignant.
+      var MODULE_PROGRESS_KEY = "ahlArabiyahModuleProgress";
+      function loadModuleProgress() {
+        try {
+          return JSON.parse(localStorage.getItem(MODULE_PROGRESS_KEY)) || {};
+        } catch (e) {
+          return {};
+        }
+      }
+      function getModuleBestPct(moduleNumber) {
+        var data = loadModuleProgress();
+        return data[moduleNumber] || 0;
+      }
+      function saveModuleBestPct(moduleNumber, pct) {
+        try {
+          var data = loadModuleProgress();
+          if (!data[moduleNumber] || pct > data[moduleNumber]) {
+            data[moduleNumber] = pct;
+            localStorage.setItem(MODULE_PROGRESS_KEY, JSON.stringify(data));
+          }
+        } catch (e) {
+          // localStorage indisponible (navigation privee, etc.) : on
+          // continue sans memoriser, le jeu reste jouable.
+        }
+      }
+
+      // Modules ou l'enfant a volontairement choisi "Acceder quand meme"
+      // malgre un score < 80% sur le module precedent. Une fois ce choix
+      // fait, le module reste accessible sans redemander a chaque visite -
+      // separe du score lui-meme (l'acces force ne compte jamais comme une
+      // reussite du module precedent).
+      var MODULE_OVERRIDE_KEY = "ahlArabiyahModuleOverrides";
+      function loadModuleOverrides() {
+        try {
+          return JSON.parse(localStorage.getItem(MODULE_OVERRIDE_KEY)) || {};
+        } catch (e) {
+          return {};
+        }
+      }
+      function hasModuleOverride(moduleNumber) {
+        return !!loadModuleOverrides()[moduleNumber];
+      }
+      function saveModuleOverride(moduleNumber) {
+        try {
+          var data = loadModuleOverrides();
+          data[moduleNumber] = true;
+          localStorage.setItem(MODULE_OVERRIDE_KEY, JSON.stringify(data));
+        } catch (e) {
+          // localStorage indisponible : le rappel pourra reapparaitre au
+          // prochain clic, sans autre consequence.
+        }
+      }
+
+      // Etat d'un module dans la liste : "available" (module 1, jamais de
+      // prerequis), "unlocked" (module precedent >= 80%), "override" (acces
+      // force accepte volontairement) ou "locked" (recommandation des 80%
+      // pas encore atteinte, pas encore contournee).
+      function moduleUnlockState(moduleNumber) {
+        if (Number(moduleNumber) <= 1) return "available";
+        var prevPct = getModuleBestPct(Number(moduleNumber) - 1);
+        if (prevPct >= 80) return "unlocked";
+        if (hasModuleOverride(moduleNumber)) return "override";
+        return "locked";
+      }
+
+      function refreshModuleBadges() {
+        gameBtns.forEach(function (btn) {
+          var moduleNumber = btn.getAttribute("data-module");
+          var card = btn.closest(".module-card");
+          if (!card) return;
+          var state = moduleUnlockState(moduleNumber);
+          var badge = card.querySelector(".module-status");
+          if (!badge) {
+            badge = document.createElement("p");
+            badge.className = "module-status";
+            var progress = card.querySelector(".module-progress");
+            if (progress && progress.nextSibling) {
+              card.insertBefore(badge, progress.nextSibling);
+            } else {
+              card.insertBefore(badge, btn);
+            }
+          }
+          badge.className = "module-status module-status-" + state;
+          if (state === "available") {
+            badge.textContent = isEnglish ? "🟢 Available" : "🟢 Disponible";
+          } else if (state === "unlocked") {
+            badge.textContent = isEnglish ? "🟢 Unlocked" : "🟢 Débloqué";
+          } else if (state === "override") {
+            badge.textContent = isEnglish ? "🟡 Access granted" : "🟡 Accès autorisé";
+          } else {
+            badge.textContent = isEnglish ? "🔒 80% recommended" : "🔒 80% recommandé";
+          }
+        });
+      }
+
       function playSound(item) {
         if (gameAudio) { gameAudio.pause(); }
         gameAudio = new Audio(item.audioBase + item.audioId + ".m4a?v=" + AUDIO_VERSION);
@@ -1467,6 +1570,8 @@
         var nextModuleBtn = document.querySelector('.js-open-game[data-module="' + (Number(gameState.moduleNumber) + 1) + '"]');
         if (SCORED_CATEGORIES[gameState.category]) {
           var pct = Math.round((gameState.score / QUESTIONS_PER_ROUND) * 100);
+          saveModuleBestPct(gameState.moduleNumber, pct);
+          refreshModuleBadges();
           gameEndMessage.hidden = false;
           if (pct >= 80) {
             gameEndMessage.textContent = isEnglish
@@ -1782,6 +1887,7 @@
       }
 
       function startGame(moduleNumber, title) {
+        gamePrestartWarning.hidden = true;
         if (!startRound(moduleNumber, title, "sound")) return;
         updateCategoryTabs(moduleNumber);
         gameModal.classList.add("is-open");
@@ -1791,16 +1897,67 @@
       function closeGame() {
         gameModal.classList.remove("is-open");
         document.body.style.overflow = "";
+        gamePrestartWarning.hidden = true;
         if (gameAudio) { gameAudio.pause(); }
       }
+
+      // Rappel non bloquant : si le module precedent n'a pas encore ete
+      // maitrise a 80%, on le rappelle avant d'ouvrir directement un module
+      // depuis la liste - mais l'acces reste toujours possible via
+      // "Acceder quand meme", qui memorise ce choix (etat "override") pour
+      // ne plus reafficher le rappel sur ce module. Ne s'applique qu'a
+      // l'ouverture directe, pas au passage au module suivant depuis
+      // l'ecran de fin (deja informe a ce moment-la, et compte lui aussi
+      // comme un override explicite).
+      var pendingModuleNumber = null;
+      var pendingModuleTitle = null;
+      function openPrestartWarning(moduleNumber, title) {
+        pendingModuleNumber = moduleNumber;
+        pendingModuleTitle = title;
+        var prevModule = Number(moduleNumber) - 1;
+        var prevPct = getModuleBestPct(prevModule);
+        var prevBtn = document.querySelector('.js-open-game[data-module="' + prevModule + '"]');
+        gamePrestartMessage.textContent = isEnglish
+          ? "You haven't yet reached the 80% recommended on Module " + prevModule + " (your best score so far: " + prevPct + "%). We suggest practicing it a bit more to really master it before continuing."
+          : "Tu n'as pas encore atteint les 80% recommandés sur le Module " + prevModule + " (ton meilleur score jusqu'ici : " + prevPct + "%). Nous te conseillons de t'entraîner encore un peu pour bien le maîtriser avant de continuer.";
+        gamePrestartBackBtn.textContent = isEnglish ? "← Back to Module " + prevModule : "← Retour au Module " + prevModule;
+        gamePrestartBackBtn.disabled = !prevBtn;
+        gamePrestartContinueBtn.textContent = isEnglish
+          ? "Continue anyway to Module " + moduleNumber + " →"
+          : "Accéder quand même au Module " + moduleNumber + " →";
+        gameModalTitle.textContent = title;
+        gameBody.hidden = true;
+        gameEnd.hidden = true;
+        gamePrestartWarning.hidden = false;
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      }
+      gamePrestartBackBtn.addEventListener("click", function () {
+        var prevModule = Number(pendingModuleNumber) - 1;
+        var prevBtn = document.querySelector('.js-open-game[data-module="' + prevModule + '"]');
+        if (!prevBtn) { closeGame(); return; }
+        startGame(String(prevModule), prevBtn.getAttribute("data-title"));
+      });
+      gamePrestartContinueBtn.addEventListener("click", function () {
+        saveModuleOverride(pendingModuleNumber);
+        refreshModuleBadges();
+        startGame(pendingModuleNumber, pendingModuleTitle);
+      });
 
       gameBtns.forEach(function (btn) {
         var moduleNumber = btn.getAttribute("data-module");
         if (!GAMES_READY[moduleNumber]) return;
         btn.addEventListener("click", function () {
-          startGame(moduleNumber, btn.getAttribute("data-title"));
+          var title = btn.getAttribute("data-title");
+          var state = moduleUnlockState(moduleNumber);
+          if (state === "locked") {
+            openPrestartWarning(moduleNumber, title);
+            return;
+          }
+          startGame(moduleNumber, title);
         });
       });
+      refreshModuleBadges();
       gameSoundTab.addEventListener("click", function () {
         if (!gameState || gameState.category === "sound") return;
         startRound(gameState.moduleNumber, gameState.title, "sound");
@@ -1879,6 +2036,11 @@
         var nextModule = String(Number(gameState.moduleNumber) + 1);
         var nextBtn = document.querySelector('.js-open-game[data-module="' + nextModule + '"]');
         if (!nextBtn) return;
+        // Continuer depuis l'ecran de fin equivaut a "Acceder quand meme" :
+        // l'enfant vient de voir sa recommandation et choisit d'avancer,
+        // donc le module suivant ne redemandera plus ce rappel ensuite.
+        saveModuleOverride(nextModule);
+        refreshModuleBadges();
         if (!startRound(nextModule, nextBtn.getAttribute("data-title"), "sound")) return;
         updateCategoryTabs(nextModule);
       });

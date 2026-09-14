@@ -566,6 +566,15 @@ section[id] { scroll-margin-top: 88px; }
   color: var(--color-orange);
   margin: -6px 0 14px;
 }
+.module-status {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.76rem;
+  margin: -8px 0 14px;
+}
+.module-status-available, .module-status-unlocked { color: var(--color-teal-dark); }
+.module-status-locked { color: var(--color-text-light); }
+.module-status-override { color: var(--color-orange); }
 .module-listen { width: 100%; white-space: normal; }
 
 /* ---------- Audience ---------- */
