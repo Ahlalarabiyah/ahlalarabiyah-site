@@ -1027,6 +1027,7 @@ section[id] { scroll-margin-top: 88px; }
   .step:last-child { grid-column: 1 / -1; }
   .program-grid { grid-template-columns: 1fr; }
   .module-grid { grid-template-columns: repeat(2, 1fr); }
+  .module-listen { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .audience-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr 1fr; }
   .hero-stats { gap: 22px; }
