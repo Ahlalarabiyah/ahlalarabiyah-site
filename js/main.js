@@ -54,34 +54,38 @@
   });
 
   // ---- Lightbox for gallery ----
+  // Uniquement present sur les pages qui ont une galerie (l'accueil) ;
+  // sur les autres pages, ce bloc ne s'active pas du tout.
   var lightbox = document.getElementById("lightbox");
-  var lightboxImg = document.getElementById("lightboxImg");
-  var lightboxClose = document.getElementById("lightboxClose");
+  if (lightbox) {
+    var lightboxImg = document.getElementById("lightboxImg");
+    var lightboxClose = document.getElementById("lightboxClose");
 
-  document.querySelectorAll(".gallery-item").forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      var src = btn.getAttribute("data-full");
-      var alt = btn.querySelector("img").getAttribute("alt");
-      lightboxImg.src = src;
-      lightboxImg.alt = alt || "";
-      lightbox.classList.add("is-open");
-      document.body.style.overflow = "hidden";
+    document.querySelectorAll(".gallery-item").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var src = btn.getAttribute("data-full");
+        var alt = btn.querySelector("img").getAttribute("alt");
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || "";
+        lightbox.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      });
     });
-  });
 
-  function closeLightbox() {
-    lightbox.classList.remove("is-open");
-    document.body.style.overflow = "";
-    lightboxImg.src = "";
+    var closeLightbox = function () {
+      lightbox.classList.remove("is-open");
+      document.body.style.overflow = "";
+      lightboxImg.src = "";
+    };
+
+    lightboxClose.addEventListener("click", closeLightbox);
+    lightbox.addEventListener("click", function (e) {
+      if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeLightbox();
+    });
   }
-
-  lightboxClose.addEventListener("click", closeLightbox);
-  lightbox.addEventListener("click", function (e) {
-    if (e.target === lightbox) closeLightbox();
-  });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") closeLightbox();
-  });
 
   // ---- Reader: lecture en ligne des fascicules (partage entre plusieurs) ----
   var readerBtns = document.querySelectorAll(".js-open-reader");
@@ -158,9 +162,16 @@
     });
   }
 
-  // ---- Letter lab: prononciation interactive des lettres, par fascicule ----
+  // ---- Letter lab + donnees pedagogiques partagees (lettres, modules) ----
+  // Ce bloc regroupe aussi bien le labo de lettres (accueil et page
+  // Modules) que les jeux (page Jeux, imbriques plus bas) : les deux
+  // s'appuient sur les memes donnees (MODULES, ALL_LETTERS_BY_ID...).
+  // Il doit donc s'activer des qu'au moins un des trois declencheurs est
+  // present sur la page, sinon aucune des trois pages ne fonctionnerait.
   var letterLabBtns = document.querySelectorAll(".js-open-letterlab");
-  if (letterLabBtns.length) {
+  var moduleLabBtns = document.querySelectorAll(".js-open-module");
+  var pageHasGameBtns = document.querySelectorAll(".js-open-game").length;
+  if (letterLabBtns.length || moduleLabBtns.length || pageHasGameBtns) {
     // Construit mecaniquement harakat/moudoud/tanwin a partir d'une consonne
     // de base (utilise pour les fascicules 2 et 3 ; alif du fascicule 1 reste
     // ecrit a la main car porte par la hamza, cas particulier).
@@ -522,10 +533,16 @@
         openModuleLab(btn.getAttribute("data-module"), btn.getAttribute("data-title"));
       });
     });
-    letterLabClose.addEventListener("click", closeLetterLab);
-    document.addEventListener("keydown", function (e) {
-      if (letterLab.classList.contains("is-open") && e.key === "Escape") closeLetterLab();
-    });
+    // La modale #letterLab elle-meme n'est presente que sur les pages qui
+    // l'utilisent (accueil, page Modules) ; la page Jeux partage ce meme
+    // bloc pour ses donnees (MODULES, AUDIO_VERSION...) mais n'a pas besoin
+    // de la modale du labo de lettres.
+    if (letterLab) {
+      letterLabClose.addEventListener("click", closeLetterLab);
+      document.addEventListener("keydown", function (e) {
+        if (letterLab.classList.contains("is-open") && e.key === "Escape") closeLetterLab();
+      });
+    }
 
     // ---- Jeux : "Quel son as-tu entendu ?", par module ----
     // Architecture prevue pour les 12 modules (buildSoundPool marche pour

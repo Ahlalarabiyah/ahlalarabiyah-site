@@ -180,6 +180,8 @@ section[id] { scroll-margin-top: 88px; }
   transition: width .2s ease;
 }
 .nav-link:hover::after { width: 100%; }
+.nav-link.is-active { color: var(--color-navy); }
+.nav-link.is-active::after { width: 100%; }
 
 .header-actions { display: flex; align-items: center; gap: 14px; }
 
@@ -483,6 +485,43 @@ section[id] { scroll-margin-top: 88px; }
 }
 .program-body h3 { font-size: 1.02rem; margin-bottom: 8px; }
 .program-body p:not(.program-range) { font-size: 0.88rem; color: var(--color-text-light); margin: 0; }
+
+/* ---------- Hub (accueil -> modules / jeux) ---------- */
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.hub-card {
+  background: #fff;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  padding: 36px 30px;
+  text-align: center;
+}
+.hub-card h3 { margin-bottom: 10px; }
+.hub-card p { color: var(--color-text-light); margin-bottom: 22px; }
+
+/* ---------- Pages Modules / Jeux (intro + retour) ---------- */
+.page-intro { padding-top: 48px; }
+.page-cta-back { text-align: center; margin: 40px 0 0; }
+.game-types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 18px;
+}
+.game-type-pill {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-navy);
+  background: var(--color-teal-10);
+  padding: 8px 16px;
+  border-radius: 999px;
+}
 
 /* ---------- Modules ---------- */
 .module-grid {
@@ -1041,6 +1080,7 @@ section[id] { scroll-margin-top: 88px; }
   .steps { grid-template-columns: 1fr 1fr; }
   .step:last-child { grid-column: 1 / -1; }
   .program-grid { grid-template-columns: 1fr; }
+  .hub-grid { grid-template-columns: 1fr; }
   .module-grid { grid-template-columns: repeat(2, 1fr); }
   .module-listen { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .audience-grid { grid-template-columns: 1fr; }
