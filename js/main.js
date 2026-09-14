@@ -1928,8 +1928,6 @@
           btn.addEventListener("click", function () { onAnswer(choice, btn); });
           gameAnswers.appendChild(btn);
         });
-
-        playSound(correct);
       }
 
       // "Lire un mot" : aucun choix a faire, aucun audio automatique.
@@ -2019,8 +2017,6 @@
         gameHarakatCorrect.hidden = true;
         gameHarakatNextBtn.hidden = true;
         renderScore();
-
-        playSound(correct);
       }
 
       function renderHarakatSlotContent(idx) {
