@@ -989,7 +989,6 @@ section[id] { scroll-margin-top: 88px; }
 #gameHarakatListenBtn { margin-bottom: 24px; }
 .harakat-slots {
   display: flex;
-  flex-direction: row-reverse;
   flex-wrap: wrap;
   justify-content: center;
   gap: 14px;
@@ -1000,14 +999,17 @@ section[id] { scroll-margin-top: 88px; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 14px;
   cursor: pointer;
   border: none;
   background: none;
   padding: 0;
   font-family: var(--font-arabic);
 }
-.harakat-slot-base { font-size: 2.6rem; color: var(--color-navy); line-height: 1; }
+/* line-height genereux : certaines lettres (ex. le point sous le baa)
+   descendent sous la ligne de base et se faisaient rogner avec un
+   line-height trop serre. */
+.harakat-slot-base { font-size: 2.6rem; color: var(--color-navy); line-height: 1.6; }
 .harakat-slot-placeholder {
   width: 34px;
   height: 34px;
@@ -1034,10 +1036,19 @@ section[id] { scroll-margin-top: 88px; }
   background: #fff;
   color: var(--color-navy);
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
   transition: background .15s ease, border-color .15s ease, color .15s ease;
 }
 .harakat-picker-btn:hover { border-color: var(--color-teal); }
 .harakat-picker-btn.is-armed { background: var(--color-orange); border-color: var(--color-orange); color: #fff; }
+/* La kasra (marque sous la lettre) deborde sous le carre si on la centre
+   comme fatha/damma (marques au-dessus) : on remonte son contenu pour
+   qu'elle reste visible dans le cadre. */
+.harakat-picker-btn-kasra { padding-bottom: 16px; }
+.harakat-slot-placeholder-kasra { padding-bottom: 16px; }
 #gameHarakatCheckBtn[hidden] { display: none; }
 #gameHarakatNextBtn[hidden] { display: none; }
 

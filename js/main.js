@@ -1648,6 +1648,7 @@
         var slot = gameState.current.slots[idx];
         var placeholder = harakatSlots.children[idx].querySelector(".harakat-slot-placeholder");
         placeholder.textContent = slot.filled ? HARAKAT_MARK[slot.filled] : "";
+        placeholder.className = "harakat-slot-placeholder" + (slot.filled ? " harakat-slot-placeholder-" + slot.filled : "");
       }
 
       function assignArmedToSlot(idx) {
@@ -1696,7 +1697,7 @@
         HARAKAT_ORDER.forEach(function (form) {
           var btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "harakat-picker-btn";
+          btn.className = "harakat-picker-btn harakat-picker-btn-" + form;
           btn.textContent = HARAKAT_LABEL[form];
           btn.addEventListener("click", function () { armHarakat(form, btn); });
           harakatPicker.appendChild(btn);
