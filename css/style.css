@@ -90,6 +90,7 @@ section[id] { scroll-margin-top: 88px; }
   transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease;
   white-space: nowrap;
 }
+.btn svg { flex-shrink: 0; }
 .btn:hover { transform: translateY(-2px); }
 .btn-sm { padding: 10px 20px; font-size: 0.88rem; }
 
@@ -490,6 +491,7 @@ section[id] { scroll-margin-top: 88px; }
   gap: 20px;
 }
 .module-card {
+  min-width: 0;
   background: #fff;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);
@@ -525,7 +527,7 @@ section[id] { scroll-margin-top: 88px; }
   color: var(--color-orange);
   margin: -6px 0 14px;
 }
-.module-listen { width: 100%; }
+.module-listen { width: 100%; white-space: normal; }
 
 /* ---------- Audience ---------- */
 .audience-grid {
