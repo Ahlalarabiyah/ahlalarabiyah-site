@@ -577,6 +577,7 @@ section[id] { scroll-margin-top: 88px; }
 .module-status-override { color: var(--color-orange); }
 .module-listen { width: 100%; white-space: normal; }
 .module-formlab { width: 100%; white-space: normal; margin-top: 8px; }
+.module-shadda { width: 100%; white-space: normal; margin-top: 8px; }
 
 /* ---------- Audience ---------- */
 .audience-grid {
@@ -952,7 +953,7 @@ section[id] { scroll-margin-top: 88px; }
   padding: 0 20px 32px;
 }
 .game-body[hidden] { display: none; }
-.game-panel { width: 100%; max-width: 620px; background: #fff; border-radius: var(--radius-md); padding: 30px; text-align: center; }
+.game-panel { width: 100%; max-width: 620px; align-self: flex-start; background: #fff; border-radius: var(--radius-md); padding: 30px; text-align: center; }
 .game-score {
   display: inline-block;
   font-family: var(--font-heading);
@@ -1235,6 +1236,7 @@ section[id] { scroll-margin-top: 88px; }
   .module-grid { grid-template-columns: repeat(2, 1fr); }
   .module-listen { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .module-formlab { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
+  .module-shadda { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .audience-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr 1fr; }
   .hero-stats { gap: 22px; }

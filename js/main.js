@@ -318,6 +318,12 @@
       buildLetterF4("yeh", "ي", "يَاء")
     ];
 
+    // Index par id (comme ALL_LETTERS_BY_ID) pour retrouver rapidement les
+    // formes sukun/shadda d'une lettre donnee, utilise par l'integration
+    // dans les modules ci-dessous.
+    var LETTERS_F4_BY_ID = {};
+    LETTERS_F4.forEach(function (l) { LETTERS_F4_BY_ID[l.id] = l; });
+
     var LETTERS_BY_FASCICULE = { "1": LETTERS_F1, "2": LETTERS_F2, "3": LETTERS_F3, "4": LETTERS_F4 };
     var GROUPS_BY_FASCICULE = {
       "1": ["harakat", "moudoud", "tanwin"],
@@ -516,6 +522,36 @@
       document.body.style.overflow = "hidden";
     }
 
+    // Shadda et Soukoune, integres progressivement dans les modules : les
+    // enregistrements du fascicule 4 sont des blocs audio fixes ("بَ" +
+    // lettre + marque, un seul fichier non decoupable - voir buildLetterF4
+    // plus haut), donc on ne construit jamais de nouveau mot avec : on
+    // rejoue simplement, lettre par lettre, les fichiers existants, filtres
+    // aux lettres deja apprises dans ce module (jamais au-dela). L'alif est
+    // volontairement exclu : cette lettre ne porte pas de shadda en arabe
+    // reel (lettre faible), sa presence dans le fascicule 4 est purement
+    // pour la completude du cahier papier.
+    function openShaddaSukunLab(moduleNumber, title) {
+      var module = MODULES.filter(function (m) { return String(m.number) === String(moduleNumber); })[0];
+      if (!module) return;
+      var allIds = [];
+      MODULES.forEach(function (m) {
+        if (m.number <= Number(moduleNumber)) { allIds = allIds.concat(m.letterIds); }
+      });
+      allIds = allIds.filter(function (id) { return id !== "alif" && LETTERS_F4_BY_ID[id]; });
+      var letters = allIds.map(function (id) { return LETTERS_F4_BY_ID[id]; });
+      if (!letters.length) return;
+      var newIds = module.letterIds.filter(function (id) { return id !== "alif"; });
+      currentGroupKeys = GROUPS_BY_FASCICULE["4"];
+      currentAudioBase = ROOT_BASE + "assets/audio/fascicule-4/";
+      letterLabTitle.textContent = title;
+      buildTabs(letters);
+      var firstNew = newIds.length ? LETTERS_F4_BY_ID[newIds[0]] : letters[0];
+      renderLetter(firstNew || letters[0]);
+      letterLab.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+    }
+
     function closeLetterLab() {
       letterLab.classList.remove("is-open");
       document.body.style.overflow = "";
@@ -531,6 +567,11 @@
     document.querySelectorAll(".js-open-module").forEach(function (btn) {
       btn.addEventListener("click", function () {
         openModuleLab(btn.getAttribute("data-module"), btn.getAttribute("data-title"));
+      });
+    });
+    document.querySelectorAll(".js-open-shadda").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        openShaddaSukunLab(btn.getAttribute("data-module"), btn.getAttribute("data-title"));
       });
     });
     // La modale #letterLab elle-meme n'est presente que sur les pages qui
