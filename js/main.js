@@ -1164,6 +1164,12 @@
       var gameCategoryTabs = document.getElementById("gameCategoryTabs");
       var gameSoundTab = document.getElementById("gameSoundTab");
       var gameWordTab = document.getElementById("gameWordTab");
+      var gameReadTab = document.getElementById("gameReadTab");
+      var gameQuizPanel = document.getElementById("gameQuizPanel");
+      var gameReadPanel = document.getElementById("gameReadPanel");
+      var gameReadWord = document.getElementById("gameReadWord");
+      var gameReadListenBtn = document.getElementById("gameReadListenBtn");
+      var gameReadNextBtn = document.getElementById("gameReadNextBtn");
       var gameInstruction = document.getElementById("gameInstruction");
       var gamePlayBtn = document.getElementById("gamePlayBtn");
       var gameAnswers = document.getElementById("gameAnswers");
@@ -1180,6 +1186,25 @@
       var gameAudio = null;
       var gameState = null;
 
+      // Historique (en memoire, le temps de la session) des mots deja lus
+      // en "Lire un mot", par module : sert a eviter de faire revoir tout
+      // de suite les memes mots d'une serie a l'autre. Jamais persiste sur
+      // disque - repart a zero au rechargement de la page.
+      var recentReadHistory = {};
+      function markRecentRead(moduleNumber, key) {
+        var entry = recentReadHistory[moduleNumber];
+        if (!entry) { entry = recentReadHistory[moduleNumber] = { order: [], has: {} }; }
+        if (!entry.has[key]) {
+          entry.order.push(key);
+          entry.has[key] = true;
+          if (entry.order.length > 24) { delete entry.has[entry.order.shift()]; }
+        }
+      }
+      function recentReadSet(moduleNumber) {
+        var entry = recentReadHistory[moduleNumber];
+        return entry ? entry.has : {};
+      }
+
       function playSound(item) {
         if (gameAudio) { gameAudio.pause(); }
         gameAudio = new Audio(item.audioBase + item.audioId + ".m4a?v=" + AUDIO_VERSION);
@@ -1194,12 +1219,18 @@
       function showEnd() {
         gameBody.hidden = true;
         gameEnd.hidden = false;
-        gameEndScore.textContent = gameState.score + " / " + QUESTIONS_PER_ROUND;
+        gameEndScore.textContent = gameState.category === "read"
+          ? (isEnglish ? "You read " + QUESTIONS_PER_ROUND + " words!" : "Tu as lu " + QUESTIONS_PER_ROUND + " mots !")
+          : gameState.score + " / " + QUESTIONS_PER_ROUND;
       }
 
       function nextQuestion() {
         if (gameState.questionIndex >= QUESTIONS_PER_ROUND) {
           showEnd();
+          return;
+        }
+        if (gameState.category === "read") {
+          nextReadQuestion();
           return;
         }
         var pool = gameState.pool;
@@ -1252,6 +1283,37 @@
         playSound(correct);
       }
 
+      // "Lire un mot" : aucun choix a faire, aucun audio automatique.
+      // L'enfant voit le mot, le lit a voix haute, puis declenche
+      // lui-meme l'ecoute pour se corriger. Reutilise le meme pool que
+      // "Reconnaitre le mot" (buildWordPool) : memes mots/pseudo-mots,
+      // memes enregistrements humains, meme regle cumulative par module.
+      function nextReadQuestion() {
+        var pool = gameState.pool;
+        var recentSet = recentReadSet(gameState.moduleNumber);
+
+        // Priorite : mots pas encore vus dans cette serie ET pas vus
+        // recemment dans une serie precedente de ce module. Si le module
+        // n'a pas assez de mots pour satisfaire les deux a la fois, on
+        // relache d'abord la contrainte "recent", puis en dernier recours
+        // la contrainte "serie en cours".
+        var notUsed = pool.filter(function (item) { return !gameState.usedKeys[item.key]; });
+        var notUsedAndFresh = notUsed.filter(function (item) { return !recentSet[item.key]; });
+        var candidates = notUsedAndFresh.length ? notUsedAndFresh : (notUsed.length ? notUsed : pool);
+        if (!notUsed.length) { gameState.usedKeys = {}; }
+
+        var correct = pickWeighted(candidates, gameState.moduleNumber);
+        gameState.usedKeys[correct.key] = true;
+        markRecentRead(gameState.moduleNumber, correct.key);
+        gameState.questionIndex += 1;
+        gameState.current = { correct: correct, listened: false };
+
+        gameReadWord.textContent = correct.arabic;
+        gameReadListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
+        gameReadNextBtn.hidden = true;
+        gameScoreEl.textContent = (isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
+      }
+
       function onAnswer(choice, btnEl) {
         if (gameState.current.answered) return;
         gameState.current.answered = true;
@@ -1283,7 +1345,10 @@
       function setActiveTab(category) {
         gameSoundTab.classList.toggle("is-active", category === "sound");
         gameWordTab.classList.toggle("is-active", category === "word");
-        gameInstruction.textContent = INSTRUCTION_TEXT[category];
+        gameReadTab.classList.toggle("is-active", category === "read");
+        gameInstruction.textContent = INSTRUCTION_TEXT[category] || "";
+        gameQuizPanel.hidden = category === "read";
+        gameReadPanel.hidden = category !== "read";
       }
 
       function updateCategoryTabs(moduleNumber) {
@@ -1294,10 +1359,12 @@
         var wordReady = wordPool.length >= 2;
         gameWordTab.disabled = !wordReady;
         gameWordTab.classList.toggle("is-disabled", !wordReady);
+        gameReadTab.disabled = !wordReady;
+        gameReadTab.classList.toggle("is-disabled", !wordReady);
       }
 
       function startRound(moduleNumber, title, category) {
-        var pool = category === "word" ? buildWordPool(moduleNumber) : buildSoundPool(moduleNumber);
+        var pool = category === "sound" ? buildSoundPool(moduleNumber) : buildWordPool(moduleNumber);
         if (!pool.length) return false;
         gameState = { moduleNumber: moduleNumber, title: title, category: category, pool: pool, questionIndex: 0, score: 0, current: null, usedKeys: {} };
         gameModalTitle.textContent = title;
@@ -1340,10 +1407,22 @@
         if (!gameState || gameWordTab.disabled || gameState.category === "word") return;
         startRound(gameState.moduleNumber, gameState.title, "word");
       });
+      gameReadTab.addEventListener("click", function () {
+        if (!gameState || gameReadTab.disabled || gameState.category === "read") return;
+        startRound(gameState.moduleNumber, gameState.title, "read");
+      });
       gamePlayBtn.addEventListener("click", function () {
         if (gameState && gameState.current) playSound(gameState.current.correct);
       });
       gameNextBtn.addEventListener("click", nextQuestion);
+      gameReadListenBtn.addEventListener("click", function () {
+        if (!gameState || !gameState.current) return;
+        playSound(gameState.current.correct);
+        gameState.current.listened = true;
+        gameReadListenBtn.textContent = isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
+        gameReadNextBtn.hidden = false;
+      });
+      gameReadNextBtn.addEventListener("click", nextQuestion);
       gameReplayBtn.addEventListener("click", function () {
         startRound(gameState.moduleNumber, gameState.title, gameState.category);
       });
