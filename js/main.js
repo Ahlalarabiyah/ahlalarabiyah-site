@@ -1068,6 +1068,56 @@
         return shuffle(choices);
       }
 
+      // Meme principe que buildWordChoices, applique au jeu de sons : les
+      // distracteurs "proches" sont soit la MEME lettre dans une AUTRE
+      // forme (fatha/damma/kasra/prolongation/tanwin - teste l'oreille sur
+      // la voyelle), soit une lettre CONFONDUE dans la MEME forme (teste
+      // l'oreille sur la consonne). Contrairement aux mots, chaque
+      // combinaison lettre+forme est un vrai enregistrement individuel
+      // deja present dans le pool : pas besoin de rien synthetiser, on
+      // selectionne simplement les bonnes entrees existantes. On vise un
+      // bon melange (environ la moitie des propositions proches, le reste
+      // pioche dans tout le module) pour continuer a exposer l'enfant a
+      // des lettres tres differentes, pas seulement aux variantes de la
+      // lettre entendue.
+      function buildSoundChoices(correct, pool, answerCount) {
+        var correctLetter = unitLetter(correct.key);
+        var correctForm = unitForm(correct.key);
+        var confusables = CONFUSABLE_LETTERS[correctLetter] || [];
+
+        var closeCandidates = shuffle(pool.filter(function (item) {
+          if (item.key === correct.key) return false;
+          var letter = unitLetter(item.key), form = unitForm(item.key);
+          if (letter === correctLetter) return true;
+          return confusables.indexOf(letter) !== -1 && form === correctForm;
+        }));
+
+        var closeKeys = {};
+        closeCandidates.forEach(function (c) { closeKeys[c.key] = true; });
+        var farCandidates = shuffle(pool.filter(function (item) {
+          return item.key !== correct.key && !closeKeys[item.key];
+        }));
+
+        var targetClose = Math.min(Math.ceil((answerCount - 1) / 2), closeCandidates.length);
+        var choices = [correct].concat(closeCandidates.slice(0, targetClose));
+
+        // Complete d'abord avec des distracteurs "eloignes" (lettres tres
+        // differentes) ; si ce bassin est trop petit (modules avec peu de
+        // lettres, ex. Module 1 ou tout est la meme lettre), on complete
+        // avec le reste des candidats proches plutot que d'afficher moins
+        // de propositions que prevu.
+        var i = 0;
+        while (choices.length < answerCount && i < farCandidates.length) {
+          choices.push(farCandidates[i]); i += 1;
+        }
+        var j = targetClose;
+        while (choices.length < answerCount && j < closeCandidates.length) {
+          choices.push(closeCandidates[j]); j += 1;
+        }
+
+        return shuffle(choices);
+      }
+
       function shuffle(list) {
         var arr = list.slice();
         for (var i = arr.length - 1; i > 0; i--) {
@@ -1167,18 +1217,13 @@
           : candidates[Math.floor(Math.random() * candidates.length)];
         gameState.usedKeys[correct.key] = true;
 
-        // Pour "Reconnaitre le mot", les distracteurs sont construits a
-        // partir de la bonne reponse elle-meme (voyelle changee, ordre
-        // inverse, lettre confondue...) pour empecher de deviner sans
-        // ecouter. Pour les sons, on garde le tirage au hasard habituel.
-        var choices;
-        if (gameState.category === "word") {
-          choices = buildWordChoices(correct, pool, gameState.moduleNumber, answerCount);
-        } else {
-          var others = pool.filter(function (item) { return item.key !== correct.key; });
-          var distractors = shuffle(others).slice(0, answerCount - 1);
-          choices = shuffle(distractors.concat([correct]));
-        }
+        // Les distracteurs sont construits a partir de la bonne reponse
+        // elle-meme (voyelle changee, ordre inverse, lettre confondue...)
+        // pour empecher de deviner sans ecouter - pour les mots comme pour
+        // les sons.
+        var choices = gameState.category === "word"
+          ? buildWordChoices(correct, pool, gameState.moduleNumber, answerCount)
+          : buildSoundChoices(correct, pool, answerCount);
         gameState.questionIndex += 1;
         gameState.current = { correct: correct, choices: choices, answered: false };
 
