@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=29">
+<link rel="stylesheet" href="css/style.css?v=30">
 </head>
 <body>
 
@@ -65,6 +65,7 @@
         <div class="game-types">
           <span class="game-type-pill">🎧 J'écoute et je reconnais</span>
           <span class="game-type-pill">🗣️ Je lis et je vérifie</span>
+          <span class="game-type-pill">✍️ J'écoute et j'écris</span>
         </div>
       </div>
 
@@ -265,6 +266,8 @@
         <button type="button" class="game-category-tab is-active" id="gameSoundTab">🎧 Reconnaître le son</button>
         <button type="button" class="game-category-tab" id="gameWordTab">📖 Reconnaître le mot</button>
         <button type="button" class="game-category-tab" id="gameReadTab">🗣️ Lire un mot</button>
+        <button type="button" class="game-category-tab" id="gameDicteeTab">✍️ Dictée pure</button>
+        <button type="button" class="game-category-tab" id="gameHarakatTab">🖍️ Place les harakāt</button>
       </div>
       <div id="gameQuizPanel">
         <p class="game-instruction" id="gameInstruction">Écoute puis choisis le son que tu as entendu.</p>
@@ -282,15 +285,36 @@
         <button type="button" class="btn btn-primary btn-sm" id="gameReadListenBtn">🔊 Écouter</button>
         <button type="button" class="btn btn-outline btn-sm" id="gameReadNextBtn" hidden>Mot suivant →</button>
       </div>
+      <div class="game-read-panel" id="gameDicteePanel" hidden>
+        <p class="game-read-hint">🎧 Écoute le mot, puis écris-le toi-même sur une feuille.</p>
+        <p class="game-read-word" id="gameDicteeWord" hidden></p>
+        <button type="button" class="btn btn-primary btn-sm" id="gameDicteeListenBtn">🔊 Écouter</button>
+        <button type="button" class="btn btn-outline btn-sm" id="gameDicteeRevealBtn" hidden>Afficher la correction</button>
+        <button type="button" class="btn btn-outline btn-sm" id="gameDicteeNextBtn" hidden>Mot suivant →</button>
+      </div>
+      <div class="game-harakat-panel" id="gameHarakatPanel" hidden>
+        <p class="game-read-hint">Écoute puis place la bonne voyelle sur chaque lettre.</p>
+        <button type="button" class="btn btn-primary btn-sm" id="gameHarakatListenBtn">🔊 Écouter</button>
+        <div class="harakat-slots" id="harakatSlots"></div>
+        <div class="harakat-picker" id="harakatPicker"></div>
+        <button type="button" class="btn btn-primary btn-sm" id="gameHarakatCheckBtn" hidden>Valider</button>
+        <p class="game-feedback" id="gameHarakatFeedback" hidden></p>
+        <p class="game-read-word" id="gameHarakatCorrect" hidden></p>
+        <button type="button" class="btn btn-outline btn-sm" id="gameHarakatNextBtn" hidden>Mot suivant →</button>
+      </div>
     </div>
   </div>
   <div class="game-end" id="gameEnd" hidden>
     <h3>Partie terminée&nbsp;!</h3>
     <p id="gameEndScore"></p>
-    <button type="button" class="btn btn-white" id="gameReplayBtn">Rejouer</button>
+    <p class="game-end-message" id="gameEndMessage" hidden></p>
+    <div class="game-end-actions">
+      <button type="button" class="btn btn-white" id="gameReplayBtn">Rejouer</button>
+      <button type="button" class="btn btn-outline-white" id="gameContinueBtn" hidden>Continuer vers le module suivant →</button>
+    </div>
   </div>
 </div>
 
-<script src="js/main.js?v=35"></script>
+<script src="js/main.js?v=36"></script>
 </body>
 </html>

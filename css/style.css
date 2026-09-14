@@ -956,6 +956,8 @@ section[id] { scroll-margin-top: 88px; }
 .game-read-panel .btn { margin: 0 auto; }
 #gameReadListenBtn { margin-bottom: 16px; }
 #gameReadNextBtn[hidden] { display: none; }
+#gameDicteeRevealBtn[hidden] { display: none; }
+#gameDicteeNextBtn[hidden] { display: none; }
 .game-end {
   flex: 1;
   display: flex;
@@ -968,6 +970,76 @@ section[id] { scroll-margin-top: 88px; }
 .game-end[hidden] { display: none; }
 .game-end h3 { color: #fff; font-family: var(--font-heading); margin-bottom: 10px; }
 .game-end p { color: rgba(255,255,255,0.85); margin-bottom: 24px; font-size: 1.3rem; }
+.game-end-message {
+  max-width: 420px;
+  font-size: 1rem !important;
+  line-height: 1.5;
+  background: rgba(255,255,255,0.12);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin: -8px 0 24px !important;
+}
+.game-end-actions { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+.game-end-actions[hidden] { display: none; }
+#gameContinueBtn[hidden] { display: none; }
+
+.game-harakat-panel { padding: 8px 0 4px; }
+.game-harakat-panel[hidden] { display: none; }
+.game-harakat-panel .btn { margin: 0 auto; }
+#gameHarakatListenBtn { margin-bottom: 24px; }
+.harakat-slots {
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  direction: rtl;
+  margin-bottom: 24px;
+}
+.harakat-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: var(--font-arabic);
+}
+.harakat-slot-base { font-size: 2.6rem; color: var(--color-navy); line-height: 1; }
+.harakat-slot-placeholder {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 2px dashed var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  color: var(--color-teal-dark);
+  background: #fff;
+}
+.harakat-slot.is-armed .harakat-slot-placeholder { border-color: var(--color-orange); border-style: solid; }
+.harakat-slot.is-correct .harakat-slot-placeholder { border-color: var(--color-teal); border-style: solid; background: var(--color-teal); color: #fff; }
+.harakat-slot.is-wrong .harakat-slot-placeholder { border-color: #E4534B; border-style: solid; background: #E4534B; color: #fff; }
+.harakat-picker { display: flex; justify-content: center; gap: 10px; margin-bottom: 22px; }
+.harakat-picker-btn {
+  font-family: var(--font-arabic);
+  font-size: 1.5rem;
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  border: 2px solid var(--color-border);
+  background: #fff;
+  color: var(--color-navy);
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+.harakat-picker-btn:hover { border-color: var(--color-teal); }
+.harakat-picker-btn.is-armed { background: var(--color-orange); border-color: var(--color-orange); color: #fff; }
+#gameHarakatCheckBtn[hidden] { display: none; }
+#gameHarakatNextBtn[hidden] { display: none; }
 
 @media (max-width: 680px) {
   .game-answer { font-size: 1.5rem; padding: 16px 6px; }

@@ -1147,6 +1147,18 @@
         return units.map(function (u) { return UNIT_TEXT[u]; }).join("");
       }
 
+      // Jeu "Place les harakat" : uniquement les mots dont TOUTES les
+      // unites sont en voyelle simple (fatha/damma/kasra), sans
+      // prolongation ni tanwin - le squelette de lettres est affiche,
+      // l'enfant doit retrouver la bonne voyelle par l'oreille. Le
+      // sukoun/chadda ne sont pas encore exploitables ici (audio non
+      // isolable dans les enregistrements actuels du fascicule 4).
+      function buildHarakatPool(moduleNumber) {
+        return buildWordPool(moduleNumber).filter(function (w) {
+          return w.units.every(function (u) { return OPEN_FORMS.indexOf(unitForm(u)) !== -1; });
+        });
+      }
+
       // Genere des variantes "proches" d'une sequence d'unites, en
       // appliquant un seul type de transformation a la fois (voyelle
       // changee, prolongation ajoutee/retiree, ordre inverse, lettre
@@ -1370,32 +1382,62 @@
       var gameFeedback = document.getElementById("gameFeedback");
       var gameNextBtn = document.getElementById("gameNextBtn");
       var gameEndScore = document.getElementById("gameEndScore");
+      var gameEndMessage = document.getElementById("gameEndMessage");
       var gameReplayBtn = document.getElementById("gameReplayBtn");
+      var gameContinueBtn = document.getElementById("gameContinueBtn");
+      var gameDicteeTab = document.getElementById("gameDicteeTab");
+      var gameHarakatTab = document.getElementById("gameHarakatTab");
+      var gameDicteePanel = document.getElementById("gameDicteePanel");
+      var gameDicteeWord = document.getElementById("gameDicteeWord");
+      var gameDicteeListenBtn = document.getElementById("gameDicteeListenBtn");
+      var gameDicteeRevealBtn = document.getElementById("gameDicteeRevealBtn");
+      var gameDicteeNextBtn = document.getElementById("gameDicteeNextBtn");
+      var gameHarakatPanel = document.getElementById("gameHarakatPanel");
+      var gameHarakatListenBtn = document.getElementById("gameHarakatListenBtn");
+      var harakatSlots = document.getElementById("harakatSlots");
+      var harakatPicker = document.getElementById("harakatPicker");
+      var gameHarakatCheckBtn = document.getElementById("gameHarakatCheckBtn");
+      var gameHarakatFeedback = document.getElementById("gameHarakatFeedback");
+      var gameHarakatCorrect = document.getElementById("gameHarakatCorrect");
+      var gameHarakatNextBtn = document.getElementById("gameHarakatNextBtn");
 
       var INSTRUCTION_TEXT = {
         sound: isEnglish ? "Listen, then choose the sound you heard." : "Écoute puis choisis le son que tu as entendu.",
         word: isEnglish ? "Listen, then choose the word you heard." : "Écoute puis choisis le mot que tu as entendu."
       };
 
+      var HARAKAT_MARK = { fatha: "َ", damma: "ُ", kasra: "ِ" };
+      var HARAKAT_ORDER = ["fatha", "damma", "kasra"];
+      var HARAKAT_LABEL = {
+        fatha: "ـ" + HARAKAT_MARK.fatha,
+        damma: "ـ" + HARAKAT_MARK.damma,
+        kasra: "ـ" + HARAKAT_MARK.kasra
+      };
+      // Categories ayant un score objectif (bonne/mauvaise reponse) : seules
+      // celles-ci passent par la regle des 80% en fin de serie. "read" et
+      // "dictee" sont auto-corrigees par l'enfant, sans score mesurable.
+      var SCORED_CATEGORIES = { sound: true, word: true, harakat: true };
+
       var gameAudio = null;
       var gameState = null;
 
-      // Historique (en memoire, le temps de la session) des mots deja lus
-      // en "Lire un mot", par module : sert a eviter de faire revoir tout
-      // de suite les memes mots d'une serie a l'autre. Jamais persiste sur
+      // Historique (en memoire, le temps de la session) des mots deja vus
+      // par categorie et par module : sert a eviter de faire revoir tout de
+      // suite les memes mots d'une serie a l'autre. Jamais persiste sur
       // disque - repart a zero au rechargement de la page.
-      var recentReadHistory = {};
-      function markRecentRead(moduleNumber, key) {
-        var entry = recentReadHistory[moduleNumber];
-        if (!entry) { entry = recentReadHistory[moduleNumber] = { order: [], has: {} }; }
+      var recentWordHistory = {};
+      function markRecentWord(category, moduleNumber, key) {
+        var histKey = category + "_" + moduleNumber;
+        var entry = recentWordHistory[histKey];
+        if (!entry) { entry = recentWordHistory[histKey] = { order: [], has: {} }; }
         if (!entry.has[key]) {
           entry.order.push(key);
           entry.has[key] = true;
           if (entry.order.length > 24) { delete entry.has[entry.order.shift()]; }
         }
       }
-      function recentReadSet(moduleNumber) {
-        var entry = recentReadHistory[moduleNumber];
+      function recentWordSet(category, moduleNumber) {
+        var entry = recentWordHistory[category + "_" + moduleNumber];
         return entry ? entry.has : {};
       }
 
@@ -1415,7 +1457,33 @@
         gameEnd.hidden = false;
         gameEndScore.textContent = gameState.category === "read"
           ? (isEnglish ? "You read " + QUESTIONS_PER_ROUND + " words!" : "Tu as lu " + QUESTIONS_PER_ROUND + " mots !")
-          : gameState.score + " / " + QUESTIONS_PER_ROUND;
+          : gameState.category === "dictee"
+            ? (isEnglish ? "You wrote " + QUESTIONS_PER_ROUND + " words!" : "Tu as écrit " + QUESTIONS_PER_ROUND + " mots !")
+            : gameState.score + " / " + QUESTIONS_PER_ROUND;
+
+        // Regle des 80% : recommande la suite ou l'entrainement, mais ne
+        // bloque JAMAIS l'acces au module suivant - uniquement pour les
+        // categories a score objectif (SCORED_CATEGORIES).
+        var nextModuleBtn = document.querySelector('.js-open-game[data-module="' + (Number(gameState.moduleNumber) + 1) + '"]');
+        if (SCORED_CATEGORIES[gameState.category]) {
+          var pct = Math.round((gameState.score / QUESTIONS_PER_ROUND) * 100);
+          gameEndMessage.hidden = false;
+          if (pct >= 80) {
+            gameEndMessage.textContent = isEnglish
+              ? "Well done! You've mastered this level enough to move on to the next module."
+              : "Bravo ! Tu maîtrises suffisamment ce niveau pour passer au module suivant.";
+            gameContinueBtn.textContent = isEnglish ? "Continue to next module →" : "Continuer vers le module suivant →";
+          } else {
+            gameEndMessage.textContent = isEnglish
+              ? "You can move on to the next module, but it would be better to practice this module a bit more to really master these sounds before continuing."
+              : "Tu peux continuer vers le module suivant, mais il serait préférable de t'entraîner encore un peu sur ce module pour bien maîtriser les sons avant de poursuivre.";
+            gameContinueBtn.textContent = isEnglish ? "Continue anyway →" : "Continuer quand même →";
+          }
+          gameContinueBtn.hidden = !nextModuleBtn;
+        } else {
+          gameEndMessage.hidden = true;
+          gameContinueBtn.hidden = true;
+        }
       }
 
       function nextQuestion() {
@@ -1425,6 +1493,14 @@
         }
         if (gameState.category === "read") {
           nextReadQuestion();
+          return;
+        }
+        if (gameState.category === "dictee") {
+          nextDicteeQuestion();
+          return;
+        }
+        if (gameState.category === "harakat") {
+          nextHarakatQuestion();
           return;
         }
         var pool = gameState.pool;
@@ -1484,7 +1560,7 @@
       // memes enregistrements humains, meme regle cumulative par module.
       function nextReadQuestion() {
         var pool = gameState.pool;
-        var recentSet = recentReadSet(gameState.moduleNumber);
+        var recentSet = recentWordSet("read", gameState.moduleNumber);
 
         // Priorite : mots pas encore vus dans cette serie ET pas vus
         // recemment dans une serie precedente de ce module. Si le module
@@ -1498,7 +1574,7 @@
 
         var correct = pickWeighted(candidates, gameState.moduleNumber);
         gameState.usedKeys[correct.key] = true;
-        markRecentRead(gameState.moduleNumber, correct.key);
+        markRecentWord("read", gameState.moduleNumber, correct.key);
         gameState.questionIndex += 1;
         gameState.current = { correct: correct, listened: false };
 
@@ -1506,6 +1582,125 @@
         gameReadListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameReadNextBtn.hidden = true;
         gameScoreEl.textContent = (isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
+      }
+
+      // "Dictee pure" : l'enfant entend le mot (jamais affiche a l'ecran)
+      // et l'ecrit lui-meme sur une feuille, sans choix ni indice. La
+      // correction n'apparait qu'a sa demande, via "Afficher la
+      // correction" - jamais automatiquement. Reutilise le meme pool que
+      // "Reconnaitre le mot"/"Lire un mot" (memes mots, memes audios),
+      // avec son propre historique anti-repetition.
+      function nextDicteeQuestion() {
+        var pool = gameState.pool;
+        var recentSet = recentWordSet("dictee", gameState.moduleNumber);
+
+        var notUsed = pool.filter(function (item) { return !gameState.usedKeys[item.key]; });
+        var notUsedAndFresh = notUsed.filter(function (item) { return !recentSet[item.key]; });
+        var candidates = notUsedAndFresh.length ? notUsedAndFresh : (notUsed.length ? notUsed : pool);
+        if (!notUsed.length) { gameState.usedKeys = {}; }
+
+        var correct = pickWeighted(candidates, gameState.moduleNumber);
+        gameState.usedKeys[correct.key] = true;
+        markRecentWord("dictee", gameState.moduleNumber, correct.key);
+        gameState.questionIndex += 1;
+        gameState.current = { correct: correct };
+
+        gameDicteeWord.textContent = correct.arabic;
+        gameDicteeWord.hidden = true;
+        gameDicteeListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
+        gameDicteeRevealBtn.hidden = false;
+        gameDicteeNextBtn.hidden = true;
+        gameScoreEl.textContent = (isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
+      }
+
+      // "J'ecoute et je place les harakat" : le squelette de lettres est
+      // affiche, l'enfant doit entendre le mot et poser la bonne voyelle
+      // (fatha/damma/kasra) sur chaque lettre avant de valider. Pool filtre
+      // par buildHarakatPool (voyelles simples uniquement pour l'instant).
+      function nextHarakatQuestion() {
+        var pool = gameState.pool;
+        var recentSet = recentWordSet("harakat", gameState.moduleNumber);
+
+        var notUsed = pool.filter(function (item) { return !gameState.usedKeys[item.key]; });
+        var notUsedAndFresh = notUsed.filter(function (item) { return !recentSet[item.key]; });
+        var candidates = notUsedAndFresh.length ? notUsedAndFresh : (notUsed.length ? notUsed : pool);
+        if (!notUsed.length) { gameState.usedKeys = {}; }
+
+        var correct = pickWeighted(candidates, gameState.moduleNumber);
+        gameState.usedKeys[correct.key] = true;
+        markRecentWord("harakat", gameState.moduleNumber, correct.key);
+        gameState.questionIndex += 1;
+        gameState.current = { correct: correct, slots: [], armedForm: null, checked: false };
+
+        renderHarakatSlots(correct);
+        renderHarakatPicker();
+        gameHarakatCheckBtn.hidden = true;
+        gameHarakatFeedback.hidden = true;
+        gameHarakatFeedback.className = "game-feedback";
+        gameHarakatCorrect.hidden = true;
+        gameHarakatNextBtn.hidden = true;
+        renderScore();
+
+        playSound(correct);
+      }
+
+      function renderHarakatSlotContent(idx) {
+        var slot = gameState.current.slots[idx];
+        var placeholder = harakatSlots.children[idx].querySelector(".harakat-slot-placeholder");
+        placeholder.textContent = slot.filled ? HARAKAT_MARK[slot.filled] : "";
+      }
+
+      function assignArmedToSlot(idx) {
+        if (gameState.current.checked) return;
+        var form = gameState.current.armedForm;
+        if (!form) return;
+        gameState.current.slots[idx].filled = form;
+        renderHarakatSlotContent(idx);
+        gameState.current.armedForm = null;
+        Array.prototype.forEach.call(harakatPicker.children, function (b) { b.classList.remove("is-armed"); });
+        var allFilled = gameState.current.slots.every(function (s) { return s.filled; });
+        gameHarakatCheckBtn.hidden = !allFilled;
+      }
+
+      function renderHarakatSlots(correct) {
+        harakatSlots.innerHTML = "";
+        gameState.current.slots = correct.units.map(function (unitId) {
+          return { unitId: unitId, filled: null };
+        });
+        gameState.current.slots.forEach(function (slot, idx) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "harakat-slot";
+          var baseSpan = document.createElement("span");
+          baseSpan.className = "harakat-slot-base";
+          baseSpan.textContent = ALL_LETTERS_BY_ID[unitLetter(slot.unitId)].char;
+          var placeholder = document.createElement("span");
+          placeholder.className = "harakat-slot-placeholder";
+          btn.appendChild(baseSpan);
+          btn.appendChild(placeholder);
+          btn.addEventListener("click", function () { assignArmedToSlot(idx); });
+          harakatSlots.appendChild(btn);
+        });
+      }
+
+      function armHarakat(form, btnEl) {
+        if (gameState.current.checked) return;
+        var alreadyArmed = gameState.current.armedForm === form;
+        Array.prototype.forEach.call(harakatPicker.children, function (b) { b.classList.remove("is-armed"); });
+        gameState.current.armedForm = alreadyArmed ? null : form;
+        if (!alreadyArmed) { btnEl.classList.add("is-armed"); }
+      }
+
+      function renderHarakatPicker() {
+        harakatPicker.innerHTML = "";
+        HARAKAT_ORDER.forEach(function (form) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "harakat-picker-btn";
+          btn.textContent = HARAKAT_LABEL[form];
+          btn.addEventListener("click", function () { armHarakat(form, btn); });
+          harakatPicker.appendChild(btn);
+        });
       }
 
       function onAnswer(choice, btnEl) {
@@ -1540,9 +1735,13 @@
         gameSoundTab.classList.toggle("is-active", category === "sound");
         gameWordTab.classList.toggle("is-active", category === "word");
         gameReadTab.classList.toggle("is-active", category === "read");
+        gameDicteeTab.classList.toggle("is-active", category === "dictee");
+        gameHarakatTab.classList.toggle("is-active", category === "harakat");
         gameInstruction.textContent = INSTRUCTION_TEXT[category] || "";
-        gameQuizPanel.hidden = category === "read";
+        gameQuizPanel.hidden = category !== "sound" && category !== "word";
         gameReadPanel.hidden = category !== "read";
+        gameDicteePanel.hidden = category !== "dictee";
+        gameHarakatPanel.hidden = category !== "harakat";
       }
 
       function updateCategoryTabs(moduleNumber) {
@@ -1555,10 +1754,18 @@
         gameWordTab.classList.toggle("is-disabled", !wordReady);
         gameReadTab.disabled = !wordReady;
         gameReadTab.classList.toggle("is-disabled", !wordReady);
+        gameDicteeTab.disabled = !wordReady;
+        gameDicteeTab.classList.toggle("is-disabled", !wordReady);
+        var harakatPool = buildHarakatPool(moduleNumber);
+        var harakatReady = harakatPool.length >= 2;
+        gameHarakatTab.disabled = !harakatReady;
+        gameHarakatTab.classList.toggle("is-disabled", !harakatReady);
       }
 
       function startRound(moduleNumber, title, category) {
-        var pool = category === "sound" ? buildSoundPool(moduleNumber) : buildWordPool(moduleNumber);
+        var pool = category === "sound" ? buildSoundPool(moduleNumber)
+          : category === "harakat" ? buildHarakatPool(moduleNumber)
+          : buildWordPool(moduleNumber);
         if (!pool.length) return false;
         gameState = { moduleNumber: moduleNumber, title: title, category: category, pool: pool, questionIndex: 0, score: 0, current: null, usedKeys: {} };
         gameModalTitle.textContent = title;
@@ -1605,6 +1812,14 @@
         if (!gameState || gameReadTab.disabled || gameState.category === "read") return;
         startRound(gameState.moduleNumber, gameState.title, "read");
       });
+      gameDicteeTab.addEventListener("click", function () {
+        if (!gameState || gameDicteeTab.disabled || gameState.category === "dictee") return;
+        startRound(gameState.moduleNumber, gameState.title, "dictee");
+      });
+      gameHarakatTab.addEventListener("click", function () {
+        if (!gameState || gameHarakatTab.disabled || gameState.category === "harakat") return;
+        startRound(gameState.moduleNumber, gameState.title, "harakat");
+      });
       gamePlayBtn.addEventListener("click", function () {
         if (gameState && gameState.current) playSound(gameState.current.correct);
       });
@@ -1617,8 +1832,54 @@
         gameReadNextBtn.hidden = false;
       });
       gameReadNextBtn.addEventListener("click", nextQuestion);
+      gameDicteeListenBtn.addEventListener("click", function () {
+        if (!gameState || !gameState.current) return;
+        playSound(gameState.current.correct);
+        gameDicteeListenBtn.textContent = isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
+      });
+      gameDicteeRevealBtn.addEventListener("click", function () {
+        if (!gameState || !gameState.current) return;
+        gameDicteeWord.hidden = false;
+        gameDicteeRevealBtn.hidden = true;
+        gameDicteeNextBtn.hidden = false;
+      });
+      gameDicteeNextBtn.addEventListener("click", nextQuestion);
+      gameHarakatListenBtn.addEventListener("click", function () {
+        if (gameState && gameState.current) playSound(gameState.current.correct);
+      });
+      gameHarakatCheckBtn.addEventListener("click", function () {
+        if (!gameState || !gameState.current || gameState.current.checked) return;
+        gameState.current.checked = true;
+        var allCorrect = true;
+        gameState.current.slots.forEach(function (slot, idx) {
+          var isRight = slot.filled === unitForm(slot.unitId);
+          if (!isRight) allCorrect = false;
+          harakatSlots.children[idx].classList.add(isRight ? "is-correct" : "is-wrong");
+        });
+        if (allCorrect) { gameState.score += 1; }
+
+        Array.prototype.forEach.call(harakatPicker.children, function (b) { b.disabled = true; });
+        gameHarakatCheckBtn.hidden = true;
+        gameHarakatFeedback.hidden = false;
+        gameHarakatFeedback.className = "game-feedback " + (allCorrect ? "is-correct" : "is-wrong");
+        gameHarakatFeedback.textContent = allCorrect
+          ? (isEnglish ? "Correct!" : "Bravo, c'est la bonne réponse !")
+          : (isEnglish ? "Not quite — here is the right answer." : "Ce n'était pas ça — voici la bonne réponse.");
+        gameHarakatCorrect.hidden = false;
+        gameHarakatCorrect.textContent = gameState.current.correct.arabic;
+        gameHarakatNextBtn.hidden = false;
+        renderScore();
+      });
+      gameHarakatNextBtn.addEventListener("click", nextQuestion);
       gameReplayBtn.addEventListener("click", function () {
         startRound(gameState.moduleNumber, gameState.title, gameState.category);
+      });
+      gameContinueBtn.addEventListener("click", function () {
+        var nextModule = String(Number(gameState.moduleNumber) + 1);
+        var nextBtn = document.querySelector('.js-open-game[data-module="' + nextModule + '"]');
+        if (!nextBtn) return;
+        if (!startRound(nextModule, nextBtn.getAttribute("data-title"), "sound")) return;
+        updateCategoryTabs(nextModule);
       });
       gameModalClose.addEventListener("click", closeGame);
       document.addEventListener("keydown", function (e) {
