@@ -442,17 +442,26 @@ section[id] { scroll-margin-top: 88px; }
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 44px;
   padding: 20px;
   text-align: center;
   background: linear-gradient(160deg, var(--color-teal-10), var(--color-bg-alt) 75%);
 }
-.program-thumb-letters span {
+.program-thumb-number {
+  font-family: var(--font-arabic);
+  font-weight: 700;
+  font-size: 8rem;
+  color: var(--color-orange);
+  line-height: 1;
+}
+.program-thumb-list {
   font-family: var(--font-arabic);
   direction: rtl;
-  font-size: 1.9rem;
-  line-height: 1.7;
+  font-size: 1.6rem;
+  line-height: 1.6;
   color: var(--color-navy);
 }
 .program-card-free { border-color: var(--color-orange); }
