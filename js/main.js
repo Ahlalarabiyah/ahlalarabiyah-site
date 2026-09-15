@@ -1879,6 +1879,12 @@
       var gameHarakatFeedback = document.getElementById("gameHarakatFeedback");
       var gameHarakatCorrect = document.getElementById("gameHarakatCorrect");
       var gameHarakatNextBtn = document.getElementById("gameHarakatNextBtn");
+      var gameSortPanel = document.getElementById("gameSortPanel");
+      var gameSortLetter = document.getElementById("gameSortLetter");
+      var gameSortSunBtn = document.getElementById("gameSortSunBtn");
+      var gameSortMoonBtn = document.getElementById("gameSortMoonBtn");
+      var gameSortFeedback = document.getElementById("gameSortFeedback");
+      var gameSortNextBtn = document.getElementById("gameSortNextBtn");
 
       var INSTRUCTION_TEXT = {
         sound: isEnglish ? "Listen, then choose the sound you heard." : "Écoute puis choisis le son que tu as entendu.",
@@ -1938,10 +1944,29 @@
       // Categories ayant un score objectif (bonne/mauvaise reponse) : seules
       // celles-ci passent par la regle des 80% en fin de serie. "read" et
       // "dictee" sont auto-corrigees par l'enfant, sans score mesurable.
-      var SCORED_CATEGORIES = { sound: true, word: true, harakat: true, script: true };
+      var SCORED_CATEGORIES = { sound: true, word: true, harakat: true, script: true, sort: true };
 
       function buildScriptChoicePool(moduleNumber) {
         return SCRIPT_CHOICE_WORDS.filter(function (w) { return w.minModule <= Number(moduleNumber); });
+      }
+
+      // "Solaire ou lunaire ?" : classification des 28 lettres dans la
+      // bonne colonne. Duplique volontairement SUN_MOON_TYPE (deja defini
+      // dans le bloc "Formes des lettres", non accessible depuis cette
+      // page) - meme pattern que cumulativeLetterIds duplique ailleurs.
+      var SORT_LETTER_TYPE = {
+        taa: "sun", thaa: "sun", dal: "sun", thal: "sun", reh: "sun", zain: "sun",
+        seen: "sun", sheen: "sun", sad: "sun", dad: "sun", tah: "sun", zah: "sun",
+        lam: "sun", noon: "sun",
+        alif: "moon", baa: "moon", jim: "moon", haa: "moon", khaa: "moon",
+        ain: "moon", ghain: "moon", feh: "moon", qaf: "moon", kaf: "moon",
+        meem: "moon", heh: "moon", waw: "moon", yeh: "moon"
+      };
+
+      function buildSortPool() {
+        var ids = [];
+        MODULES.forEach(function (m) { ids = ids.concat(m.letterIds); });
+        return ids.map(function (id) { return { id: id, type: SORT_LETTER_TYPE[id] }; });
       }
 
       var gameAudio = null;
@@ -2132,6 +2157,10 @@
         }
         if (gameState.category === "script") {
           nextScriptQuestion();
+          return;
+        }
+        if (gameState.category === "sort") {
+          nextSortQuestion();
           return;
         }
         var pool = gameState.pool;
@@ -2366,7 +2395,7 @@
         choices.forEach(function (choice) {
           var btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "letterlab-cell game-answer game-answer-word";
+          btn.className = "letterlab-cell game-answer game-answer-word game-answer-script";
           btn.textContent = choice.text;
           btn.addEventListener("click", function () { onScriptAnswer(choice, btn); });
           gameAnswers.appendChild(btn);
@@ -2408,6 +2437,70 @@
         renderScore();
       }
 
+      // "Solaire ou lunaire ?" : une lettre a la fois, l'enfant la place
+      // dans la bonne colonne (clic direct sur la colonne, pas de drag&drop
+      // - plus fiable sur mobile, meme logique "on touche pour poser" que
+      // les autres jeux). Les 28 lettres tournent, avec anti-repetition.
+      function nextSortQuestion() {
+        var pool = gameState.pool;
+        var recentSet = recentWordSet("sort", gameState.moduleNumber);
+
+        var notUsed = pool.filter(function (item) { return !gameState.usedKeys[item.id]; });
+        var notUsedAndFresh = notUsed.filter(function (item) { return !recentSet[item.id]; });
+        var candidates = notUsedAndFresh.length ? notUsedAndFresh : (notUsed.length ? notUsed : pool);
+        if (!notUsed.length) { gameState.usedKeys = {}; }
+
+        var item = pickWeighted(candidates, gameState.moduleNumber);
+        gameState.usedKeys[item.id] = true;
+        markRecentWord("sort", gameState.moduleNumber, item.id);
+        gameState.questionIndex += 1;
+        gameState.current = { item: item, answered: false };
+
+        gameSortLetter.textContent = ALL_LETTERS_BY_ID[item.id].char;
+        gameSortSunBtn.disabled = false;
+        gameSortMoonBtn.disabled = false;
+        gameSortSunBtn.classList.remove("is-correct", "is-wrong");
+        gameSortMoonBtn.classList.remove("is-correct", "is-wrong");
+        gameSortFeedback.hidden = true;
+        gameSortFeedback.className = "game-feedback";
+        gameSortFeedback.textContent = "";
+        gameSortNextBtn.hidden = true;
+        renderScore();
+      }
+
+      function onSortAnswer(type, btnEl) {
+        if (gameState.current.answered) return;
+        gameState.current.answered = true;
+        var item = gameState.current.item;
+        var isCorrect = type === item.type;
+        if (isCorrect) { gameState.score += 1; }
+
+        gameSortSunBtn.disabled = true;
+        gameSortMoonBtn.disabled = true;
+        btnEl.classList.add(isCorrect ? "is-correct" : "is-wrong");
+        if (!isCorrect) {
+          (item.type === "sun" ? gameSortSunBtn : gameSortMoonBtn).classList.add("is-correct");
+        }
+
+        var letterChar = ALL_LETTERS_BY_ID[item.id].char;
+        var explain = item.type === "sun"
+          ? (isEnglish
+              ? letterChar + " is a sun letter."
+              : letterChar + " est une lettre solaire.")
+          : (isEnglish
+              ? letterChar + " is a moon letter."
+              : letterChar + " est une lettre lunaire.");
+
+        gameSortFeedback.hidden = false;
+        gameSortFeedback.className = "game-feedback " + (isCorrect ? "is-correct" : "is-wrong");
+        gameSortFeedback.textContent = (isCorrect
+          ? (isEnglish ? "Correct! " : "Bravo ! ")
+          : (isEnglish ? "Not quite — " : "Ce n'était pas ça — ")) + explain;
+
+        gameSortNextBtn.hidden = false;
+        renderScore();
+      }
+
       function onAnswer(choice, btnEl) {
         if (gameState.current.answered) return;
         gameState.current.answered = true;
@@ -2444,13 +2537,14 @@
         gameHarakatTab.classList.toggle("is-active", category === "harakat");
         gameInstruction.textContent = INSTRUCTION_TEXT[category] || "";
         gameQuizPanel.hidden = category !== "sound" && category !== "word" && category !== "script";
-        // Pas d'audio pour "script" (uniquement une comparaison visuelle
-        // pour l'instant, voir analyse validee) : le bouton "Ecouter" du
-        // panneau partage n'a pas lieu d'etre pour cette categorie.
-        gamePlayBtn.hidden = category === "script";
+        // Pas d'audio pour "script"/"sort" (comparaisons/classification
+        // visuelles, voir analyses validees) : le bouton "Ecouter" du
+        // panneau partage n'a pas lieu d'etre pour ces categories.
+        gamePlayBtn.hidden = category === "script" || category === "sort";
         gameReadPanel.hidden = category !== "read";
         gameDicteePanel.hidden = category !== "dictee";
         gameHarakatPanel.hidden = category !== "harakat";
+        gameSortPanel.hidden = category !== "sort";
       }
 
       function updateCategoryTabs(moduleNumber) {
@@ -2475,6 +2569,7 @@
         var pool = category === "sound" ? buildSoundPool(moduleNumber)
           : category === "harakat" ? buildHarakatPool(moduleNumber)
           : category === "script" ? buildScriptChoicePool(moduleNumber)
+          : category === "sort" ? buildSortPool()
           : buildWordPool(moduleNumber);
         if (!pool.length) return false;
         gameState = { moduleNumber: moduleNumber, title: title, category: category, pool: pool, questionIndex: 0, score: 0, current: null, usedKeys: {} };
@@ -2501,6 +2596,14 @@
       function startScriptGame(title) {
         gamePrestartWarning.hidden = true;
         if (!startRound("13", title, "script")) return;
+        gameCategoryTabs.hidden = true;
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function startSortGame(title) {
+        gamePrestartWarning.hidden = true;
+        if (!startRound("14", title, "sort")) return;
         gameCategoryTabs.hidden = true;
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
@@ -2575,6 +2678,11 @@
           startScriptGame(btn.getAttribute("data-title"));
         });
       });
+      document.querySelectorAll(".js-open-sort-game").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          startSortGame(btn.getAttribute("data-title"));
+        });
+      });
       gameSoundTab.addEventListener("click", function () {
         if (!gameState || gameState.category === "sound") return;
         startRound(gameState.moduleNumber, gameState.title, "sound");
@@ -2599,6 +2707,15 @@
         if (gameState && gameState.category !== "script" && gameState.current) playSound(gameState.current.correct);
       });
       gameNextBtn.addEventListener("click", nextQuestion);
+      gameSortSunBtn.addEventListener("click", function () {
+        if (!gameState || gameState.category !== "sort") return;
+        onSortAnswer("sun", gameSortSunBtn);
+      });
+      gameSortMoonBtn.addEventListener("click", function () {
+        if (!gameState || gameState.category !== "sort") return;
+        onSortAnswer("moon", gameSortMoonBtn);
+      });
+      gameSortNextBtn.addEventListener("click", nextQuestion);
       gameReadListenBtn.addEventListener("click", function () {
         if (!gameState || !gameState.current) return;
         playSound(gameState.current.correct);

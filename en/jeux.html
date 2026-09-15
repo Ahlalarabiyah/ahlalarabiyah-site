@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=46">
+<link rel="stylesheet" href="../css/style.css?v=47">
 </head>
 <body>
 
@@ -212,6 +212,17 @@
             Play
           </button>
         </article>
+
+        <article class="module-card module-card-bonus">
+          <span class="module-number">Module 14</span>
+          <p class="module-letters">☀️ ⋅ 🌙</p>
+          <p class="module-progress">Sun or moon?</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-sort-game"
+                  data-title="Module 14 — Sun or moon?">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
+            Play
+          </button>
+        </article>
       </div>
 
       <p class="page-cta-back"><a href="modules.html" class="btn btn-outline btn-sm">Discover the modules →</a></p>
@@ -313,6 +324,22 @@
         <p class="game-read-word" id="gameHarakatCorrect" hidden></p>
         <button type="button" class="btn btn-outline btn-sm" id="gameHarakatNextBtn" hidden>Next word →</button>
       </div>
+      <div class="game-sort-panel" id="gameSortPanel" hidden>
+        <p class="game-instruction">Is this letter a sun or a moon letter? Place it in the right column.</p>
+        <p class="game-sort-letter" id="gameSortLetter"></p>
+        <div class="game-sort-columns">
+          <button type="button" class="game-sort-column" id="gameSortSunBtn">
+            <span class="game-sort-icon" aria-hidden="true">☀️</span>
+            <span class="game-sort-label">Sun</span>
+          </button>
+          <button type="button" class="game-sort-column" id="gameSortMoonBtn">
+            <span class="game-sort-icon" aria-hidden="true">🌙</span>
+            <span class="game-sort-label">Moon</span>
+          </button>
+        </div>
+        <p class="game-feedback" id="gameSortFeedback" hidden></p>
+        <button type="button" class="btn btn-outline btn-sm" id="gameSortNextBtn" hidden>Next letter →</button>
+      </div>
     </div>
   </div>
   <div class="game-end" id="gameEnd" hidden>
@@ -334,6 +361,6 @@
   </div>
 </div>
 
-<script src="../js/main.js?v=48"></script>
+<script src="../js/main.js?v=49"></script>
 </body>
 </html>

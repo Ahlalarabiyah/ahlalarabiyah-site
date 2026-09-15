@@ -1074,6 +1074,7 @@ section[id] { scroll-margin-top: 88px; }
   justify-content: center;
 }
 .game-answer-word { font-size: 1.4rem; padding: 18px 12px; }
+.game-answer-script { font-size: 1.9rem; padding: 22px 14px; }
 .game-answer.is-correct { background: var(--color-teal); border-color: var(--color-teal); color: #fff; }
 .game-answer.is-correct .letterlab-mark { color: #fff; }
 .game-answer.is-wrong { background: #E4534B; border-color: #E4534B; color: #fff; }
@@ -1195,9 +1196,53 @@ section[id] { scroll-margin-top: 88px; }
 #gameHarakatCheckBtn[hidden] { display: none; }
 #gameHarakatNextBtn[hidden] { display: none; }
 
+/* "Solaire ou lunaire ?" : une lettre a classer, deux colonnes avec un
+   logo au-dessus de chacune (soleil / lune). */
+.game-sort-panel { padding: 8px 0 4px; text-align: center; }
+.game-sort-letter {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  color: var(--color-navy);
+  margin: 4px 0 26px;
+}
+.game-sort-columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.game-sort-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 26px 12px;
+  border-radius: 16px;
+  border: 2px solid var(--color-border);
+  background: #fff;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, transform .1s ease;
+}
+.game-sort-column:hover { transform: translateY(-2px); border-color: var(--color-teal); }
+.game-sort-icon { font-size: 2.4rem; line-height: 1; }
+.game-sort-label { font-family: var(--font-heading); font-weight: 600; color: var(--color-navy); }
+.game-sort-column.is-correct { background: var(--color-teal); border-color: var(--color-teal); }
+.game-sort-column.is-correct .game-sort-label { color: #fff; }
+.game-sort-column.is-wrong { background: #E4534B; border-color: #E4534B; }
+.game-sort-column.is-wrong .game-sort-label { color: #fff; }
+.game-sort-column:disabled { cursor: default; }
+.game-sort-column:disabled:hover { transform: none; border-color: var(--color-border); }
+.game-sort-column.is-correct:disabled:hover, .game-sort-column.is-wrong:disabled:hover { border-color: inherit; }
+#gameSortNextBtn[hidden] { display: none; }
+
 @media (max-width: 680px) {
+  .game-sort-letter { font-size: 3rem; margin-bottom: 18px; }
+  .game-sort-column { padding: 18px 8px; }
+  .game-sort-icon { font-size: 1.9rem; }
   .game-answer { font-size: 1.5rem; padding: 16px 6px; }
   .game-answer-word { font-size: 1.1rem; padding: 14px 8px; }
+  .game-answer-script { font-size: 1.5rem; padding: 18px 10px; }
   .game-category-tab { font-size: 0.72rem; padding: 7px 12px; }
   .game-panel { padding: 20px 16px; }
   .game-read-word { font-size: 2.4rem; margin-bottom: 24px; }
