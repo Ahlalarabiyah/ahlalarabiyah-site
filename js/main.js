@@ -1866,7 +1866,6 @@
       var gamePrestartContinueBtn = document.getElementById("gamePrestartContinueBtn");
       var gameDicteeTab = document.getElementById("gameDicteeTab");
       var gameHarakatTab = document.getElementById("gameHarakatTab");
-      var gameScriptTab = document.getElementById("gameScriptTab");
       var gameDicteePanel = document.getElementById("gameDicteePanel");
       var gameDicteeWord = document.getElementById("gameDicteeWord");
       var gameDicteeListenBtn = document.getElementById("gameDicteeListenBtn");
@@ -2443,7 +2442,6 @@
         gameReadTab.classList.toggle("is-active", category === "read");
         gameDicteeTab.classList.toggle("is-active", category === "dictee");
         gameHarakatTab.classList.toggle("is-active", category === "harakat");
-        gameScriptTab.classList.toggle("is-active", category === "script");
         gameInstruction.textContent = INSTRUCTION_TEXT[category] || "";
         gameQuizPanel.hidden = category !== "sound" && category !== "word" && category !== "script";
         // Pas d'audio pour "script" (uniquement une comparaison visuelle
@@ -2471,11 +2469,6 @@
         var harakatReady = harakatPool.length >= 2;
         gameHarakatTab.disabled = !harakatReady;
         gameHarakatTab.classList.toggle("is-disabled", !harakatReady);
-        // Debloque a partir du module 11 uniquement : lire "ال" dans un mot
-        // suppose de connaitre ل, jamais avant (voir analyse validee).
-        var scriptReady = Number(moduleNumber) >= 11 && buildScriptChoicePool(moduleNumber).length >= 2;
-        gameScriptTab.disabled = !scriptReady;
-        gameScriptTab.classList.toggle("is-disabled", !scriptReady);
       }
 
       function startRound(moduleNumber, title, category) {
@@ -2501,6 +2494,14 @@
         gamePrestartWarning.hidden = true;
         if (!startRound(moduleNumber, title, "sound")) return;
         updateCategoryTabs(moduleNumber);
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function startScriptGame(title) {
+        gamePrestartWarning.hidden = true;
+        if (!startRound("13", title, "script")) return;
+        gameCategoryTabs.hidden = true;
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
       }
@@ -2569,6 +2570,11 @@
         });
       });
       refreshModuleBadges();
+      document.querySelectorAll(".js-open-script-game").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          startScriptGame(btn.getAttribute("data-title"));
+        });
+      });
       gameSoundTab.addEventListener("click", function () {
         if (!gameState || gameState.category === "sound") return;
         startRound(gameState.moduleNumber, gameState.title, "sound");
@@ -2588,10 +2594,6 @@
       gameHarakatTab.addEventListener("click", function () {
         if (!gameState || gameHarakatTab.disabled || gameState.category === "harakat") return;
         startRound(gameState.moduleNumber, gameState.title, "harakat");
-      });
-      gameScriptTab.addEventListener("click", function () {
-        if (!gameState || gameScriptTab.disabled || gameState.category === "script") return;
-        startRound(gameState.moduleNumber, gameState.title, "script");
       });
       gamePlayBtn.addEventListener("click", function () {
         if (gameState && gameState.category !== "script" && gameState.current) playSound(gameState.current.correct);
