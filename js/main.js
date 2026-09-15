@@ -1842,10 +1842,12 @@
       var gameEnd = document.getElementById("gameEnd");
       var gameScoreEl = document.getElementById("gameScore");
       var gameLevelInfo = document.getElementById("gameLevelInfo");
-      var gameCategoryTabs = document.getElementById("gameCategoryTabs");
-      var gameSoundTab = document.getElementById("gameSoundTab");
-      var gameWordTab = document.getElementById("gameWordTab");
-      var gameReadTab = document.getElementById("gameReadTab");
+      var gameBackToMenuBtn = document.getElementById("gameBackToMenuBtn");
+      var gameEndBackToMenuBtn = document.getElementById("gameEndBackToMenuBtn");
+      var gameMenuScreen = document.getElementById("gameMenuScreen");
+      var gameMenuHeading = document.getElementById("gameMenuHeading");
+      var gameMenuLevelInfo = document.getElementById("gameMenuLevelInfo");
+      var gameMenuGrid = document.getElementById("gameMenuGrid");
       var gameQuizPanel = document.getElementById("gameQuizPanel");
       var gameReadPanel = document.getElementById("gameReadPanel");
       var gameReadWord = document.getElementById("gameReadWord");
@@ -1864,8 +1866,6 @@
       var gamePrestartMessage = document.getElementById("gamePrestartMessage");
       var gamePrestartBackBtn = document.getElementById("gamePrestartBackBtn");
       var gamePrestartContinueBtn = document.getElementById("gamePrestartContinueBtn");
-      var gameDicteeTab = document.getElementById("gameDicteeTab");
-      var gameHarakatTab = document.getElementById("gameHarakatTab");
       var gameDicteePanel = document.getElementById("gameDicteePanel");
       var gameDicteeWord = document.getElementById("gameDicteeWord");
       var gameDicteeListenBtn = document.getElementById("gameDicteeListenBtn");
@@ -1885,10 +1885,6 @@
       var gameSortMoonBtn = document.getElementById("gameSortMoonBtn");
       var gameSortFeedback = document.getElementById("gameSortFeedback");
       var gameSortNextBtn = document.getElementById("gameSortNextBtn");
-      var gameSunMoonSubTabs = document.getElementById("gameSunMoonSubTabs");
-      var gameSunMoonScriptTab = document.getElementById("gameSunMoonScriptTab");
-      var gameSunMoonSortTab = document.getElementById("gameSunMoonSortTab");
-      var gameSunMoonSortAllTab = document.getElementById("gameSunMoonSortAllTab");
       var gameSortAllPanel = document.getElementById("gameSortAllPanel");
       var sortAllPool = document.getElementById("sortAllPool");
       var sortAllSunZone = document.getElementById("sortAllSunZone");
@@ -1904,6 +1900,25 @@
         word: isEnglish ? "Listen, then choose the word you heard." : "Écoute puis choisis le mot que tu as entendu.",
         script: isEnglish ? "Which spelling is correct?" : "Quelle est la bonne écriture ?"
       };
+
+      // Menu des jeux (nouvel ecran intermediaire entre la grille des
+      // modules et l'interface complete d'un jeu) : une grande carte par
+      // categorie, icone + titre uniquement (voir renderGameMenu).
+      var GAME_MENU_ITEMS = {
+        sound: { icon: "🎧", title: isEnglish ? "Recognize the sound" : "Reconnaître le son" },
+        word: { icon: "📖", title: isEnglish ? "Recognize the word" : "Reconnaître le mot" },
+        read: { icon: "🗣️", title: isEnglish ? "Read a word" : "Lire un mot" },
+        dictee: { icon: "✍️", title: isEnglish ? "Pure dictation" : "Dictée pure" },
+        harakat: { icon: "🖍️", title: isEnglish ? "Place the harakāt" : "Place les harakāt" },
+        script: { icon: "✍️", title: isEnglish ? "The correct spelling" : "La bonne écriture" },
+        sort: { icon: "☀️🌙", title: isEnglish ? "Sun or moon?" : "Solaire ou lunaire ?" },
+        sortall: { icon: "🗂️", title: isEnglish ? "Sort all the letters" : "Trie toutes les lettres" }
+      };
+      var SUN_MOON_MENU_ITEMS = [
+        { category: "script", disabled: false },
+        { category: "sort", disabled: false },
+        { category: "sortall", disabled: false }
+      ];
 
       // Banque verifiee pour "Je choisis la bonne ecriture" : pour chaque
       // mot, la forme incorrecte ne change QU'UNE seule chose, toujours liee
@@ -2542,22 +2557,11 @@
         renderScore();
       }
 
-      // "sunMoonMode" suit quel sous-jeu du Module 13 est visible en ce
-      // moment ("script"/"sort" passent par setActiveTab comme les autres
-      // categories ; "sortall" est une activite a part, voir
-      // startSortAllGame, qui ne passe jamais par setActiveTab).
-      var sunMoonMode = null;
-
+      // Affiche le bon panneau interne selon la categorie choisie dans le
+      // menu des jeux (voir renderGameMenu/enterGame). Ne gere plus aucun
+      // onglet - la selection du jeu se fait desormais entierement via le
+      // menu, avant d'arriver ici.
       function setActiveTab(category) {
-        gameSoundTab.classList.toggle("is-active", category === "sound");
-        gameWordTab.classList.toggle("is-active", category === "word");
-        gameReadTab.classList.toggle("is-active", category === "read");
-        gameDicteeTab.classList.toggle("is-active", category === "dictee");
-        gameHarakatTab.classList.toggle("is-active", category === "harakat");
-        gameSunMoonScriptTab.classList.toggle("is-active", category === "script");
-        gameSunMoonSortTab.classList.toggle("is-active", category === "sort");
-        gameSunMoonSortAllTab.classList.remove("is-active");
-        sunMoonMode = category;
         gameInstruction.textContent = INSTRUCTION_TEXT[category] || "";
         gameQuizPanel.hidden = category !== "sound" && category !== "word" && category !== "script";
         // Pas d'audio pour "script"/"sort" (comparaisons/classification
@@ -2571,22 +2575,22 @@
         gameSortAllPanel.hidden = true;
       }
 
-      function updateCategoryTabs(moduleNumber) {
-        var showTabs = Number(moduleNumber) > 1;
-        gameCategoryTabs.hidden = !showTabs;
-        if (!showTabs) return;
-        var wordPool = buildWordPool(moduleNumber);
-        var wordReady = wordPool.length >= 2;
-        gameWordTab.disabled = !wordReady;
-        gameWordTab.classList.toggle("is-disabled", !wordReady);
-        gameReadTab.disabled = !wordReady;
-        gameReadTab.classList.toggle("is-disabled", !wordReady);
-        gameDicteeTab.disabled = !wordReady;
-        gameDicteeTab.classList.toggle("is-disabled", !wordReady);
-        var harakatPool = buildHarakatPool(moduleNumber);
-        var harakatReady = harakatPool.length >= 2;
-        gameHarakatTab.disabled = !harakatReady;
-        gameHarakatTab.classList.toggle("is-disabled", !harakatReady);
+      // Construit la liste des jeux disponibles pour un module 1-12 (le
+      // Module 13 utilise SUN_MOON_MENU_ITEMS, fixe). "sound" est toujours
+      // disponible ; les autres categories n'apparaissent qu'a partir du
+      // Module 2 et sont grisees si leur reserve de mots est insuffisante
+      // (meme logique que l'ancienne barre d'onglets).
+      function buildModuleMenuItems(moduleNumber) {
+        var items = [{ category: "sound", disabled: false }];
+        if (Number(moduleNumber) > 1) {
+          var wordReady = buildWordPool(moduleNumber).length >= 2;
+          items.push({ category: "word", disabled: !wordReady });
+          items.push({ category: "read", disabled: !wordReady });
+          items.push({ category: "dictee", disabled: !wordReady });
+          var harakatReady = buildHarakatPool(moduleNumber).length >= 2;
+          items.push({ category: "harakat", disabled: !harakatReady });
+        }
+        return items;
       }
 
       function startRound(moduleNumber, title, category) {
@@ -2609,26 +2613,73 @@
         return true;
       }
 
-      function startGame(moduleNumber, title) {
+      // Menu des jeux : ecran intermediaire obligatoire entre la grille des
+      // modules et l'interface complete d'un jeu (voir analyse validee -
+      // on ne doit jamais arriver directement dans le premier jeu).
+      var menuModuleNumber = null;
+      var menuTitle = null;
+
+      function renderGameMenu(items) {
+        gameMenuGrid.innerHTML = "";
+        items.forEach(function (item) {
+          var def = GAME_MENU_ITEMS[item.category];
+          var card = document.createElement("button");
+          card.type = "button";
+          card.className = "game-menu-card" + (item.disabled ? " is-disabled" : "");
+          card.disabled = item.disabled;
+          var icon = document.createElement("span");
+          icon.className = "game-menu-icon";
+          icon.setAttribute("aria-hidden", "true");
+          icon.textContent = def.icon;
+          var label = document.createElement("span");
+          label.className = "game-menu-label";
+          label.textContent = def.title;
+          card.appendChild(icon);
+          card.appendChild(label);
+          if (!item.disabled) {
+            card.addEventListener("click", function () { enterGame(item.category); });
+          }
+          gameMenuGrid.appendChild(card);
+        });
+      }
+
+      function openGameMenu(moduleNumber, title, items) {
+        menuModuleNumber = moduleNumber;
+        menuTitle = title;
+        gameModalTitle.textContent = title;
+        gameMenuHeading.textContent = isEnglish ? "Games — Module " + moduleNumber : "Jeux du Module " + moduleNumber;
+        var letterCount = cumulativeLetterCount(moduleNumber);
+        gameMenuLevelInfo.textContent = isEnglish
+          ? "Letters learned so far: " + letterCount
+          : "Lettres apprises : " + letterCount;
+        renderGameMenu(items);
         gamePrestartWarning.hidden = true;
-        gameSunMoonSubTabs.hidden = true;
-        if (!startRound(moduleNumber, title, "sound")) return;
-        updateCategoryTabs(moduleNumber);
+        gameBody.hidden = true;
+        gameEnd.hidden = true;
+        gameMenuScreen.hidden = false;
+      }
+
+      function enterGame(category) {
+        gameMenuScreen.hidden = true;
+        if (category === "sortall") {
+          startSortAllGame();
+          return;
+        }
+        startRound(menuModuleNumber, menuTitle, category);
+      }
+
+      function startGame(moduleNumber, title) {
+        openGameMenu(moduleNumber, title, buildModuleMenuItems(moduleNumber));
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
       }
 
       // Module 13 regroupe les 3 jeux "lettres solaires et lunaires" sous
-      // une seule carte, avec ses propres sous-onglets (independants de la
-      // barre gameCategoryTabs des modules 1-12) : "La bonne ecriture" et
-      // "Solaire ou lunaire ?" restent dans le systeme de round/score
-      // existant ; "Trie toutes les lettres" est une activite libre a part
-      // (voir startSortAllGame).
+      // une seule carte : le menu propose "La bonne ecriture", "Solaire ou
+      // lunaire ?" (round/score existant) et "Trie toutes les lettres"
+      // (activite libre a part, voir startSortAllGame).
       function startSunMoonGame(title) {
-        gamePrestartWarning.hidden = true;
-        gameCategoryTabs.hidden = true;
-        if (!startRound("13", title, "script")) return;
-        gameSunMoonSubTabs.hidden = false;
+        openGameMenu("13", title, SUN_MOON_MENU_ITEMS);
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
       }
@@ -2651,15 +2702,6 @@
       var sortAllState = null;
 
       function showSortAllPanel() {
-        gameSoundTab.classList.remove("is-active");
-        gameWordTab.classList.remove("is-active");
-        gameReadTab.classList.remove("is-active");
-        gameDicteeTab.classList.remove("is-active");
-        gameHarakatTab.classList.remove("is-active");
-        gameSunMoonScriptTab.classList.remove("is-active");
-        gameSunMoonSortTab.classList.remove("is-active");
-        gameSunMoonSortAllTab.classList.add("is-active");
-        sunMoonMode = "sortall";
         gameQuizPanel.hidden = true;
         gameReadPanel.hidden = true;
         gameDicteePanel.hidden = true;
@@ -2670,13 +2712,12 @@
 
       function startSortAllGame() {
         gamePrestartWarning.hidden = true;
-        gameModalTitle.textContent = isEnglish ? "Module 13 — Sun and moon letters" : "Module 13 — Lettres solaires et lunaires";
+        gameMenuScreen.hidden = true;
+        gameModalTitle.textContent = menuTitle;
         gameLevelInfo.textContent = "";
         gameScoreEl.textContent = "";
         gameBody.hidden = false;
         gameEnd.hidden = true;
-        gameCategoryTabs.hidden = true;
-        gameSunMoonSubTabs.hidden = false;
         showSortAllPanel();
 
         sortAllState = { pool: shuffleArray(buildSortPool()), armedId: null, correctCount: 0, total: 0, remaining: 0 };
@@ -2692,8 +2733,6 @@
         sortAllReplayBtn.hidden = true;
 
         renderSortAllPool();
-        gameModal.classList.add("is-open");
-        document.body.style.overflow = "hidden";
       }
 
       function renderSortAllPool() {
@@ -2831,40 +2870,16 @@
           startSunMoonGame(btn.getAttribute("data-title"));
         });
       });
-      gameSunMoonScriptTab.addEventListener("click", function () {
-        if (!gameState || sunMoonMode === "script") return;
-        startRound(gameState.moduleNumber, gameState.title, "script");
-      });
-      gameSunMoonSortTab.addEventListener("click", function () {
-        if (!gameState || sunMoonMode === "sort") return;
-        startRound(gameState.moduleNumber, gameState.title, "sort");
-      });
-      gameSunMoonSortAllTab.addEventListener("click", function () {
-        if (sunMoonMode === "sortall") return;
-        startSortAllGame();
-      });
       sortAllSunZone.addEventListener("click", function () { placeSortAllLetter("sun"); });
       sortAllMoonZone.addEventListener("click", function () { placeSortAllLetter("moon"); });
       sortAllReplayBtn.addEventListener("click", startSortAllGame);
-      gameSoundTab.addEventListener("click", function () {
-        if (!gameState || gameState.category === "sound") return;
-        startRound(gameState.moduleNumber, gameState.title, "sound");
+      gameBackToMenuBtn.addEventListener("click", function () {
+        gameBody.hidden = true;
+        gameMenuScreen.hidden = false;
       });
-      gameWordTab.addEventListener("click", function () {
-        if (!gameState || gameWordTab.disabled || gameState.category === "word") return;
-        startRound(gameState.moduleNumber, gameState.title, "word");
-      });
-      gameReadTab.addEventListener("click", function () {
-        if (!gameState || gameReadTab.disabled || gameState.category === "read") return;
-        startRound(gameState.moduleNumber, gameState.title, "read");
-      });
-      gameDicteeTab.addEventListener("click", function () {
-        if (!gameState || gameDicteeTab.disabled || gameState.category === "dictee") return;
-        startRound(gameState.moduleNumber, gameState.title, "dictee");
-      });
-      gameHarakatTab.addEventListener("click", function () {
-        if (!gameState || gameHarakatTab.disabled || gameState.category === "harakat") return;
-        startRound(gameState.moduleNumber, gameState.title, "harakat");
+      gameEndBackToMenuBtn.addEventListener("click", function () {
+        gameEnd.hidden = true;
+        gameMenuScreen.hidden = false;
       });
       gamePlayBtn.addEventListener("click", function () {
         if (gameState && gameState.category !== "script" && gameState.current) playSound(gameState.current.correct);
@@ -2938,8 +2953,7 @@
         // donc le module suivant ne redemandera plus ce rappel ensuite.
         saveModuleOverride(nextModule);
         refreshModuleBadges();
-        if (!startRound(nextModule, nextBtn.getAttribute("data-title"), "sound")) return;
-        updateCategoryTabs(nextModule);
+        openGameMenu(nextModule, nextBtn.getAttribute("data-title"), buildModuleMenuItems(nextModule));
       });
       gameModalClose.addEventListener("click", closeGame);
       document.addEventListener("keydown", function (e) {
