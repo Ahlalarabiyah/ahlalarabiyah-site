@@ -576,9 +576,12 @@ section[id] { scroll-margin-top: 88px; }
 .module-status-available, .module-status-unlocked { color: var(--color-teal-dark); }
 .module-status-locked { color: var(--color-text-light); }
 .module-status-override { color: var(--color-orange); }
-.module-listen { width: 100%; white-space: normal; }
-.module-formlab { width: 100%; white-space: normal; margin-top: 8px; }
-.module-shadda { width: 100%; white-space: normal; margin-top: 8px; }
+.module-listen { width: 100%; white-space: normal; border-color: rgba(22,160,160,0.35); color: var(--color-teal-dark); }
+.module-listen:hover { border-color: var(--color-teal); background: var(--color-teal-10); color: var(--color-teal-dark); }
+.module-formlab { width: 100%; white-space: normal; margin-top: 8px; border-color: rgba(16,60,70,0.55); color: var(--color-navy); }
+.module-formlab:hover { border-color: var(--color-navy); background: var(--color-navy-10); color: var(--color-navy); }
+.module-shadda { width: 100%; white-space: normal; margin-top: 8px; border-color: rgba(238,154,69,0.45); color: var(--color-orange); }
+.module-shadda:hover { border-color: var(--color-orange); background: var(--color-orange-10); color: var(--color-orange); }
 .module-sunmoon { width: 100%; white-space: normal; margin-top: 8px; }
 
 /* ---------- Audience ---------- */
@@ -1082,8 +1085,9 @@ section[id] { scroll-margin-top: 88px; }
 .game-menu-heading { color: #fff; font-family: var(--font-heading); font-weight: 700; font-size: 1.35rem; margin: 6px 0 6px; }
 .game-menu-level-info { color: rgba(255,255,255,0.75); margin-bottom: 26px; }
 .game-menu-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 18px;
 }
 .game-menu-card {
@@ -1092,6 +1096,7 @@ section[id] { scroll-margin-top: 88px; }
   align-items: center;
   justify-content: center;
   gap: 12px;
+  flex: 0 1 230px;
   min-height: 150px;
   background: #fff;
   border-radius: var(--radius-md);
@@ -1357,8 +1362,8 @@ section[id] { scroll-margin-top: 88px; }
   .game-answer-script { font-size: 1.5rem; padding: 18px 10px; }
   .game-panel { padding: 20px 16px; }
   .game-read-word { font-size: 2.4rem; margin-bottom: 24px; }
-  .game-menu-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .game-menu-card { min-height: 130px; padding: 20px 10px; }
+  .game-menu-grid { gap: 14px; }
+  .game-menu-card { flex-basis: 150px; min-height: 130px; padding: 20px 10px; }
   .game-menu-icon { font-size: 2.3rem; }
   .game-menu-heading { font-size: 1.15rem; }
 }
