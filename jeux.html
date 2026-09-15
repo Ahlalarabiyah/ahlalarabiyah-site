@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=47">
+<link rel="stylesheet" href="css/style.css?v=48">
 </head>
 <body>
 
@@ -205,20 +205,9 @@
         <article class="module-card module-card-bonus">
           <span class="module-number">Module 13</span>
           <p class="module-letters">☀️ ⋅ 🌙</p>
-          <p class="module-progress">La bonne écriture</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-script-game"
-                  data-title="Module 13 — La bonne écriture">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Jouer
-          </button>
-        </article>
-
-        <article class="module-card module-card-bonus">
-          <span class="module-number">Module 14</span>
-          <p class="module-letters">☀️ ⋅ 🌙</p>
-          <p class="module-progress">Solaire ou lunaire ?</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-sort-game"
-                  data-title="Module 14 — Solaire ou lunaire ?">
+          <p class="module-progress">Lettres solaires et lunaires</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-sunmoon-game"
+                  data-title="Module 13 — Lettres solaires et lunaires">
             <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
             Jouer
           </button>
@@ -291,6 +280,11 @@
         <button type="button" class="game-category-tab" id="gameDicteeTab">✍️ Dictée pure</button>
         <button type="button" class="game-category-tab" id="gameHarakatTab">🖍️ Place les harakāt</button>
       </div>
+      <div class="game-category-tabs" id="gameSunMoonSubTabs" hidden>
+        <button type="button" class="game-category-tab is-active" id="gameSunMoonScriptTab">✍️ La bonne écriture</button>
+        <button type="button" class="game-category-tab" id="gameSunMoonSortTab">☀️🌙 Solaire ou lunaire ?</button>
+        <button type="button" class="game-category-tab" id="gameSunMoonSortAllTab">🗂️ Trie toutes les lettres</button>
+      </div>
       <div id="gameQuizPanel">
         <p class="game-instruction" id="gameInstruction">Écoute puis choisis le son que tu as entendu.</p>
         <button type="button" class="btn btn-primary btn-sm game-play-btn" id="gamePlayBtn">
@@ -340,6 +334,23 @@
         <p class="game-feedback" id="gameSortFeedback" hidden></p>
         <button type="button" class="btn btn-outline btn-sm" id="gameSortNextBtn" hidden>Lettre suivante →</button>
       </div>
+      <div class="game-sortall-panel" id="gameSortAllPanel" hidden>
+        <p class="game-instruction">Touche une lettre, puis touche la colonne solaire ou lunaire pour la placer.</p>
+        <div class="sortall-pool" id="sortAllPool"></div>
+        <div class="sortall-columns">
+          <button type="button" class="sortall-column" id="sortAllSunZone">
+            <span class="sortall-column-header"><span class="sortall-icon" aria-hidden="true">☀️</span> Solaire</span>
+            <span class="sortall-column-body" id="sortAllSunColumn"></span>
+          </button>
+          <button type="button" class="sortall-column" id="sortAllMoonZone">
+            <span class="sortall-column-header"><span class="sortall-icon" aria-hidden="true">🌙</span> Lunaire</span>
+            <span class="sortall-column-body" id="sortAllMoonColumn"></span>
+          </button>
+        </div>
+        <p class="game-feedback" id="sortAllFeedback" hidden></p>
+        <p class="game-end-message-inline" id="sortAllDoneMessage" hidden></p>
+        <button type="button" class="btn btn-outline btn-sm" id="sortAllReplayBtn" hidden>Recommencer</button>
+      </div>
     </div>
   </div>
   <div class="game-end" id="gameEnd" hidden>
@@ -361,6 +372,6 @@
   </div>
 </div>
 
-<script src="js/main.js?v=49"></script>
+<script src="js/main.js?v=50"></script>
 </body>
 </html>

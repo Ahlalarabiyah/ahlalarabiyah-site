@@ -1885,6 +1885,19 @@
       var gameSortMoonBtn = document.getElementById("gameSortMoonBtn");
       var gameSortFeedback = document.getElementById("gameSortFeedback");
       var gameSortNextBtn = document.getElementById("gameSortNextBtn");
+      var gameSunMoonSubTabs = document.getElementById("gameSunMoonSubTabs");
+      var gameSunMoonScriptTab = document.getElementById("gameSunMoonScriptTab");
+      var gameSunMoonSortTab = document.getElementById("gameSunMoonSortTab");
+      var gameSunMoonSortAllTab = document.getElementById("gameSunMoonSortAllTab");
+      var gameSortAllPanel = document.getElementById("gameSortAllPanel");
+      var sortAllPool = document.getElementById("sortAllPool");
+      var sortAllSunZone = document.getElementById("sortAllSunZone");
+      var sortAllMoonZone = document.getElementById("sortAllMoonZone");
+      var sortAllSunColumn = document.getElementById("sortAllSunColumn");
+      var sortAllMoonColumn = document.getElementById("sortAllMoonColumn");
+      var sortAllFeedback = document.getElementById("sortAllFeedback");
+      var sortAllDoneMessage = document.getElementById("sortAllDoneMessage");
+      var sortAllReplayBtn = document.getElementById("sortAllReplayBtn");
 
       var INSTRUCTION_TEXT = {
         sound: isEnglish ? "Listen, then choose the sound you heard." : "Écoute puis choisis le son que tu as entendu.",
@@ -2529,12 +2542,22 @@
         renderScore();
       }
 
+      // "sunMoonMode" suit quel sous-jeu du Module 13 est visible en ce
+      // moment ("script"/"sort" passent par setActiveTab comme les autres
+      // categories ; "sortall" est une activite a part, voir
+      // startSortAllGame, qui ne passe jamais par setActiveTab).
+      var sunMoonMode = null;
+
       function setActiveTab(category) {
         gameSoundTab.classList.toggle("is-active", category === "sound");
         gameWordTab.classList.toggle("is-active", category === "word");
         gameReadTab.classList.toggle("is-active", category === "read");
         gameDicteeTab.classList.toggle("is-active", category === "dictee");
         gameHarakatTab.classList.toggle("is-active", category === "harakat");
+        gameSunMoonScriptTab.classList.toggle("is-active", category === "script");
+        gameSunMoonSortTab.classList.toggle("is-active", category === "sort");
+        gameSunMoonSortAllTab.classList.remove("is-active");
+        sunMoonMode = category;
         gameInstruction.textContent = INSTRUCTION_TEXT[category] || "";
         gameQuizPanel.hidden = category !== "sound" && category !== "word" && category !== "script";
         // Pas d'audio pour "script"/"sort" (comparaisons/classification
@@ -2545,6 +2568,7 @@
         gameDicteePanel.hidden = category !== "dictee";
         gameHarakatPanel.hidden = category !== "harakat";
         gameSortPanel.hidden = category !== "sort";
+        gameSortAllPanel.hidden = true;
       }
 
       function updateCategoryTabs(moduleNumber) {
@@ -2587,26 +2611,155 @@
 
       function startGame(moduleNumber, title) {
         gamePrestartWarning.hidden = true;
+        gameSunMoonSubTabs.hidden = true;
         if (!startRound(moduleNumber, title, "sound")) return;
         updateCategoryTabs(moduleNumber);
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
       }
 
-      function startScriptGame(title) {
+      // Module 13 regroupe les 3 jeux "lettres solaires et lunaires" sous
+      // une seule carte, avec ses propres sous-onglets (independants de la
+      // barre gameCategoryTabs des modules 1-12) : "La bonne ecriture" et
+      // "Solaire ou lunaire ?" restent dans le systeme de round/score
+      // existant ; "Trie toutes les lettres" est une activite libre a part
+      // (voir startSortAllGame).
+      function startSunMoonGame(title) {
         gamePrestartWarning.hidden = true;
-        if (!startRound("13", title, "script")) return;
         gameCategoryTabs.hidden = true;
+        if (!startRound("13", title, "script")) return;
+        gameSunMoonSubTabs.hidden = false;
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
       }
 
-      function startSortGame(title) {
+      // "Trie toutes les lettres" : les 28 lettres en vrac, deux colonnes.
+      // Activite libre (pas de round de 10 questions, pas de regle des
+      // 80%) : on classe tout le monde une fois, puis score final +
+      // Recommencer. Interaction "armer -> poser" (on touche une lettre du
+      // pool, puis la colonne ou on pense qu'elle va), meme logique que le
+      // jeu Harakat, plus fiable que le drag&drop sur mobile.
+      function shuffleArray(list) {
+        var arr = list.slice();
+        for (var i = arr.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+        }
+        return arr;
+      }
+
+      var sortAllState = null;
+
+      function showSortAllPanel() {
+        gameSoundTab.classList.remove("is-active");
+        gameWordTab.classList.remove("is-active");
+        gameReadTab.classList.remove("is-active");
+        gameDicteeTab.classList.remove("is-active");
+        gameHarakatTab.classList.remove("is-active");
+        gameSunMoonScriptTab.classList.remove("is-active");
+        gameSunMoonSortTab.classList.remove("is-active");
+        gameSunMoonSortAllTab.classList.add("is-active");
+        sunMoonMode = "sortall";
+        gameQuizPanel.hidden = true;
+        gameReadPanel.hidden = true;
+        gameDicteePanel.hidden = true;
+        gameHarakatPanel.hidden = true;
+        gameSortPanel.hidden = true;
+        gameSortAllPanel.hidden = false;
+      }
+
+      function startSortAllGame() {
         gamePrestartWarning.hidden = true;
-        if (!startRound("14", title, "sort")) return;
+        gameModalTitle.textContent = isEnglish ? "Module 13 — Sun and moon letters" : "Module 13 — Lettres solaires et lunaires";
+        gameLevelInfo.textContent = "";
+        gameScoreEl.textContent = "";
+        gameBody.hidden = false;
+        gameEnd.hidden = true;
         gameCategoryTabs.hidden = true;
+        gameSunMoonSubTabs.hidden = false;
+        showSortAllPanel();
+
+        sortAllState = { pool: shuffleArray(buildSortPool()), armedId: null, correctCount: 0, total: 0, remaining: 0 };
+        sortAllState.total = sortAllState.pool.length;
+        sortAllState.remaining = sortAllState.pool.length;
+
+        sortAllSunColumn.innerHTML = "";
+        sortAllMoonColumn.innerHTML = "";
+        sortAllFeedback.hidden = true;
+        sortAllFeedback.className = "game-feedback";
+        sortAllFeedback.textContent = "";
+        sortAllDoneMessage.hidden = true;
+        sortAllReplayBtn.hidden = true;
+
+        renderSortAllPool();
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
+      }
+
+      function renderSortAllPool() {
+        sortAllPool.innerHTML = "";
+        sortAllState.pool.forEach(function (item) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "letterlab-cell sortall-letter";
+          btn.textContent = ALL_LETTERS_BY_ID[item.id].char;
+          btn.addEventListener("click", function () { armSortAllLetter(item.id, btn); });
+          sortAllPool.appendChild(btn);
+        });
+      }
+
+      function armSortAllLetter(id, btnEl) {
+        if (sortAllState.armedId === id) {
+          sortAllState.armedId = null;
+          btnEl.classList.remove("is-armed");
+          return;
+        }
+        Array.prototype.forEach.call(sortAllPool.children, function (b) { b.classList.remove("is-armed"); });
+        sortAllState.armedId = id;
+        btnEl.classList.add("is-armed");
+      }
+
+      function placeSortAllLetter(type) {
+        if (!sortAllState || !sortAllState.armedId) return;
+        var id = sortAllState.armedId;
+        var idx = -1;
+        for (var i = 0; i < sortAllState.pool.length; i++) {
+          if (sortAllState.pool[i].id === id) { idx = i; break; }
+        }
+        if (idx === -1) return;
+        var item = sortAllState.pool[idx];
+        sortAllState.pool.splice(idx, 1);
+        sortAllState.armedId = null;
+
+        var isCorrect = item.type === type;
+        if (isCorrect) { sortAllState.correctCount += 1; }
+        sortAllState.remaining -= 1;
+
+        var tile = document.createElement("span");
+        tile.className = "sortall-tile " + (isCorrect ? "is-correct" : "is-wrong");
+        tile.textContent = ALL_LETTERS_BY_ID[id].char;
+        (type === "sun" ? sortAllSunColumn : sortAllMoonColumn).appendChild(tile);
+
+        renderSortAllPool();
+
+        var letterChar = ALL_LETTERS_BY_ID[id].char;
+        var explain = item.type === "sun"
+          ? (isEnglish ? letterChar + " is a sun letter." : letterChar + " est une lettre solaire.")
+          : (isEnglish ? letterChar + " is a moon letter." : letterChar + " est une lettre lunaire.");
+        sortAllFeedback.hidden = false;
+        sortAllFeedback.className = "game-feedback " + (isCorrect ? "is-correct" : "is-wrong");
+        sortAllFeedback.textContent = (isCorrect
+          ? (isEnglish ? "Correct! " : "Bravo ! ")
+          : (isEnglish ? "Not quite — " : "Ce n'était pas ça — ")) + explain;
+
+        if (sortAllState.remaining === 0) {
+          sortAllFeedback.hidden = true;
+          sortAllDoneMessage.hidden = false;
+          sortAllDoneMessage.textContent = isEnglish
+            ? "You correctly classified " + sortAllState.correctCount + " / " + sortAllState.total + " letters!"
+            : "Tu as classé " + sortAllState.correctCount + " / " + sortAllState.total + " lettres correctement !";
+          sortAllReplayBtn.hidden = false;
+        }
       }
 
       function closeGame() {
@@ -2673,16 +2826,26 @@
         });
       });
       refreshModuleBadges();
-      document.querySelectorAll(".js-open-script-game").forEach(function (btn) {
+      document.querySelectorAll(".js-open-sunmoon-game").forEach(function (btn) {
         btn.addEventListener("click", function () {
-          startScriptGame(btn.getAttribute("data-title"));
+          startSunMoonGame(btn.getAttribute("data-title"));
         });
       });
-      document.querySelectorAll(".js-open-sort-game").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          startSortGame(btn.getAttribute("data-title"));
-        });
+      gameSunMoonScriptTab.addEventListener("click", function () {
+        if (!gameState || sunMoonMode === "script") return;
+        startRound(gameState.moduleNumber, gameState.title, "script");
       });
+      gameSunMoonSortTab.addEventListener("click", function () {
+        if (!gameState || sunMoonMode === "sort") return;
+        startRound(gameState.moduleNumber, gameState.title, "sort");
+      });
+      gameSunMoonSortAllTab.addEventListener("click", function () {
+        if (sunMoonMode === "sortall") return;
+        startSortAllGame();
+      });
+      sortAllSunZone.addEventListener("click", function () { placeSortAllLetter("sun"); });
+      sortAllMoonZone.addEventListener("click", function () { placeSortAllLetter("moon"); });
+      sortAllReplayBtn.addEventListener("click", startSortAllGame);
       gameSoundTab.addEventListener("click", function () {
         if (!gameState || gameState.category === "sound") return;
         startRound(gameState.moduleNumber, gameState.title, "sound");

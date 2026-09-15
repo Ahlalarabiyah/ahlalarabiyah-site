@@ -1200,7 +1200,7 @@ section[id] { scroll-margin-top: 88px; }
    logo au-dessus de chacune (soleil / lune). */
 .game-sort-panel { padding: 8px 0 4px; text-align: center; }
 .game-sort-letter {
-  font-family: var(--font-heading);
+  font-family: var(--font-arabic);
   font-size: 4rem;
   color: var(--color-navy);
   margin: 4px 0 26px;
@@ -1236,10 +1236,73 @@ section[id] { scroll-margin-top: 88px; }
 .game-sort-column.is-correct:disabled:hover, .game-sort-column.is-wrong:disabled:hover { border-color: inherit; }
 #gameSortNextBtn[hidden] { display: none; }
 
+/* "Trie toutes les lettres" : pool des 28 lettres + deux colonnes de
+   depot (soleil / lune), remplies au fur et a mesure. */
+.game-sortall-panel { text-align: center; padding: 8px 0 4px; }
+.sortall-pool {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+.sortall-letter.is-armed { background: var(--color-orange); border-color: var(--color-orange); color: #fff; }
+.sortall-columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.sortall-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 120px;
+  padding: 14px 10px;
+  border-radius: 16px;
+  border: 2px dashed var(--color-border);
+  background: var(--color-bg);
+  cursor: pointer;
+  transition: border-color .15s ease;
+}
+.sortall-column:hover { border-color: var(--color-teal); }
+.sortall-column-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--color-navy);
+}
+.sortall-icon { font-size: 1.4rem; line-height: 1; }
+.sortall-column-body { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
+.sortall-tile {
+  font-family: var(--font-arabic);
+  font-size: 1.3rem;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: #fff;
+  border: 2px solid var(--color-border);
+}
+.sortall-tile.is-correct { background: var(--color-teal); border-color: var(--color-teal); color: #fff; }
+.sortall-tile.is-wrong { background: #E4534B; border-color: #E4534B; color: #fff; }
+.game-end-message-inline {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  color: var(--color-teal-dark);
+  font-size: 1.1rem;
+  margin: 10px 0 18px;
+}
+#sortAllReplayBtn[hidden] { display: none; }
+
 @media (max-width: 680px) {
   .game-sort-letter { font-size: 3rem; margin-bottom: 18px; }
   .game-sort-column { padding: 18px 8px; }
   .game-sort-icon { font-size: 1.9rem; }
+  .sortall-tile { font-size: 1.1rem; padding: 5px 8px; }
+  .sortall-column { min-height: 100px; }
   .game-answer { font-size: 1.5rem; padding: 16px 6px; }
   .game-answer-word { font-size: 1.1rem; padding: 14px 8px; }
   .game-answer-script { font-size: 1.5rem; padding: 18px 10px; }
