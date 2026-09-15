@@ -1082,6 +1082,7 @@ section[id] { scroll-margin-top: 88px; }
 .game-answer:disabled:hover { transform: none; }
 .game-feedback { font-family: var(--font-heading); font-weight: 600; font-size: 1rem; margin-bottom: 18px; min-height: 1.4em; }
 #gameNextBtn[hidden] { display: none; }
+#gamePlayBtn[hidden] { display: none; }
 .game-feedback.is-correct { color: var(--color-teal-dark); }
 .game-feedback.is-wrong { color: #C6362E; }
 .game-read-panel { padding: 8px 0 4px; }

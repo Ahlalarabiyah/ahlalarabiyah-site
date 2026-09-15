@@ -1866,6 +1866,7 @@
       var gamePrestartContinueBtn = document.getElementById("gamePrestartContinueBtn");
       var gameDicteeTab = document.getElementById("gameDicteeTab");
       var gameHarakatTab = document.getElementById("gameHarakatTab");
+      var gameScriptTab = document.getElementById("gameScriptTab");
       var gameDicteePanel = document.getElementById("gameDicteePanel");
       var gameDicteeWord = document.getElementById("gameDicteeWord");
       var gameDicteeListenBtn = document.getElementById("gameDicteeListenBtn");
@@ -1882,8 +1883,51 @@
 
       var INSTRUCTION_TEXT = {
         sound: isEnglish ? "Listen, then choose the sound you heard." : "Écoute puis choisis le son que tu as entendu.",
-        word: isEnglish ? "Listen, then choose the word you heard." : "Écoute puis choisis le mot que tu as entendu."
+        word: isEnglish ? "Listen, then choose the word you heard." : "Écoute puis choisis le mot que tu as entendu.",
+        script: isEnglish ? "Which spelling is correct?" : "Quelle est la bonne écriture ?"
       };
+
+      // Banque verifiee pour "Je choisis la bonne ecriture" : pour chaque
+      // mot, la forme incorrecte ne change QU'UNE seule chose, toujours liee
+      // a la notion travaillee - jamais une faute arbitraire. Lettre
+      // solaire : la forme incorrecte retire la Shadda. Lettre lunaire : la
+      // forme incorrecte ajoute une Shadda qui n'existe pas. minModule =
+      // module le plus eleve parmi les lettres du mot (deduit a la main et
+      // verifie, comme pour la table de reference du Module 13).
+      var SCRIPT_CHOICE_WORDS = [
+        { id: "tamr", correct: "التَّمْر", incorrect: "التَمْر", type: "sun", letter: "ت", minModule: 2 },
+        { id: "thaalab", correct: "الثَّعْلَب", incorrect: "الثَعْلَب", type: "sun", letter: "ث", minModule: 3 },
+        { id: "dars", correct: "الدَّرْس", incorrect: "الدَرْس", type: "sun", letter: "د", minModule: 4 },
+        { id: "dhura", correct: "الذُّرَة", incorrect: "الذُرَة", type: "sun", letter: "ذ", minModule: 4 },
+        { id: "rajul", correct: "الرَّجُل", incorrect: "الرَجُل", type: "sun", letter: "ر", minModule: 5 },
+        { id: "zujaj", correct: "الزُّجَاج", incorrect: "الزُجَاج", type: "sun", letter: "ز", minModule: 5 },
+        { id: "samak", correct: "السَّمَك", incorrect: "السَمَك", type: "sun", letter: "س", minModule: 6 },
+        { id: "shams", correct: "الشَّمْس", incorrect: "الشَمْس", type: "sun", letter: "ش", minModule: 6 },
+        { id: "saqr", correct: "الصَّقْر", incorrect: "الصَقْر", type: "sun", letter: "ص", minModule: 7 },
+        { id: "difda", correct: "الضَّفْدَع", incorrect: "الضَفْدَع", type: "sun", letter: "ض", minModule: 7 },
+        { id: "tifl", correct: "الطِّفْل", incorrect: "الطِفْل", type: "sun", letter: "ط", minModule: 8 },
+        { id: "zalam", correct: "الظَّلَام", incorrect: "الظَلَام", type: "sun", letter: "ظ", minModule: 8 },
+        { id: "lugha", correct: "اللُّغَة", incorrect: "اللُغَة", type: "sun", letter: "ل", minModule: 11 },
+        { id: "najm", correct: "النَّجْم", incorrect: "النَجْم", type: "sun", letter: "ن", minModule: 11 },
+        { id: "tajir", correct: "التَّاجِر", incorrect: "التَاجِر", type: "sun", letter: "ت", minModule: 5 },
+        { id: "nazar", correct: "النَّظَر", incorrect: "النَظَر", type: "sun", letter: "ن", minModule: 11 },
+        { id: "bab", correct: "الْبَاب", incorrect: "الْبَّاب", type: "moon", letter: "ب", minModule: 2 },
+        { id: "jamal", correct: "الْجَمَل", incorrect: "الْجَّمَل", type: "moon", letter: "ج", minModule: 3 },
+        { id: "hisan", correct: "الْحِصَان", incorrect: "الْحِّصَان", type: "moon", letter: "ح", minModule: 3 },
+        { id: "khubz", correct: "الْخُبْز", incorrect: "الْخُّبْز", type: "moon", letter: "خ", minModule: 3 },
+        { id: "asal", correct: "الْعَسَل", incorrect: "الْعَّسَل", type: "moon", letter: "ع", minModule: 9 },
+        { id: "ghurab", correct: "الْغُرَاب", incorrect: "الْغُّرَاب", type: "moon", letter: "غ", minModule: 9 },
+        { id: "faras", correct: "الْفَرَس", incorrect: "الْفَّرَس", type: "moon", letter: "ف", minModule: 10 },
+        { id: "qamar", correct: "الْقَمَر", incorrect: "الْقَّمَر", type: "moon", letter: "ق", minModule: 10 },
+        { id: "kalb", correct: "الْكَلْب", incorrect: "الْكَّلْب", type: "moon", letter: "ك", minModule: 10 },
+        { id: "matar", correct: "الْمَطَر", incorrect: "الْمَّطَر", type: "moon", letter: "م", minModule: 11 },
+        { id: "hilal", correct: "الْهِلَال", incorrect: "الْهِّلَال", type: "moon", letter: "ه", minModule: 12 },
+        { id: "warda", correct: "الْوَرْدَة", incorrect: "الْوَّرْدَة", type: "moon", letter: "و", minModule: 12 },
+        { id: "yad", correct: "الْيَد", incorrect: "الْيَّد", type: "moon", letter: "ي", minModule: 12 },
+        { id: "bahr", correct: "الْبَحْر", incorrect: "الْبَّحْر", type: "moon", letter: "ب", minModule: 5 },
+        { id: "kitab", correct: "الْكِتَاب", incorrect: "الْكِّتَاب", type: "moon", letter: "ك", minModule: 10 },
+        { id: "farah", correct: "الْفَرْح", incorrect: "الْفَّرْح", type: "moon", letter: "ف", minModule: 10 }
+      ];
 
       var HARAKAT_MARK = { fatha: "َ", damma: "ُ", kasra: "ِ" };
       var HARAKAT_ORDER = ["fatha", "damma", "kasra"];
@@ -1895,7 +1939,11 @@
       // Categories ayant un score objectif (bonne/mauvaise reponse) : seules
       // celles-ci passent par la regle des 80% en fin de serie. "read" et
       // "dictee" sont auto-corrigees par l'enfant, sans score mesurable.
-      var SCORED_CATEGORIES = { sound: true, word: true, harakat: true };
+      var SCORED_CATEGORIES = { sound: true, word: true, harakat: true, script: true };
+
+      function buildScriptChoicePool(moduleNumber) {
+        return SCRIPT_CHOICE_WORDS.filter(function (w) { return w.minModule <= Number(moduleNumber); });
+      }
 
       var gameAudio = null;
       var gameState = null;
@@ -2081,6 +2129,10 @@
         }
         if (gameState.category === "harakat") {
           nextHarakatQuestion();
+          return;
+        }
+        if (gameState.category === "script") {
+          nextScriptQuestion();
           return;
         }
         var pool = gameState.pool;
@@ -2280,6 +2332,83 @@
         });
       }
 
+      // "Je choisis la bonne ecriture" : deux cartes (une correcte, une
+      // avec une erreur solaire/lunaire volontaire), position gauche/droite
+      // aleatoire. Reutilise entierement le panneau "Reconnaitre le mot"
+      // (gameQuizPanel/gameAnswers) - seule la logique de correction change
+      // (onScriptAnswer), pour pouvoir afficher une explication courte.
+      function nextScriptQuestion() {
+        var pool = gameState.pool;
+        var recentSet = recentWordSet("script", gameState.moduleNumber);
+
+        var notUsed = pool.filter(function (item) { return !gameState.usedKeys[item.id]; });
+        var notUsedAndFresh = notUsed.filter(function (item) { return !recentSet[item.id]; });
+        var candidates = notUsedAndFresh.length ? notUsedAndFresh : (notUsed.length ? notUsed : pool);
+        if (!notUsed.length) { gameState.usedKeys = {}; }
+
+        var item = pickWeighted(candidates, gameState.moduleNumber);
+        gameState.usedKeys[item.id] = true;
+        markRecentWord("script", gameState.moduleNumber, item.id);
+        gameState.questionIndex += 1;
+
+        var choices = Math.random() < 0.5
+          ? [{ key: "correct", text: item.correct }, { key: "wrong", text: item.incorrect }]
+          : [{ key: "wrong", text: item.incorrect }, { key: "correct", text: item.correct }];
+        gameState.current = { item: item, choices: choices, answered: false };
+
+        gameFeedback.hidden = true;
+        gameFeedback.className = "game-feedback";
+        gameFeedback.textContent = "";
+        gameNextBtn.hidden = true;
+        renderScore();
+
+        gameAnswers.innerHTML = "";
+        gameAnswers.classList.add("game-answers-word");
+        choices.forEach(function (choice) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "letterlab-cell game-answer game-answer-word";
+          btn.textContent = choice.text;
+          btn.addEventListener("click", function () { onScriptAnswer(choice, btn); });
+          gameAnswers.appendChild(btn);
+        });
+      }
+
+      function onScriptAnswer(choice, btnEl) {
+        if (gameState.current.answered) return;
+        gameState.current.answered = true;
+        var isCorrect = choice.key === "correct";
+        if (isCorrect) { gameState.score += 1; }
+
+        Array.prototype.forEach.call(gameAnswers.children, function (btn) {
+          btn.disabled = true;
+        });
+        btnEl.classList.add(isCorrect ? "is-correct" : "is-wrong");
+        if (!isCorrect) {
+          Array.prototype.forEach.call(gameAnswers.children, function (btn, idx) {
+            if (gameState.current.choices[idx].key === "correct") { btn.classList.add("is-correct"); }
+          });
+        }
+
+        var item = gameState.current.item;
+        var explain = item.type === "sun"
+          ? (isEnglish
+              ? item.letter + " is a sun letter: the Shadda appears on " + item.letter + "."
+              : item.letter + " est une lettre solaire : la Shadda apparaît sur " + item.letter + ".")
+          : (isEnglish
+              ? item.letter + " is a moon letter: no Shadda, the ل is pronounced."
+              : item.letter + " est une lettre lunaire : pas de Shadda, le ل se prononce.");
+
+        gameFeedback.hidden = false;
+        gameFeedback.className = "game-feedback " + (isCorrect ? "is-correct" : "is-wrong");
+        gameFeedback.textContent = (isCorrect
+          ? (isEnglish ? "Correct! " : "Bravo ! ")
+          : (isEnglish ? "Not quite — " : "Ce n'était pas ça — ")) + explain;
+
+        gameNextBtn.hidden = false;
+        renderScore();
+      }
+
       function onAnswer(choice, btnEl) {
         if (gameState.current.answered) return;
         gameState.current.answered = true;
@@ -2314,8 +2443,13 @@
         gameReadTab.classList.toggle("is-active", category === "read");
         gameDicteeTab.classList.toggle("is-active", category === "dictee");
         gameHarakatTab.classList.toggle("is-active", category === "harakat");
+        gameScriptTab.classList.toggle("is-active", category === "script");
         gameInstruction.textContent = INSTRUCTION_TEXT[category] || "";
-        gameQuizPanel.hidden = category !== "sound" && category !== "word";
+        gameQuizPanel.hidden = category !== "sound" && category !== "word" && category !== "script";
+        // Pas d'audio pour "script" (uniquement une comparaison visuelle
+        // pour l'instant, voir analyse validee) : le bouton "Ecouter" du
+        // panneau partage n'a pas lieu d'etre pour cette categorie.
+        gamePlayBtn.hidden = category === "script";
         gameReadPanel.hidden = category !== "read";
         gameDicteePanel.hidden = category !== "dictee";
         gameHarakatPanel.hidden = category !== "harakat";
@@ -2337,11 +2471,17 @@
         var harakatReady = harakatPool.length >= 2;
         gameHarakatTab.disabled = !harakatReady;
         gameHarakatTab.classList.toggle("is-disabled", !harakatReady);
+        // Debloque a partir du module 11 uniquement : lire "ال" dans un mot
+        // suppose de connaitre ل, jamais avant (voir analyse validee).
+        var scriptReady = Number(moduleNumber) >= 11 && buildScriptChoicePool(moduleNumber).length >= 2;
+        gameScriptTab.disabled = !scriptReady;
+        gameScriptTab.classList.toggle("is-disabled", !scriptReady);
       }
 
       function startRound(moduleNumber, title, category) {
         var pool = category === "sound" ? buildSoundPool(moduleNumber)
           : category === "harakat" ? buildHarakatPool(moduleNumber)
+          : category === "script" ? buildScriptChoicePool(moduleNumber)
           : buildWordPool(moduleNumber);
         if (!pool.length) return false;
         gameState = { moduleNumber: moduleNumber, title: title, category: category, pool: pool, questionIndex: 0, score: 0, current: null, usedKeys: {} };
@@ -2449,8 +2589,12 @@
         if (!gameState || gameHarakatTab.disabled || gameState.category === "harakat") return;
         startRound(gameState.moduleNumber, gameState.title, "harakat");
       });
+      gameScriptTab.addEventListener("click", function () {
+        if (!gameState || gameScriptTab.disabled || gameState.category === "script") return;
+        startRound(gameState.moduleNumber, gameState.title, "script");
+      });
       gamePlayBtn.addEventListener("click", function () {
-        if (gameState && gameState.current) playSound(gameState.current.correct);
+        if (gameState && gameState.category !== "script" && gameState.current) playSound(gameState.current.correct);
       });
       gameNextBtn.addEventListener("click", nextQuestion);
       gameReadListenBtn.addEventListener("click", function () {
