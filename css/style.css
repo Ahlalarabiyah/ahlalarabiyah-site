@@ -576,12 +576,13 @@ section[id] { scroll-margin-top: 88px; }
 .module-status-available, .module-status-unlocked { color: var(--color-teal-dark); }
 .module-status-locked { color: var(--color-text-light); }
 .module-status-override { color: var(--color-orange); }
-.module-listen { width: 100%; white-space: normal; border-color: rgba(22,160,160,0.35); color: var(--color-teal-dark); }
-.module-listen:hover { border-color: var(--color-teal); background: var(--color-teal-10); color: var(--color-teal-dark); }
-.module-formlab { width: 100%; white-space: normal; margin-top: 8px; border-color: rgba(16,60,70,0.55); color: var(--color-navy); }
-.module-formlab:hover { border-color: var(--color-navy); background: var(--color-navy-10); color: var(--color-navy); }
-.module-shadda { width: 100%; white-space: normal; margin-top: 8px; border-color: rgba(238,154,69,0.45); color: var(--color-orange); }
-.module-shadda:hover { border-color: var(--color-orange); background: var(--color-orange-10); color: var(--color-orange); }
+.module-listen { width: 100%; white-space: normal; }
+.btn-outline.module-listen { background: var(--color-teal); border-color: var(--color-teal); color: #fff; }
+.btn-outline.module-listen:hover { filter: brightness(0.92); border-color: var(--color-teal); color: #fff; }
+.module-formlab { width: 100%; white-space: normal; margin-top: 8px; background: var(--color-navy); border-color: var(--color-navy); color: #fff; }
+.module-formlab:hover { filter: brightness(0.92); border-color: var(--color-navy); color: #fff; }
+.module-shadda { width: 100%; white-space: normal; margin-top: 8px; background: var(--color-orange); border-color: var(--color-orange); color: #fff; }
+.module-shadda:hover { filter: brightness(0.92); border-color: var(--color-orange); color: #fff; }
 .module-sunmoon { width: 100%; white-space: normal; margin-top: 8px; }
 
 /* ---------- Audience ---------- */
