@@ -540,6 +540,7 @@ section[id] { scroll-margin-top: 88px; }
   transition: transform .2s ease, box-shadow .2s ease;
 }
 .module-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.module-card-bonus { border-color: rgba(238,154,69,0.4); background: linear-gradient(180deg, rgba(238,154,69,0.06), #fff 60%); }
 .module-number {
   display: inline-block;
   font-family: var(--font-heading);
@@ -578,6 +579,7 @@ section[id] { scroll-margin-top: 88px; }
 .module-listen { width: 100%; white-space: normal; }
 .module-formlab { width: 100%; white-space: normal; margin-top: 8px; }
 .module-shadda { width: 100%; white-space: normal; margin-top: 8px; }
+.module-sunmoon { width: 100%; white-space: normal; margin-top: 8px; }
 
 /* ---------- Audience ---------- */
 .audience-grid {
@@ -927,6 +929,77 @@ section[id] { scroll-margin-top: 88px; }
   text-align: center;
   margin: -2px 0 0;
 }
+.formlab-sunmoon {
+  display: block;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.82rem;
+  margin-top: 4px;
+}
+.formlab-sunmoon-sun { color: var(--color-orange); }
+.formlab-sunmoon-moon { color: var(--color-teal-dark); }
+
+/* ---------- Lettres solaires et lunaires ---------- */
+.sunmoon-table {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.sunmoon-table-col {
+  flex: 1 1 220px;
+  border-radius: 14px;
+  padding: 16px 18px;
+  text-align: center;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+}
+.sunmoon-table-sun { border-color: rgba(238,154,69,0.35); }
+.sunmoon-table-moon { border-color: rgba(22,160,160,0.3); }
+.sunmoon-table-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.88rem;
+  margin: 0 0 10px;
+}
+.sunmoon-table-sun .sunmoon-table-title { color: var(--color-orange); }
+.sunmoon-table-moon .sunmoon-table-title { color: var(--color-teal-dark); }
+.sunmoon-table-letters {
+  font-family: var(--font-arabic);
+  direction: rtl;
+  font-size: 1.7rem;
+  line-height: 1.9;
+  color: var(--color-navy);
+  margin: 0;
+  word-spacing: 4px;
+}
+.sunmoon-intro {
+  color: var(--color-text-light);
+  font-size: 0.92rem;
+  text-align: center;
+  margin: 0 0 22px;
+}
+.sunmoon-section-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.95rem;
+  margin: 0 0 14px;
+}
+.sunmoon-section-title:not(:first-of-type) { margin-top: 28px; }
+.sunmoon-section-sun { color: var(--color-orange); }
+.sunmoon-section-moon { color: var(--color-teal-dark); }
+.sunmoon-grid { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+.sunmoon-grid .formlab-card { flex: 1 1 140px; max-width: 200px; }
+.sunmoon-grid .formlab-word { font-size: 1.6rem; }
+.sunmoon-word-card {
+  cursor: pointer;
+  font: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.sunmoon-word-card:hover, .sunmoon-word-card:focus-visible { border-color: var(--color-teal); transform: translateY(-2px); }
+.sunmoon-word-play { display: block; font-size: 0.9rem; margin-top: 6px; opacity: 0.6; }
 
 /* ---------- Jeux : cartes de la section JEUX ---------- */
 .module-card-locked { opacity: .6; }
@@ -1237,6 +1310,7 @@ section[id] { scroll-margin-top: 88px; }
   .module-listen { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .module-formlab { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .module-shadda { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
+  .module-sunmoon { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .audience-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr 1fr; }
   .hero-stats { gap: 22px; }

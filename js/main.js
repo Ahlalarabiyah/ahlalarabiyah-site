@@ -597,7 +597,42 @@
       var formLabNext = document.getElementById("formLabNext");
       var formLabLetter = document.getElementById("formLabLetter");
       var formLabName = document.getElementById("formLabName");
+      var formLabSunMoon = document.getElementById("formLabSunMoon");
       var formLabExamples = document.getElementById("formLabExamples");
+      var sunMoonLab = document.getElementById("sunMoonLab");
+      var sunMoonLabClose = document.getElementById("sunMoonLabClose");
+      var sunMoonLabTitle = document.getElementById("sunMoonLabTitle");
+      var sunMoonPanel = document.getElementById("sunMoonPanel");
+
+      // Classification des 28 lettres (regle standard, verifiee par le
+      // mnemonique "ابغ حجك وخف عقيمه" pour les 14 lunaires - les 14
+      // restantes sont solaires). Sert au badge d'observation (des le
+      // module ou la lettre est apprise) et a la notion complete
+      // "Lettres solaires et lunaires" (modules 11-12, une fois ل connu).
+      var SUN_MOON_TYPE = {
+        taa: "sun", thaa: "sun", dal: "sun", thal: "sun", reh: "sun", zain: "sun",
+        seen: "sun", sheen: "sun", sad: "sun", dad: "sun", tah: "sun", zah: "sun",
+        lam: "sun", noon: "sun",
+        alif: "moon", baa: "moon", jim: "moon", haa: "moon", khaa: "moon",
+        ain: "moon", ghain: "moon", feh: "moon", qaf: "moon", kaf: "moon",
+        meem: "moon", heh: "moon", waw: "moon", yeh: "moon"
+      };
+
+      // Exemples "ال + mot" verifies lettre par lettre : chaque mot n'utilise
+      // que des lettres apprises au plus tard au module 11 (solaires) ou 12
+      // (lunaires, une fois ه و ي connus). alif est volontairement absent
+      // (cas particulier peu clair pour un enfant, voir hamza).
+      var SUN_WORDS = {
+        taa: "التَّمْر", thaa: "الثَّعْلَب", dal: "الدَّرْس", thal: "الذُّرَة",
+        reh: "الرَّجُل", zain: "الزُّجَاج", seen: "السَّمَك", sheen: "الشَّمْس",
+        sad: "الصَّقْر", dad: "الضَّفْدَع", tah: "الطِّفْل", zah: "الظَّلَام",
+        lam: "اللُّغَة", noon: "النَّجْم"
+      };
+      var MOON_WORDS = {
+        baa: "الْبَاب", jim: "الْجَمَل", haa: "الْحِصَان", khaa: "الْخُبْز",
+        ain: "الْعَسَل", ghain: "الْغُرَاب", feh: "الْفَرَس", qaf: "الْقَمَر",
+        kaf: "الْكَلْب", meem: "الْمَطَر", heh: "الْهِلَال", waw: "الْوَرْدَة", yeh: "الْيَد"
+      };
 
       // Lettres qui ne se lient jamais a la lettre suivante (regle reelle
       // de l'ecriture arabe, pas une simplification) : leurs formes
@@ -797,6 +832,11 @@
         var examples = LETTER_FORM_EXAMPLES[id];
         formLabLetter.textContent = letter.char;
         formLabName.textContent = letter.name;
+        var sunMoon = SUN_MOON_TYPE[id];
+        formLabSunMoon.textContent = sunMoon === "sun"
+          ? (isEnglish ? "☀️ Sun letter" : "☀️ Lettre solaire")
+          : (isEnglish ? "🌙 Moon letter" : "🌙 Lettre lunaire");
+        formLabSunMoon.className = "formlab-sunmoon formlab-sunmoon-" + sunMoon;
         formLabExamples.innerHTML = "";
         if (!examples) return;
 
@@ -842,6 +882,114 @@
         document.body.style.overflow = "";
       }
 
+      // Lettres solaires et lunaires : module 13, dedie, place apres les 12
+      // modules de lettres (les 28 lettres et ل en particulier sont donc
+      // toujours connues a ce stade - jamais de filtrage par module ici).
+      // Les enregistrements existants ("بَ" + lettre) ne conviennent pas a
+      // des mots complets : en attendant de vrais enregistrements humains,
+      // les mots utilisent la synthese vocale du navigateur (aucun fichier
+      // genere ni stocke) - uniquement les mots, jamais les lettres du
+      // tableau de reference.
+      function speakArabicWord(text) {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel();
+        var utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "ar-SA";
+        utterance.rate = 0.85;
+        window.speechSynthesis.speak(utterance);
+      }
+
+      function openSunMoonLab(title) {
+        var allIds = [];
+        MODULES.forEach(function (m) { allIds = allIds.concat(m.letterIds); });
+        // Classification complete (tableau de reference) : les 28 lettres,
+        // alif inclus - independant des exemples de mots disponibles.
+        var allSunIds = allIds.filter(function (id) { return SUN_MOON_TYPE[id] === "sun"; });
+        var allMoonIds = allIds.filter(function (id) { return SUN_MOON_TYPE[id] === "moon"; });
+        // Exemples "ال + mot" : alif exclu, aucun exemple clair et simple
+        // n'existe pour cette lettre (voir analyse validee).
+        var sunIds = allSunIds.filter(function (id) { return SUN_WORDS[id]; });
+        var moonIds = allMoonIds.filter(function (id) { return MOON_WORDS[id]; });
+        if (!sunIds.length && !moonIds.length) return;
+
+        sunMoonLabTitle.textContent = title;
+        sunMoonPanel.innerHTML = "";
+
+        // Tableau de reference clair, avant les exemples en situation.
+        var table = document.createElement("div");
+        table.className = "sunmoon-table";
+        [["sun", allSunIds], ["moon", allMoonIds]].forEach(function (pair) {
+          var type = pair[0], ids = pair[1];
+          var col = document.createElement("div");
+          col.className = "sunmoon-table-col sunmoon-table-" + type;
+          var h4 = document.createElement("h4");
+          h4.className = "sunmoon-table-title";
+          h4.textContent = type === "sun"
+            ? (isEnglish ? "☀️ Sun letters (14)" : "☀️ Lettres solaires (14)")
+            : (isEnglish ? "🌙 Moon letters (14)" : "🌙 Lettres lunaires (14)");
+          var lettersP = document.createElement("p");
+          lettersP.className = "sunmoon-table-letters";
+          lettersP.textContent = ids.map(function (id) { return ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id; }).join("  ");
+          col.appendChild(h4);
+          col.appendChild(lettersP);
+          table.appendChild(col);
+        });
+        sunMoonPanel.appendChild(table);
+
+        var intro = document.createElement("p");
+        intro.className = "sunmoon-intro";
+        intro.textContent = isEnglish
+          ? "When you add الـ (\"the\") before a word, its first letter decides what happens to the ل:"
+          : "Quand on ajoute الـ (« le / la ») devant un mot, sa première lettre décide ce qui arrive au ل :";
+        sunMoonPanel.appendChild(intro);
+
+        function addSection(type, ids, wordsMap) {
+          if (!ids.length) return;
+          var h3 = document.createElement("h3");
+          h3.className = "sunmoon-section-title sunmoon-section-" + type;
+          h3.textContent = type === "sun"
+            ? (isEnglish ? "☀️ Sun — the ل is silent, the letter takes a Shadda" : "☀️ Solaire — le ل ne s'entend pas, la lettre porte une Shadda")
+            : (isEnglish ? "🌙 Moon — the ل is pronounced" : "🌙 Lunaire — le ل s'entend");
+          sunMoonPanel.appendChild(h3);
+          var grid = document.createElement("div");
+          grid.className = "formlab-examples sunmoon-grid";
+          ids.forEach(function (id) {
+            // Bouton (pas juste une carte) : uniquement les mots ont une
+            // prononciation synthetique au clic, en attendant de vrais
+            // enregistrements - jamais les lettres du tableau au-dessus.
+            var card = document.createElement("button");
+            card.type = "button";
+            card.className = "formlab-card sunmoon-word-card";
+            var label = document.createElement("p");
+            label.className = "formlab-card-label";
+            label.textContent = ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id;
+            var word = document.createElement("p");
+            word.className = "formlab-word";
+            word.textContent = wordsMap[id];
+            var play = document.createElement("span");
+            play.className = "sunmoon-word-play";
+            play.textContent = "🔊";
+            card.appendChild(label);
+            card.appendChild(word);
+            card.appendChild(play);
+            card.addEventListener("click", function () { speakArabicWord(wordsMap[id]); });
+            grid.appendChild(card);
+          });
+          sunMoonPanel.appendChild(grid);
+        }
+
+        addSection("sun", sunIds, SUN_WORDS);
+        addSection("moon", moonIds, MOON_WORDS);
+
+        sunMoonLab.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeSunMoonLab() {
+        sunMoonLab.classList.remove("is-open");
+        document.body.style.overflow = "";
+      }
+
       document.querySelectorAll(".js-open-formlab").forEach(function (btn) {
         btn.addEventListener("click", function () {
           openFormLab(btn.getAttribute("data-module"));
@@ -857,6 +1005,18 @@
       document.addEventListener("keydown", function (e) {
         if (formLab.classList.contains("is-open") && e.key === "Escape") closeFormLab();
       });
+
+      document.querySelectorAll(".js-open-sunmoon").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          openSunMoonLab(btn.getAttribute("data-title"));
+        });
+      });
+      if (sunMoonLab) {
+        sunMoonLabClose.addEventListener("click", closeSunMoonLab);
+        document.addEventListener("keydown", function (e) {
+          if (sunMoonLab.classList.contains("is-open") && e.key === "Escape") closeSunMoonLab();
+        });
+      }
     }
 
     // ---- Jeux : "Quel son as-tu entendu ?", par module ----
