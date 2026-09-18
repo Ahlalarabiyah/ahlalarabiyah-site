@@ -376,6 +376,49 @@
     // lettre porteuse a laquelle s'accrocher visuellement.
     var COMBINING_MARKS = { "َ": 1, "ُ": 1, "ِ": 1, "ً": 1, "ٌ": 1, "ٍ": 1, "ْ": 1, "ّ": 1 };
 
+    // Lettres qui ne se lient jamais vers la lettre suivante (pas de
+    // tatwil possible juste apres) : les alif, dal/dhal, reh/zain, waw.
+    var NON_CONNECTING_LETTERS = { "ا": 1, "أ": 1, "إ": 1, "آ": 1, "ٱ": 1, "د": 1, "ذ": 1, "ر": 1, "ز": 1, "و": 1, "ؤ": 1 };
+
+    function isArabicBaseLetter(ch) {
+      var code = ch.charCodeAt(0);
+      return (code >= 0x0621 && code <= 0x064A) || code === 0x0671;
+    }
+
+    // Insere un tatwil (ـ) entre chaque paire de lettres arabes liees, pour
+    // allonger visuellement les mots et faciliter la lecture des debutants
+    // (demande explicite, cf. capture avec "_" ajoutes a la main). Respecte
+    // les marques harakat/shadda/soukoune (restent collees a leur lettre
+    // porteuse) et les lettres non liantes (pas de tatwil apres elles).
+    function stretchArabic(text) {
+      var tokens = [];
+      var i = 0;
+      while (i < text.length) {
+        var ch = text.charAt(i);
+        if (isArabicBaseLetter(ch)) {
+          var tok = ch;
+          i++;
+          while (i < text.length && COMBINING_MARKS[text.charAt(i)]) {
+            tok += text.charAt(i);
+            i++;
+          }
+          tokens.push({ base: ch, str: tok });
+        } else {
+          tokens.push({ base: null, str: ch });
+          i++;
+        }
+      }
+      var out = "";
+      for (var j = 0; j < tokens.length; j++) {
+        out += tokens[j].str;
+        var next = tokens[j + 1];
+        if (tokens[j].base && !NON_CONNECTING_LETTERS[tokens[j].base] && next && next.base) {
+          out += "ـ";
+        }
+      }
+      return out;
+    }
+
     // Dessine une forme (lettre de base + voyelle/marque en rouge) dans un
     // conteneur donne. Partage entre le labo de lettres et le jeu, pour
     // garantir le meme rendu (espacements, positionnement) partout.
@@ -798,6 +841,46 @@
 
       var formLabState = { ids: [], index: 0 };
 
+      // Variante segment-aware de stretchArabic : le mot est deja decoupe
+      // en plusieurs morceaux (normal / lettre etudiee en rouge) qui se
+      // concatenent sans espace - on calcule le tatwil sur le mot complet
+      // reconstitue, puis on redistribue chaque tatwil insere a la fin du
+      // segment qui porte la lettre precedente (le rendu visuel final est
+      // identique, seul le decoupage normal/rouge est preserve).
+      function stretchSegments(segments) {
+        var flat = [];
+        segments.forEach(function (seg, segIndex) {
+          var text = seg.t;
+          var i = 0;
+          while (i < text.length) {
+            var ch = text.charAt(i);
+            if (isArabicBaseLetter(ch)) {
+              var tok = ch;
+              i++;
+              while (i < text.length && COMBINING_MARKS[text.charAt(i)]) {
+                tok += text.charAt(i);
+                i++;
+              }
+              flat.push({ segIndex: segIndex, base: ch, str: tok });
+            } else {
+              flat.push({ segIndex: segIndex, base: null, str: ch });
+              i++;
+            }
+          }
+        });
+        var rebuilt = segments.map(function () { return ""; });
+        for (var j = 0; j < flat.length; j++) {
+          rebuilt[flat[j].segIndex] += flat[j].str;
+          var next = flat[j + 1];
+          if (flat[j].base && !NON_CONNECTING_LETTERS[flat[j].base] && next && next.base) {
+            rebuilt[flat[j].segIndex] += "ـ";
+          }
+        }
+        return segments.map(function (seg, idx) {
+          return { t: rebuilt[idx], h: seg.h };
+        });
+      }
+
       function renderFormSegments(container, segments) {
         container.innerHTML = "";
         segments.forEach(function (seg) {
@@ -820,7 +903,7 @@
         label.textContent = FORM_LABEL[labelKey];
         var word = document.createElement("p");
         word.className = "formlab-word";
-        renderFormSegments(word, segments);
+        renderFormSegments(word, stretchSegments(segments));
         card.appendChild(label);
         card.appendChild(word);
         formLabExamples.appendChild(card);
@@ -965,7 +1048,7 @@
             label.textContent = ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id;
             var word = document.createElement("p");
             word.className = "formlab-word";
-            word.textContent = wordsMap[id];
+            word.textContent = stretchArabic(wordsMap[id]);
             var play = document.createElement("span");
             play.className = "sunmoon-word-play";
             play.textContent = "🔊";
@@ -2229,7 +2312,7 @@
           btn.type = "button";
           if (choice.kind === "word") {
             btn.className = "letterlab-cell game-answer game-answer-word";
-            btn.textContent = choice.arabic;
+            btn.textContent = stretchArabic(choice.arabic);
           } else {
             btn.className = "letterlab-cell game-answer";
             renderLetterForm(btn, choice.text, choice.baseLen);
@@ -2264,7 +2347,7 @@
         gameState.questionIndex += 1;
         gameState.current = { correct: correct, listened: false };
 
-        gameReadWord.textContent = correct.arabic;
+        gameReadWord.textContent = stretchArabic(correct.arabic);
         gameReadListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameReadNextBtn.hidden = true;
         gameScoreEl.textContent = (isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
@@ -2291,7 +2374,7 @@
         gameState.questionIndex += 1;
         gameState.current = { correct: correct };
 
-        gameDicteeWord.textContent = correct.arabic;
+        gameDicteeWord.textContent = stretchArabic(correct.arabic);
         gameDicteeWord.hidden = true;
         gameDicteeListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameDicteeRevealBtn.hidden = false;
@@ -2424,7 +2507,7 @@
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "letterlab-cell game-answer game-answer-word game-answer-script";
-          btn.textContent = choice.text;
+          btn.textContent = stretchArabic(choice.text);
           btn.addEventListener("click", function () { onScriptAnswer(choice, btn); });
           gameAnswers.appendChild(btn);
         });
@@ -2936,7 +3019,7 @@
           ? (isEnglish ? "Correct!" : "Bravo, c'est la bonne réponse !")
           : (isEnglish ? "Not quite — here is the right answer." : "Ce n'était pas ça — voici la bonne réponse.");
         gameHarakatCorrect.hidden = false;
-        gameHarakatCorrect.textContent = gameState.current.correct.arabic;
+        gameHarakatCorrect.textContent = stretchArabic(gameState.current.correct.arabic);
         gameHarakatNextBtn.hidden = false;
         renderScore();
       });
