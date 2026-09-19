@@ -279,12 +279,19 @@
     // contexte "بَ" + lettre (comme dans le cahier), en sukun puis en
     // shadda ; seule la lettre cible et sa marque restent la partie
     // "nouvelle" mise en rouge, "بَ" servant de simple support de lecture.
+    // Deuxieme carte ajoutee ensuite : la meme lettre isolee (sans "بَ"),
+    // avec son propre enregistrement - vient completer, pas remplacer.
+    // L'alif n'a pas d'enregistrement isole (il ne prend pas reellement
+    // de sukun/shadda en arabe - deja exclu de la section modules pour
+    // cette raison), donc pas de deuxieme carte pour lui.
     function buildLetterF4(id, char, name) {
-      return {
-        id: id, char: char, name: name,
-        sukun: [["بَ" + char + "ْ", id + "-sukun", 3]],
-        shadda: [["بَ" + char + "ّ" + "َ", id + "-shadda", 3]]
-      };
+      var sukunForms = [["بَ" + char + "ْ", id + "-sukun", 3]];
+      var shaddaForms = [["بَ" + char + "ّ" + "َ", id + "-shadda", 3]];
+      if (id !== "alif") {
+        sukunForms.push([char + "ْ", id + "-sukun-iso", 1]);
+        shaddaForms.push([char + "ّ" + "َ", id + "-shadda-iso", 1]);
+      }
+      return { id: id, char: char, name: name, sukun: sukunForms, shadda: shaddaForms };
     }
 
     var LETTERS_F4 = [
