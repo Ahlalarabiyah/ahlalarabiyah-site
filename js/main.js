@@ -344,6 +344,7 @@
     var letterLabTabs = document.getElementById("letterLabTabs");
     var letterLabTitle = document.getElementById("letterLabTitle");
     var letterLabName = document.getElementById("letterLabName");
+    var letterLabPronunciation = document.getElementById("letterLabPronunciation");
     var letterLabGroups = document.getElementById("letterLabGroups");
     var letterLabClose = document.getElementById("letterLabClose");
     var currentAudio = null;
@@ -500,6 +501,32 @@
     }
 
     var isEnglish = document.documentElement.lang === "en";
+
+    // Notes de prononciation (position de la langue, comparaison avec un
+    // son connu...) fournies par l'utilisateur, lettre par lettre - pas
+    // encore de traduction anglaise, donc affichees uniquement en FR.
+    // Liste volontairement partielle : les lettres absentes n'affichent
+    // simplement pas ce bloc, a completer plus tard.
+    var LETTER_PRONUNCIATION_NOTES = {
+      thaa: "Sortir le bout de la langue et la mettre entre les incisives du bas et du haut, et la mordre un petit peu, puis souffler.",
+      haa: "Comme le fait de vouloir retirer la buée présente sur des lunettes afin de les nettoyer.",
+      khaa: "Comme vouloir sortir des glaires ou une arête de poisson coincée dans la gorge.",
+      thal: "Positionner la langue comme pour le « ث », puis faire comme le son du téléphone qui vibre sur une table.",
+      reh: "La langue frappe le palais de façon rapide, comme le « r » en espagnol.",
+      zain: "Comme pour la prononciation du mot « zéro ».",
+      seen: "Comme pour la prononciation du mot « sous ».",
+      sad: "Même positionnement de la langue que pour le « س », sauf que la lettre est grave, donc la bouche un peu plus refermée que pour le « س ».",
+      dad: "Le côté de la langue (droite ou gauche) vient se positionner sur le côté des molaires d'en haut, puis en la prononçant, la joue se gonfle un peu.",
+      tah: "Même positionnement de la langue que pour le « ت », sauf que la lettre est grave, donc la bouche est plus ouverte que pour le « ت ».",
+      zah: "Même positionnement de la langue que pour le « ذ », sauf que la lettre est grave, donc la bouche est plus ouverte que pour le « ذ ».",
+      ain: "Comme pour la prononciation du mot « Alamîn » dans le 1er verset de la Fatiha. Cette lettre provient du fond de la gorge, l'endroit où pose ses mains celui qui étrangle une personne, et le son qui en provient est celui-ci.",
+      ghain: "Comme pour la prononciation du « r » français dans les mots « roue » / « riz ».",
+      feh: "Comme pour la prononciation du mot « Fait ».",
+      qaf: "Le fond de la langue se lève pour se positionner et toucher le fond du palais.",
+      kaf: "Comme pour la prononciation du mot « Cou ».",
+      heh: "L'air léger venant des poumons — et non de la gorge — après une petite course très lente."
+    };
+
     var GROUP_TITLES = isEnglish
       ? {
           harakat: "Vowels (الْحَرَكَات)", moudoud: "Prolongations (الْمُدُود)", tanwin: "Tanwīn (التَّنْوِين)",
@@ -518,6 +545,9 @@
         currentAudioBase = ROOT_BASE + "assets/audio/fascicule-" + letter.fascicule + "/";
       }
       letterLabName.textContent = letter.name;
+      var note = !isEnglish && LETTER_PRONUNCIATION_NOTES[letter.id];
+      letterLabPronunciation.hidden = !note;
+      letterLabPronunciation.textContent = note || "";
       letterLabGroups.innerHTML = "";
       currentGroupKeys.forEach(function (key) {
         letterLabGroups.appendChild(buildGroup(GROUP_TITLES[key], key, letter[key]));

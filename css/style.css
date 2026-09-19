@@ -860,6 +860,17 @@ section[id] { scroll-margin-top: 88px; }
   margin-bottom: 22px;
   direction: rtl;
 }
+.letterlab-pronunciation {
+  background: var(--color-teal-10);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin: 0 0 22px;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--color-text);
+  text-align: left;
+}
 .letterlab-group { margin-bottom: 22px; }
 .letterlab-group h4 {
   font-family: var(--font-heading);
