@@ -345,6 +345,7 @@
     var letterLabTitle = document.getElementById("letterLabTitle");
     var letterLabName = document.getElementById("letterLabName");
     var letterLabPronunciation = document.getElementById("letterLabPronunciation");
+    var letterLabPronunciationText = document.getElementById("letterLabPronunciationText");
     var letterLabGroups = document.getElementById("letterLabGroups");
     var letterLabClose = document.getElementById("letterLabClose");
     var currentAudio = null;
@@ -505,8 +506,9 @@
     // Notes de prononciation (position de la langue, comparaison avec un
     // son connu...) fournies par l'utilisateur, lettre par lettre - pas
     // encore de traduction anglaise, donc affichees uniquement en FR.
-    // Liste volontairement partielle : les lettres absentes n'affichent
-    // simplement pas ce bloc, a completer plus tard.
+    // Liste complete telle que voulue : les autres lettres n'ont pas
+    // besoin d'aide a la prononciation, elles n'affichent donc pas ce
+    // bloc (pas d'oubli).
     var LETTER_PRONUNCIATION_NOTES = {
       thaa: "Sortir le bout de la langue et la mettre entre les incisives du bas et du haut, et la mordre un petit peu, puis souffler.",
       haa: "Comme le fait de vouloir retirer la buée présente sur des lunettes afin de les nettoyer.",
@@ -547,7 +549,7 @@
       letterLabName.textContent = letter.name;
       var note = !isEnglish && LETTER_PRONUNCIATION_NOTES[letter.id];
       letterLabPronunciation.hidden = !note;
-      letterLabPronunciation.textContent = note || "";
+      letterLabPronunciationText.textContent = note || "";
       letterLabGroups.innerHTML = "";
       currentGroupKeys.forEach(function (key) {
         letterLabGroups.appendChild(buildGroup(GROUP_TITLES[key], key, letter[key]));
