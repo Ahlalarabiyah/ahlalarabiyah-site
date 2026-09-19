@@ -428,6 +428,31 @@
       return out;
     }
 
+    // Le "إ" (alif + hamza en dessous) porte deja une marque en dessous
+    // (la hamza) : y ajouter une kasra separee les fait se chevaucher
+    // visuellement avec la plupart des polices/navigateurs (gene reelle
+    // pour un debutant). On isole cette kasra dans son propre span pour
+    // pouvoir la redescendre en CSS, exactement comme deja fait pour les
+    // cartes du labo de lettres (voir .letterlab-mark-widened) - mais
+    // sans la teinte rouge (reservee a la lettre etudiee dans le labo).
+    function renderArabicText(container, text) {
+      container.textContent = "";
+      var i = 0;
+      while (i < text.length) {
+        if (text.charAt(i) === "إ" && text.charAt(i + 1) === "ِ") {
+          container.appendChild(document.createTextNode("إ"));
+          var mark = document.createElement("span");
+          mark.className = "arabic-kasra-fix";
+          mark.textContent = "ِ";
+          container.appendChild(mark);
+          i += 2;
+        } else {
+          container.appendChild(document.createTextNode(text.charAt(i)));
+          i++;
+        }
+      }
+    }
+
     // Dessine une forme (lettre de base + voyelle/marque en rouge) dans un
     // conteneur donne. Partage entre le labo de lettres et le jeu, pour
     // garantir le meme rendu (espacements, positionnement) partout.
@@ -1087,7 +1112,7 @@
             label.textContent = ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id;
             var word = document.createElement("p");
             word.className = "formlab-word";
-            word.textContent = stretchArabic(wordsMap[id]);
+            renderArabicText(word, stretchArabic(wordsMap[id]));
             var play = document.createElement("span");
             play.className = "sunmoon-word-play";
             play.textContent = "🔊";
@@ -2351,7 +2376,7 @@
           btn.type = "button";
           if (choice.kind === "word") {
             btn.className = "letterlab-cell game-answer game-answer-word";
-            btn.textContent = stretchArabic(choice.arabic);
+            renderArabicText(btn, stretchArabic(choice.arabic));
           } else {
             btn.className = "letterlab-cell game-answer";
             renderLetterForm(btn, choice.text, choice.baseLen);
@@ -2386,7 +2411,7 @@
         gameState.questionIndex += 1;
         gameState.current = { correct: correct, listened: false };
 
-        gameReadWord.textContent = stretchArabic(correct.arabic);
+        renderArabicText(gameReadWord, stretchArabic(correct.arabic));
         gameReadListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameReadNextBtn.hidden = true;
         gameScoreEl.textContent = (isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
@@ -2413,7 +2438,7 @@
         gameState.questionIndex += 1;
         gameState.current = { correct: correct };
 
-        gameDicteeWord.textContent = stretchArabic(correct.arabic);
+        renderArabicText(gameDicteeWord, stretchArabic(correct.arabic));
         gameDicteeWord.hidden = true;
         gameDicteeListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameDicteeRevealBtn.hidden = false;
@@ -2546,7 +2571,7 @@
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "letterlab-cell game-answer game-answer-word game-answer-script";
-          btn.textContent = stretchArabic(choice.text);
+          renderArabicText(btn, stretchArabic(choice.text));
           btn.addEventListener("click", function () { onScriptAnswer(choice, btn); });
           gameAnswers.appendChild(btn);
         });
@@ -3058,7 +3083,7 @@
           ? (isEnglish ? "Correct!" : "Bravo, c'est la bonne réponse !")
           : (isEnglish ? "Not quite — here is the right answer." : "Ce n'était pas ça — voici la bonne réponse.");
         gameHarakatCorrect.hidden = false;
-        gameHarakatCorrect.textContent = stretchArabic(gameState.current.correct.arabic);
+        renderArabicText(gameHarakatCorrect, stretchArabic(gameState.current.correct.arabic));
         gameHarakatNextBtn.hidden = false;
         renderScore();
       });

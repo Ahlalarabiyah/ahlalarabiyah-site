@@ -919,6 +919,10 @@ section[id] { scroll-margin-top: 88px; }
 .letterlab-mark-tightened { position: relative; top: 0.1em; }
 .letterlab-mark-widened { position: relative; top: 0.3em; }
 .letterlab-mark-widened-tailed { position: relative; top: 0.55em; }
+/* Meme correction que .letterlab-mark-widened (kasra qui se superpose a
+   la hamza en dessous du "إ"), mais sans teinte rouge : utilisee dans
+   les mots complets des jeux, pas seulement les cartes du labo. */
+.arabic-kasra-fix { position: relative; top: 0.3em; }
 
 @media (max-width: 680px) {
   .letterlab-body { flex-direction: column; padding: 0 12px 16px; }
