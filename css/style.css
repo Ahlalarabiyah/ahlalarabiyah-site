@@ -1209,11 +1209,31 @@ section[id] { scroll-margin-top: 88px; }
   margin: 0 0 32px;
   word-break: break-word;
 }
+
+/* Dictee - Niveau 1 : toute la ligne (plusieurs mots) affichee d'un coup a
+   la correction, contrairement a .game-read-word (un seul mot) - meme
+   habillage visuel, juste en liste RTL qui retombe a la ligne. */
+.dictee1-words {
+  display: flex;
+  flex-wrap: wrap;
+  direction: rtl;
+  gap: 10px 22px;
+  margin: 0 0 32px;
+}
+.dictee1-words[hidden] { display: none; }
+.dictee1-word {
+  font-family: var(--font-arabic);
+  font-size: 2.2rem;
+  line-height: 1.5;
+  color: var(--color-navy);
+}
 .game-read-panel .btn { margin: 0 auto; }
 #gameReadListenBtn { margin-bottom: 16px; }
 #gameReadNextBtn[hidden] { display: none; }
 #gameDicteeRevealBtn[hidden] { display: none; }
 #gameDicteeNextBtn[hidden] { display: none; }
+#gameDictee1RevealBtn[hidden] { display: none; }
+#gameDictee1NextBtn[hidden] { display: none; }
 .game-end {
   flex: 1;
   display: flex;
@@ -1420,6 +1440,8 @@ section[id] { scroll-margin-top: 88px; }
   .game-answer-script { font-size: 1.5rem; padding: 18px 10px; }
   .game-panel { padding: 20px 16px; }
   .game-read-word { font-size: 2.4rem; margin-bottom: 24px; }
+  .dictee1-word { font-size: 1.6rem; }
+  .dictee1-words { gap: 8px 16px; margin-bottom: 24px; }
   .game-menu-grid { gap: 14px; }
   .game-menu-card { flex-basis: 150px; min-height: 130px; padding: 20px 10px; }
   .game-menu-icon { font-size: 2.3rem; }

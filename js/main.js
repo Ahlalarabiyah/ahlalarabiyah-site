@@ -331,6 +331,125 @@
     var LETTERS_F4_BY_ID = {};
     LETTERS_F4.forEach(function (l) { LETTERS_F4_BY_ID[l.id] = l; });
 
+    // Jeu "Dictee - Niveau 1" : contenu retranscrit a la main depuis le
+    // cahier de dictee manuscrit fourni (5 pages), lettre par lettre dans
+    // l'ordre du cahier, et recoupe avec les 28 enregistrements audio
+    // d'origine (un seul fichier par lettre, qui dicte toute la ligne).
+    // Quelques mots sont restes incertains malgre ce recoupement (ecriture
+    // manuscrite ambigue) : marques ci-dessous par "verifier". Les mots
+    // entierement rayes/noircis dans le cahier (ratures reelles, pas une
+    // limite de lecture) ne sont volontairement pas repris - impossible de
+    // les lire sans deviner.
+    var DICTEE_NIVEAU_1 = [
+      // Ordre confirme par l'utilisateur a l'ecoute de l'audio complet
+      // (le premier passage l'avait mal transcrit, coupe court par erreur) :
+      // fatha, puis madd-damma, puis tanwin-damma, puis kasra, puis
+      // madd-fatha - chaque son repete deux fois dans l'audio.
+      { id: "alif", items: ["أَ", "أُو", "أٌ", "إِ", "آ"] },
+      // Ordre confirme par l'utilisateur a l'ecoute : tanwin-fatha,
+      // madd-kasra, damma, tanwin-kasra, fatha, puis le mot combine
+      // "أَبًا" (alif-fatha + baa-tanwin-fatha).
+      { id: "baa", items: ["بًا", "بِي", "بُ", "بٍ", "بَ", "أَبًا"] },
+      // Ordre confirme par l'utilisateur : madd-fatha, tanwin-kasra,
+      // tanwin-fatha, madd-damma, madd-kasra, puis deux mots combines
+      // "بَاتَا" et "أَبَتَ".
+      { id: "taa", items: ["تَا", "تٍ", "تًا", "تُو", "تِي", "بَاتَا", "أَبَتَ", "بَابَا", "تَبَا"] },
+      // Ordre confirme par l'utilisateur : madd-damma, madd-kasra,
+      // tanwin-damma, tanwin-kasra, madd-fatha, puis 5 mots combines
+      // (les 2 derniers reutilisent "ت", en revision).
+      { id: "thaa", items: ["ثُو", "ثِي", "ثٌ", "ثٍ", "ثَا", "أَثَا", "تَابَ", "ثَبَتَ", "أَثَاثًا", "تَابَا"] },
+      // Ordre confirme par l'utilisateur : tanwin-fatha, madd-damma,
+      // tanwin-kasra, damma, madd-kasra, puis 4 mots combines.
+      { id: "jim", items: ["جًا", "جُو", "جٍ", "جُ", "جِي", "أَجَابَ", "بَجَا", "تَجَا", "أَجَبَ"] },
+      // Ordre confirme par l'utilisateur : madd-fatha, madd-damma,
+      // tanwin-kasra, tanwin-damma, tanwin-fatha, puis 3 mots combines
+      // (sans chadda sur "أَحَبَ", confirme explicitement).
+      { id: "haa", items: ["حَا", "حُو", "حٍ", "حٌ", "حًا", "أَحَبَ", "حَبَا", "بَحَثَ"] },
+      // Ordre confirme par l'utilisateur : tanwin-fatha, tanwin-damma,
+      // fatha, madd-kasra, puis 3 mots combines ("أَثَبَ" sans allongement,
+      // confirme explicitement).
+      { id: "khaa", items: ["خًا", "خٌ", "خَ", "خِي", "خَبَثَ", "أَثَبَ", "خَابَ"] },
+      // Ordre confirme par l'utilisateur : fatha, damma, tanwin-kasra,
+      // madd-fatha, puis 4 mots combines.
+      { id: "dal", items: ["دَ", "دُ", "دٍ", "دَا", "أَجَدَ", "أَحَدًا", "حَدَثَ", "بَدَأَ"] },
+      // Ordre confirme par l'utilisateur : madd-kasra, madd-fatha,
+      // madd-damma, tanwin-fatha, fatha, puis 4 mots combines (sans
+      // chadda sur les 2 derniers, confirme explicitement - "أَدَبَ" avec
+      // dal vs "أَذَبَ" avec thal, paire minimale).
+      { id: "thal", items: ["ذِي", "ذَا", "ذُو", "ذًا", "ذَ", "أَخَذَ", "ذَبَحَ", "أَدَبَ", "أَذَبَ"] },
+      // Ordre confirme par l'utilisateur : tanwin-fatha, tanwin-damma,
+      // tanwin-kasra, fatha, puis 3 mots combines.
+      { id: "reh", items: ["رًا", "رٌ", "رٍ", "رَ", "حَذَرَ", "حَرَبَ", "جَرَحَ"] },
+      // Ordre confirme par l'utilisateur : madd-fatha, kasra, tanwin-damma,
+      // tanwin-kasra, tanwin-fatha, puis 3 mots combines ("حَزَزَ" sans
+      // chadda, confirme explicitement - 3 lettres distinctes, pas de
+      // doublement).
+      { id: "zain", items: ["زَا", "زِ", "زٌ", "زٍ", "زًا", "حَزَزَ", "أَزَبَ", "بَذَرَ"] },
+      // Ordre confirme par l'utilisateur : madd-fatha, tanwin-kasra,
+      // tanwin-fatha, madd-damma, damma, puis 3 mots combines ("أَسَسَ"
+      // sans chadda, confirme explicitement).
+      { id: "seen", items: ["سَا", "سٍ", "سًا", "سُو", "سُ", "أَسَسَ", "سَحَبَ", "أَسَاسًا"] },
+      // Ordre confirme par l'utilisateur : madd-kasra, tanwin-kasra,
+      // fatha, madd-damma, puis 3 mots combines ("بَشَرَ" sans chadda,
+      // confirme explicitement).
+      { id: "sheen", items: ["شِي", "شٍ", "شَ", "شُو", "حَشَرَ", "بَشَرَ", "شَارَبَ"] },
+      // Ordre confirme par l'utilisateur : tanwin-fatha, tanwin-damma,
+      // kasra, madd-fatha, puis 3 mots combines.
+      { id: "sad", items: ["صًا", "صٌ", "صِ", "صَا", "صَادَ", "أَصَابَ", "حَصَدَ"] },
+      // Ordre confirme par l'utilisateur : madd-damma, madd-kasra,
+      // madd-fatha, fatha, puis 3 mots combines (voyelles confirmees
+      // explicitement une par une).
+      { id: "dad", items: ["ضُو", "ضِي", "ضَا", "ضَ", "بَصَرَ", "أَضَبَ", "حَضَرَ"] },
+      // Ordre confirme par l'utilisateur : tanwin-fatha, madd-fatha,
+      // damma, madd-damma, tanwin-kasra, puis 3 mots combines ("طَابَ"
+      // sans lam, confirme explicitement).
+      { id: "tah", items: ["طًا", "طَا", "طُ", "طُو", "طٍ", "بَسَطَ", "حَطَبَ", "طَابَ"] },
+      // Ordre confirme par l'utilisateur : madd-damma, madd-fatha,
+      // tanwin-kasra, damma, madd-kasra, puis 2 mots combines.
+      { id: "zah", items: ["ظُو", "ظَا", "ظٍ", "ظُ", "ظِي", "حَظَرَ", "بَظَرَ"] },
+      // Ordre confirme par l'utilisateur : fatha, tanwin-fatha, madd-fatha,
+      // tanwin-damma, madd-damma, puis 4 mots combines ("بَضَعَ" 3 fatha,
+      // sans soukoune sur le dad, confirme explicitement - pas "بِضْعَ").
+      { id: "ain", items: ["عَ", "عًا", "عَا", "عٌ", "عُو", "جَاعَ", "بَعَثَ", "بَضَعَ", "عَجَبَ"] },
+      // Ordre confirme par l'utilisateur : tanwin-kasra, madd-fatha,
+      // kasra, madd-damma, damma, puis 3 mots combines ("غَاضَبَ" avec
+      // fatha sur le dad, corrige apres une 1ere reponse kasra).
+      { id: "ghain", items: ["غٍ", "غَا", "غِ", "غُو", "غُ", "غَابَ", "غَاضَبَ", "جَغَبَ"] },
+      // Ordre confirme par l'utilisateur : tanwin-damma, tanwin-kasra,
+      // tanwin-fatha, madd-damma, puis 3 mots combines.
+      { id: "feh", items: ["فٌ", "فٍ", "فًا", "فُو", "حَفَرَ", "فَتَحَ", "غَفَرَ"] },
+      // Ordre confirme par l'utilisateur : tanwin-fatha, tanwin-damma,
+      // tanwin-kasra, madd-fatha, puis 3 mots combines ("أَقَعَ" avec
+      // alif, confirme explicitement - pas "وَقَعَ").
+      { id: "qaf", items: ["قًا", "قٌ", "قٍ", "قَا", "حَقَبَ", "بَقَرَ", "أَقَعَ"] },
+      // Ordre confirme par l'utilisateur : madd-kasra, tanwin-damma,
+      // tanwin-kasra, tanwin-fatha, puis 3 mots combines ("كَعَبَ" avec
+      // fatha sur le ain, sans soukoune, corrige apres 1ere reponse).
+      { id: "kaf", items: ["كِي", "كٌ", "كٍ", "كًا", "كَتَبَ", "كَعَبَ", "تَرَكَ"] },
+      // Ordre confirme par l'utilisateur : tanwin-damma, tanwin-kasra,
+      // madd-kasra, madd-fatha, puis 3 mots combines.
+      { id: "lam", items: ["لٌ", "لٍ", "لِي", "لَا", "قَتَلَ", "بَلَعَ", "جَلَسَ"] },
+      // Ordre confirme par l'utilisateur : tanwin-fatha, tanwin-kasra,
+      // damma, tanwin-damma, madd-damma, puis 4 verbes (pas des noms en
+      // taa marbouta, confirme explicitement apres verification).
+      { id: "meem", items: ["مًا", "مٍ", "مُ", "مٌ", "مُو", "مَلَكَ", "حَكَمَ", "جَمَعَ", "جَامَعَ"] },
+      // Ordre confirme par l'utilisateur : madd-kasra, tanwin-fatha,
+      // madd-damma, fatha, tanwin-kasra, puis 3 mots combines.
+      { id: "noon", items: ["نِي", "نًا", "نُو", "نَ", "نٍ", "أَنَارَ", "جَنَحَ", "حَسُنَ"] },
+      // Ordre confirme par l'utilisateur : madd-fatha, damma, tanwin-kasra,
+      // tanwin-fatha, madd-damma, puis 3 mots combines ("جَهَدَ" verbe,
+      // pas le nom "جُهْد").
+      { id: "heh", items: ["هَا", "هُ", "هٍ", "هًا", "هُو", "هَجَمَ", "هَاجَمَ", "جَهَدَ"] },
+      // Ordre confirme par l'utilisateur : fatha, damma, kasra,
+      // tanwin-fatha, puis 3 mots combines.
+      { id: "waw", items: ["وَ", "وُ", "وِ", "وًا", "جَاوَبَ", "وَجَدَهَا", "جَوَزَ"] },
+      // Ordre confirme par l'utilisateur : tanwin-damma, madd-fatha,
+      // tanwin-fatha, fatha, kasra, puis 3 mots combines (sans chadda sur
+      // "يَسَرَ", fatha - pas soukoune - sur "بَيَنَ", confirmes
+      // explicitement).
+      { id: "yeh", items: ["يٌ", "يَا", "يًا", "يَ", "يِ", "يَسَرَ", "حَيَا", "بَيَنَ"] }
+    ];
+
     var LETTERS_BY_FASCICULE = { "1": LETTERS_F1, "2": LETTERS_F2, "3": LETTERS_F3, "4": LETTERS_F4 };
     var GROUPS_BY_FASCICULE = {
       "1": ["harakat", "moudoud", "tanwin"],
@@ -2041,6 +2160,11 @@
       var sortAllFeedback = document.getElementById("sortAllFeedback");
       var sortAllDoneMessage = document.getElementById("sortAllDoneMessage");
       var sortAllReplayBtn = document.getElementById("sortAllReplayBtn");
+      var gameDictee1Panel = document.getElementById("gameDictee1Panel");
+      var gameDictee1Words = document.getElementById("gameDictee1Words");
+      var gameDictee1ListenBtn = document.getElementById("gameDictee1ListenBtn");
+      var gameDictee1RevealBtn = document.getElementById("gameDictee1RevealBtn");
+      var gameDictee1NextBtn = document.getElementById("gameDictee1NextBtn");
 
       var INSTRUCTION_TEXT = {
         sound: isEnglish ? "Listen, then choose the sound you heard." : "Écoute puis choisis le son que tu as entendu.",
@@ -2948,10 +3072,90 @@
         }
       }
 
+      // Dictee - Niveau 1 : un seul fichier audio par lettre (dicte toute
+      // la ligne d'un coup, pas de decoupage par mot - contrairement aux
+      // autres jeux). L'enfant ecoute, ecrit sur une feuille, puis affiche
+      // la correction complete de la lettre avant de passer a la suivante.
+      // Parcours fixe dans l'ordre du cahier (pas de tirage aleatoire, pas
+      // de score : comme "Dictee pure", mais lettre par lettre plutot que
+      // mot par mot).
+      var DICTEE1_AUDIO_BASE = ROOT_BASE + "assets/audio/dictee-niveau-1/";
+      var dictee1State = null;
+      var dictee1Active = false;
+
+      function hideAllGamePanels() {
+        gameQuizPanel.hidden = true;
+        gameReadPanel.hidden = true;
+        gameDicteePanel.hidden = true;
+        gameHarakatPanel.hidden = true;
+        gameSortPanel.hidden = true;
+        gameSortAllPanel.hidden = true;
+        gameDictee1Panel.hidden = true;
+      }
+
+      function renderDictee1Letter() {
+        var entry = DICTEE_NIVEAU_1[dictee1State.index];
+        var letter = ALL_LETTERS_BY_ID[entry.id];
+        dictee1State.current = entry;
+
+        gameLevelInfo.textContent = (isEnglish ? "Letter " : "Lettre ") + (dictee1State.index + 1) + " / " + DICTEE_NIVEAU_1.length +
+          " — " + letter.char + " (" + letter.name + ")";
+        gameScoreEl.textContent = "";
+
+        gameDictee1Words.innerHTML = "";
+        gameDictee1Words.hidden = true;
+        gameDictee1ListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
+        gameDictee1RevealBtn.hidden = false;
+        gameDictee1NextBtn.hidden = true;
+        gameDictee1NextBtn.textContent = dictee1State.index + 1 < DICTEE_NIVEAU_1.length
+          ? (isEnglish ? "Next letter →" : "Lettre suivante →")
+          : (isEnglish ? "Finish" : "Terminer");
+      }
+
+      function showDictee1Words() {
+        var entry = dictee1State.current;
+        gameDictee1Words.innerHTML = "";
+        entry.items.forEach(function (word) {
+          var span = document.createElement("span");
+          span.className = "dictee1-word";
+          renderArabicText(span, stretchArabic(word));
+          gameDictee1Words.appendChild(span);
+        });
+        gameDictee1Words.hidden = false;
+      }
+
+      function startDictee1Game(title) {
+        dictee1Active = true;
+        gamePrestartWarning.hidden = true;
+        gameMenuScreen.hidden = true;
+        gameModalTitle.textContent = title;
+        gameBody.hidden = false;
+        gameEnd.hidden = true;
+        hideAllGamePanels();
+        gameDictee1Panel.hidden = false;
+
+        dictee1State = { index: 0, current: null };
+        renderDictee1Letter();
+
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function showDictee1End() {
+        gameBody.hidden = true;
+        gameEnd.hidden = false;
+        gameEndScore.textContent = isEnglish
+          ? "You've been through all 28 letters!"
+          : "Tu as parcouru les 28 lettres !";
+        gameEndMessage.hidden = true;
+        gameContinueBtn.hidden = true;
+      }
+
       function closeGame() {
         gameModal.classList.remove("is-open");
         document.body.style.overflow = "";
         gamePrestartWarning.hidden = true;
+        dictee1Active = false;
         if (gameAudio) { gameAudio.pause(); }
       }
 
@@ -3017,16 +3221,46 @@
           startSunMoonGame(btn.getAttribute("data-title"));
         });
       });
+      document.querySelectorAll(".js-open-dictee1-game").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          startDictee1Game(btn.getAttribute("data-title"));
+        });
+      });
       sortAllSunZone.addEventListener("click", function () { placeSortAllLetter("sun"); });
       sortAllMoonZone.addEventListener("click", function () { placeSortAllLetter("moon"); });
       sortAllReplayBtn.addEventListener("click", startSortAllGame);
+      // Le jeu "Dictee - Niveau 1" n'a pas d'ecran de menu (un seul mode) :
+      // "Retour" y ferme directement la modale plutot que d'afficher un
+      // menu vide.
       gameBackToMenuBtn.addEventListener("click", function () {
+        if (dictee1Active) { closeGame(); return; }
         gameBody.hidden = true;
         gameMenuScreen.hidden = false;
       });
       gameEndBackToMenuBtn.addEventListener("click", function () {
+        if (dictee1Active) { closeGame(); return; }
         gameEnd.hidden = true;
         gameMenuScreen.hidden = false;
+      });
+      gameDictee1ListenBtn.addEventListener("click", function () {
+        if (!dictee1State || !dictee1State.current) return;
+        playSound({ audioBase: DICTEE1_AUDIO_BASE, audioId: dictee1State.current.id });
+        gameDictee1ListenBtn.textContent = isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
+      });
+      gameDictee1RevealBtn.addEventListener("click", function () {
+        if (!dictee1State || !dictee1State.current) return;
+        showDictee1Words();
+        gameDictee1RevealBtn.hidden = true;
+        gameDictee1NextBtn.hidden = false;
+      });
+      gameDictee1NextBtn.addEventListener("click", function () {
+        if (!dictee1State) return;
+        dictee1State.index += 1;
+        if (dictee1State.index >= DICTEE_NIVEAU_1.length) {
+          showDictee1End();
+          return;
+        }
+        renderDictee1Letter();
       });
       gamePlayBtn.addEventListener("click", function () {
         if (gameState && gameState.category !== "script" && gameState.current) playSound(gameState.current.correct);
@@ -3089,6 +3323,7 @@
       });
       gameHarakatNextBtn.addEventListener("click", nextQuestion);
       gameReplayBtn.addEventListener("click", function () {
+        if (dictee1Active) { startDictee1Game(gameModalTitle.textContent); return; }
         startRound(gameState.moduleNumber, gameState.title, gameState.category);
       });
       gameContinueBtn.addEventListener("click", function () {

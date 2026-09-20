@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=65">
+<link rel="stylesheet" href="css/style.css?v=67">
 </head>
 <body>
 
@@ -212,6 +212,17 @@
             Jouer
           </button>
         </article>
+
+        <article class="module-card module-card-bonus">
+          <span class="module-number">Dictée</span>
+          <p class="module-letters">✍️</p>
+          <p class="module-progress">Niveau 1 — les 28 lettres</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-dictee1-game"
+                  data-title="Dictée — Niveau 1">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
+            Jouer
+          </button>
+        </article>
       </div>
 
       <p class="page-cta-back"><a href="modules.html" class="btn btn-outline btn-sm">Découvrir les modules →</a></p>
@@ -330,6 +341,13 @@
         <p class="game-feedback" id="gameSortFeedback" hidden></p>
         <button type="button" class="btn btn-outline btn-sm" id="gameSortNextBtn" hidden>Lettre suivante →</button>
       </div>
+      <div class="game-read-panel" id="gameDictee1Panel" hidden>
+        <p class="game-read-hint">🎧 Écoute toute la ligne dictée, puis écris-la toi-même sur une feuille.</p>
+        <div class="dictee1-words" id="gameDictee1Words" hidden></div>
+        <button type="button" class="btn btn-primary btn-sm" id="gameDictee1ListenBtn">🔊 Écouter</button>
+        <button type="button" class="btn btn-outline btn-sm" id="gameDictee1RevealBtn" hidden>Afficher la correction</button>
+        <button type="button" class="btn btn-outline btn-sm" id="gameDictee1NextBtn" hidden>Lettre suivante →</button>
+      </div>
       <div class="game-sortall-panel" id="gameSortAllPanel" hidden>
         <p class="game-instruction">Touche une lettre, puis touche la colonne solaire ou lunaire pour la placer.</p>
         <div class="sortall-pool" id="sortAllPool"></div>
@@ -369,6 +387,6 @@
   </div>
 </div>
 
-<script src="js/main.js?v=56"></script>
+<script src="js/main.js?v=89"></script>
 </body>
 </html>
