@@ -2165,7 +2165,6 @@
       var gameDictee1ListenBtn = document.getElementById("gameDictee1ListenBtn");
       var gameDictee1RevealBtn = document.getElementById("gameDictee1RevealBtn");
       var gameDictee1NextBtn = document.getElementById("gameDictee1NextBtn");
-      var gameDictee1Letters = document.getElementById("gameDictee1Letters");
 
       var INSTRUCTION_TEXT = {
         sound: isEnglish ? "Listen, then choose the sound you heard." : "Écoute puis choisis le son que tu as entendu.",
@@ -2893,6 +2892,7 @@
       var menuTitle = null;
 
       function renderGameMenu(items) {
+        gameMenuGrid.className = "game-menu-grid";
         gameMenuGrid.innerHTML = "";
         items.forEach(function (item) {
           var def = GAME_MENU_ITEMS[item.category];
@@ -3084,7 +3084,6 @@
       // mot par mot).
       var DICTEE1_AUDIO_BASE = ROOT_BASE + "assets/audio/dictee-niveau-1/";
       var dictee1State = null;
-      var dictee1Active = false;
 
       function hideAllGamePanels() {
         gameQuizPanel.hidden = true;
@@ -3096,25 +3095,42 @@
         gameDictee1Panel.hidden = true;
       }
 
-      // Rangee des 28 lettres (reutilise .letterlab-cell/.is-playing, meme
-      // motif que le labo de lettres) : construite une seule fois par
-      // session de jeu, permet de sauter directement a une lettre plutot
+      // Ecran de choix de la lettre (reutilise gameMenuScreen/gameMenuGrid,
+      // meme mecanique que le menu de jeux d'un module) : interface separee
+      // de l'ecran de pratique, l'enfant choisit d'abord la lettre plutot
       // que de toujours repartir de l'alif.
-      function renderDictee1LetterPicker() {
-        gameDictee1Letters.innerHTML = "";
+      function openDictee1LetterMenu(title) {
+        gameModalTitle.textContent = title;
+        gameMenuHeading.textContent = isEnglish ? "Dictée — Level 1: choose a letter" : "Dictée — Niveau 1 : choisis une lettre";
+        gameMenuLevelInfo.textContent = "";
+        gameMenuGrid.className = "game-menu-grid dictee1-letters";
+        gameMenuGrid.innerHTML = "";
         DICTEE_NIVEAU_1.forEach(function (entry, idx) {
           var letter = ALL_LETTERS_BY_ID[entry.id];
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "letterlab-cell";
           btn.textContent = letter.char;
-          btn.addEventListener("click", function () { goToDictee1Letter(idx); });
-          gameDictee1Letters.appendChild(btn);
+          btn.addEventListener("click", function () { enterDictee1Letter(idx); });
+          gameMenuGrid.appendChild(btn);
         });
+        gamePrestartWarning.hidden = true;
+        gameBody.hidden = true;
+        gameEnd.hidden = true;
+        gameMenuScreen.hidden = false;
+
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
       }
 
-      function goToDictee1Letter(index) {
-        dictee1State.index = index;
+      function enterDictee1Letter(index) {
+        gameMenuScreen.hidden = true;
+        gameBody.hidden = false;
+        gameEnd.hidden = true;
+        hideAllGamePanels();
+        gameDictee1Panel.hidden = false;
+
+        dictee1State = { index: index, current: null };
         renderDictee1Letter();
       }
 
@@ -3126,10 +3142,6 @@
         gameLevelInfo.textContent = (isEnglish ? "Letter " : "Lettre ") + (dictee1State.index + 1) + " / " + DICTEE_NIVEAU_1.length +
           " — " + letter.char + " (" + letter.name + ")";
         gameScoreEl.textContent = "";
-
-        Array.prototype.forEach.call(gameDictee1Letters.children, function (btn, idx) {
-          btn.classList.toggle("is-playing", idx === dictee1State.index);
-        });
 
         gameDictee1Words.innerHTML = "";
         gameDictee1Words.hidden = true;
@@ -3152,29 +3164,10 @@
         gameDictee1Words.hidden = false;
       }
 
-      function startDictee1Game(title) {
-        dictee1Active = true;
-        gamePrestartWarning.hidden = true;
-        gameMenuScreen.hidden = true;
-        gameModalTitle.textContent = title;
-        gameBody.hidden = false;
-        gameEnd.hidden = true;
-        hideAllGamePanels();
-        gameDictee1Panel.hidden = false;
-
-        renderDictee1LetterPicker();
-        dictee1State = { index: 0, current: null };
-        renderDictee1Letter();
-
-        gameModal.classList.add("is-open");
-        document.body.style.overflow = "hidden";
-      }
-
       function closeGame() {
         gameModal.classList.remove("is-open");
         document.body.style.overflow = "";
         gamePrestartWarning.hidden = true;
-        dictee1Active = false;
         if (gameAudio) { gameAudio.pause(); }
       }
 
@@ -3242,17 +3235,16 @@
       });
       document.querySelectorAll(".js-open-dictee1-game").forEach(function (btn) {
         btn.addEventListener("click", function () {
-          startDictee1Game(btn.getAttribute("data-title"));
+          openDictee1LetterMenu(btn.getAttribute("data-title"));
         });
       });
       sortAllSunZone.addEventListener("click", function () { placeSortAllLetter("sun"); });
       sortAllMoonZone.addEventListener("click", function () { placeSortAllLetter("moon"); });
       sortAllReplayBtn.addEventListener("click", startSortAllGame);
-      // Le jeu "Dictee - Niveau 1" n'a pas d'ecran de menu (un seul mode) :
-      // "Retour" y ferme directement la modale plutot que d'afficher un
-      // menu vide.
+      // "Retour" revient a l'ecran de menu partage (choix de categorie pour
+      // un module, choix de lettre pour Dictee - Niveau 1 - voir
+      // openDictee1LetterMenu), jamais directement a la grille des jeux.
       gameBackToMenuBtn.addEventListener("click", function () {
-        if (dictee1Active) { closeGame(); return; }
         gameBody.hidden = true;
         gameMenuScreen.hidden = false;
       });
@@ -3272,7 +3264,7 @@
       });
       // Boucle sur les 28 lettres (recommence a l'alif apres yaa) plutot
       // que de forcer un ecran de fin : avec le choix libre de la lettre
-      // (voir gameDictee1Letters), il n'y a plus de "fin" naturelle de
+      // (voir openDictee1LetterMenu), il n'y a plus de "fin" naturelle de
       // parcours a imposer.
       gameDictee1NextBtn.addEventListener("click", function () {
         if (!dictee1State) return;
