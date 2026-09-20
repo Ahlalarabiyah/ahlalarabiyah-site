@@ -2165,6 +2165,7 @@
       var gameDictee1ListenBtn = document.getElementById("gameDictee1ListenBtn");
       var gameDictee1RevealBtn = document.getElementById("gameDictee1RevealBtn");
       var gameDictee1NextBtn = document.getElementById("gameDictee1NextBtn");
+      var gameDictee1Letters = document.getElementById("gameDictee1Letters");
 
       var INSTRUCTION_TEXT = {
         sound: isEnglish ? "Listen, then choose the sound you heard." : "Écoute puis choisis le son que tu as entendu.",
@@ -2844,6 +2845,7 @@
         gameHarakatPanel.hidden = category !== "harakat";
         gameSortPanel.hidden = category !== "sort";
         gameSortAllPanel.hidden = true;
+        gameDictee1Panel.hidden = true;
       }
 
       // Construit la liste des jeux disponibles pour un module 1-12 (le
@@ -2979,6 +2981,7 @@
         gameHarakatPanel.hidden = true;
         gameSortPanel.hidden = true;
         gameSortAllPanel.hidden = false;
+        gameDictee1Panel.hidden = true;
       }
 
       function startSortAllGame() {
@@ -3093,6 +3096,28 @@
         gameDictee1Panel.hidden = true;
       }
 
+      // Rangee des 28 lettres (reutilise .letterlab-cell/.is-playing, meme
+      // motif que le labo de lettres) : construite une seule fois par
+      // session de jeu, permet de sauter directement a une lettre plutot
+      // que de toujours repartir de l'alif.
+      function renderDictee1LetterPicker() {
+        gameDictee1Letters.innerHTML = "";
+        DICTEE_NIVEAU_1.forEach(function (entry, idx) {
+          var letter = ALL_LETTERS_BY_ID[entry.id];
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "letterlab-cell";
+          btn.textContent = letter.char;
+          btn.addEventListener("click", function () { goToDictee1Letter(idx); });
+          gameDictee1Letters.appendChild(btn);
+        });
+      }
+
+      function goToDictee1Letter(index) {
+        dictee1State.index = index;
+        renderDictee1Letter();
+      }
+
       function renderDictee1Letter() {
         var entry = DICTEE_NIVEAU_1[dictee1State.index];
         var letter = ALL_LETTERS_BY_ID[entry.id];
@@ -3102,14 +3127,17 @@
           " — " + letter.char + " (" + letter.name + ")";
         gameScoreEl.textContent = "";
 
+        Array.prototype.forEach.call(gameDictee1Letters.children, function (btn, idx) {
+          btn.classList.toggle("is-playing", idx === dictee1State.index);
+        });
+
         gameDictee1Words.innerHTML = "";
         gameDictee1Words.hidden = true;
         gameDictee1ListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameDictee1RevealBtn.hidden = false;
-        gameDictee1NextBtn.hidden = true;
         gameDictee1NextBtn.textContent = dictee1State.index + 1 < DICTEE_NIVEAU_1.length
           ? (isEnglish ? "Next letter →" : "Lettre suivante →")
-          : (isEnglish ? "Finish" : "Terminer");
+          : (isEnglish ? "Restart from alif →" : "Recommencer à l'alif →");
       }
 
       function showDictee1Words() {
@@ -3134,21 +3162,12 @@
         hideAllGamePanels();
         gameDictee1Panel.hidden = false;
 
+        renderDictee1LetterPicker();
         dictee1State = { index: 0, current: null };
         renderDictee1Letter();
 
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
-      }
-
-      function showDictee1End() {
-        gameBody.hidden = true;
-        gameEnd.hidden = false;
-        gameEndScore.textContent = isEnglish
-          ? "You've been through all 28 letters!"
-          : "Tu as parcouru les 28 lettres !";
-        gameEndMessage.hidden = true;
-        gameContinueBtn.hidden = true;
       }
 
       function closeGame() {
@@ -3238,7 +3257,6 @@
         gameMenuScreen.hidden = false;
       });
       gameEndBackToMenuBtn.addEventListener("click", function () {
-        if (dictee1Active) { closeGame(); return; }
         gameEnd.hidden = true;
         gameMenuScreen.hidden = false;
       });
@@ -3251,15 +3269,14 @@
         if (!dictee1State || !dictee1State.current) return;
         showDictee1Words();
         gameDictee1RevealBtn.hidden = true;
-        gameDictee1NextBtn.hidden = false;
       });
+      // Boucle sur les 28 lettres (recommence a l'alif apres yaa) plutot
+      // que de forcer un ecran de fin : avec le choix libre de la lettre
+      // (voir gameDictee1Letters), il n'y a plus de "fin" naturelle de
+      // parcours a imposer.
       gameDictee1NextBtn.addEventListener("click", function () {
         if (!dictee1State) return;
-        dictee1State.index += 1;
-        if (dictee1State.index >= DICTEE_NIVEAU_1.length) {
-          showDictee1End();
-          return;
-        }
+        dictee1State.index = (dictee1State.index + 1) % DICTEE_NIVEAU_1.length;
         renderDictee1Letter();
       });
       gamePlayBtn.addEventListener("click", function () {
@@ -3323,7 +3340,6 @@
       });
       gameHarakatNextBtn.addEventListener("click", nextQuestion);
       gameReplayBtn.addEventListener("click", function () {
-        if (dictee1Active) { startDictee1Game(gameModalTitle.textContent); return; }
         startRound(gameState.moduleNumber, gameState.title, gameState.category);
       });
       gameContinueBtn.addEventListener("click", function () {

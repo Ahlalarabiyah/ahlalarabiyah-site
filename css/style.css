@@ -1227,6 +1227,21 @@ section[id] { scroll-margin-top: 88px; }
   line-height: 1.5;
   color: var(--color-navy);
 }
+/* Choix direct d'une lettre a reviser (sans repasser par alif) : reutilise
+   .letterlab-cell/.is-playing (meme motif que le labo de lettres), en plus
+   compact pour que les 28 lettres tiennent sur quelques lignes. */
+.dictee1-letters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 0 0 22px;
+}
+.dictee1-letters .letterlab-cell {
+  min-width: 40px;
+  padding: 8px 10px;
+  font-size: 1.15rem;
+}
 .game-read-panel .btn { margin: 0 auto; }
 #gameReadListenBtn { margin-bottom: 16px; }
 #gameReadNextBtn[hidden] { display: none; }
