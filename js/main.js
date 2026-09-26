@@ -458,13 +458,54 @@
     // reste a transcrire/valider avec l'utilisateur comme pour le niveau 1
     // (audios deja en place, "items" vides en attendant sa correction).
     var DICTEE_LEVEL_2_ENTRIES = [
-      { id: "alif", items: [] }, { id: "baa", items: [] }, { id: "taa", items: [] },
-      { id: "thaa", items: [] }, { id: "jim", items: [] }, { id: "haa", items: [] },
-      { id: "khaa", items: [] }, { id: "dal", items: [] }, { id: "thal", items: [] },
-      { id: "reh", items: [] }, { id: "zain", items: [] }, { id: "seen", items: [] },
-      { id: "sheen", items: [] }, { id: "sad", items: [] }, { id: "dad", items: [] },
-      { id: "tah", items: [] }, { id: "zah", items: [] }, { id: "ain", items: [] },
-      { id: "ghain", items: [] }, { id: "feh", items: [] }, { id: "qaf", items: [] },
+      // Ordre confirme par l'utilisateur : tanwin-damma, tanwin-kasra,
+      // kasra, madd-fatha.
+      { id: "alif", items: ["أٌ", "إٍ", "إِ", "آ"] },
+      // Ordre confirme par l'utilisateur : "بَاتَ" simple (une seule
+      // elongation, confirme explicitement - pas "بَاتَا").
+      { id: "baa", items: ["بَابًا", "بَاتَ", "أَبَتِ"] }, { id: "taa", items: [] },
+      // Ordre confirme par l'utilisateur : 2 mots combines.
+      { id: "thaa", items: ["أَثَاثًا", "ثَابَ"] },
+      // Ordre confirme par l'utilisateur : 2 mots combines ("أُجَابَ" avec
+      // alif, confirme explicitement - pas "وُجَابَ").
+      { id: "jim", items: ["جَابَ", "أُجَابَ"] },
+      // Ordre confirme par l'utilisateur : 2 mots combines ("حُثِثَ" sans
+      // chadda, 3 lettres distinctes, confirme explicitement).
+      { id: "haa", items: ["بَاحَ", "حُثِثَ"] },
+      // Ordre confirme par l'utilisateur : 2 mots combines.
+      { id: "khaa", items: ["خَبُثَ", "خَابَ"] },
+      // Ordre confirme par l'utilisateur : 2 mots combines.
+      { id: "dal", items: ["دُجِبَ", "دَأَبَ"] },
+      // Ordre confirme par l'utilisateur : 2 mots combines (formes passives
+      // des verbes actifs deja vus au niveau 1 : أَخَذَ/ذَبَحَ).
+      { id: "thal", items: ["أُخِذَ", "ذُبِحَ"] },
+      // Ordre confirme par l'utilisateur (apres correction : ces mots
+      // etaient d'abord attribues par erreur a "jim") : 2 mots combines.
+      { id: "reh", items: ["جُرِحَ", "رَحُبَ"] },
+      // Ordre confirme par l'utilisateur : 2 mots combines.
+      { id: "zain", items: ["زَادَ", "بَرُزَ"] },
+      // Ordre confirme par l'utilisateur : 2 mots combines (meme racine,
+      // voyelles differentes).
+      { id: "seen", items: ["حَسُبَ", "حَسِبَ"] },
+      // Ordre confirme par l'utilisateur : 3 mots combines chacun.
+      { id: "sheen", items: ["شُجِرَ", "شُرِبَ", "بَشُرَ"] },
+      { id: "sad", items: ["صُبِرَ", "صُجِرَ", "صَبُحَ"] },
+      // Ordre confirme par l'utilisateur : 3 mots combines.
+      { id: "dad", items: ["ضَاجَ", "ضُرِبَ", "ضَجِرَ"] },
+      // Ordre confirme par l'utilisateur : 5 mots combines ("بَطَحَا"
+      // corrige apres une 1ere lecture "بَطَا", "طُوبَا" avec alif normal
+      // (pas alif maqsura) confirme explicitement, "حُطِبَ" avec ha
+      // confirme explicitement, "طَبَخَ" clarifie apres une 1ere
+      // transcription erronee "babakha").
+      { id: "tah", items: ["بَطَحَا", "طُوبَا", "بَطِرَ", "حُطِبَ", "طَبَخَ"] },
+      // Ordre confirme par l'utilisateur : 3 mots combines ("بَظِرَ"
+      // corrige apres une 1ere lecture "razhira").
+      { id: "zah", items: ["بَظَرَ", "أَظَرُ", "بَظِرَ"] },
+      // Ordre confirme par l'utilisateur : 3 mots combines.
+      { id: "ain", items: ["عَجِبَ", "عَسُرَ", "عُبِدَ"] },
+      // Ordre confirme par l'utilisateur : 2 mots combines (meme racine,
+      // voyelles differentes).
+      { id: "ghain", items: ["غَرُبَ", "غَرِبَ"] }, { id: "feh", items: [] }, { id: "qaf", items: [] },
       { id: "kaf", items: [] }, { id: "lam", items: [] }, { id: "meem", items: [] },
       { id: "noon", items: [] }, { id: "heh", items: [] }, { id: "waw", items: [] },
       { id: "yeh", items: [] }
