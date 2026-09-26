@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Games — Ahl Al Arabiyah</title>
-<meta name="description" content="Practice by playing: recognize a sound, recognize a word, read a word out loud — module by module.">
+<title>Dictation — Ahl Al Arabiyah</title>
+<meta name="description" content="Level 1 dictation: listen to the dictated line for each letter of the Arabic alphabet, then write it yourself on paper.">
 <link rel="icon" type="image/jpeg" href="../assets/img/logo.jpg">
-<link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html">
-<link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/jeux.html">
-<link rel="alternate" hreflang="x-default" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html">
+<link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/dictee.html">
+<link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/dictee.html">
+<link rel="alternate" hreflang="x-default" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/dictee.html">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,14 +35,14 @@
       <ul>
         <li><a href="index.html" class="nav-link">Home</a></li>
         <li><a href="modules.html" class="nav-link">Modules</a></li>
-        <li><a href="jeux.html" class="nav-link is-active">Games</a></li>
-        <li><a href="dictee.html" class="nav-link">Dictation</a></li>
+        <li><a href="jeux.html" class="nav-link">Games</a></li>
+        <li><a href="dictee.html" class="nav-link is-active">Dictation</a></li>
         <li><a href="index.html#pour-qui" class="nav-link">Who&nbsp;it's&nbsp;for</a></li>
       </ul>
     </nav>
 
     <div class="header-actions">
-      <a href="../jeux.html" class="lang-switch" aria-label="Passer au français">FR</a>
+      <a href="../dictee.html" class="lang-switch" aria-label="Passer au français">FR</a>
       <a href="index.html#contact" class="btn btn-primary btn-sm">Contact us</a>
       <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="main-nav">
         <span></span><span></span><span></span>
@@ -53,170 +53,80 @@
 
 <main id="main">
 
-  <!-- ===================== GAMES ===================== -->
+  <!-- ===================== DICTATION ===================== -->
   <section class="section page-intro">
     <div class="container">
       <div class="section-head">
-        <p class="eyebrow eyebrow-center">Games</p>
-        <h2>Practice by playing, module by module</h2>
+        <p class="eyebrow eyebrow-center">Dictation</p>
+        <h2>Practice writing, level by level</h2>
         <p class="section-lead">
-          Listen to a sound, then find the right letter among the choices.
-          The games follow the same organization as the 12 modules.
+          Pick an item, listen to the whole dictated line, then write it
+          yourself on paper before showing the answer.
         </p>
         <div class="game-types">
-          <span class="game-type-pill">🎧 Listen and recognize</span>
-          <span class="game-type-pill">🗣️ Read and check</span>
-          <span class="game-type-pill">✍️ Listen and write</span>
+          <span class="game-type-pill">🎧 I listen</span>
+          <span class="game-type-pill">✍️ I write</span>
         </div>
       </div>
 
       <div class="module-grid">
-        <article class="module-card">
-          <span class="module-number">Module 1</span>
-          <p class="module-letters">أ</p>
-          <p class="module-progress">Letters learned: 1</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="1" data-title="Module 1">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 2</span>
-          <p class="module-letters">ب ت ث</p>
-          <p class="module-progress">Letters learned: 4</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="2" data-title="Module 2">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 3</span>
-          <p class="module-letters">ج ح خ</p>
-          <p class="module-progress">Letters learned: 7</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="3" data-title="Module 3">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 4</span>
-          <p class="module-letters">د ذ</p>
-          <p class="module-progress">Letters learned: 9</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="4" data-title="Module 4">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 5</span>
-          <p class="module-letters">ر ز</p>
-          <p class="module-progress">Letters learned: 11</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="5" data-title="Module 5">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 6</span>
-          <p class="module-letters">س ش</p>
-          <p class="module-progress">Letters learned: 13</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="6" data-title="Module 6">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 7</span>
-          <p class="module-letters">ص ض</p>
-          <p class="module-progress">Letters learned: 15</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="7" data-title="Module 7">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 8</span>
-          <p class="module-letters">ط ظ</p>
-          <p class="module-progress">Letters learned: 17</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="8" data-title="Module 8">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 9</span>
-          <p class="module-letters">ع غ</p>
-          <p class="module-progress">Letters learned: 19</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="9" data-title="Module 9">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 10</span>
-          <p class="module-letters">ف ق ك</p>
-          <p class="module-progress">Letters learned: 22</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="10" data-title="Module 10">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 11</span>
-          <p class="module-letters">ل م ن</p>
-          <p class="module-progress">Letters learned: 25</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="11" data-title="Module 11">
-            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
-            Play
-          </button>
-        </article>
-
-        <article class="module-card">
-          <span class="module-number">Module 12</span>
-          <p class="module-letters">ه و ي</p>
-          <p class="module-progress">Letters learned: 28</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-game"
-                  data-module="12" data-title="Module 12">
+        <article class="module-card module-card-bonus">
+          <span class="module-number">Dictation</span>
+          <p class="module-letters">✍️</p>
+          <p class="module-progress">Level 1 — all 28 letters</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-dictee-level"
+                  data-level="1" data-title="Dictation — Level 1">
             <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
             Play
           </button>
         </article>
 
         <article class="module-card module-card-bonus">
-          <span class="module-number">Module 13</span>
-          <p class="module-letters">☀️ ⋅ 🌙</p>
-          <p class="module-progress">Sun and moon letters</p>
-          <button type="button" class="btn btn-primary btn-sm module-listen js-open-sunmoon-game"
-                  data-title="Module 13 — Sun and moon letters">
+          <span class="module-number">Dictation</span>
+          <p class="module-letters">✍️</p>
+          <p class="module-progress">Level 2 — all 28 letters</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-dictee-level"
+                  data-level="2" data-title="Dictation — Level 2">
             <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
             Play
           </button>
         </article>
 
+        <article class="module-card module-card-bonus">
+          <span class="module-number">Dictation</span>
+          <p class="module-letters">✍️</p>
+          <p class="module-progress">Level 3 — letter pairs</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-dictee-level"
+                  data-level="3" data-title="Dictation — Level 3">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
+            Play
+          </button>
+        </article>
+
+        <article class="module-card module-card-bonus">
+          <span class="module-number">Dictation</span>
+          <p class="module-letters">✍️</p>
+          <p class="module-progress">Level 4 — sentences</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-dictee-level"
+                  data-level="4" data-title="Dictation — Level 4">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
+            Play
+          </button>
+        </article>
+
+        <article class="module-card module-card-bonus">
+          <span class="module-number">Dictation</span>
+          <p class="module-letters">✍️</p>
+          <p class="module-progress">Level 5 — sentences</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-dictee-level"
+                  data-level="5" data-title="Dictation — Level 5">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
+            Play
+          </button>
+        </article>
       </div>
 
-      <p class="page-cta-back"><a href="modules.html" class="btn btn-outline btn-sm">Discover the modules →</a></p>
+      <p class="page-cta-back"><a href="jeux.html" class="btn btn-outline btn-sm">Discover the games →</a></p>
     </div>
   </section>
 
@@ -266,7 +176,10 @@
   </div>
 </footer>
 
-<!-- Game: "Which sound did you hear?" (shared between modules) -->
+<!-- Game: "Which sound did you hear?" (shares the same modal as Games ;
+     full markup copied as-is so js/main.js (a single script shared across
+     the whole site) finds every element it expects, even though only the
+     Dictation - Level 1 panel is used on this page. -->
 <div class="reader" id="gameModal" role="dialog" aria-modal="true" aria-label="Game: Which sound did you hear?">
   <div class="reader-bar">
     <span class="reader-title" id="gameModalTitle"></span>

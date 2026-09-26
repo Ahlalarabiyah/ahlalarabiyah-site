@@ -171,7 +171,10 @@
   var letterLabBtns = document.querySelectorAll(".js-open-letterlab");
   var moduleLabBtns = document.querySelectorAll(".js-open-module");
   var pageHasGameBtns = document.querySelectorAll(".js-open-game").length;
-  if (letterLabBtns.length || moduleLabBtns.length || pageHasGameBtns) {
+  // La page Dictee (dictee.html) n'a aucun de ces trois declencheurs mais a
+  // quand meme besoin de ce bloc (DICTEE_LEVELS, ALL_LETTERS_BY_ID, la
+  // logique de jeu plus bas) : sans ce dernier test, elle serait ignoree.
+  if (letterLabBtns.length || moduleLabBtns.length || pageHasGameBtns || document.getElementById("gameModal")) {
     // Construit mecaniquement harakat/moudoud/tanwin a partir d'une consonne
     // de base (utilise pour les fascicules 2 et 3 ; alif du fascicule 1 reste
     // ecrit a la main car porte par la hamza, cas particulier).
@@ -340,7 +343,7 @@
     // entierement rayes/noircis dans le cahier (ratures reelles, pas une
     // limite de lecture) ne sont volontairement pas repris - impossible de
     // les lire sans deviner.
-    var DICTEE_NIVEAU_1 = [
+    var DICTEE_LEVEL_1_ENTRIES = [
       // Ordre confirme par l'utilisateur a l'ecoute de l'audio complet
       // (le premier passage l'avait mal transcrit, coupe court par erreur) :
       // fatha, puis madd-damma, puis tanwin-damma, puis kasra, puis
@@ -449,6 +452,116 @@
       // explicitement).
       { id: "yeh", items: ["يٌ", "يَا", "يًا", "يَ", "يِ", "يَسَرَ", "حَيَا", "بَيَنَ"] }
     ];
+
+    // Niveau 2 : meme principe que le niveau 1 (un enregistrement par
+    // lettre, dans l'ordre des 28 lettres), mais contenu different -
+    // reste a transcrire/valider avec l'utilisateur comme pour le niveau 1
+    // (audios deja en place, "items" vides en attendant sa correction).
+    var DICTEE_LEVEL_2_ENTRIES = [
+      { id: "alif", items: [] }, { id: "baa", items: [] }, { id: "taa", items: [] },
+      { id: "thaa", items: [] }, { id: "jim", items: [] }, { id: "haa", items: [] },
+      { id: "khaa", items: [] }, { id: "dal", items: [] }, { id: "thal", items: [] },
+      { id: "reh", items: [] }, { id: "zain", items: [] }, { id: "seen", items: [] },
+      { id: "sheen", items: [] }, { id: "sad", items: [] }, { id: "dad", items: [] },
+      { id: "tah", items: [] }, { id: "zah", items: [] }, { id: "ain", items: [] },
+      { id: "ghain", items: [] }, { id: "feh", items: [] }, { id: "qaf", items: [] },
+      { id: "kaf", items: [] }, { id: "lam", items: [] }, { id: "meem", items: [] },
+      { id: "noon", items: [] }, { id: "heh", items: [] }, { id: "waw", items: [] },
+      { id: "yeh", items: [] }
+    ];
+
+    // Niveau 3 : dictee par paires de lettres (et quelques phenomenes -
+    // chadda/soukoune sur alif, "entree du al-" - plutot que lettre par
+    // lettre). "label" (les deux lettres reunies) sert d'affichage a la
+    // fois dans le choix de la lettre et l'entete de l'exercice - ce n'est
+    // pas le contenu dicte, donc pas un spoiler. "items" a completer avec
+    // l'utilisateur, comme le niveau 1.
+    var DICTEE_LEVEL_3_ENTRIES = [
+      { id: "alif-baa", label: "أ ب", items: [] },
+      { id: "taa-thaa", label: "ت ث", items: [] },
+      { id: "jim-haa", label: "ج ح", items: [] },
+      { id: "khaa-dal", label: "خ د", items: [] },
+      { id: "thal-reh", label: "ذ ر", items: [] },
+      { id: "zain-seen", label: "ز س", items: [] },
+      { id: "sheen-sad", label: "ش ص", items: [] },
+      { id: "dad-tah", label: "ض ط", items: [] },
+      { id: "zah-ain", label: "ظ ع", items: [] },
+      { id: "ghain-feh", label: "غ ف", items: [] },
+      { id: "qaf-kaf", label: "ق ك", items: [] },
+      { id: "lam-meem", label: "ل م", items: [] },
+      { id: "noon-heh", label: "ن ه", items: [] },
+      { id: "waw-yeh", label: "و ي", items: [] },
+      { id: "chadda-alif-sad", label: "شدة الألف + ص", items: [] },
+      { id: "chadda-alif-yeh", label: "شدة الألف + ي", items: [] },
+      { id: "soukoun-alif-thal", label: "سكون الألف + ذ", items: [] },
+      { id: "soukoun-alif-ghain", label: "سكون الألف + غ", items: [] },
+      { id: "soukoun-alif-yeh", label: "سكون الألف + ي", items: [] },
+      { id: "doukhoul-al", label: "دخول ال", items: [] }
+    ];
+
+    // Niveau 4 : dictee de phrases completes. Contrairement aux autres
+    // niveaux, le contenu n'a pas besoin d'etre devine ou corrige : les 20
+    // fichiers audio fournis etaient nommes directement avec la phrase
+    // arabe complete et diacritee - reprise ici telle quelle.
+    var DICTEE_LEVEL_4_ENTRIES = [
+      { id: "s01", items: ["الحَلَالُ بَيِّنٌ وَ الحَرَامُ بَيِّنٌ"] },
+      { id: "s02", items: ["الرَّجُلُ قَوِيٌّ"] },
+      { id: "s03", items: ["العَيْنُ حَقٌّ"] },
+      { id: "s04", items: ["اللَّهُ خَلَقَ الإِنْسَانَ وَ الجِنَّ"] },
+      { id: "s05", items: ["أَرْسَلَ رَبُّنَا رُسُلًا كَثِيرِينَ"] },
+      { id: "s06", items: ["أَكَلَتْ زَيْنَبُ لَحْمًا"] },
+      { id: "s07", items: ["أَنَا مُسْلِمٌ"] },
+      { id: "s08", items: ["بِسْمِ اللهِ الرَّحْمَانِ الرَّحِيمِ"] },
+      { id: "s09", items: ["تَجْلِسُ هِنْدُ أَمَامَ المُعَلِّمِ"] },
+      { id: "s10", items: ["تَزَوَّجْ أَرْبَعًا"] },
+      { id: "s11", items: ["خَرَجَ عُمَرُ مِنَ المَسْجِدِ"] },
+      { id: "s12", items: ["خَرَجَتْ مَرْيَمُ لِتُصَلِّيَ التَّرَاوِيحَ"] },
+      { id: "s13", items: ["دَرَسَ الطَّالِبُ النَّحْوَ"] },
+      { id: "s14", items: ["كَتَبَ طُلَّابٌ دَرْسًا"] },
+      { id: "s15", items: ["يَتَوَضَّأُ المُسْلِمُ قَبْلَ الصَّلَاةِ"] },
+      { id: "s16", items: ["يَدْخُلُ المُكْرَمُونَ فِي الفِرْدَوْسِ"] },
+      { id: "s17", items: ["يَشْتَرِي خالِدٌ خُبْزًا وَ جُبْنًا"] },
+      { id: "s18", items: ["يَمَسُّ الأَبُ بِإِصْبَعِهِ العَيْنَ"] },
+      { id: "s19", items: ["يَمْشِي عَلِيٌّ فِي الطَّرِيقِ"] },
+      { id: "s20", items: ["يَهْدِي اللهُ مَنْ يُرِيدُ"] }
+    ];
+
+    // Niveau 5 : dictee de phrases/mots courts. Noms de fichiers fournis
+    // sans diacritiques complets (parfois partiels) : contenu a valider
+    // avec l'utilisateur comme les niveaux 2 et 3, "items" vides en
+    // attendant sa correction (l'audio, lui, est deja en place).
+    var DICTEE_LEVEL_5_ENTRIES = [
+      { id: "s01", items: [] }, { id: "s02", items: [] }, { id: "s03", items: [] },
+      { id: "s04", items: [] }, { id: "s05", items: [] }, { id: "s06", items: [] },
+      { id: "s07", items: [] }, { id: "s08", items: [] }
+    ];
+
+    // Les 5 niveaux de "Dictee" (page dediee dictee.html) : chacun garde
+    // ses propres audios/contenu, mais partage la meme mecanique de jeu
+    // (choix de l'element -> ecoute -> correction -> element suivant).
+    // "unitFr/unitEn" nomme l'unite dictee (lettre, paire, phrase) pour les
+    // entetes ; un "label" sur une entree sert d'affichage non-spoiler
+    // (ex. une paire de lettres) - une entree sans label ni lettre connue
+    // (phrases) affiche simplement son numero.
+    var DICTEE_LEVELS = [
+      { id: "1", titleFr: "Dictée — Niveau 1", titleEn: "Dictation — Level 1",
+        subtitleFr: "Niveau 1 — les 28 lettres", subtitleEn: "Level 1 — all 28 letters",
+        unitFr: "Lettre", unitEn: "Letter", audioFolder: "dictee-niveau-1", entries: DICTEE_LEVEL_1_ENTRIES },
+      { id: "2", titleFr: "Dictée — Niveau 2", titleEn: "Dictation — Level 2",
+        subtitleFr: "Niveau 2 — les 28 lettres", subtitleEn: "Level 2 — all 28 letters",
+        unitFr: "Lettre", unitEn: "Letter", audioFolder: "dictee-niveau-2", entries: DICTEE_LEVEL_2_ENTRIES },
+      { id: "3", titleFr: "Dictée — Niveau 3", titleEn: "Dictation — Level 3",
+        subtitleFr: "Niveau 3 — paires de lettres", subtitleEn: "Level 3 — letter pairs",
+        unitFr: "Paire", unitEn: "Pair", audioFolder: "dictee-niveau-3", entries: DICTEE_LEVEL_3_ENTRIES },
+      { id: "4", titleFr: "Dictée — Niveau 4", titleEn: "Dictation — Level 4",
+        subtitleFr: "Niveau 4 — phrases", subtitleEn: "Level 4 — sentences",
+        unitFr: "Phrase", unitEn: "Sentence", audioFolder: "dictee-niveau-4", entries: DICTEE_LEVEL_4_ENTRIES },
+      { id: "5", titleFr: "Dictée — Niveau 5", titleEn: "Dictation — Level 5",
+        subtitleFr: "Niveau 5 — phrases", subtitleEn: "Level 5 — sentences",
+        unitFr: "Phrase", unitEn: "Sentence", audioFolder: "dictee-niveau-5", entries: DICTEE_LEVEL_5_ENTRIES }
+    ];
+    var DICTEE_LEVELS_BY_ID = {};
+    DICTEE_LEVELS.forEach(function (level) { DICTEE_LEVELS_BY_ID[level.id] = level; });
 
     var LETTERS_BY_FASCICULE = { "1": LETTERS_F1, "2": LETTERS_F2, "3": LETTERS_F3, "4": LETTERS_F4 };
     var GROUPS_BY_FASCICULE = {
@@ -1290,7 +1403,11 @@
     // n'importe lequel), mais seul le module 1 (Alif) a ses questions
     // activees pour l'instant ; les autres restent "Bientot disponible".
     var gameBtns = document.querySelectorAll(".js-open-game");
-    if (gameBtns.length) {
+    // La page Dictee (dictee.html) n'a pas de cartes de module (gameBtns
+    // vide) mais partage la meme modale #gameModal : sans ce deuxieme test,
+    // toute la section jeux serait ignoree et les niveaux de Dictee ne
+    // s'initialiseraient jamais sur cette page.
+    if (gameBtns.length || document.getElementById("gameModal")) {
       var QUESTIONS_PER_ROUND = 10; // facilement modifiable
       var ANSWER_COUNT = 9; // nombre de propositions par question (sons), ecran pas surcharge
       var WORD_ANSWER_COUNT = 4; // nombre de propositions pour "Reconnaitre un mot"
@@ -3075,14 +3192,13 @@
         }
       }
 
-      // Dictee - Niveau 1 : un seul fichier audio par lettre (dicte toute
-      // la ligne d'un coup, pas de decoupage par mot - contrairement aux
-      // autres jeux). L'enfant ecoute, ecrit sur une feuille, puis affiche
-      // la correction complete de la lettre avant de passer a la suivante.
-      // Parcours fixe dans l'ordre du cahier (pas de tirage aleatoire, pas
-      // de score : comme "Dictee pure", mais lettre par lettre plutot que
-      // mot par mot).
-      var DICTEE1_AUDIO_BASE = ROOT_BASE + "assets/audio/dictee-niveau-1/";
+      // Dictee (page dediee dictee.html, 5 niveaux) : un seul fichier audio
+      // par element (lettre, paire ou phrase - dicte tout d'un coup, pas de
+      // decoupage). L'enfant ecoute, ecrit sur une feuille, puis affiche la
+      // correction complete avant de passer au suivant. Parcours fixe dans
+      // l'ordre du niveau (pas de tirage aleatoire, pas de score : comme
+      // "Dictee pure", mais element entier plutot que mot par mot).
+      var dictee1Level = null;
       var dictee1State = null;
 
       function hideAllGamePanels() {
@@ -3095,22 +3211,36 @@
         gameDictee1Panel.hidden = true;
       }
 
-      // Ecran de choix de la lettre (reutilise gameMenuScreen/gameMenuGrid,
+      // Texte d'affichage d'une entree : les lettres (niveaux 1 et 2)
+      // utilisent ALL_LETTERS_BY_ID (char + nom complet) ; les paires
+      // (niveau 3) leur "label" explicite (pas un spoiler : identifie la
+      // paire, pas le contenu dicte) ; les phrases (niveaux 4 et 5) n'ont
+      // ni l'un ni l'autre - l'appelant retombe alors sur le numero.
+      function dictee1EntryDisplay(entry) {
+        var letter = ALL_LETTERS_BY_ID[entry.id];
+        if (letter) return { picker: letter.char, header: letter.char + " (" + letter.name + ")" };
+        if (entry.label) return { picker: entry.label, header: entry.label };
+        return null;
+      }
+
+      // Ecran de choix de l'element (reutilise gameMenuScreen/gameMenuGrid,
       // meme mecanique que le menu de jeux d'un module) : interface separee
-      // de l'ecran de pratique, l'enfant choisit d'abord la lettre plutot
-      // que de toujours repartir de l'alif.
-      function openDictee1LetterMenu(title) {
+      // de l'ecran de pratique, l'enfant choisit d'abord l'element plutot
+      // que de toujours repartir du debut.
+      function openDictee1LetterMenu(levelId, title) {
+        dictee1Level = DICTEE_LEVELS_BY_ID[levelId];
         gameModalTitle.textContent = title;
-        gameMenuHeading.textContent = isEnglish ? "Dictée — Level 1: choose a letter" : "Dictée — Niveau 1 : choisis une lettre";
+        gameMenuHeading.textContent = (isEnglish ? dictee1Level.titleEn : dictee1Level.titleFr) +
+          (isEnglish ? ": choose a " + dictee1Level.unitEn.toLowerCase() : " : choisis une " + dictee1Level.unitFr.toLowerCase());
         gameMenuLevelInfo.textContent = "";
         gameMenuGrid.className = "game-menu-grid dictee1-letters";
         gameMenuGrid.innerHTML = "";
-        DICTEE_NIVEAU_1.forEach(function (entry, idx) {
-          var letter = ALL_LETTERS_BY_ID[entry.id];
+        dictee1Level.entries.forEach(function (entry, idx) {
+          var display = dictee1EntryDisplay(entry);
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "letterlab-cell";
-          btn.textContent = letter.char;
+          btn.textContent = display ? display.picker : String(idx + 1);
           btn.addEventListener("click", function () { enterDictee1Letter(idx); });
           gameMenuGrid.appendChild(btn);
         });
@@ -3135,21 +3265,23 @@
       }
 
       function renderDictee1Letter() {
-        var entry = DICTEE_NIVEAU_1[dictee1State.index];
-        var letter = ALL_LETTERS_BY_ID[entry.id];
+        var entries = dictee1Level.entries;
+        var entry = entries[dictee1State.index];
+        var display = dictee1EntryDisplay(entry);
         dictee1State.current = entry;
 
-        gameLevelInfo.textContent = (isEnglish ? "Letter " : "Lettre ") + (dictee1State.index + 1) + " / " + DICTEE_NIVEAU_1.length +
-          " — " + letter.char + " (" + letter.name + ")";
+        var unit = isEnglish ? dictee1Level.unitEn : dictee1Level.unitFr;
+        gameLevelInfo.textContent = unit + " " + (dictee1State.index + 1) + " / " + entries.length +
+          (display ? " — " + display.header : "");
         gameScoreEl.textContent = "";
 
         gameDictee1Words.innerHTML = "";
         gameDictee1Words.hidden = true;
         gameDictee1ListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameDictee1RevealBtn.hidden = false;
-        gameDictee1NextBtn.textContent = dictee1State.index + 1 < DICTEE_NIVEAU_1.length
-          ? (isEnglish ? "Next letter →" : "Lettre suivante →")
-          : (isEnglish ? "Restart from alif →" : "Recommencer à l'alif →");
+        gameDictee1NextBtn.textContent = dictee1State.index + 1 < entries.length
+          ? (isEnglish ? "Next " + unit.toLowerCase() + " →" : unit + " suivante →")
+          : (isEnglish ? "Restart from the beginning →" : "Recommencer au début →");
       }
 
       function showDictee1Words() {
@@ -3233,9 +3365,9 @@
           startSunMoonGame(btn.getAttribute("data-title"));
         });
       });
-      document.querySelectorAll(".js-open-dictee1-game").forEach(function (btn) {
+      document.querySelectorAll(".js-open-dictee-level").forEach(function (btn) {
         btn.addEventListener("click", function () {
-          openDictee1LetterMenu(btn.getAttribute("data-title"));
+          openDictee1LetterMenu(btn.getAttribute("data-level"), btn.getAttribute("data-title"));
         });
       });
       sortAllSunZone.addEventListener("click", function () { placeSortAllLetter("sun"); });
@@ -3254,7 +3386,7 @@
       });
       gameDictee1ListenBtn.addEventListener("click", function () {
         if (!dictee1State || !dictee1State.current) return;
-        playSound({ audioBase: DICTEE1_AUDIO_BASE, audioId: dictee1State.current.id });
+        playSound({ audioBase: ROOT_BASE + "assets/audio/" + dictee1Level.audioFolder + "/", audioId: dictee1State.current.id });
         gameDictee1ListenBtn.textContent = isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
       });
       gameDictee1RevealBtn.addEventListener("click", function () {
@@ -3268,7 +3400,7 @@
       // parcours a imposer.
       gameDictee1NextBtn.addEventListener("click", function () {
         if (!dictee1State) return;
-        dictee1State.index = (dictee1State.index + 1) % DICTEE_NIVEAU_1.length;
+        dictee1State.index = (dictee1State.index + 1) % dictee1Level.entries.length;
         renderDictee1Letter();
       });
       gamePlayBtn.addEventListener("click", function () {
