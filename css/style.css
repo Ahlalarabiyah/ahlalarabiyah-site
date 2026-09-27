@@ -1342,7 +1342,7 @@ section[id] { scroll-margin-top: 88px; }
 .harakat-slot.is-armed .harakat-slot-placeholder { border-color: var(--color-orange); border-style: solid; }
 .harakat-slot.is-correct .harakat-slot-placeholder { border-color: var(--color-teal); border-style: solid; background: var(--color-teal); color: #fff; }
 .harakat-slot.is-wrong .harakat-slot-placeholder { border-color: #E4534B; border-style: solid; background: #E4534B; color: #fff; }
-.harakat-picker { display: flex; justify-content: center; gap: 10px; margin-bottom: 22px; }
+.harakat-picker { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 22px; }
 .harakat-picker-btn {
   font-family: var(--font-arabic);
   font-size: 1.5rem;
@@ -1364,8 +1364,8 @@ section[id] { scroll-margin-top: 88px; }
 /* La kasra (marque sous la lettre) deborde sous le carre si on la centre
    comme fatha/damma (marques au-dessus) : on remonte son contenu pour
    qu'elle reste visible dans le cadre. */
-.harakat-picker-btn-kasra { padding-bottom: 16px; }
-.harakat-slot-placeholder-kasra { padding-bottom: 16px; }
+.harakat-picker-btn-kasra, .harakat-picker-btn-shadda-kasra { padding-bottom: 16px; }
+.harakat-slot-placeholder-kasra, .harakat-slot-placeholder-shadda-kasra { padding-bottom: 16px; }
 #gameHarakatCheckBtn[hidden] { display: none; }
 #gameHarakatNextBtn[hidden] { display: none; }
 

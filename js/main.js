@@ -2030,6 +2030,19 @@
         "zain-madd-damma": "زُو", "zain-madd-fatha": "زَا", "zain-madd-kasra": "زِي"
       };
 
+      // Formes soukoun/chadda : ajoutees automatiquement pour les 28 lettres
+      // (memes lettres que la table ci-dessus, jamais saisies a la main pour
+      // eviter les fautes de frappe sur 112 entrees). Necessaire des que des
+      // mots reels a soukoun/chadda entrent dans WORDS, pour que
+      // unitsToArabic() (distracteurs, jeu Harakat) sache les afficher.
+      Object.keys(ALL_LETTERS_BY_ID).forEach(function (id) {
+        var ch = ALL_LETTERS_BY_ID[id].char;
+        UNIT_TEXT[id + "-sukoon"] = ch + "ْ";
+        UNIT_TEXT[id + "-shadda-fatha"] = ch + "َّ";
+        UNIT_TEXT[id + "-shadda-damma"] = ch + "ُّ";
+        UNIT_TEXT[id + "-shadda-kasra"] = ch + "ِّ";
+      });
+
       // Lettres pouvant etre confondues a l'oreille (choix pedagogique,
       // ajustable) : utilisees pour fabriquer des distracteurs "piege" en
       // substituant une seule lettre du mot entendu par une lettre proche.
@@ -2048,20 +2061,28 @@
       function unitLetter(unitId) { return unitId.split("-")[0]; }
       function unitForm(unitId) { return unitId.slice(unitLetter(unitId).length + 1); }
       var OPEN_FORMS = ["fatha", "damma", "kasra"];
+      // Formes admises dans le jeu "Placer les harakat" (buildHarakatPool) :
+      // les 3 voyelles simples, plus soukoun et chadda+voyelle - possible
+      // maintenant que l'audio de mots reels est joue en un seul fichier
+      // (pas d'assemblage lettre par lettre a isoler). generateCloseVariants
+      // ne modifie jamais ces formes (voir ses etapes 1/2), elles restent
+      // donc telles quelles dans les variantes - d'ou l'ajout des entrees
+      // UNIT_TEXT correspondantes ci-dessus.
+      var HARAKAT_OPEN_FORMS = OPEN_FORMS.concat(["sukoon", "shadda-fatha", "shadda-damma", "shadda-kasra"]);
 
       function unitsToArabic(units) {
         return units.map(function (u) { return UNIT_TEXT[u]; }).join("");
       }
 
       // Jeu "Place les harakat" : uniquement les mots dont TOUTES les
-      // unites sont en voyelle simple (fatha/damma/kasra), sans
-      // prolongation ni tanwin - le squelette de lettres est affiche,
-      // l'enfant doit retrouver la bonne voyelle par l'oreille. Le
-      // sukoun/chadda ne sont pas encore exploitables ici (audio non
-      // isolable dans les enregistrements actuels du fascicule 4).
+      // unites sont en voyelle simple, soukoun ou chadda+voyelle (voir
+      // HARAKAT_OPEN_FORMS) - jamais de prolongation ni de tanwin, car le
+      // squelette de lettres affiche n'a pas de case pour ces formes-la.
+      // L'enfant retrouve la bonne voyelle/soukoun/chadda par l'oreille, en
+      // ecoutant l'audio complet du mot (jamais assemble lettre par lettre).
       function buildHarakatPool(moduleNumber) {
         return buildWordPool(moduleNumber).filter(function (w) {
-          return w.units.every(function (u) { return OPEN_FORMS.indexOf(unitForm(u)) !== -1; });
+          return w.units.every(function (u) { return HARAKAT_OPEN_FORMS.indexOf(unitForm(u)) !== -1; });
         });
       }
 
@@ -2398,13 +2419,13 @@
         { id: "farah", correct: "الْفَرْح", incorrect: "الْفَّرْح", type: "moon", letter: "ف", minModule: 10 }
       ];
 
-      var HARAKAT_MARK = { fatha: "َ", damma: "ُ", kasra: "ِ" };
-      var HARAKAT_ORDER = ["fatha", "damma", "kasra"];
-      var HARAKAT_LABEL = {
-        fatha: "ـ" + HARAKAT_MARK.fatha,
-        damma: "ـ" + HARAKAT_MARK.damma,
-        kasra: "ـ" + HARAKAT_MARK.kasra
+      var HARAKAT_MARK = {
+        fatha: "َ", damma: "ُ", kasra: "ِ", sukoon: "ْ",
+        "shadda-fatha": "َّ", "shadda-damma": "ُّ", "shadda-kasra": "ِّ"
       };
+      var HARAKAT_ORDER = ["fatha", "damma", "kasra", "sukoon", "shadda-fatha", "shadda-damma", "shadda-kasra"];
+      var HARAKAT_LABEL = {};
+      HARAKAT_ORDER.forEach(function (form) { HARAKAT_LABEL[form] = "ـ" + HARAKAT_MARK[form]; });
       // Categories ayant un score objectif (bonne/mauvaise reponse) : seules
       // celles-ci passent par la regle des 80% en fin de serie. "read" et
       // "dictee" sont auto-corrigees par l'enfant, sans score mesurable.
