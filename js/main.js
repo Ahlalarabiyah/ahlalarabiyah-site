@@ -3335,11 +3335,19 @@
       function showDictee1Words() {
         var entry = dictee1State.current;
         gameDictee1Words.innerHTML = "";
-        entry.items.forEach(function (word) {
+        gameDictee1Words.classList.toggle("is-single", entry.items.length <= 1);
+        entry.items.forEach(function (word, index) {
+          var cell = document.createElement("span");
+          cell.className = "dictee1-word-cell";
+          var num = document.createElement("span");
+          num.className = "dictee1-word-num";
+          num.textContent = String(index + 1);
+          cell.appendChild(num);
           var span = document.createElement("span");
           span.className = "dictee1-word";
           renderArabicText(span, stretchArabic(word));
-          gameDictee1Words.appendChild(span);
+          cell.appendChild(span);
+          gameDictee1Words.appendChild(cell);
         });
         gameDictee1Words.hidden = false;
       }
