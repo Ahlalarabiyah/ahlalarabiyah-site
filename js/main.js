@@ -463,7 +463,8 @@
       { id: "alif", items: ["أٌ", "إٍ", "إِ", "آ"] },
       // Ordre confirme par l'utilisateur : "بَاتَ" simple (une seule
       // elongation, confirme explicitement - pas "بَاتَا").
-      { id: "baa", items: ["بَابًا", "بَاتَ", "أَبَتِ"] }, { id: "taa", items: [] },
+      { id: "baa", items: ["بَابًا", "بَاتَ", "أَبَتِ"] },
+      { id: "taa", items: ["بَاتَ", "أَبَتِ"] },
       // Ordre confirme par l'utilisateur : 2 mots combines.
       { id: "thaa", items: ["أَثَاثًا", "ثَابَ"] },
       // Ordre confirme par l'utilisateur : 2 mots combines ("أُجَابَ" avec
@@ -505,10 +506,16 @@
       { id: "ain", items: ["عَجِبَ", "عَسُرَ", "عُبِدَ"] },
       // Ordre confirme par l'utilisateur : 2 mots combines (meme racine,
       // voyelles differentes).
-      { id: "ghain", items: ["غَرُبَ", "غَرِبَ"] }, { id: "feh", items: [] }, { id: "qaf", items: [] },
-      { id: "kaf", items: [] }, { id: "lam", items: [] }, { id: "meem", items: [] },
-      { id: "noon", items: [] }, { id: "heh", items: [] }, { id: "waw", items: [] },
-      { id: "yeh", items: [] }
+      { id: "ghain", items: ["غَرُبَ", "غَرِبَ"] },
+      { id: "feh", items: ["فُتِحَ", "فَسُحَ"] },
+      { id: "qaf", items: ["قَادَ", "قَرُبَ"] },
+      { id: "kaf", items: ["كُتِبَ", "كَاتِبًا"] },
+      { id: "lam", items: ["لَطُفَ", "لَخِصَ"] },
+      { id: "meem", items: ["عَظُمَ", "مُلِكَ"] },
+      { id: "noon", items: ["نُتِجَ", "نَعُمَ"] },
+      { id: "heh", items: ["بُهِتَ", "تَاهَ"] },
+      { id: "waw", items: ["وُلِدَ", "وُعِدَ"] },
+      { id: "yeh", items: ["يَتُمَ", "بَايَعَ"] }
     ];
 
     // Niveau 3 : dictee par paires de lettres (et quelques phenomenes -
