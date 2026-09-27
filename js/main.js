@@ -1943,6 +1943,93 @@
         { id: "m12_35", arabic: "جَاحَوَ", letters: ["haa", "jim", "waw"], audioId: "m12_35", units: ["jim-madd-fatha", "haa-fatha", "waw-fatha"] }
       ];
 
+      // Mots reels ajoutes avec un enregistrement audio humain complet
+      // (dossier "Mot reels", locuteur natif) - joue tel quel, jamais
+      // assemble a partir des lettres. Contrairement a WORDS, ce ne sont
+      // pas que des verbes : noms, adjectifs, particules... et le soukoun/
+      // la chadda/le tanwin y sont autorises (voir HARAKAT_OPEN_FORMS et
+      // UNIT_TEXT plus haut) puisque l'audio n'a plus besoin d'etre
+      // isolable lettre par lettre.
+      var WORDS_REAL = [
+        { id: "iinsaanin", arabic: "إِنْسَانٍ", letters: ["alif", "noon", "seen"], audioId: "iinsaanin", units: ["alif-kasra", "noon-sukoon", "seen-madd-fatha", "noon-tanwin-kasra"] },
+        { id: "fattaakin", arabic: "فَتَّاكٍ", letters: ["feh", "taa", "kaf"], audioId: "fattaakin", units: ["feh-fatha", "taa-madd-shadda-fatha", "kaf-tanwin-kasra"] },
+        { id: "yawjala", arabic: "يَوْجَلَ", letters: ["yeh", "waw", "jim", "lam"], audioId: "yawjala", units: ["yeh-fatha", "waw-sukoon", "jim-fatha", "lam-fatha"] },
+        { id: "nahbitu", arabic: "نَهْبِطُ", letters: ["noon", "heh", "baa", "tah"], audioId: "nahbitu", units: ["noon-fatha", "heh-sukoon", "baa-kasra", "tah-damma"] },
+        { id: "ghuraabin", arabic: "غُرَابٍ", letters: ["ghain", "reh", "baa"], audioId: "ghuraabin", units: ["ghain-damma", "reh-madd-fatha", "baa-tanwin-kasra"] },
+        { id: "aasiyraatin", arabic: "أَسِيرَاتٍ", letters: ["alif", "seen", "reh", "taa"], audioId: "aasiyraatin", units: ["alif-fatha", "seen-madd-kasra", "reh-madd-fatha", "taa-tanwin-kasra"] },
+        { id: "tuthbitu", arabic: "تُثْبِتُ", letters: ["taa", "thaa", "baa"], audioId: "tuthbitu", units: ["taa-damma", "thaa-sukoon", "baa-kasra", "taa-damma"] },
+        { id: "aalmuzu", arabic: "أَلْمُزُ", letters: ["alif", "lam", "meem", "zain"], audioId: "aalmuzu", units: ["alif-fatha", "lam-sukoon", "meem-damma", "zain-damma"] },
+        { id: "sabarti", arabic: "صَبَرْتِ", letters: ["sad", "baa", "reh", "taa"], audioId: "sabarti", units: ["sad-fatha", "baa-fatha", "reh-sukoon", "taa-kasra"] },
+        { id: "tatuwba", arabic: "تَتُوبَ", letters: ["taa", "baa"], audioId: "tatuwba", units: ["taa-fatha", "taa-madd-damma", "baa-fatha"] },
+        { id: "raqiyqun", arabic: "رَقِيقٌ", letters: ["reh", "qaf"], audioId: "raqiyqun", units: ["reh-fatha", "qaf-madd-kasra", "qaf-tanwin-damma"] },
+        { id: "tantuju", arabic: "تَنْتُجُ", letters: ["taa", "noon", "jim"], audioId: "tantuju", units: ["taa-fatha", "noon-sukoon", "taa-damma", "jim-damma"] },
+        { id: "tuthaabu", arabic: "تُثَابُ", letters: ["taa", "thaa", "baa"], audioId: "tuthaabu", units: ["taa-damma", "thaa-madd-fatha", "baa-damma"] },
+        { id: "dajiyjun", arabic: "ضَجِيجٌ", letters: ["dad", "jim"], audioId: "dajiyjun", units: ["dad-fatha", "jim-madd-kasra", "jim-tanwin-damma"] },
+        { id: "aabiy", arabic: "أَبِي", letters: ["alif", "baa"], audioId: "aabiy", units: ["alif-fatha", "baa-madd-kasra"] },
+        { id: "aaddaytu", arabic: "أَدَّيْتُ", letters: ["alif", "dal", "yeh", "taa"], audioId: "aaddaytu", units: ["alif-fatha", "dal-shadda-fatha", "yeh-sukoon", "taa-damma"] },
+        { id: "aajjaja", arabic: "أَجَّجَ", letters: ["alif", "jim"], audioId: "aajjaja", units: ["alif-fatha", "jim-shadda-fatha", "jim-fatha"] },
+        { id: "thaaabin", arabic: "ثَأَبٍ", letters: ["thaa", "alif", "baa"], audioId: "thaaabin", units: ["thaa-fatha", "alif-fatha", "baa-tanwin-kasra"] },
+        { id: "shiriyrun", arabic: "شِرِيرٌ", letters: ["sheen", "reh"], audioId: "shiriyrun", units: ["sheen-kasra", "reh-madd-kasra", "reh-tanwin-damma"] },
+        { id: "huquwqin", arabic: "حُقُوقٍ", letters: ["haa", "qaf"], audioId: "huquwqin", units: ["haa-damma", "qaf-madd-damma", "qaf-tanwin-kasra"] },
+        { id: "fiy", arabic: "فِي", letters: ["feh"], audioId: "fiy", units: ["feh-madd-kasra"] },
+        { id: "kuttaabin", arabic: "كُتَّابٍ", letters: ["kaf", "taa", "baa"], audioId: "kuttaabin", units: ["kaf-damma", "taa-madd-shadda-fatha", "baa-tanwin-kasra"] },
+        { id: "aadiybana", arabic: "أَدِيبًا", letters: ["alif", "dal", "baa"], audioId: "aadiybana", units: ["alif-fatha", "dal-madd-kasra", "baa-tanwin-fatha"] },
+        { id: "labaza", arabic: "لَبَزَ", letters: ["lam", "baa", "zain"], audioId: "labaza", units: ["lam-fatha", "baa-fatha", "zain-fatha"] },
+        { id: "aabitun", arabic: "آبِتٌ", letters: ["alif", "baa", "taa"], audioId: "aabitun", units: ["alif-madd-fatha", "baa-kasra", "taa-tanwin-damma"] },
+        { id: "aatasa", arabic: "عَطَسَ", letters: ["ain", "tah", "seen"], audioId: "aatasa", units: ["ain-fatha", "tah-fatha", "seen-fatha"] },
+        { id: "yahdiy", arabic: "يَهْدِي", letters: ["yeh", "heh", "dal"], audioId: "yahdiy", units: ["yeh-fatha", "heh-sukoon", "dal-madd-kasra"] },
+        { id: "rukkaabin", arabic: "رُكَّابٍ", letters: ["reh", "kaf", "baa"], audioId: "rukkaabin", units: ["reh-damma", "kaf-madd-shadda-fatha", "baa-tanwin-kasra"] },
+        { id: "aashjaarun", arabic: "أَشْجَارٌ", letters: ["alif", "sheen", "jim", "reh"], audioId: "aashjaarun", units: ["alif-fatha", "sheen-sukoon", "jim-madd-fatha", "reh-tanwin-damma"] },
+        { id: "taajin", arabic: "تَاجٍ", letters: ["taa", "jim"], audioId: "taajin", units: ["taa-madd-fatha", "jim-tanwin-kasra"] },
+        { id: "aaftakhiru", arabic: "أَفْتَخِرُ", letters: ["alif", "feh", "taa", "khaa", "reh"], audioId: "aaftakhiru", units: ["alif-fatha", "feh-sukoon", "taa-fatha", "khaa-kasra", "reh-damma"] },
+        { id: "yastafiy", arabic: "يَصْطَفِي", letters: ["yeh", "sad", "tah", "feh"], audioId: "yastafiy", units: ["yeh-fatha", "sad-sukoon", "tah-fatha", "feh-madd-kasra"] },
+        { id: "harajin", arabic: "حَرَجٍ", letters: ["haa", "reh", "jim"], audioId: "harajin", units: ["haa-fatha", "reh-fatha", "jim-tanwin-kasra"] },
+        { id: "aakhraja", arabic: "أَخْرَجَ", letters: ["alif", "khaa", "reh", "jim"], audioId: "aakhraja", units: ["alif-fatha", "khaa-sukoon", "reh-fatha", "jim-fatha"] },
+        { id: "wathaba", arabic: "وَثَبَ", letters: ["waw", "thaa", "baa"], audioId: "wathaba", units: ["waw-fatha", "thaa-fatha", "baa-fatha"] },
+        { id: "khabutha", arabic: "خَبُثَ", letters: ["khaa", "baa", "thaa"], audioId: "khabutha", units: ["khaa-fatha", "baa-damma", "thaa-fatha"] },
+        { id: "sabuwrun", arabic: "صَبُورٌ", letters: ["sad", "baa", "reh"], audioId: "sabuwrun", units: ["sad-fatha", "baa-madd-damma", "reh-tanwin-damma"] },
+        { id: "fakka", arabic: "فَكَّ", letters: ["feh", "kaf"], audioId: "fakka", units: ["feh-fatha", "kaf-shadda-fatha"] },
+        { id: "tabiaa", arabic: "طَبِعَ", letters: ["tah", "baa", "ain"], audioId: "tabiaa", units: ["tah-fatha", "baa-kasra", "ain-fatha"] },
+        { id: "marahin", arabic: "مَرَحٍ", letters: ["meem", "reh", "haa"], audioId: "marahin", units: ["meem-fatha", "reh-fatha", "haa-tanwin-kasra"] },
+        { id: "faqrana", arabic: "فَقْرًا", letters: ["feh", "qaf", "reh"], audioId: "faqrana", units: ["feh-fatha", "qaf-sukoon", "reh-tanwin-fatha"] },
+        { id: "zabiybana", arabic: "زَبِيبًا", letters: ["zain", "baa"], audioId: "zabiybana", units: ["zain-fatha", "baa-madd-kasra", "baa-tanwin-fatha"] },
+        { id: "dabita", arabic: "ضَبِطَ", letters: ["dad", "baa", "tah"], audioId: "dabita", units: ["dad-fatha", "baa-kasra", "tah-fatha"] },
+        { id: "aaqauda", arabic: "أَقْعُدَ", letters: ["alif", "qaf", "ain", "dal"], audioId: "aaqauda", units: ["alif-fatha", "qaf-sukoon", "ain-damma", "dal-fatha"] },
+        { id: "dajaajin", arabic: "دَجَاجٍ", letters: ["dal", "jim"], audioId: "dajaajin", units: ["dal-fatha", "jim-madd-fatha", "jim-tanwin-kasra"] },
+        { id: "aathaathin", arabic: "أَثَاثٍ", letters: ["alif", "thaa"], audioId: "aathaathin", units: ["alif-fatha", "thaa-madd-fatha", "thaa-tanwin-kasra"] },
+        { id: "aabati", arabic: "أَبَتِ", letters: ["alif", "baa", "taa"], audioId: "aabati", units: ["alif-fatha", "baa-fatha", "taa-kasra"] },
+        { id: "aanwiy", arabic: "أَنْوِي", letters: ["alif", "noon", "waw"], audioId: "aanwiy", units: ["alif-fatha", "noon-sukoon", "waw-madd-kasra"] },
+        { id: "zid", arabic: "زِدْ", letters: ["zain", "dal"], audioId: "zid", units: ["zain-kasra", "dal-sukoon"] },
+        { id: "aafkaarun", arabic: "أَفْكَارٌ", letters: ["alif", "feh", "kaf", "reh"], audioId: "aafkaarun", units: ["alif-fatha", "feh-sukoon", "kaf-madd-fatha", "reh-tanwin-damma"] },
+        { id: "aasraarana", arabic: "أَسْرَارًا", letters: ["alif", "seen", "reh"], audioId: "aasraarana", units: ["alif-fatha", "seen-sukoon", "reh-madd-fatha", "reh-tanwin-fatha"] },
+        { id: "aurattibu", arabic: "أُرَتِّبُ", letters: ["alif", "reh", "taa", "baa"], audioId: "aurattibu", units: ["alif-damma", "reh-fatha", "taa-shadda-kasra", "baa-damma"] },
+        { id: "faqiyrun", arabic: "فَقِيرٌ", letters: ["feh", "qaf", "reh"], audioId: "faqiyrun", units: ["feh-fatha", "qaf-madd-kasra", "reh-tanwin-damma"] },
+        { id: "tarhamu", arabic: "تَرْحَمُ", letters: ["taa", "reh", "haa", "meem"], audioId: "tarhamu", units: ["taa-fatha", "reh-sukoon", "haa-fatha", "meem-damma"] },
+        { id: "aaarib", arabic: "أَعْرِبْ", letters: ["alif", "ain", "reh", "baa"], audioId: "aaarib", units: ["alif-fatha", "ain-sukoon", "reh-kasra", "baa-sukoon"] },
+        { id: "man", arabic: "مَنْ", letters: ["meem", "noon"], audioId: "man", units: ["meem-fatha", "noon-sukoon"] },
+        { id: "hathiythana", arabic: "حَثِيثًا", letters: ["haa", "thaa"], audioId: "hathiythana", units: ["haa-fatha", "thaa-madd-kasra", "thaa-tanwin-fatha"] },
+        { id: "taaabbata", arabic: "تَأَبَّطَ", letters: ["taa", "alif", "baa", "tah"], audioId: "taaabbata", units: ["taa-fatha", "alif-fatha", "baa-shadda-fatha", "tah-fatha"] },
+        { id: "aabhathu", arabic: "أَبْحَثُ", letters: ["alif", "baa", "haa", "thaa"], audioId: "aabhathu", units: ["alif-fatha", "baa-sukoon", "haa-fatha", "thaa-damma"] },
+        { id: "aadribu", arabic: "أَضْرِبُ", letters: ["alif", "dad", "reh", "baa"], audioId: "aadribu", units: ["alif-fatha", "dad-sukoon", "reh-kasra", "baa-damma"] },
+        { id: "aaba", arabic: "آبَ", letters: ["alif", "baa"], audioId: "aaba", units: ["alif-madd-fatha", "baa-fatha"] },
+        { id: "wahhaabin", arabic: "وَهَّابٍ", letters: ["waw", "heh", "baa"], audioId: "wahhaabin", units: ["waw-fatha", "heh-madd-shadda-fatha", "baa-tanwin-kasra"] },
+        { id: "hazzana", arabic: "حَظًّا", letters: ["haa", "zah"], audioId: "hazzana", units: ["haa-fatha", "zah-shadda-tanwin-fatha"] },
+        { id: "tadhuwbu", arabic: "تَذُوبُ", letters: ["taa", "thal", "baa"], audioId: "tadhuwbu", units: ["taa-fatha", "thal-madd-damma", "baa-damma"] },
+        { id: "aashirun", arabic: "أَشِرٌ", letters: ["alif", "sheen", "reh"], audioId: "aashirun", units: ["alif-fatha", "sheen-kasra", "reh-tanwin-damma"] },
+        { id: "darbana", arabic: "ضَرْبًا", letters: ["dad", "reh", "baa"], audioId: "darbana", units: ["dad-fatha", "reh-sukoon", "baa-tanwin-fatha"] },
+        { id: "ghattaasana", arabic: "غَطَّاسًا", letters: ["ghain", "tah", "seen"], audioId: "ghattaasana", units: ["ghain-fatha", "tah-madd-shadda-fatha", "seen-tanwin-fatha"] },
+        { id: "yatiymun", arabic: "يَتِيمٌ", letters: ["yeh", "taa", "meem"], audioId: "yatiymun", units: ["yeh-fatha", "taa-madd-kasra", "meem-tanwin-damma"] },
+        { id: "taaba", arabic: "تَابَ", letters: ["taa", "baa"], audioId: "taaba", units: ["taa-madd-fatha", "baa-fatha"] },
+        { id: "kadhdhaabun", arabic: "كَذَّابٌ", letters: ["kaf", "thal", "baa"], audioId: "kadhdhaabun", units: ["kaf-fatha", "thal-madd-shadda-fatha", "baa-tanwin-damma"] },
+        { id: "ghariybana", arabic: "غَرِيبًا", letters: ["ghain", "reh", "baa"], audioId: "ghariybana", units: ["ghain-fatha", "reh-madd-kasra", "baa-tanwin-fatha"] },
+        { id: "aaddakhiru", arabic: "أَدَّخِرُ", letters: ["alif", "dal", "khaa", "reh"], audioId: "aaddakhiru", units: ["alif-fatha", "dal-shadda-fatha", "khaa-kasra", "reh-damma"] },
+        { id: "aabatta", arabic: "أَبَتَّ", letters: ["alif", "baa", "taa"], audioId: "aabatta", units: ["alif-fatha", "baa-fatha", "taa-shadda-fatha"] },
+        { id: "tafkiyrana", arabic: "تَفْكِيرًا", letters: ["taa", "feh", "kaf", "reh"], audioId: "tafkiyrana", units: ["taa-fatha", "feh-sukoon", "kaf-madd-kasra", "reh-tanwin-fatha"] },
+        { id: "nutqun", arabic: "نُطْقٌ", letters: ["noon", "tah", "qaf"], audioId: "nutqun", units: ["noon-damma", "tah-sukoon", "qaf-tanwin-damma"] },
+        { id: "ardin", arabic: "أَرْضٍ", letters: ["reh", "dad"], audioId: "ardin", units: ["reh-sukoon", "dad-tanwin-kasra"] },
+        { id: "tathbutu", arabic: "تَثْبُتُ", letters: ["taa", "thaa", "baa"], audioId: "tathbutu", units: ["taa-fatha", "thaa-sukoon", "baa-damma", "taa-damma"] }
+      ];
+
       function wordMinModule(word) {
         return word.letters.reduce(function (max, id) {
           var m = LETTER_INTRODUCED_IN_MODULE[id] || 1;
@@ -1962,7 +2049,7 @@
             };
           });
         }
-        return eligible(WORDS, "words").concat(eligible(PSEUDO_WORDS, "pseudowords"));
+        return eligible(WORDS, "words").concat(eligible(PSEUDO_WORDS, "pseudowords"), eligible(WORDS_REAL, "mots-reels"));
       }
 
       // Texte affiche pour chaque unite son (lettre + harakat/prolongation),
@@ -2030,17 +2117,29 @@
         "zain-madd-damma": "زُو", "zain-madd-fatha": "زَا", "zain-madd-kasra": "زِي"
       };
 
-      // Formes soukoun/chadda : ajoutees automatiquement pour les 28 lettres
-      // (memes lettres que la table ci-dessus, jamais saisies a la main pour
-      // eviter les fautes de frappe sur 112 entrees). Necessaire des que des
-      // mots reels a soukoun/chadda entrent dans WORDS, pour que
-      // unitsToArabic() (distracteurs, jeu Harakat) sache les afficher.
+      // Formes soukoun/chadda/tanwin (et leurs combinaisons avec chadda ou
+      // une prolongation) : ajoutees automatiquement pour les 28 lettres
+      // (jamais saisies a la main, pour eviter les fautes de frappe).
+      // Necessaire des que des mots reels a soukoun/chadda/tanwin entrent
+      // dans WORDS, pour que unitsToArabic() (distracteurs, jeu Harakat)
+      // sache les afficher. Le alif de soutien du tanwin fatha (ex. "بًا")
+      // est inclus, comme en vraie orthographe - jamais pour tanwin
+      // damma/kasra, qui n'en prennent pas.
       Object.keys(ALL_LETTERS_BY_ID).forEach(function (id) {
         var ch = ALL_LETTERS_BY_ID[id].char;
         UNIT_TEXT[id + "-sukoon"] = ch + "ْ";
         UNIT_TEXT[id + "-shadda-fatha"] = ch + "َّ";
         UNIT_TEXT[id + "-shadda-damma"] = ch + "ُّ";
         UNIT_TEXT[id + "-shadda-kasra"] = ch + "ِّ";
+        UNIT_TEXT[id + "-tanwin-fatha"] = ch + "ًا";
+        UNIT_TEXT[id + "-tanwin-damma"] = ch + "ٌ";
+        UNIT_TEXT[id + "-tanwin-kasra"] = ch + "ٍ";
+        UNIT_TEXT[id + "-shadda-tanwin-fatha"] = ch + "ًّا";
+        UNIT_TEXT[id + "-shadda-tanwin-damma"] = ch + "ٌّ";
+        UNIT_TEXT[id + "-shadda-tanwin-kasra"] = ch + "ٍّ";
+        UNIT_TEXT[id + "-madd-shadda-fatha"] = ch + "َّا";
+        UNIT_TEXT[id + "-madd-shadda-damma"] = ch + "ُّو";
+        UNIT_TEXT[id + "-madd-shadda-kasra"] = ch + "ِّي";
       });
 
       // Lettres pouvant etre confondues a l'oreille (choix pedagogique,
