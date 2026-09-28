@@ -1256,7 +1256,7 @@ section[id] { scroll-margin-top: 88px; }
 .dictee1-word {
   font-family: var(--font-arabic);
   font-size: 1.7rem;
-  line-height: 1.5;
+  line-height: 2.1;
   color: var(--color-navy);
 }
 /* Ecran de choix de la lettre de Dictee - Niveau 1 (#gameMenuGrid) :

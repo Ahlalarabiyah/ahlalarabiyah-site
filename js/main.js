@@ -674,6 +674,12 @@
     // tatwil possible juste apres) : les alif, dal/dhal, reh/zain, waw.
     var NON_CONNECTING_LETTERS = { "ا": 1, "أ": 1, "إ": 1, "آ": 1, "ٱ": 1, "د": 1, "ذ": 1, "ر": 1, "ز": 1, "و": 1, "ؤ": 1 };
 
+    // La famille alif : quand elle suit un lam, les deux lettres forment
+    // une ligature obligatoire (لا/ﻵ...) que la plupart des polices
+    // arabes dessinent comme un seul glyphe compose - y inserer un
+    // tatwil casse cette ligature (donne "لـا" au lieu de "لا").
+    var ALEF_FAMILY = { "ا": 1, "أ": 1, "إ": 1, "آ": 1, "ٱ": 1 };
+
     function isArabicBaseLetter(ch) {
       var code = ch.charCodeAt(0);
       return (code >= 0x0621 && code <= 0x064A) || code === 0x0671;
@@ -706,7 +712,8 @@
       for (var j = 0; j < tokens.length; j++) {
         out += tokens[j].str;
         var next = tokens[j + 1];
-        if (tokens[j].base && !NON_CONNECTING_LETTERS[tokens[j].base] && next && next.base) {
+        var isLamAlef = tokens[j].base === "ل" && next && ALEF_FAMILY[next.base];
+        if (tokens[j].base && !NON_CONNECTING_LETTERS[tokens[j].base] && next && next.base && !isLamAlef) {
           out += "ـ";
         }
       }
@@ -1237,7 +1244,8 @@
         for (var j = 0; j < flat.length; j++) {
           rebuilt[flat[j].segIndex] += flat[j].str;
           var next = flat[j + 1];
-          if (flat[j].base && !NON_CONNECTING_LETTERS[flat[j].base] && next && next.base) {
+          var isLamAlef = flat[j].base === "ل" && next && ALEF_FAMILY[next.base];
+          if (flat[j].base && !NON_CONNECTING_LETTERS[flat[j].base] && next && next.base && !isLamAlef) {
             rebuilt[flat[j].segIndex] += "ـ";
           }
         }
