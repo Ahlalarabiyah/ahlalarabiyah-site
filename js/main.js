@@ -722,20 +722,36 @@
     // sans la teinte rouge (reservee a la lettre etudiee dans le labo).
     function renderArabicText(container, text) {
       container.textContent = "";
+      // Un Text node par caractere (comme avant) casse la liaison
+      // cursive arabe sur Safari/WebKit (iOS) : contrairement a
+      // Chrome/Firefox, WebKit ne shape pas de maniere fiable un mot a
+      // travers plusieurs Text node JS distincts, meme sans element
+      // entre eux. On regroupe donc tous les caracteres "normaux" dans
+      // un seul Text node contigu, et on ne coupe que pour le cas
+      // special du "إ" (qui a besoin de son propre span pour la kasra).
+      var buffer = "";
       var i = 0;
+      function flush() {
+        if (buffer) {
+          container.appendChild(document.createTextNode(buffer));
+          buffer = "";
+        }
+      }
       while (i < text.length) {
         if (text.charAt(i) === "إ" && text.charAt(i + 1) === "ِ") {
-          container.appendChild(document.createTextNode("إ"));
+          buffer += "إ";
+          flush();
           var mark = document.createElement("span");
           mark.className = "arabic-kasra-fix";
           mark.textContent = "ِ";
           container.appendChild(mark);
           i += 2;
         } else {
-          container.appendChild(document.createTextNode(text.charAt(i)));
+          buffer += text.charAt(i);
           i++;
         }
       }
+      flush();
     }
 
     // Dessine une forme (lettre de base + voyelle/marque en rouge) dans un
