@@ -2480,6 +2480,7 @@
       var gameDictee1Words = document.getElementById("gameDictee1Words");
       var gameDictee1ListenBtn = document.getElementById("gameDictee1ListenBtn");
       var gameDictee1RevealBtn = document.getElementById("gameDictee1RevealBtn");
+      var gameDictee1PrevBtn = document.getElementById("gameDictee1PrevBtn");
       var gameDictee1NextBtn = document.getElementById("gameDictee1NextBtn");
 
       var INSTRUCTION_TEXT = {
@@ -3478,6 +3479,8 @@
         gameDictee1Words.hidden = true;
         gameDictee1ListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameDictee1RevealBtn.hidden = false;
+        gameDictee1PrevBtn.hidden = dictee1State.index === 0;
+        gameDictee1PrevBtn.textContent = isEnglish ? "← Previous " + unit.toLowerCase() : "← " + unit + " précédente";
         gameDictee1NextBtn.textContent = dictee1State.index + 1 < entries.length
           ? (isEnglish ? "Next " + unit.toLowerCase() + " →" : unit + " suivante →")
           : (isEnglish ? "Restart from the beginning →" : "Recommencer au début →");
@@ -3601,10 +3604,17 @@
         showDictee1Words();
         gameDictee1RevealBtn.hidden = true;
       });
-      // Boucle sur les 28 lettres (recommence a l'alif apres yaa) plutot
-      // que de forcer un ecran de fin : avec le choix libre de la lettre
-      // (voir openDictee1LetterMenu), il n'y a plus de "fin" naturelle de
-      // parcours a imposer.
+      // Le bouton precedent est cache sur le premier element (voir
+      // renderDictee1Letter) : pas besoin de boucler en arriere. Le
+      // bouton suivant, lui, boucle sur les 28 lettres (recommence a
+      // l'alif apres yaa) plutot que de forcer un ecran de fin : avec
+      // le choix libre de la lettre (voir openDictee1LetterMenu), il
+      // n'y a plus de "fin" naturelle de parcours a imposer.
+      gameDictee1PrevBtn.addEventListener("click", function () {
+        if (!dictee1State || dictee1State.index === 0) return;
+        dictee1State.index -= 1;
+        renderDictee1Letter();
+      });
       gameDictee1NextBtn.addEventListener("click", function () {
         if (!dictee1State) return;
         dictee1State.index = (dictee1State.index + 1) % dictee1Level.entries.length;
