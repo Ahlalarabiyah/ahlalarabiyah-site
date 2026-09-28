@@ -671,8 +671,10 @@
     var COMBINING_MARKS = { "َ": 1, "ُ": 1, "ِ": 1, "ً": 1, "ٌ": 1, "ٍ": 1, "ْ": 1, "ّ": 1 };
 
     // Lettres qui ne se lient jamais vers la lettre suivante (pas de
-    // tatwil possible juste apres) : les alif, dal/dhal, reh/zain, waw.
-    var NON_CONNECTING_LETTERS = { "ا": 1, "أ": 1, "إ": 1, "آ": 1, "ٱ": 1, "د": 1, "ذ": 1, "ر": 1, "ز": 1, "و": 1, "ؤ": 1 };
+    // tatwil possible juste apres) : les alif, dal/dhal, reh/zain, waw,
+    // et le hamza seul sur la ligne (ء), qui ne se lie jamais ni avant
+    // ni apres (ex. "قِرَاءَة" : pas de tatwil entre le ء et le ة).
+    var NON_CONNECTING_LETTERS = { "ا": 1, "أ": 1, "إ": 1, "آ": 1, "ٱ": 1, "د": 1, "ذ": 1, "ر": 1, "ز": 1, "و": 1, "ؤ": 1, "ء": 1 };
 
     // La famille alif : quand elle suit un lam, les deux lettres forment
     // une ligature obligatoire (لا/ﻵ...) que la plupart des polices
