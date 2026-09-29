@@ -650,7 +650,7 @@
       currentAudio.addEventListener("ended", function () {
         cellEl.classList.remove("is-playing");
       });
-      currentAudio.play();
+      currentAudio.play().catch(function () {});
     }
 
     // Sur alif porteur d'une hamza superieure (أ), la fatha/damma/tanwin
@@ -2710,7 +2710,7 @@
       function playSound(item) {
         if (gameAudio) { gameAudio.pause(); }
         gameAudio = new Audio(item.audioBase + item.audioId + ".m4a?v=" + AUDIO_VERSION);
-        gameAudio.play();
+        gameAudio.play().catch(function () {});
       }
 
       function renderScore() {
