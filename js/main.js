@@ -1347,9 +1347,17 @@
         if (NON_FORWARD_JOINING[id]) {
           var note = document.createElement("p");
           note.className = "formlab-note";
-          note.textContent = isEnglish
+          // "s'accroche" plutot que "se lie" : evite la confusion avec le
+          // verbe "lire" a l'oral pour un enfant qui debute.
+          var noteText = isEnglish
             ? "This letter never connects to the one after it, so its “middle” and “end” shapes look the same."
-            : "Cette lettre ne se lie jamais à la lettre suivante : ses formes « milieu » et « fin » se ressemblent donc.";
+            : "Cette lettre ne s'accroche jamais à la lettre suivante : ses formes « milieu » et « fin » se ressemblent donc.";
+          if (id === "alif") {
+            noteText += isEnglish
+              ? " It also never takes a sukoon or a shadda."
+              : " Elle ne prend jamais non plus de soukoune ni de chadda.";
+          }
+          note.textContent = noteText;
           formLabExamples.appendChild(note);
         }
 
