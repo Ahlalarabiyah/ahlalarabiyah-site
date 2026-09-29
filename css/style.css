@@ -201,6 +201,7 @@ section[id] { scroll-margin-top: 88px; }
   transition: border-color .18s ease, color .18s ease;
 }
 .lang-switch:hover { border-color: var(--color-teal); color: var(--color-teal-dark); }
+.lang-switch-group { display: flex; align-items: center; gap: 6px; flex: none; }
 
 .nav-toggle {
   display: none;

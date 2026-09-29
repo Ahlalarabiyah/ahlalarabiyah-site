@@ -597,21 +597,21 @@
     // (ex. une paire de lettres) - une entree sans label ni lettre connue
     // (phrases) affiche simplement son numero.
     var DICTEE_LEVELS = [
-      { id: "1", titleFr: "Dictée — Niveau 1", titleEn: "Dictation — Level 1",
+      { id: "1", titleFr: "Dictée — Niveau 1", titleEn: "Dictation — Level 1", titleRu: "Диктант — уровень 1",
         subtitleFr: "Niveau 1 — les 28 lettres", subtitleEn: "Level 1 — all 28 letters",
-        unitFr: "Lettre", unitEn: "Letter", audioFolder: "dictee-niveau-1", entries: DICTEE_LEVEL_1_ENTRIES },
-      { id: "2", titleFr: "Dictée — Niveau 2", titleEn: "Dictation — Level 2",
+        unitFr: "Lettre", unitEn: "Letter", unitRu: "Буква", audioFolder: "dictee-niveau-1", entries: DICTEE_LEVEL_1_ENTRIES },
+      { id: "2", titleFr: "Dictée — Niveau 2", titleEn: "Dictation — Level 2", titleRu: "Диктант — уровень 2",
         subtitleFr: "Niveau 2 — les 28 lettres", subtitleEn: "Level 2 — all 28 letters",
-        unitFr: "Lettre", unitEn: "Letter", audioFolder: "dictee-niveau-2", entries: DICTEE_LEVEL_2_ENTRIES },
-      { id: "3", titleFr: "Dictée — Niveau 3", titleEn: "Dictation — Level 3",
+        unitFr: "Lettre", unitEn: "Letter", unitRu: "Буква", audioFolder: "dictee-niveau-2", entries: DICTEE_LEVEL_2_ENTRIES },
+      { id: "3", titleFr: "Dictée — Niveau 3", titleEn: "Dictation — Level 3", titleRu: "Диктант — уровень 3",
         subtitleFr: "Niveau 3 — paires de lettres", subtitleEn: "Level 3 — letter pairs",
-        unitFr: "Paire", unitEn: "Pair", audioFolder: "dictee-niveau-3", entries: DICTEE_LEVEL_3_ENTRIES },
-      { id: "4", titleFr: "Dictée — Niveau 4", titleEn: "Dictation — Level 4",
+        unitFr: "Paire", unitEn: "Pair", unitRu: "Пара", audioFolder: "dictee-niveau-3", entries: DICTEE_LEVEL_3_ENTRIES },
+      { id: "4", titleFr: "Dictée — Niveau 4", titleEn: "Dictation — Level 4", titleRu: "Диктант — уровень 4",
         subtitleFr: "Niveau 4 — phrases", subtitleEn: "Level 4 — sentences",
-        unitFr: "Phrase", unitEn: "Sentence", audioFolder: "dictee-niveau-4", entries: DICTEE_LEVEL_4_ENTRIES },
-      { id: "5", titleFr: "Dictée — Niveau 5", titleEn: "Dictation — Level 5",
+        unitFr: "Phrase", unitEn: "Sentence", unitRu: "Фраза", audioFolder: "dictee-niveau-4", entries: DICTEE_LEVEL_4_ENTRIES },
+      { id: "5", titleFr: "Dictée — Niveau 5", titleEn: "Dictation — Level 5", titleRu: "Диктант — уровень 5",
         subtitleFr: "Niveau 5 — phrases", subtitleEn: "Level 5 — sentences",
-        unitFr: "Phrase", unitEn: "Sentence", audioFolder: "dictee-niveau-5", entries: DICTEE_LEVEL_5_ENTRIES }
+        unitFr: "Phrase", unitEn: "Sentence", unitRu: "Фраза", audioFolder: "dictee-niveau-5", entries: DICTEE_LEVEL_5_ENTRIES }
     ];
     var DICTEE_LEVELS_BY_ID = {};
     DICTEE_LEVELS.forEach(function (level) { DICTEE_LEVELS_BY_ID[level.id] = level; });
@@ -878,6 +878,7 @@
     }
 
     var isEnglish = document.documentElement.lang === "en";
+    var isRussian = document.documentElement.lang === "ru";
 
     // Notes de prononciation (position de la langue, comparaison avec un
     // son connu...) fournies par l'utilisateur, lettre par lettre - pas
@@ -905,7 +906,12 @@
       heh: "L'air léger venant des poumons — et non de la gorge — après une petite course très lente."
     };
 
-    var GROUP_TITLES = isEnglish
+    var GROUP_TITLES = isRussian
+      ? {
+          harakat: "Огласовки (الْحَرَكَات)", moudoud: "Продления (الْمُدُود)", tanwin: "Танвин (التَّنْوِين)",
+          sukun: "Сукун (السُّكُون)", shadda: "Шадда (الشَّدَّة)"
+        }
+      : isEnglish
       ? {
           harakat: "Vowels (الْحَرَكَات)", moudoud: "Prolongations (الْمُدُود)", tanwin: "Tanwīn (التَّنْوِين)",
           sukun: "Sukūn (السُّكُون)", shadda: "Shadda (الشَّدَّة)"
@@ -923,7 +929,7 @@
         currentAudioBase = ROOT_BASE + "assets/audio/fascicule-" + letter.fascicule + "/";
       }
       letterLabName.textContent = letter.name;
-      var note = !isEnglish && LETTER_PRONUNCIATION_NOTES[letter.id];
+      var note = !isEnglish && !isRussian && LETTER_PRONUNCIATION_NOTES[letter.id];
       letterLabPronunciation.hidden = !note;
       letterLabPronunciationText.textContent = note || "";
       letterLabGroups.innerHTML = "";
@@ -1247,7 +1253,12 @@
         }
       };
 
-      var FORM_LABEL = {
+      var FORM_LABEL = isRussian ? {
+        start: "В начале",
+        middle: "В середине",
+        end: "В конце",
+        endAlt: "В конце (после несоединяющейся буквы)"
+      } : {
         start: isEnglish ? "At the start" : "Au début",
         middle: isEnglish ? "In the middle" : "Au milieu",
         end: isEnglish ? "At the end" : "À la fin",
@@ -1333,8 +1344,8 @@
         formLabName.textContent = letter.name;
         var sunMoon = SUN_MOON_TYPE[id];
         formLabSunMoon.textContent = sunMoon === "sun"
-          ? (isEnglish ? "☀️ Sun letter" : "☀️ Lettre solaire")
-          : (isEnglish ? "🌙 Moon letter" : "🌙 Lettre lunaire");
+          ? (isRussian ? "☀️ Солнечная буква" : isEnglish ? "☀️ Sun letter" : "☀️ Lettre solaire")
+          : (isRussian ? "🌙 Лунная буква" : isEnglish ? "🌙 Moon letter" : "🌙 Lettre lunaire");
         formLabSunMoon.className = "formlab-sunmoon formlab-sunmoon-" + sunMoon;
         formLabExamples.innerHTML = "";
         if (!examples) return;
@@ -1349,11 +1360,15 @@
           note.className = "formlab-note";
           // "s'accroche" plutot que "se lie" : evite la confusion avec le
           // verbe "lire" a l'oral pour un enfant qui debute.
-          var noteText = isEnglish
+          var noteText = isRussian
+            ? "Эта буква никогда не соединяется со следующей буквой: поэтому её формы «в середине» и «в конце» выглядят одинаково."
+            : isEnglish
             ? "This letter never connects to the one after it, so its “middle” and “end” shapes look the same."
             : "Cette lettre ne s'accroche jamais à la lettre suivante : ses formes « milieu » et « fin » se ressemblent donc.";
           if (id === "alif") {
-            noteText += isEnglish
+            noteText += isRussian
+              ? " Она также никогда не принимает ни сукун, ни шадду."
+              : isEnglish
               ? " It also never takes a sukoon or a shadda."
               : " Elle ne prend jamais non plus de soukoune ni de chadda.";
           }
@@ -1432,8 +1447,8 @@
           var h4 = document.createElement("h4");
           h4.className = "sunmoon-table-title";
           h4.textContent = type === "sun"
-            ? (isEnglish ? "☀️ Sun letters (14)" : "☀️ Lettres solaires (14)")
-            : (isEnglish ? "🌙 Moon letters (14)" : "🌙 Lettres lunaires (14)");
+            ? (isRussian ? "☀️ Солнечные буквы (14)" : isEnglish ? "☀️ Sun letters (14)" : "☀️ Lettres solaires (14)")
+            : (isRussian ? "🌙 Лунные буквы (14)" : isEnglish ? "🌙 Moon letters (14)" : "🌙 Lettres lunaires (14)");
           var lettersP = document.createElement("p");
           lettersP.className = "sunmoon-table-letters";
           lettersP.textContent = ids.map(function (id) { return ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id; }).join("  ");
@@ -1445,7 +1460,9 @@
 
         var intro = document.createElement("p");
         intro.className = "sunmoon-intro";
-        intro.textContent = isEnglish
+        intro.textContent = isRussian
+          ? "Когда перед словом добавляют الـ (артикль «the»), его первая буква решает, что происходит с « ل »:"
+          : isEnglish
           ? "When you add الـ (\"the\") before a word, its first letter decides what happens to the ل:"
           : "Quand on ajoute الـ (« le / la / l’ ») devant un mot, sa première lettre décide ce qui arrive au « ل » :";
         sunMoonPanel.appendChild(intro);
@@ -1455,8 +1472,8 @@
           var h3 = document.createElement("h3");
           h3.className = "sunmoon-section-title sunmoon-section-" + type;
           h3.textContent = type === "sun"
-            ? (isEnglish ? "☀️ Sun — the ل is silent, the letter takes a Shadda" : "☀️ Solaire — la lettre après le « ل » porte une Shadda")
-            : (isEnglish ? "🌙 Moon — the ل is pronounced" : "🌙 Lunaire — le « ل » s'entend");
+            ? (isRussian ? "☀️ Солнечная — буква после « ل » принимает шадду" : isEnglish ? "☀️ Sun — the ل is silent, the letter takes a Shadda" : "☀️ Solaire — la lettre après le « ل » porte une Shadda")
+            : (isRussian ? "🌙 Лунная — « ل » произносится" : isEnglish ? "🌙 Moon — the ل is pronounced" : "🌙 Lunaire — le « ل » s'entend");
           sunMoonPanel.appendChild(h3);
           var grid = document.createElement("div");
           grid.className = "formlab-examples sunmoon-grid";
@@ -2532,7 +2549,11 @@
       var gameDictee1PrevBtn = document.getElementById("gameDictee1PrevBtn");
       var gameDictee1NextBtn = document.getElementById("gameDictee1NextBtn");
 
-      var INSTRUCTION_TEXT = {
+      var INSTRUCTION_TEXT = isRussian ? {
+        sound: "Послушай, затем выбери услышанный звук.",
+        word: "Послушай, затем выбери услышанное слово.",
+        script: "Какое написание правильное?"
+      } : {
         sound: isEnglish ? "Listen, then choose the sound you heard." : "Écoute puis choisis le son que tu as entendu.",
         word: isEnglish ? "Listen, then choose the word you heard." : "Écoute puis choisis le mot que tu as entendu.",
         script: isEnglish ? "Which spelling is correct?" : "Quelle est la bonne écriture ?"
@@ -2541,7 +2562,16 @@
       // Menu des jeux (nouvel ecran intermediaire entre la grille des
       // modules et l'interface complete d'un jeu) : une grande carte par
       // categorie, icone + titre uniquement (voir renderGameMenu).
-      var GAME_MENU_ITEMS = {
+      var GAME_MENU_ITEMS = isRussian ? {
+        sound: { icon: "🎧", title: "Узнать звук" },
+        word: { icon: "📖", title: "Узнать слово" },
+        read: { icon: "🗣️", title: "Прочитать слово" },
+        dictee: { icon: "✍️", title: "Диктант" },
+        harakat: { icon: "🖍️", title: "Расставь огласовки" },
+        script: { icon: "✍️", title: "Правильное написание" },
+        sort: { icon: "☀️🌙", title: "Солнечная или лунная?" },
+        sortall: { icon: "🗂️", title: "Рассортируй все буквы" }
+      } : {
         sound: { icon: "🎧", title: isEnglish ? "Recognize the sound" : "Reconnaître le son" },
         word: { icon: "📖", title: isEnglish ? "Recognize the word" : "Reconnaître le mot" },
         read: { icon: "🗣️", title: isEnglish ? "Read a word" : "Lire un mot" },
@@ -2745,13 +2775,13 @@
           }
           badge.className = "module-status module-status-" + state;
           if (state === "available") {
-            badge.textContent = isEnglish ? "🟢 Available" : "🟢 Disponible";
+            badge.textContent = isRussian ? "🟢 Доступно" : isEnglish ? "🟢 Available" : "🟢 Disponible";
           } else if (state === "unlocked") {
-            badge.textContent = isEnglish ? "🟢 Unlocked" : "🟢 Débloqué";
+            badge.textContent = isRussian ? "🟢 Открыто" : isEnglish ? "🟢 Unlocked" : "🟢 Débloqué";
           } else if (state === "override") {
-            badge.textContent = isEnglish ? "🟡 Access granted" : "🟡 Accès autorisé";
+            badge.textContent = isRussian ? "🟡 Доступ разрешён" : isEnglish ? "🟡 Access granted" : "🟡 Accès autorisé";
           } else {
-            badge.textContent = isEnglish ? "🔒 80% recommended" : "🔒 80% recommandé";
+            badge.textContent = isRussian ? "🔒 Рекомендуется 80%" : isEnglish ? "🔒 80% recommended" : "🔒 80% recommandé";
           }
         });
       }
@@ -2764,16 +2794,16 @@
 
       function renderScore() {
         gameScoreEl.textContent = gameState.score + " / " + gameState.questionIndex +
-          (isEnglish ? " correct" : " bonnes réponses");
+          (isRussian ? " правильных" : isEnglish ? " correct" : " bonnes réponses");
       }
 
       function showEnd() {
         gameBody.hidden = true;
         gameEnd.hidden = false;
         gameEndScore.textContent = gameState.category === "read"
-          ? (isEnglish ? "You read " + QUESTIONS_PER_ROUND + " words!" : "Tu as lu " + QUESTIONS_PER_ROUND + " mots !")
+          ? (isRussian ? "Ты прочитал(а) " + QUESTIONS_PER_ROUND + " слов!" : isEnglish ? "You read " + QUESTIONS_PER_ROUND + " words!" : "Tu as lu " + QUESTIONS_PER_ROUND + " mots !")
           : gameState.category === "dictee"
-            ? (isEnglish ? "You wrote " + QUESTIONS_PER_ROUND + " words!" : "Tu as écrit " + QUESTIONS_PER_ROUND + " mots !")
+            ? (isRussian ? "Ты написал(а) " + QUESTIONS_PER_ROUND + " слов!" : isEnglish ? "You wrote " + QUESTIONS_PER_ROUND + " words!" : "Tu as écrit " + QUESTIONS_PER_ROUND + " mots !")
             : gameState.score + " / " + QUESTIONS_PER_ROUND;
 
         // Regle des 80% : recommande la suite ou l'entrainement, mais ne
@@ -2786,15 +2816,19 @@
           refreshModuleBadges();
           gameEndMessage.hidden = false;
           if (pct >= 80) {
-            gameEndMessage.textContent = isEnglish
+            gameEndMessage.textContent = isRussian
+              ? "Отлично! Ты достаточно хорошо усвоил(а) этот уровень, чтобы перейти к следующему модулю."
+              : isEnglish
               ? "Well done! You've mastered this level enough to move on to the next module."
               : "Bravo ! Tu maîtrises suffisamment ce niveau pour passer au module suivant.";
-            gameContinueBtn.textContent = isEnglish ? "Continue to next module →" : "Continuer vers le module suivant →";
+            gameContinueBtn.textContent = isRussian ? "Перейти к следующему модулю →" : isEnglish ? "Continue to next module →" : "Continuer vers le module suivant →";
           } else {
-            gameEndMessage.textContent = isEnglish
+            gameEndMessage.textContent = isRussian
+              ? "Ты можешь перейти к следующему модулю, но лучше ещё немного потренироваться на этом модуле, чтобы хорошо освоить эти звуки, прежде чем продолжать."
+              : isEnglish
               ? "You can move on to the next module, but it would be better to practice this module a bit more to really master these sounds before continuing."
               : "Tu peux continuer vers le module suivant, mais il serait préférable de t'entraîner encore un peu sur ce module pour bien maîtriser les sons avant de poursuivre.";
-            gameContinueBtn.textContent = isEnglish ? "Continue anyway →" : "Continuer quand même →";
+            gameContinueBtn.textContent = isRussian ? "Продолжить в любом случае →" : isEnglish ? "Continue anyway →" : "Continuer quand même →";
           }
           gameContinueBtn.hidden = !nextModuleBtn;
         } else {
@@ -2902,9 +2936,9 @@
         gameState.current = { correct: correct, listened: false };
 
         renderArabicText(gameReadWord, stretchArabic(correct.arabic));
-        gameReadListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
+        gameReadListenBtn.textContent = isRussian ? "🔊 Слушать" : isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameReadNextBtn.hidden = true;
-        gameScoreEl.textContent = (isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
+        gameScoreEl.textContent = (isRussian ? "Слово " : isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
       }
 
       // "Dictee pure" : l'enfant entend le mot (jamais affiche a l'ecran)
@@ -2930,10 +2964,10 @@
 
         renderArabicText(gameDicteeWord, stretchArabic(correct.arabic));
         gameDicteeWord.hidden = true;
-        gameDicteeListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
+        gameDicteeListenBtn.textContent = isRussian ? "🔊 Слушать" : isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameDicteeRevealBtn.hidden = false;
         gameDicteeNextBtn.hidden = true;
-        gameScoreEl.textContent = (isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
+        gameScoreEl.textContent = (isRussian ? "Слово " : isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
       }
 
       // "J'ecoute et je place les harakat" : le squelette de lettres est
@@ -3085,18 +3119,22 @@
 
         var item = gameState.current.item;
         var explain = item.type === "sun"
-          ? (isEnglish
+          ? (isRussian
+              ? item.letter + " — солнечная буква: шадда появляется на " + item.letter + "."
+              : isEnglish
               ? item.letter + " is a sun letter: the Shadda appears on " + item.letter + "."
               : item.letter + " est une lettre solaire : la Shadda apparaît sur " + item.letter + ".")
-          : (isEnglish
+          : (isRussian
+              ? item.letter + " — лунная буква: без шадды, « ل » произносится."
+              : isEnglish
               ? item.letter + " is a moon letter: no Shadda, the ل is pronounced."
               : item.letter + " est une lettre lunaire : pas de Shadda, le ل se prononce.");
 
         gameFeedback.hidden = false;
         gameFeedback.className = "game-feedback " + (isCorrect ? "is-correct" : "is-wrong");
         gameFeedback.textContent = (isCorrect
-          ? (isEnglish ? "Correct! " : "Bravo ! ")
-          : (isEnglish ? "Not quite — " : "Ce n'était pas ça — ")) + explain;
+          ? (isRussian ? "Верно! " : isEnglish ? "Correct! " : "Bravo ! ")
+          : (isRussian ? "Не совсем — " : isEnglish ? "Not quite — " : "Ce n'était pas ça — ")) + explain;
 
         gameNextBtn.hidden = false;
         renderScore();
@@ -3149,18 +3187,22 @@
 
         var letterChar = ALL_LETTERS_BY_ID[item.id].char;
         var explain = item.type === "sun"
-          ? (isEnglish
+          ? (isRussian
+              ? letterChar + " — солнечная буква."
+              : isEnglish
               ? letterChar + " is a sun letter."
               : letterChar + " est une lettre solaire.")
-          : (isEnglish
+          : (isRussian
+              ? letterChar + " — лунная буква."
+              : isEnglish
               ? letterChar + " is a moon letter."
               : letterChar + " est une lettre lunaire.");
 
         gameSortFeedback.hidden = false;
         gameSortFeedback.className = "game-feedback " + (isCorrect ? "is-correct" : "is-wrong");
         gameSortFeedback.textContent = (isCorrect
-          ? (isEnglish ? "Correct! " : "Bravo ! ")
-          : (isEnglish ? "Not quite — " : "Ce n'était pas ça — ")) + explain;
+          ? (isRussian ? "Верно! " : isEnglish ? "Correct! " : "Bravo ! ")
+          : (isRussian ? "Не совсем — " : isEnglish ? "Not quite — " : "Ce n'était pas ça — ")) + explain;
 
         gameSortNextBtn.hidden = false;
         renderScore();
@@ -3187,8 +3229,8 @@
         gameFeedback.hidden = false;
         gameFeedback.className = "game-feedback " + (isCorrect ? "is-correct" : "is-wrong");
         gameFeedback.textContent = isCorrect
-          ? (isEnglish ? "Correct!" : "Bravo, c'est la bonne réponse !")
-          : (isEnglish ? "Not quite — here is the right answer." : "Ce n'était pas ça — voici la bonne réponse.");
+          ? (isRussian ? "Верно!" : isEnglish ? "Correct!" : "Bravo, c'est la bonne réponse !")
+          : (isRussian ? "Не совсем — вот правильный ответ." : isEnglish ? "Not quite — here is the right answer." : "Ce n'était pas ça — voici la bonne réponse.");
 
         gameNextBtn.hidden = false;
         renderScore();
@@ -3241,7 +3283,9 @@
         gameState = { moduleNumber: moduleNumber, title: title, category: category, pool: pool, questionIndex: 0, score: 0, current: null, usedKeys: {} };
         gameModalTitle.textContent = title;
         var letterCount = cumulativeLetterCount(moduleNumber);
-        gameLevelInfo.textContent = isEnglish
+        gameLevelInfo.textContent = isRussian
+          ? "Изучено букв: " + letterCount
+          : isEnglish
           ? "Letters learned so far: " + letterCount
           : "Lettres apprises : " + letterCount;
         gameBody.hidden = false;
@@ -3286,9 +3330,11 @@
         menuModuleNumber = moduleNumber;
         menuTitle = title;
         gameModalTitle.textContent = title;
-        gameMenuHeading.textContent = isEnglish ? "Games — Module " + moduleNumber : "Jeux du Module " + moduleNumber;
+        gameMenuHeading.textContent = isRussian ? "Игры — модуль " + moduleNumber : isEnglish ? "Games — Module " + moduleNumber : "Jeux du Module " + moduleNumber;
         var letterCount = cumulativeLetterCount(moduleNumber);
-        gameMenuLevelInfo.textContent = isEnglish
+        gameMenuLevelInfo.textContent = isRussian
+          ? "Изучено букв: " + letterCount
+          : isEnglish
           ? "Letters learned so far: " + letterCount
           : "Lettres apprises : " + letterCount;
         renderGameMenu(items);
@@ -3423,18 +3469,20 @@
 
         var letterChar = ALL_LETTERS_BY_ID[id].char;
         var explain = item.type === "sun"
-          ? (isEnglish ? letterChar + " is a sun letter." : letterChar + " est une lettre solaire.")
-          : (isEnglish ? letterChar + " is a moon letter." : letterChar + " est une lettre lunaire.");
+          ? (isRussian ? letterChar + " — солнечная буква." : isEnglish ? letterChar + " is a sun letter." : letterChar + " est une lettre solaire.")
+          : (isRussian ? letterChar + " — лунная буква." : isEnglish ? letterChar + " is a moon letter." : letterChar + " est une lettre lunaire.");
         sortAllFeedback.hidden = false;
         sortAllFeedback.className = "game-feedback " + (isCorrect ? "is-correct" : "is-wrong");
         sortAllFeedback.textContent = (isCorrect
-          ? (isEnglish ? "Correct! " : "Bravo ! ")
-          : (isEnglish ? "Not quite — " : "Ce n'était pas ça — ")) + explain;
+          ? (isRussian ? "Верно! " : isEnglish ? "Correct! " : "Bravo ! ")
+          : (isRussian ? "Не совсем — " : isEnglish ? "Not quite — " : "Ce n'était pas ça — ")) + explain;
 
         if (sortAllState.remaining === 0) {
           sortAllFeedback.hidden = true;
           sortAllDoneMessage.hidden = false;
-          sortAllDoneMessage.textContent = isEnglish
+          sortAllDoneMessage.textContent = isRussian
+            ? "Ты правильно рассортировал(а) " + sortAllState.correctCount + " / " + sortAllState.total + " букв!"
+            : isEnglish
             ? "You correctly classified " + sortAllState.correctCount + " / " + sortAllState.total + " letters!"
             : "Tu as classé " + sortAllState.correctCount + " / " + sortAllState.total + " lettres correctement !";
           sortAllReplayBtn.hidden = false;
@@ -3479,8 +3527,10 @@
       function openDictee1LetterMenu(levelId, title) {
         dictee1Level = DICTEE_LEVELS_BY_ID[levelId];
         gameModalTitle.textContent = title;
-        gameMenuHeading.textContent = (isEnglish ? dictee1Level.titleEn : dictee1Level.titleFr) +
-          (isEnglish ? ": choose a " + dictee1Level.unitEn.toLowerCase() : " : choisis une " + dictee1Level.unitFr.toLowerCase());
+        gameMenuHeading.textContent = isRussian
+          ? dictee1Level.titleRu + " — выбери: " + dictee1Level.unitRu.toLowerCase()
+          : (isEnglish ? dictee1Level.titleEn : dictee1Level.titleFr) +
+            (isEnglish ? ": choose a " + dictee1Level.unitEn.toLowerCase() : " : choisis une " + dictee1Level.unitFr.toLowerCase());
         gameMenuLevelInfo.textContent = "";
         gameMenuGrid.className = "game-menu-grid dictee1-letters";
         gameMenuGrid.innerHTML = "";
@@ -3519,20 +3569,20 @@
         var display = dictee1EntryDisplay(entry);
         dictee1State.current = entry;
 
-        var unit = isEnglish ? dictee1Level.unitEn : dictee1Level.unitFr;
+        var unit = isRussian ? dictee1Level.unitRu : isEnglish ? dictee1Level.unitEn : dictee1Level.unitFr;
         gameLevelInfo.textContent = unit + " " + (dictee1State.index + 1) + " / " + entries.length +
           (display ? " — " + display.header : "");
         gameScoreEl.textContent = "";
 
         gameDictee1Words.innerHTML = "";
         gameDictee1Words.hidden = true;
-        gameDictee1ListenBtn.textContent = isEnglish ? "🔊 Listen" : "🔊 Écouter";
+        gameDictee1ListenBtn.textContent = isRussian ? "🔊 Слушать" : isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameDictee1RevealBtn.hidden = false;
         gameDictee1PrevBtn.hidden = dictee1State.index === 0;
-        gameDictee1PrevBtn.textContent = isEnglish ? "← Previous " + unit.toLowerCase() : "← " + unit + " précédente";
+        gameDictee1PrevBtn.textContent = isRussian ? "← Предыдущая " + unit.toLowerCase() : isEnglish ? "← Previous " + unit.toLowerCase() : "← " + unit + " précédente";
         gameDictee1NextBtn.textContent = dictee1State.index + 1 < entries.length
-          ? (isEnglish ? "Next " + unit.toLowerCase() + " →" : unit + " suivante →")
-          : (isEnglish ? "Restart from the beginning →" : "Recommencer au début →");
+          ? (isRussian ? "Следующая " + unit.toLowerCase() + " →" : isEnglish ? "Next " + unit.toLowerCase() + " →" : unit + " suivante →")
+          : (isRussian ? "Начать сначала →" : isEnglish ? "Restart from the beginning →" : "Recommencer au début →");
       }
 
       function showDictee1Words() {
@@ -3578,12 +3628,16 @@
         var prevModule = Number(moduleNumber) - 1;
         var prevPct = getModuleBestPct(prevModule);
         var prevBtn = document.querySelector('.js-open-game[data-module="' + prevModule + '"]');
-        gamePrestartMessage.textContent = isEnglish
+        gamePrestartMessage.textContent = isRussian
+          ? "Ты ещё не достиг(ла) рекомендуемых 80% в модуле " + prevModule + " (твой лучший результат: " + prevPct + "%). Советуем ещё немного потренироваться, чтобы хорошо его освоить, прежде чем продолжать."
+          : isEnglish
           ? "You haven't yet reached the 80% recommended on Module " + prevModule + " (your best score so far: " + prevPct + "%). We suggest practicing it a bit more to really master it before continuing."
           : "Tu n'as pas encore atteint les 80% recommandés sur le Module " + prevModule + " (ton meilleur score jusqu'ici : " + prevPct + "%). Nous te conseillons de t'entraîner encore un peu pour bien le maîtriser avant de continuer.";
-        gamePrestartBackBtn.textContent = isEnglish ? "← Back to Module " + prevModule : "← Retour au Module " + prevModule;
+        gamePrestartBackBtn.textContent = isRussian ? "← Назад к модулю " + prevModule : isEnglish ? "← Back to Module " + prevModule : "← Retour au Module " + prevModule;
         gamePrestartBackBtn.disabled = !prevBtn;
-        gamePrestartContinueBtn.textContent = isEnglish
+        gamePrestartContinueBtn.textContent = isRussian
+          ? "Всё равно перейти к модулю " + moduleNumber + " →"
+          : isEnglish
           ? "Continue anyway to Module " + moduleNumber + " →"
           : "Accéder quand même au Module " + moduleNumber + " →";
         gameModalTitle.textContent = title;
@@ -3646,7 +3700,7 @@
       gameDictee1ListenBtn.addEventListener("click", function () {
         if (!dictee1State || !dictee1State.current) return;
         playSound({ audioBase: ROOT_BASE + "assets/audio/" + dictee1Level.audioFolder + "/", audioId: dictee1State.current.id });
-        gameDictee1ListenBtn.textContent = isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
+        gameDictee1ListenBtn.textContent = isRussian ? "🔊 Послушать ещё раз" : isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
       });
       gameDictee1RevealBtn.addEventListener("click", function () {
         if (!dictee1State || !dictee1State.current) return;
@@ -3686,14 +3740,14 @@
         if (!gameState || !gameState.current) return;
         playSound(gameState.current.correct);
         gameState.current.listened = true;
-        gameReadListenBtn.textContent = isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
+        gameReadListenBtn.textContent = isRussian ? "🔊 Послушать ещё раз" : isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
         gameReadNextBtn.hidden = false;
       });
       gameReadNextBtn.addEventListener("click", nextQuestion);
       gameDicteeListenBtn.addEventListener("click", function () {
         if (!gameState || !gameState.current) return;
         playSound(gameState.current.correct);
-        gameDicteeListenBtn.textContent = isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
+        gameDicteeListenBtn.textContent = isRussian ? "🔊 Послушать ещё раз" : isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
       });
       gameDicteeRevealBtn.addEventListener("click", function () {
         if (!gameState || !gameState.current) return;
@@ -3721,8 +3775,8 @@
         gameHarakatFeedback.hidden = false;
         gameHarakatFeedback.className = "game-feedback " + (allCorrect ? "is-correct" : "is-wrong");
         gameHarakatFeedback.textContent = allCorrect
-          ? (isEnglish ? "Correct!" : "Bravo, c'est la bonne réponse !")
-          : (isEnglish ? "Not quite — here is the right answer." : "Ce n'était pas ça — voici la bonne réponse.");
+          ? (isRussian ? "Верно!" : isEnglish ? "Correct!" : "Bravo, c'est la bonne réponse !")
+          : (isRussian ? "Не совсем — вот правильный ответ." : isEnglish ? "Not quite — here is the right answer." : "Ce n'était pas ça — voici la bonne réponse.");
         gameHarakatCorrect.hidden = false;
         renderArabicText(gameHarakatCorrect, stretchArabic(gameState.current.correct.arabic));
         gameHarakatNextBtn.hidden = false;
