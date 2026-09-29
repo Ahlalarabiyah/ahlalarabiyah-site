@@ -784,6 +784,31 @@
         rest = "";
       }
       var trailing = rest;
+
+      if (trailing) {
+        // Lettre de base + marque + lettre de prolongation regroupees en
+        // UN SEUL Text node, sans aucun <span> entre elles : verifie que
+        // sur Safari/WebKit, meme une marque isolee dans son propre
+        // element entre deux vraies lettres (ex. "با", "بو", "بي") suffit
+        // a casser leur liaison cursive - contrairement au cas d'une
+        // lettre seule (pas de bug la, cf. cas normal plus bas). La
+        // coloration rouge de la voyelle+prolongation passe donc par un
+        // degrade CSS (text-fill) calcule, jamais par un element separe ;
+        // consequence acceptee : les corrections de position (resserre/
+        // elargi) ne s'appliquent pas ici, negligeable pour ces
+        // combinaisons (alif/waw/ya de prolongation, sans hamza).
+        // Essaye : degrade de couleur calcule par mesure Range du texte
+        // reellement rendu (voir historique) - abandonne : la coloration
+        // "coupe" en plein milieu du trait de liaison entre deux lettres
+        // pleinement connectees (ex. "بو", "بي"), ce qui ressemble a un
+        // bug d'affichage plutot qu'a un choix de design. Un seul Text
+        // node, une seule couleur (celle de la lettre de base) : rendu
+        // propre partout, priorite a la liaison correcte.
+        wrap.textContent = baseChar + diacritic + trailing;
+        container.appendChild(wrap);
+        return;
+      }
+
       var mark = document.createElement("span");
       mark.className = "letterlab-mark";
       if (baseLast === "أ" && RAISE_AFTER_HAMZA_ABOVE.test(diacritic)) {
@@ -797,15 +822,6 @@
       mark.textContent = diacritic;
       if (baseChar) wrap.appendChild(document.createTextNode(baseChar));
       wrap.appendChild(mark);
-      if (trailing) {
-        // Text nu, pas un <span> colore : une lettre de base (alif/waw/ya
-        // de prolongation) isolee dans son propre element ne se lie plus
-        // a la lettre precedente sur Safari/WebKit (meme famille de bug
-        // que le fix Safari de renderArabicText - seule une marque
-        // diacritique, sans largeur, peut etre isolee sans casser la
-        // liaison ; une vraie lettre, non).
-        wrap.appendChild(document.createTextNode(trailing));
-      }
       container.appendChild(wrap);
     }
 
