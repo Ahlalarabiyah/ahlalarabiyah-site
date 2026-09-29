@@ -793,19 +793,15 @@
         // a casser leur liaison cursive - contrairement au cas d'une
         // lettre seule (pas de bug la, cf. cas normal plus bas). La
         // coloration rouge de la voyelle+prolongation passe donc par un
-        // degrade CSS (text-fill) calcule, jamais par un element separe ;
-        // consequence acceptee : les corrections de position (resserre/
-        // elargi) ne s'appliquent pas ici, negligeable pour ces
-        // combinaisons (alif/waw/ya de prolongation, sans hamza).
-        // Essaye : degrade de couleur calcule par mesure Range du texte
-        // reellement rendu (voir historique) - abandonne : la coloration
-        // "coupe" en plein milieu du trait de liaison entre deux lettres
-        // pleinement connectees (ex. "بو", "بي"), ce qui ressemble a un
-        // bug d'affichage plutot qu'a un choix de design. Un seul Text
-        // node, une seule couleur (celle de la lettre de base) : rendu
-        // propre partout, priorite a la liaison correcte.
+        // degrade CSS (text-fill) calcule sur le texte reellement rendu
+        // (Range), jamais par un <span> separe qui casserait la liaison.
+        // Transition adoucie (pas une coupure nette) : la frontiere entre
+        // deux lettres pleinement connectees (ex. "بو") tombe en plein
+        // milieu du trait de liaison, un arret net y ferait un effet
+        // "moitie bleu moitie rouge" qui ressemble a un bug.
         wrap.textContent = baseChar + diacritic + trailing;
         container.appendChild(wrap);
+        requestAnimationFrame(function () { colorizeProlongation(wrap, baseChar.length); });
         return;
       }
 
@@ -823,6 +819,32 @@
       if (baseChar) wrap.appendChild(document.createTextNode(baseChar));
       wrap.appendChild(mark);
       container.appendChild(wrap);
+    }
+
+    function colorizeProlongation(wrap, navyLen) {
+      // Mesure la largeur REELLEMENT rendue de "base+marque" (forme liee,
+      // dans son vrai contexte) via Range, plutot qu'une mesure canvas
+      // isolee : une lettre mesuree seule prend sa forme isolee (souvent
+      // plus large) et fausse completement la proportion.
+      var textNode = wrap.firstChild;
+      var fullRange = document.createRange();
+      fullRange.selectNodeContents(textNode);
+      var fullRect = fullRange.getBoundingClientRect();
+      if (!fullRect.width) return;
+      var navyRange = document.createRange();
+      navyRange.setStart(textNode, 0);
+      navyRange.setEnd(textNode, navyLen);
+      var navyRect = navyRange.getBoundingClientRect();
+      var pct = (navyRect.width / fullRect.width) * 100;
+      var soft = 18;
+      var from = Math.max(0, pct - soft);
+      var to = Math.min(100, pct + soft);
+      wrap.style.background = "linear-gradient(to left, var(--color-navy) " + from +
+        "%, var(--color-harakat-red) " + to + "%)";
+      wrap.style.webkitBackgroundClip = "text";
+      wrap.style.backgroundClip = "text";
+      wrap.style.color = "transparent";
+      wrap.style.webkitTextFillColor = "transparent";
     }
 
     function buildGroup(title, groupKey, forms) {

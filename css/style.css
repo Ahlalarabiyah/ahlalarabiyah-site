@@ -966,6 +966,7 @@ section[id] { scroll-margin-top: 88px; }
   font-size: 1.1rem;
   color: var(--color-text-light);
   direction: rtl;
+  margin-top: 8px;
 }
 .formlab-examples { display: flex; flex-direction: column; gap: 14px; }
 .formlab-card {
