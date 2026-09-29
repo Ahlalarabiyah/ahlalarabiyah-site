@@ -923,7 +923,7 @@ section[id] { scroll-margin-top: 88px; }
    effet de peinture pur, sans creer de boite positionnee separee, donc
    le shaping du texte reste intact. Meme rendu visuel, juste un
    mecanisme CSS different. */
-.letterlab-mark-raised { transform: translateY(-0.34em); }
+.letterlab-mark-raised { transform: translateY(-0.5em); }
 .letterlab-mark-tightened { transform: translateY(0.1em); }
 .letterlab-mark-widened { transform: translateY(0.3em); }
 .letterlab-mark-widened-tailed { transform: translateY(0.55em); }
