@@ -798,10 +798,13 @@
       if (baseChar) wrap.appendChild(document.createTextNode(baseChar));
       wrap.appendChild(mark);
       if (trailing) {
-        var trailingSpan = document.createElement("span");
-        trailingSpan.className = "letterlab-mark";
-        trailingSpan.textContent = trailing;
-        wrap.appendChild(trailingSpan);
+        // Text nu, pas un <span> colore : une lettre de base (alif/waw/ya
+        // de prolongation) isolee dans son propre element ne se lie plus
+        // a la lettre precedente sur Safari/WebKit (meme famille de bug
+        // que le fix Safari de renderArabicText - seule une marque
+        // diacritique, sans largeur, peut etre isolee sans casser la
+        // liaison ; une vraie lettre, non).
+        wrap.appendChild(document.createTextNode(trailing));
       }
       container.appendChild(wrap);
     }
