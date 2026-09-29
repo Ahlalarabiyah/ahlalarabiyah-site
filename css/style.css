@@ -277,7 +277,6 @@ section[id] { scroll-margin-top: 88px; }
 .hero-arabic {
   font-family: var(--font-arabic);
   font-size: 1.35rem;
-  font-weight: 600;
   color: var(--color-navy);
   direction: rtl;
   margin-bottom: 18px;
@@ -456,7 +455,6 @@ section[id] { scroll-margin-top: 88px; }
 }
 .program-thumb-number {
   font-family: var(--font-arabic);
-  font-weight: 700;
   font-size: 8rem;
   color: var(--color-orange);
   line-height: 1;
@@ -510,7 +508,6 @@ section[id] { scroll-margin-top: 88px; }
   text-align: left;
   font-size: 0.92rem;
   color: var(--color-orange);
-  font-weight: 600;
   margin-bottom: 8px;
 }
 .program-body h3 { font-size: 1.02rem; margin-bottom: 8px; }
@@ -857,7 +854,6 @@ section[id] { scroll-margin-top: 88px; }
 .letterlab-name {
   font-family: var(--font-arabic);
   font-size: 2.2rem;
-  font-weight: 700;
   color: var(--color-navy);
   margin-bottom: 22px;
   direction: rtl;
@@ -917,16 +913,21 @@ section[id] { scroll-margin-top: 88px; }
 .letterlab-cell.is-playing { background: var(--color-teal); border-color: var(--color-teal); color: #fff; transform: scale(1.06); }
 .letterlab-mark { color: var(--color-harakat-red); font-weight: 700; }
 .letterlab-cell.is-playing .letterlab-mark { color: #fff; }
-/* transform plutot que position:relative/top : un span positionne qui
-   isole une seule marque diacritique coupe la liaison cursive arabe
-   avec la lettre precedente sur Safari/WebKit (iOS) - transform est un
-   effet de peinture pur, sans creer de boite positionnee separee, donc
-   le shaping du texte reste intact. Meme rendu visuel, juste un
-   mecanisme CSS different. */
-.letterlab-mark-raised { transform: translateY(-0.5em); }
-.letterlab-mark-tightened { transform: translateY(0.1em); }
-.letterlab-mark-widened { transform: translateY(0.3em); }
-.letterlab-mark-widened-tailed { transform: translateY(0.55em); }
+/* position:relative/top et non transform : verifie en pratique que
+   "transform" n'a aucun effet ici (mesure DOM avant/apres : le rect ne
+   bouge pas d'un pixel, quelle que soit la valeur) - la marque diacritique
+   est un caractere Unicode "combinant" seul dans son span, et Chrome/
+   Safari la peignent avec la lettre precedente au moment du shaping du
+   texte, avant l'etape de transform. position:relative/top agit lui sur
+   la boite avant le shaping et deplace donc reellement la marque. Sans
+   risque pour la liaison cursive ici : ces classes ne servent que sur des
+   lettres isolees (cartes du labo/jeux), jamais au milieu d'un mot avec
+   d'autres lettres a lier autour (contrairement a .arabic-kasra-fix
+   ci-dessous, qui reste en transform pour cette raison). */
+.letterlab-mark-raised { position: relative; top: -0.5em; }
+.letterlab-mark-tightened { position: relative; top: 0.1em; }
+.letterlab-mark-widened { position: relative; top: 0.3em; }
+.letterlab-mark-widened-tailed { position: relative; top: 0.55em; }
 /* Meme correction que .letterlab-mark-widened (kasra qui se superpose a
    la hamza en dessous du "إ"), mais sans teinte rouge : utilisee dans
    les mots complets des jeux, pas seulement les cartes du labo. */
