@@ -1447,7 +1447,7 @@
         intro.className = "sunmoon-intro";
         intro.textContent = isEnglish
           ? "When you add الـ (\"the\") before a word, its first letter decides what happens to the ل:"
-          : "Quand on ajoute الـ (« le / la / l’ ») devant un mot, sa première lettre décide ce qui arrive au ل :";
+          : "Quand on ajoute الـ (« le / la / l’ ») devant un mot, sa première lettre décide ce qui arrive au « ل » :";
         sunMoonPanel.appendChild(intro);
 
         function addSection(type, ids, wordsMap) {
@@ -1455,8 +1455,8 @@
           var h3 = document.createElement("h3");
           h3.className = "sunmoon-section-title sunmoon-section-" + type;
           h3.textContent = type === "sun"
-            ? (isEnglish ? "☀️ Sun — the ل is silent, the letter takes a Shadda" : "☀️ Solaire — la lettre après le ل porte une Shadda")
-            : (isEnglish ? "🌙 Moon — the ل is pronounced" : "🌙 Lunaire — le ل s'entend");
+            ? (isEnglish ? "☀️ Sun — the ل is silent, the letter takes a Shadda" : "☀️ Solaire — la lettre après le « ل » porte une Shadda")
+            : (isEnglish ? "🌙 Moon — the ل is pronounced" : "🌙 Lunaire — le « ل » s'entend");
           sunMoonPanel.appendChild(h3);
           var grid = document.createElement("div");
           grid.className = "formlab-examples sunmoon-grid";
