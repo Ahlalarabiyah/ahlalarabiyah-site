@@ -3,83 +3,167 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/"/>
   </url>
   <url>
     <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/"/>
   </url>
   <url>
     <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/</loc>
-    <lastmod>2026-09-29</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/"/>
   </url>
   <url>
     <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/modules.html</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/modules.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/modules.html"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/modules.html"/>
-  </url>
-  <url>
-    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html</loc>
-    <lastmod>2026-09-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/jeux.html"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/modules.html"/>
   </url>
   <url>
     <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/modules.html</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/modules.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/modules.html"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/modules.html"/>
-  </url>
-  <url>
-    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/jeux.html</loc>
-    <lastmod>2026-09-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html"/>
-    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/jeux.html"/>
-    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/modules.html"/>
   </url>
   <url>
     <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/modules.html</loc>
-    <lastmod>2026-09-29</lastmod>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/modules.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/modules.html"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/modules.html"/>
   </url>
   <url>
-    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/jeux.html</loc>
-    <lastmod>2026-09-29</lastmod>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/modules.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/modules.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/modules.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/modules.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/modules.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/jeux.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/jeux.html</loc>
+    <lastmod>2026-10-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
     <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/jeux.html"/>
     <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/jeux.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/jeux.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/jeux.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/jeux.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/jeux.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/jeux.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/jeux.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/jeux.html"/>
   </url>
 </urlset>

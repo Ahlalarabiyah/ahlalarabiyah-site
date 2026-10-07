@@ -9,13 +9,15 @@
 <link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/modules.html">
 <link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/modules.html">
 <link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/modules.html">
+<link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/modules.html">
+<link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/modules.html">
 <link rel="alternate" hreflang="x-default" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/modules.html">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=80">
+<link rel="stylesheet" href="css/style.css?v=82">
 </head>
 <body>
 
@@ -43,10 +45,15 @@
     </nav>
 
     <div class="header-actions">
-      <div class="lang-switch-group">
-        <a href="en/modules.html" class="lang-switch" aria-label="Switch to English">EN</a>
-        <a href="ru/modules.html" class="lang-switch" aria-label="Перейти на русский">RU</a>
-      </div>
+      <details class="lang-menu">
+        <summary class="lang-switch" aria-label="Changer de langue">FR</summary>
+        <ul class="lang-menu-list">
+          <li><a href="en/modules.html" hreflang="en" lang="en">English <span>EN</span></a></li>
+          <li><a href="ru/modules.html" hreflang="ru" lang="ru">Русский <span>RU</span></a></li>
+          <li><a href="de/modules.html" hreflang="de" lang="de">Deutsch <span>DE</span></a></li>
+          <li><a href="ar/modules.html" hreflang="ar" lang="ar">العربية <span>AR</span></a></li>
+        </ul>
+      </details>
       <a href="index.html#contact" class="btn btn-primary btn-sm">Nous contacter</a>
       <button class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-nav">
         <span></span><span></span><span></span>
@@ -418,6 +425,6 @@
   </div>
 </div>
 
-<script src="js/main.js?v=134"></script>
+<script src="js/main.js?v=135"></script>
 </body>
 </html>
