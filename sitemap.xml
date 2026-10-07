@@ -166,4 +166,59 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/jeux.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/jeux.html"/>
   </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/apropos.html</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/apropos.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/apropos.html</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/apropos.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/apropos.html</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/apropos.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/apropos.html</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/apropos.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/apropos.html</loc>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/apropos.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/apropos.html"/>
+  </url>
 </urlset>
