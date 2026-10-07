@@ -1691,3 +1691,14 @@ html[dir="rtl"] .lightbox-close { right: auto; left: max(28px, env(safe-area-ins
 /* skip-link : en RTL un decalage negatif a gauche agrandit la zone de defilement. */
 html[dir="rtl"] .skip-link { left: auto; right: -999px; border-radius: 0 0 0 8px; }
 html[dir="rtl"] .skip-link:focus { left: auto; right: 0; }
+
+/* ---------- A propos ---------- */
+.about-body { max-width: 760px; margin: 0 auto; }
+.about-body p { color: var(--color-text-light); font-size: 1.02rem; line-height: 1.75; margin: 0 0 16px; }
+.about-body .about-goal {
+  color: var(--color-navy);
+  font-weight: 600;
+  border-inline-start: 4px solid var(--color-teal);
+  padding-inline-start: 18px;
+  margin-top: 26px;
+}
