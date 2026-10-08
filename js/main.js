@@ -2594,6 +2594,23 @@
       var orderFeedback = document.getElementById("orderFeedback");
       var orderCheckBtn = document.getElementById("orderCheckBtn");
       var orderResetBtn = document.getElementById("orderResetBtn");
+      var gameSoundPanel = document.getElementById("gameSoundPanel");
+      var soundSetup = document.getElementById("soundSetup");
+      var soundPlay = document.getElementById("soundPlay");
+      var soundEnd = document.getElementById("soundEnd");
+      var soundStartBtn = document.getElementById("soundStartBtn");
+      var soundProgress = document.getElementById("soundProgress");
+      var soundScore = document.getElementById("soundScore");
+      var soundTimerNum = document.getElementById("soundTimerNum");
+      var soundTimerBar = document.getElementById("soundTimerBar");
+      var soundListenBtn = document.getElementById("soundListenBtn");
+      var soundQuitBtn = document.getElementById("soundQuitBtn");
+      var soundFeedback = document.getElementById("soundFeedback");
+      var soundNextBtn = document.getElementById("soundNextBtn");
+      var soundTable = document.getElementById("soundTable");
+      var soundEndScore = document.getElementById("soundEndScore");
+      var soundEndMessage = document.getElementById("soundEndMessage");
+      var soundAgainBtn = document.getElementById("soundAgainBtn");
       var gameDictee1Panel = document.getElementById("gameDictee1Panel");
       var gameDictee1Words = document.getElementById("gameDictee1Words");
       var gameDictee1ListenBtn = document.getElementById("gameDictee1ListenBtn");
@@ -3355,6 +3372,7 @@
         gameSortPanel.hidden = category !== "sort";
         gameSortAllPanel.hidden = true;
         gameOrderPanel.hidden = true;
+        gameSoundPanel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -3505,6 +3523,7 @@
         gameSortPanel.hidden = true;
         gameSortAllPanel.hidden = false;
         gameOrderPanel.hidden = true;
+        gameSoundPanel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -3768,6 +3787,7 @@
         gameBackToMenuBtn.hidden = true;
         hideAllGamePanels();
         gameOrderPanel.hidden = false;
+        gameSoundPanel.hidden = true;
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
         resetOrderGame();
@@ -3776,6 +3796,275 @@
             if (orderState) { renderOrderGame(); }
           });
         }
+      }
+
+      // "Retrouve le son dans le tableau" (Module 15, jeu libre chronometre) :
+      // on entend un son (lettre + voyelle, madd ou tanwin, deja enregistre
+      // pour les fascicules 1 a 3) et on touche, dans le tableau recapitulatif
+      // du fascicule, la case qui correspond avant la fin du compte a rebours
+      // (12 / 8 / 4 secondes selon la difficulte). 15 sons par partie.
+      var SOUND_ROUNDS = 15;
+      var SOUND_SECONDS = { easy: 12, medium: 8, hard: 4 };
+      var SOUND_KINDS = ["harakat", "moudoud", "tanwin"];
+      var SOUND_HEAD_GROUPS = ["الحَرَكَاتُ", "المُدُودُ", "التَّنْوِينُ"];
+      var SOUND_HEAD_FORMS = ["الفَتْحَةُ", "الضَّمَّةُ", "الكَسْرَةُ"];
+      var SOUND_HEAD_LETTER = "الحُرُوفُ الهِجَائِيَّةُ";
+      var SOUND_TXT = {
+        fr: { correct: "Bravo !", wrong: "Raté — la bonne case est en vert.", timeout: "Temps écoulé ! La bonne case est en vert.", next: "Son suivant →", result: "Voir mon résultat →", progress: "Son {n} / {t}", score: "Score : {n}", listen: "🔊 Réécouter", quit: "Réglages", endScore: "Tu as trouvé {n} sons sur {t}.", great: "Excellent, tu reconnais très bien les sons !", ok: "Bien joué ! Encore un peu d’entraînement et ce sera parfait.", low: "Continue de t’entraîner : écoute les lettres dans le labo, puis reviens jouer." },
+        en: { correct: "Well done!", wrong: "Missed — the right box is in green.", timeout: "Time’s up! The right box is in green.", next: "Next sound →", result: "See my result →", progress: "Sound {n} / {t}", score: "Score: {n}", listen: "🔊 Listen again", quit: "Settings", endScore: "You found {n} sounds out of {t}.", great: "Excellent, you recognise the sounds very well!", ok: "Well played! A little more practice and it will be perfect.", low: "Keep practising: listen to the letters in the lab, then come back and play." },
+        ru: { correct: "Молодец!", wrong: "Неверно — правильная клетка выделена зелёным.", timeout: "Время вышло! Правильная клетка выделена зелёным.", next: "Следующий звук →", result: "Посмотреть результат →", progress: "Звук {n} / {t}", score: "Баллы: {n}", listen: "🔊 Послушать ещё раз", quit: "Настройки", endScore: "Ты угадал(а) {n} звуков из {t}.", great: "Отлично, ты очень хорошо узнаёшь звуки!", ok: "Хорошо сыграно! Ещё немного практики, и будет идеально.", low: "Продолжай тренироваться: послушай буквы в лаборатории и возвращайся играть." },
+        de: { correct: "Bravo!", wrong: "Daneben – das richtige Feld ist grün.", timeout: "Zeit abgelaufen! Das richtige Feld ist grün.", next: "Nächster Laut →", result: "Ergebnis ansehen →", progress: "Laut {n} / {t}", score: "Punkte: {n}", listen: "🔊 Nochmal hören", quit: "Einstellungen", endScore: "Du hast {n} von {t} Lauten gefunden.", great: "Ausgezeichnet, du erkennst die Laute sehr gut!", ok: "Gut gespielt! Noch etwas Übung und es wird perfekt.", low: "Übe weiter: Höre dir die Buchstaben im Labor an und komm dann zurück zum Spielen." },
+        ar: { correct: "أحسنت!", wrong: "إجابة خاطئة — المربع الصحيح باللون الأخضر.", timeout: "انتهى الوقت! المربع الصحيح باللون الأخضر.", next: "الصوت التالي ←", result: "عرض النتيجة ←", progress: "الصوت {n} / {t}", score: "النتيجة: {n}", listen: "🔊 أعد الاستماع", quit: "الإعدادات", endScore: "وجدتَ {n} أصواتًا من أصل {t}.", great: "ممتاز، أنت تميّز الأصوات جيدًا جدًا!", ok: "لعبٌ جيد! قليل من التدريب وسيكون الأداء مثاليًا.", low: "واصل التدرّب: استمع إلى الحروف في المختبر ثم عد للعب." }
+      }[ORDER_LANG];
+      var soundChoice = { table: "1", level: "easy" };
+      var soundState = null;
+      var soundTimerId = null;
+      var soundStartFallbackId = null;
+      var soundAudioEl = null;
+
+      function soundFill(text, n, t) {
+        return text.replace("{n}", n).replace("{t}", t);
+      }
+
+      function soundLetters(table) {
+        if (table === "2") return LETTERS_F2;
+        if (table === "3") return LETTERS_F3;
+        if (table === "all") return LETTERS_F1.concat(LETTERS_F2, LETTERS_F3);
+        return LETTERS_F1;
+      }
+
+      function soundStopTimer() {
+        if (soundTimerId) { clearInterval(soundTimerId); soundTimerId = null; }
+        if (soundStartFallbackId) { clearTimeout(soundStartFallbackId); soundStartFallbackId = null; }
+      }
+
+      function soundStop() {
+        soundStopTimer();
+        if (soundAudioEl) { soundAudioEl.pause(); soundAudioEl = null; }
+        soundState = null;
+      }
+
+      function soundShow(which) {
+        soundSetup.hidden = which !== "setup";
+        soundPlay.hidden = which !== "play";
+        soundEnd.hidden = which !== "end";
+      }
+
+      function showSoundSetup() {
+        soundStop();
+        soundShow("setup");
+        gameSoundPanel.querySelectorAll("[data-sound-table]").forEach(function (b) {
+          var on = b.getAttribute("data-sound-table") === soundChoice.table;
+          b.classList.toggle("is-selected", on);
+          b.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        gameSoundPanel.querySelectorAll("[data-sound-level]").forEach(function (b) {
+          var on = b.getAttribute("data-sound-level") === soundChoice.level;
+          b.classList.toggle("is-selected", on);
+          b.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+      }
+
+      function soundHead(text, cls, style) {
+        var d = document.createElement("div");
+        d.className = "sound-th " + cls;
+        d.textContent = text;
+        if (style) { Object.keys(style).forEach(function (k) { d.style[k] = style[k]; }); }
+        return d;
+      }
+
+      function soundCellKey(letter, kind, i) {
+        return letter.id + "|" + kind + "|" + i;
+      }
+
+      // Tableau recapitulatif (comme dans le cahier) : colonne des lettres a
+      // droite, puis harakat / madd / tanwin (fatha, damma, kasra chacun).
+      function buildSoundTable(letters) {
+        soundTable.innerHTML = "";
+        soundTable.appendChild(soundHead(SOUND_HEAD_LETTER, "sound-th-letter", { gridRow: "span 2" }));
+        SOUND_HEAD_GROUPS.forEach(function (g, k) {
+          soundTable.appendChild(soundHead(g, "sound-th-group sound-kind-" + SOUND_KINDS[k], { gridColumn: "span 3" }));
+        });
+        SOUND_KINDS.forEach(function (kind) {
+          SOUND_HEAD_FORMS.forEach(function (f) {
+            soundTable.appendChild(soundHead(f, "sound-th-form sound-kind-" + kind));
+          });
+        });
+        letters.forEach(function (letter) {
+          var l = document.createElement("div");
+          l.className = "sound-letter";
+          l.textContent = letter.char;
+          soundTable.appendChild(l);
+          SOUND_KINDS.forEach(function (kind) {
+            for (var i = 0; i < 3; i++) {
+              var btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "sound-cell sound-kind-" + kind;
+              btn.setAttribute("data-key", soundCellKey(letter, kind, i));
+              renderLetterForm(btn, letter[kind][i][0], 1);
+              btn.addEventListener("click", onSoundCell);
+              soundTable.appendChild(btn);
+            }
+          });
+        });
+      }
+
+      function soundCellByKey(key) {
+        return soundTable.querySelector('[data-key="' + key + '"]');
+      }
+
+      function soundPlayCurrent() {
+        var t = soundState && soundState.current;
+        if (!t) return null;
+        if (soundAudioEl) { soundAudioEl.pause(); }
+        soundAudioEl = new Audio(ROOT_BASE + "assets/audio/fascicule-" + t.letter.fascicule + "/" + t.audioId + ".m4a?v=" + AUDIO_VERSION);
+        soundAudioEl.play().catch(function () {});
+        return soundAudioEl;
+      }
+
+      function soundUpdateTimer() {
+        var st = soundState;
+        if (!st) { soundStopTimer(); return; }
+        var total = SOUND_SECONDS[st.level] * 1000;
+        var rem = Math.max(0, st.deadline - Date.now());
+        soundTimerNum.textContent = String(Math.ceil(rem / 1000));
+        soundTimerBar.style.width = (rem / total * 100) + "%";
+        soundTimerBar.parentNode.classList.toggle("is-low", rem <= total * 0.5);
+        soundTimerBar.parentNode.classList.toggle("is-critical", rem <= total * 0.25);
+        if (rem <= 0) { soundFinishRound(null); }
+      }
+
+      function soundBeginTimer(roundIdx) {
+        var st = soundState;
+        if (!st || st.idx !== roundIdx || st.locked || st.timerOn) return;
+        st.timerOn = true;
+        st.deadline = Date.now() + SOUND_SECONDS[st.level] * 1000;
+        soundUpdateTimer();
+        soundTimerId = setInterval(soundUpdateTimer, 100);
+      }
+
+      function soundStartRound() {
+        var st = soundState;
+        soundStopTimer();
+        st.current = st.rounds[st.idx];
+        st.locked = false;
+        st.timerOn = false;
+        soundTable.querySelectorAll(".sound-cell").forEach(function (c) {
+          c.classList.remove("is-correct", "is-wrong");
+        });
+        soundFeedback.textContent = "";
+        soundFeedback.className = "game-feedback sound-feedback";
+        soundNextBtn.hidden = true;
+        soundProgress.textContent = soundFill(SOUND_TXT.progress, st.idx + 1, st.rounds.length);
+        soundScore.textContent = soundFill(SOUND_TXT.score, st.score, st.rounds.length);
+        var secs = SOUND_SECONDS[st.level];
+        soundTimerNum.textContent = String(secs);
+        soundTimerBar.style.width = "100%";
+        soundTimerBar.parentNode.classList.remove("is-low", "is-critical");
+        // Le compte a rebours demarre quand le son est reellement lance
+        // (ou apres 0,8 s au plus tard) : un fichier lent a charger ne
+        // doit pas manger le temps du joueur, surtout en mode difficile.
+        var idx = st.idx;
+        var audio = soundPlayCurrent();
+        if (audio) { audio.addEventListener("playing", function () { soundBeginTimer(idx); }); }
+        soundStartFallbackId = setTimeout(function () { soundBeginTimer(idx); }, 800);
+      }
+
+      function soundFinishRound(clickedKey) {
+        var st = soundState;
+        if (!st || st.locked) return;
+        st.locked = true;
+        soundStopTimer();
+        var correctKey = st.current.key;
+        var ok = clickedKey === correctKey;
+        var correctCell = soundCellByKey(correctKey);
+        correctCell.classList.add("is-correct");
+        if (ok) {
+          st.score += 1;
+          soundFeedback.textContent = SOUND_TXT.correct;
+        } else {
+          if (clickedKey) { soundCellByKey(clickedKey).classList.add("is-wrong"); }
+          soundFeedback.textContent = clickedKey ? SOUND_TXT.wrong : SOUND_TXT.timeout;
+          if (correctCell.scrollIntoView) { correctCell.scrollIntoView({ block: "center", behavior: "smooth" }); }
+        }
+        soundFeedback.className = "game-feedback sound-feedback " + (ok ? "is-correct" : "is-wrong");
+        soundScore.textContent = soundFill(SOUND_TXT.score, st.score, st.rounds.length);
+        soundNextBtn.textContent = st.idx + 1 >= st.rounds.length ? SOUND_TXT.result : SOUND_TXT.next;
+        soundNextBtn.hidden = false;
+      }
+
+      function onSoundCell(e) {
+        var st = soundState;
+        if (!st || st.locked) return;
+        soundFinishRound(e.currentTarget.getAttribute("data-key"));
+      }
+
+      function soundNext() {
+        var st = soundState;
+        if (!st || !st.locked) return;
+        st.idx += 1;
+        if (st.idx >= st.rounds.length) {
+          if (soundAudioEl) { soundAudioEl.pause(); }
+          soundEndScore.textContent = soundFill(SOUND_TXT.endScore, st.score, st.rounds.length);
+          var ratio = st.score / st.rounds.length;
+          soundEndMessage.textContent = ratio >= 0.85 ? SOUND_TXT.great : ratio >= 0.6 ? SOUND_TXT.ok : SOUND_TXT.low;
+          soundShow("end");
+          return;
+        }
+        soundStartRound();
+      }
+
+      function soundBeginGame() {
+        var letters = soundLetters(soundChoice.table);
+        var pool = [];
+        letters.forEach(function (letter) {
+          SOUND_KINDS.forEach(function (kind) {
+            for (var i = 0; i < 3; i++) {
+              pool.push({ letter: letter, audioId: letter[kind][i][1], key: soundCellKey(letter, kind, i) });
+            }
+          });
+        });
+        soundStop();
+        soundState = {
+          level: soundChoice.level,
+          rounds: shuffleArray(pool).slice(0, SOUND_ROUNDS),
+          idx: 0,
+          score: 0,
+          current: null,
+          locked: false,
+          timerOn: false,
+          deadline: 0
+        };
+        soundShow("play");
+        buildSoundTable(letters);
+        gameBody.scrollTop = 0;
+        soundStartRound();
+        if (document.fonts && document.fonts.load) {
+          document.fonts.load("24px 'Amiri Quran'", "بَ").then(function () {
+            soundTable.querySelectorAll(".letterlab-form").forEach(function (w) {
+              if (w.childNodes.length === 1 && w.firstChild.nodeType === 3) { colorizeProlongation(w, 1); }
+            });
+          });
+        }
+      }
+
+      function startSoundGame(title) {
+        menuTitle = title;
+        gameModalTitle.textContent = title;
+        gamePrestartWarning.hidden = true;
+        gameMenuScreen.hidden = true;
+        gameEnd.hidden = true;
+        gameBody.hidden = false;
+        gameLevelInfo.textContent = "";
+        gameScoreEl.textContent = "";
+        gameBackToMenuBtn.hidden = true;
+        hideAllGamePanels();
+        gameSoundPanel.hidden = false;
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        soundListenBtn.textContent = SOUND_TXT.listen;
+        soundQuitBtn.textContent = SOUND_TXT.quit;
+        showSoundSetup();
       }
 
       // Dictee (page dediee dictee.html, 5 niveaux) : un seul fichier audio
@@ -3795,6 +4084,7 @@
         gameSortPanel.hidden = true;
         gameSortAllPanel.hidden = true;
         gameOrderPanel.hidden = true;
+        gameSoundPanel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -3905,6 +4195,7 @@
         document.body.style.overflow = "";
         gamePrestartWarning.hidden = true;
         if (gameAudio) { gameAudio.pause(); }
+        soundStop();
       }
 
       // Rappel non bloquant : si le module precedent n'a pas encore ete
@@ -3988,6 +4279,28 @@
       });
       orderCheckBtn.addEventListener("click", checkOrderGame);
       orderResetBtn.addEventListener("click", resetOrderGame);
+      document.querySelectorAll(".js-open-sound-game").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          startSoundGame(btn.getAttribute("data-title"));
+        });
+      });
+      gameSoundPanel.querySelectorAll("[data-sound-table]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          soundChoice.table = b.getAttribute("data-sound-table");
+          showSoundSetup();
+        });
+      });
+      gameSoundPanel.querySelectorAll("[data-sound-level]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          soundChoice.level = b.getAttribute("data-sound-level");
+          showSoundSetup();
+        });
+      });
+      soundStartBtn.addEventListener("click", soundBeginGame);
+      soundListenBtn.addEventListener("click", function () { if (soundState) { soundPlayCurrent(); } });
+      soundNextBtn.addEventListener("click", soundNext);
+      soundQuitBtn.addEventListener("click", showSoundSetup);
+      soundAgainBtn.addEventListener("click", showSoundSetup);
       document.querySelectorAll(".js-open-dictee-level").forEach(function (btn) {
         btn.addEventListener("click", function () {
           openDictee1LetterMenu(btn.getAttribute("data-level"), btn.getAttribute("data-title"));

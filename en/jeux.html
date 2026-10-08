@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=101">
+<link rel="stylesheet" href="../css/style.css?v=104">
 </head>
 <body>
 
@@ -237,6 +237,17 @@
           </button>
         </article>
 
+        <article class="module-card module-card-bonus">
+          <span class="module-number">Module 15</span>
+          <p class="module-letters">بَ بُ بِ</p>
+          <p class="module-progress">Find the sound in the table</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-sound-game"
+                  data-title="Module 15 — Find the sound in the table">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
+            Play
+          </button>
+        </article>
+
       </div>
 
       <p class="page-cta-back"><a href="modules.html" class="btn btn-outline btn-sm">Discover the modules →</a></p>
@@ -390,6 +401,54 @@
         <button type="button" class="btn btn-primary btn-sm" id="orderCheckBtn" disabled>Check</button>
         <button type="button" class="btn btn-outline btn-sm" id="orderResetBtn">Restart</button>
       </div>
+      <div class="game-sound-panel" id="gameSoundPanel" hidden>
+        <div id="soundSetup">
+          <p class="game-instruction">Listen to the sound, then touch the right box in the table before the countdown ends.</p>
+          <div class="sound-setup-group">
+            <p class="sound-setup-label">Choose the table</p>
+            <div class="sound-choices">
+            <button type="button" class="sound-choice" data-sound-table="1" aria-pressed="false">Booklet 1</button>
+            <button type="button" class="sound-choice" data-sound-table="2" aria-pressed="false">Booklet 2</button>
+            <button type="button" class="sound-choice" data-sound-table="3" aria-pressed="false">Booklet 3</button>
+            <button type="button" class="sound-choice" data-sound-table="all" aria-pressed="false">All three booklets</button>
+            </div>
+          </div>
+          <div class="sound-setup-group">
+            <p class="sound-setup-label">Choose the difficulty</p>
+            <div class="sound-choices">
+            <button type="button" class="sound-choice" data-sound-level="easy" aria-pressed="false">Easy · 12 s</button>
+            <button type="button" class="sound-choice" data-sound-level="medium" aria-pressed="false">Medium · 8 s</button>
+            <button type="button" class="sound-choice" data-sound-level="hard" aria-pressed="false">Hard · 4 s</button>
+            </div>
+          </div>
+          <button type="button" class="btn btn-primary" id="soundStartBtn">Start</button>
+        </div>
+        <div id="soundPlay" hidden>
+          <div class="sound-hud">
+            <div class="sound-hud-row">
+              <span id="soundProgress"></span>
+              <span id="soundScore"></span>
+              <button type="button" class="sound-quit" id="soundQuitBtn"></button>
+            </div>
+            <div class="sound-timer">
+              <div class="sound-timer-track"><span id="soundTimerBar"></span></div>
+              <span class="sound-timer-num" id="soundTimerNum" aria-live="off"></span>
+            </div>
+            <div class="sound-hud-actions">
+              <button type="button" class="btn btn-outline btn-sm" id="soundListenBtn"></button>
+              <p class="game-feedback sound-feedback" id="soundFeedback"></p>
+              <button type="button" class="btn btn-primary btn-sm" id="soundNextBtn" hidden></button>
+            </div>
+          </div>
+          <div class="sound-table" id="soundTable"></div>
+        </div>
+        <div id="soundEnd" hidden>
+          <h3>Game over!</h3>
+          <p id="soundEndScore" class="game-end-score"></p>
+          <p id="soundEndMessage" class="game-end-message"></p>
+          <button type="button" class="btn btn-primary btn-sm" id="soundAgainBtn">Play again</button>
+        </div>
+      </div>
     </div>
   </div>
   <div class="game-end" id="gameEnd" hidden>
@@ -412,6 +471,6 @@
   </div>
 </div>
 
-<script src="../js/main.js?v=141"></script>
+<script src="../js/main.js?v=143"></script>
 </body>
 </html>

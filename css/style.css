@@ -2013,3 +2013,108 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
   line-height: 1.4;
 }
 .price-perk::before { content: "\2713"; font-weight: 800; flex: none; }
+
+/* ---------- Jeu : retrouve le son dans le tableau (Module 15) ---------- */
+.game-sound-panel { text-align: center; padding: 4px 0; }
+.sound-setup-group { margin: 16px 0 6px; }
+.sound-setup-label { font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; color: var(--color-text-light); margin-bottom: 8px; }
+.sound-choices { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.sound-choice {
+  padding: 10px 16px;
+  border: 2px solid var(--color-border);
+  border-radius: 999px;
+  background: #fff;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-navy);
+  cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.sound-choice:hover { border-color: var(--color-teal); }
+.sound-choice.is-selected { background: var(--color-navy); border-color: var(--color-navy); color: #fff; }
+.game-sound-panel .btn { margin: 6px 6px; }
+#soundStartBtn { margin-top: 22px; }
+
+.sound-hud {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: #fff;
+  padding: 6px 0 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+.sound-hud-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-family: var(--font-heading); font-weight: 600; font-size: 0.85rem; color: var(--color-text-light); }
+.sound-timer { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 4px 0; }
+.sound-timer-num { min-width: 2ch; font-family: var(--font-heading); font-weight: 700; font-size: 2.1rem; line-height: 1; color: var(--color-navy); font-variant-numeric: tabular-nums; }
+.sound-timer-track { flex: 1; max-width: 360px; height: 12px; border-radius: 999px; background: var(--color-border); overflow: hidden; }
+.sound-timer-track span { display: block; height: 100%; width: 100%; background: var(--color-teal); border-radius: 999px; transition: width .1s linear, background .2s ease; }
+.sound-timer-track.is-low span { background: #E8A33D; }
+.sound-timer-track.is-critical span { background: #E4534B; }
+.sound-timer-track.is-critical + .sound-timer-num, .sound-timer.is-critical .sound-timer-num { color: #C6362E; }
+.sound-hud-actions { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; min-height: 40px; }
+.sound-hud-actions .btn { margin: 0; }
+.sound-feedback { margin: 0; min-height: 0; }
+.sound-feedback:empty { display: none; }
+.sound-quit { background: none; border: 0; padding: 2px 4px; font: inherit; color: var(--color-teal-dark); text-decoration: underline; cursor: pointer; }
+
+.sound-table {
+  display: grid;
+  grid-template-columns: 1.15fr repeat(9, 1fr);
+  direction: rtl;
+  gap: 1px;
+  background: var(--color-navy);
+  border: 2px solid var(--color-navy);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.sound-th {
+  display: flex; align-items: center; justify-content: center;
+  padding: 6px 2px;
+  background: #fff;
+  font-family: var(--font-arabic);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--color-navy);
+}
+.sound-th-letter { font-size: 0.7rem; }
+.sound-th-group { font-size: 0.95rem; font-weight: 700; }
+.sound-kind-harakat.sound-th, .sound-kind-harakat.sound-cell { background: #E4FBF2; }
+.sound-kind-moudoud.sound-th, .sound-kind-moudoud.sound-cell { background: #F0F0F0; }
+.sound-kind-tanwin.sound-th, .sound-kind-tanwin.sound-cell { background: #FFE6E6; }
+.sound-letter {
+  display: flex; align-items: center; justify-content: center;
+  background: #fff;
+  font-family: var(--font-arabic);
+  font-size: 1.6rem;
+  line-height: 1.6;
+  color: var(--color-navy);
+}
+.sound-cell {
+  display: flex; align-items: center; justify-content: center;
+  min-width: 0;
+  padding: 4px 0;
+  min-height: 46px;
+  border: 0;
+  font-family: var(--font-arabic);
+  font-size: 1.5rem;
+  line-height: 1.6;
+  color: var(--color-navy);
+  cursor: pointer;
+  box-shadow: inset 0 0 0 3px transparent;
+  transition: box-shadow .15s ease, background .15s ease;
+}
+.sound-cell:hover { box-shadow: inset 0 0 0 3px var(--color-teal); }
+.sound-cell.is-correct { background: #B8EBD4; box-shadow: inset 0 0 0 4px var(--color-teal); }
+.sound-cell.is-wrong { background: #F8C9C5; box-shadow: inset 0 0 0 4px #E4534B; }
+@media (max-width: 480px) {
+  .sound-letter { font-size: 1.3rem; }
+  .sound-cell { font-size: 1.2rem; min-height: 40px; }
+  .sound-th-form { font-size: 0.62rem; }
+  .sound-th-group { font-size: 0.8rem; }
+  .sound-th-letter { font-size: 0.58rem; }
+  .sound-timer-num { font-size: 1.8rem; }
+}
+.sound-hud-actions .btn[hidden], .game-sound-panel [hidden] { display: none; }
