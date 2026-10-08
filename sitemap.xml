@@ -221,4 +221,11 @@
     <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/apropos.html"/>
     <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/apropos.html"/>
   </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/formules.html</loc>
+    <lastmod>2026-10-09</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/formules.html"/>
+  </url>
 </urlset>
