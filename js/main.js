@@ -3625,6 +3625,54 @@
         return ids;
       }
 
+      // Les polices arabes ont des lettres dont l'encre est tres decalee par
+      // rapport a la ligne de base (ج ح خ descendent, ك ف montent...) : on
+      // mesure l'encre reelle de chaque lettre (canvas) et la position de sa
+      // ligne de base dans la page, puis on la recentre verticalement au
+      // milieu de la case (voir centerOrderLetters).
+      var orderCtx = null;
+      var orderInkCache = {};
+      function orderInkCenterEm(ch) {
+        if (orderInkCache[ch] !== undefined) return orderInkCache[ch];
+        if (!orderCtx) { orderCtx = document.createElement("canvas").getContext("2d"); }
+        orderCtx.font = "100px 'Amiri Quran', Amiri, Cairo, serif";
+        var m = orderCtx.measureText(ch);
+        if (m.actualBoundingBoxAscent === undefined) { return 0; }
+        var v = (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 200;
+        if (document.fonts && document.fonts.check("16px 'Amiri Quran'")) { orderInkCache[ch] = v; }
+        return v;
+      }
+
+      function orderLetterSpan(ch) {
+        var span = document.createElement("span");
+        span.className = "order-letter";
+        span.setAttribute("data-ch", ch);
+        span.textContent = ch;
+        var marker = document.createElement("i");
+        marker.className = "order-baseline";
+        span.appendChild(marker);
+        return span;
+      }
+
+      function centerOrderLetters() {
+        [orderGrid, orderPool].forEach(function (box) {
+          Array.prototype.forEach.call(box.querySelectorAll(".order-letter"), function (span) {
+            var host = span.parentNode.getBoundingClientRect();
+            if (!host.height) return;
+            // Dans une case numerotee, on centre la lettre dans la zone sous
+            // le numero (sinon elle colle au chiffre).
+            var numEl = span.parentNode.querySelector(".order-num");
+            var zoneTop = numEl ? numEl.getBoundingClientRect().bottom : host.top;
+            span.style.top = "0px";
+            var baselineY = span.querySelector(".order-baseline").getBoundingClientRect().bottom;
+            var fontPx = parseFloat(getComputedStyle(span).fontSize);
+            var inkY = baselineY - orderInkCenterEm(span.getAttribute("data-ch")) * fontPx;
+            var centerY = zoneTop + (host.bottom - zoneTop) / 2;
+            span.style.top = Math.round((centerY - inkY) * 10) / 10 + "px";
+          });
+        });
+      }
+
       function resetOrderGame() {
         var ids = orderIds();
         orderState = { ids: ids, slots: ids.map(function () { return null; }), pool: shuffleArray(ids.slice()), armedId: null, marks: null, done: false };
@@ -3653,11 +3701,8 @@
           var num = document.createElement("span");
           num.className = "order-num";
           num.textContent = String(i + 1);
-          var letter = document.createElement("span");
-          letter.className = "order-letter";
-          letter.textContent = id ? ALL_LETTERS_BY_ID[id].char : "";
           btn.appendChild(num);
-          btn.appendChild(letter);
+          if (id) { btn.appendChild(orderLetterSpan(ALL_LETTERS_BY_ID[id].char)); }
           btn.addEventListener("click", function () { placeOrderLetter(i); });
           orderGrid.appendChild(btn);
         });
@@ -3665,7 +3710,7 @@
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "letterlab-cell sortall-letter" + (orderState.armedId === id ? " is-armed" : "");
-          btn.textContent = ALL_LETTERS_BY_ID[id].char;
+          btn.appendChild(orderLetterSpan(ALL_LETTERS_BY_ID[id].char));
           btn.addEventListener("click", function () {
             if (orderState.done) return;
             orderState.armedId = orderState.armedId === id ? null : id;
@@ -3674,6 +3719,7 @@
           orderPool.appendChild(btn);
         });
         orderCheckBtn.disabled = orderState.pool.length > 0;
+        centerOrderLetters();
       }
 
       function placeOrderLetter(i) {
@@ -3725,6 +3771,11 @@
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
         resetOrderGame();
+        if (document.fonts && document.fonts.load) {
+          document.fonts.load("24px 'Amiri Quran'", "\u0623\u0628").then(function () {
+            if (orderState) { renderOrderGame(); }
+          });
+        }
       }
 
       // Dictee (page dediee dictee.html, 5 niveaux) : un seul fichier audio

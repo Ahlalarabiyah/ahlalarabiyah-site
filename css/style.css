@@ -1715,8 +1715,11 @@ html[dir="rtl"] .skip-link:focus { left: auto; right: 0; }
 }
 .order-slot {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 0;
-  padding: 16px 0 6px;
+  padding: 0;
   border: 2px dashed var(--color-border);
   border-radius: 10px;
   background: var(--color-bg);
@@ -1745,7 +1748,7 @@ html[dir="rtl"] .skip-link:focus { left: auto; right: 0; }
 .game-order-panel .btn { margin: 6px 8px; }
 @media (max-width: 480px) {
   .order-grid { gap: 4px; }
-  .order-slot { font-size: 1.2rem; min-height: 54px; padding-top: 15px; }
+  .order-slot { font-size: 1.2rem; min-height: 54px; }
 }
 #orderCheckBtn[hidden] { display: none; }
 .game-score:empty { display: none; }
@@ -1762,3 +1765,6 @@ html[dir="rtl"] .skip-link:focus { left: auto; right: 0; }
   .order-pool .sortall-letter { padding: 6px 0; font-size: 1.2rem; }
 }
 .game-order-panel .btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+.order-letter { display: block; position: relative; line-height: 1.5; }
+.order-pool .sortall-letter { display: flex; align-items: center; justify-content: center; }
+.order-baseline { display: inline-block; width: 0; height: 0; }
