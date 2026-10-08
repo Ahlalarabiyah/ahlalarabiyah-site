@@ -2132,3 +2132,18 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .sound-score-high { color: #1F8A4C; }
 .sound-score-mid { color: #D9730D; }
 .sound-score-low { color: #C6362E; }
+
+/* Pastille "exercice d'ecoute" sur la carte du jeu Module 15 */
+.module-audio-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px auto 10px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(22,160,160,0.12);
+  color: var(--color-teal-dark);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.78rem;
+}
