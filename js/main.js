@@ -2588,6 +2588,12 @@
       var sortAllFeedback = document.getElementById("sortAllFeedback");
       var sortAllDoneMessage = document.getElementById("sortAllDoneMessage");
       var sortAllReplayBtn = document.getElementById("sortAllReplayBtn");
+      var gameOrderPanel = document.getElementById("gameOrderPanel");
+      var orderGrid = document.getElementById("orderGrid");
+      var orderPool = document.getElementById("orderPool");
+      var orderFeedback = document.getElementById("orderFeedback");
+      var orderCheckBtn = document.getElementById("orderCheckBtn");
+      var orderResetBtn = document.getElementById("orderResetBtn");
       var gameDictee1Panel = document.getElementById("gameDictee1Panel");
       var gameDictee1Words = document.getElementById("gameDictee1Words");
       var gameDictee1ListenBtn = document.getElementById("gameDictee1ListenBtn");
@@ -2667,38 +2673,38 @@
       // module le plus eleve parmi les lettres du mot (deduit a la main et
       // verifie, comme pour la table de reference du Module 13).
       var SCRIPT_CHOICE_WORDS = [
-        { id: "tamr", correct: "التَّمْر", incorrect: "التَمْر", type: "sun", letter: "ت", minModule: 2 },
-        { id: "thaalab", correct: "الثَّعْلَب", incorrect: "الثَعْلَب", type: "sun", letter: "ث", minModule: 3 },
-        { id: "dars", correct: "الدَّرْس", incorrect: "الدَرْس", type: "sun", letter: "د", minModule: 4 },
-        { id: "dhura", correct: "الذُّرَة", incorrect: "الذُرَة", type: "sun", letter: "ذ", minModule: 4 },
-        { id: "rajul", correct: "الرَّجُل", incorrect: "الرَجُل", type: "sun", letter: "ر", minModule: 5 },
-        { id: "zujaj", correct: "الزُّجَاج", incorrect: "الزُجَاج", type: "sun", letter: "ز", minModule: 5 },
-        { id: "samak", correct: "السَّمَك", incorrect: "السَمَك", type: "sun", letter: "س", minModule: 6 },
-        { id: "shams", correct: "الشَّمْس", incorrect: "الشَمْس", type: "sun", letter: "ش", minModule: 6 },
-        { id: "saqr", correct: "الصَّقْر", incorrect: "الصَقْر", type: "sun", letter: "ص", minModule: 7 },
-        { id: "difda", correct: "الضَّفْدَع", incorrect: "الضَفْدَع", type: "sun", letter: "ض", minModule: 7 },
-        { id: "tifl", correct: "الطِّفْل", incorrect: "الطِفْل", type: "sun", letter: "ط", minModule: 8 },
-        { id: "zalam", correct: "الظَّلَام", incorrect: "الظَلَام", type: "sun", letter: "ظ", minModule: 8 },
-        { id: "lugha", correct: "اللُّغَة", incorrect: "اللُغَة", type: "sun", letter: "ل", minModule: 11 },
-        { id: "najm", correct: "النَّجْم", incorrect: "النَجْم", type: "sun", letter: "ن", minModule: 11 },
-        { id: "tajir", correct: "التَّاجِر", incorrect: "التَاجِر", type: "sun", letter: "ت", minModule: 5 },
-        { id: "nazar", correct: "النَّظَر", incorrect: "النَظَر", type: "sun", letter: "ن", minModule: 11 },
-        { id: "bab", correct: "الْبَاب", incorrect: "الْبَّاب", type: "moon", letter: "ب", minModule: 2 },
-        { id: "jamal", correct: "الْجَمَل", incorrect: "الْجَّمَل", type: "moon", letter: "ج", minModule: 3 },
-        { id: "hisan", correct: "الْحِصَان", incorrect: "الْحِّصَان", type: "moon", letter: "ح", minModule: 3 },
-        { id: "khubz", correct: "الْخُبْز", incorrect: "الْخُّبْز", type: "moon", letter: "خ", minModule: 3 },
-        { id: "asal", correct: "الْعَسَل", incorrect: "الْعَّسَل", type: "moon", letter: "ع", minModule: 9 },
-        { id: "ghurab", correct: "الْغُرَاب", incorrect: "الْغُّرَاب", type: "moon", letter: "غ", minModule: 9 },
-        { id: "faras", correct: "الْفَرَس", incorrect: "الْفَّرَس", type: "moon", letter: "ف", minModule: 10 },
-        { id: "qamar", correct: "الْقَمَر", incorrect: "الْقَّمَر", type: "moon", letter: "ق", minModule: 10 },
-        { id: "kalb", correct: "الْكَلْب", incorrect: "الْكَّلْب", type: "moon", letter: "ك", minModule: 10 },
-        { id: "matar", correct: "الْمَطَر", incorrect: "الْمَّطَر", type: "moon", letter: "م", minModule: 11 },
-        { id: "hilal", correct: "الْهِلَال", incorrect: "الْهِّلَال", type: "moon", letter: "ه", minModule: 12 },
-        { id: "warda", correct: "الْوَرْدَة", incorrect: "الْوَّرْدَة", type: "moon", letter: "و", minModule: 12 },
-        { id: "yad", correct: "الْيَد", incorrect: "الْيَّد", type: "moon", letter: "ي", minModule: 12 },
-        { id: "bahr", correct: "الْبَحْر", incorrect: "الْبَّحْر", type: "moon", letter: "ب", minModule: 5 },
-        { id: "kitab", correct: "الْكِتَاب", incorrect: "الْكِّتَاب", type: "moon", letter: "ك", minModule: 10 },
-        { id: "farah", correct: "الْفَرْح", incorrect: "الْفَّرْح", type: "moon", letter: "ف", minModule: 10 }
+        { id: "tamr", correct: "التَّمْرُ", incorrect: "التَمْرُ", type: "sun", letter: "ت", minModule: 2 },
+        { id: "thaalab", correct: "الثَّعْلَبُ", incorrect: "الثَعْلَبُ", type: "sun", letter: "ث", minModule: 3 },
+        { id: "dars", correct: "الدَّرْسُ", incorrect: "الدَرْسُ", type: "sun", letter: "د", minModule: 4 },
+        { id: "dhura", correct: "الذُّرَةُ", incorrect: "الذُرَةُ", type: "sun", letter: "ذ", minModule: 4 },
+        { id: "rajul", correct: "الرَّجُلُ", incorrect: "الرَجُلُ", type: "sun", letter: "ر", minModule: 5 },
+        { id: "zujaj", correct: "الزُّجَاجُ", incorrect: "الزُجَاجُ", type: "sun", letter: "ز", minModule: 5 },
+        { id: "samak", correct: "السَّمَكُ", incorrect: "السَمَكُ", type: "sun", letter: "س", minModule: 6 },
+        { id: "shams", correct: "الشَّمْسُ", incorrect: "الشَمْسُ", type: "sun", letter: "ش", minModule: 6 },
+        { id: "saqr", correct: "الصَّقْرُ", incorrect: "الصَقْرُ", type: "sun", letter: "ص", minModule: 7 },
+        { id: "difda", correct: "الضَّفْدَعُ", incorrect: "الضَفْدَعُ", type: "sun", letter: "ض", minModule: 7 },
+        { id: "tifl", correct: "الطِّفْلُ", incorrect: "الطِفْلُ", type: "sun", letter: "ط", minModule: 8 },
+        { id: "zalam", correct: "الظَّلَامُ", incorrect: "الظَلَامُ", type: "sun", letter: "ظ", minModule: 8 },
+        { id: "lugha", correct: "اللُّغَةُ", incorrect: "اللُغَةُ", type: "sun", letter: "ل", minModule: 11 },
+        { id: "najm", correct: "النَّجْمُ", incorrect: "النَجْمُ", type: "sun", letter: "ن", minModule: 11 },
+        { id: "tajir", correct: "التَّاجِرُ", incorrect: "التَاجِرُ", type: "sun", letter: "ت", minModule: 5 },
+        { id: "nazar", correct: "النَّظَرُ", incorrect: "النَظَرُ", type: "sun", letter: "ن", minModule: 11 },
+        { id: "bab", correct: "الْبَابُ", incorrect: "الْبَّابُ", type: "moon", letter: "ب", minModule: 2 },
+        { id: "jamal", correct: "الْجَمَلُ", incorrect: "الْجَّمَلُ", type: "moon", letter: "ج", minModule: 3 },
+        { id: "hisan", correct: "الْحِصَانُ", incorrect: "الْحِّصَانُ", type: "moon", letter: "ح", minModule: 3 },
+        { id: "khubz", correct: "الْخُبْزُ", incorrect: "الْخُّبْزُ", type: "moon", letter: "خ", minModule: 3 },
+        { id: "asal", correct: "الْعَسَلُ", incorrect: "الْعَّسَلُ", type: "moon", letter: "ع", minModule: 9 },
+        { id: "ghurab", correct: "الْغُرَابُ", incorrect: "الْغُّرَابُ", type: "moon", letter: "غ", minModule: 9 },
+        { id: "faras", correct: "الْفَرَسُ", incorrect: "الْفَّرَسُ", type: "moon", letter: "ف", minModule: 10 },
+        { id: "qamar", correct: "الْقَمَرُ", incorrect: "الْقَّمَرُ", type: "moon", letter: "ق", minModule: 10 },
+        { id: "kalb", correct: "الْكَلْبُ", incorrect: "الْكَّلْبُ", type: "moon", letter: "ك", minModule: 10 },
+        { id: "matar", correct: "الْمَطَرُ", incorrect: "الْمَّطَرُ", type: "moon", letter: "م", minModule: 11 },
+        { id: "hilal", correct: "الْهِلَالُ", incorrect: "الْهِّلَالُ", type: "moon", letter: "ه", minModule: 12 },
+        { id: "warda", correct: "الْوَرْدَةُ", incorrect: "الْوَّرْدَةُ", type: "moon", letter: "و", minModule: 12 },
+        { id: "yad", correct: "الْيَدُ", incorrect: "الْيَّدُ", type: "moon", letter: "ي", minModule: 12 },
+        { id: "bahr", correct: "الْبَحْرُ", incorrect: "الْبَّحْرُ", type: "moon", letter: "ب", minModule: 5 },
+        { id: "kitab", correct: "الْكِتَابُ", incorrect: "الْكِّتَابُ", type: "moon", letter: "ك", minModule: 10 },
+        { id: "farah", correct: "الْفَرْحُ", incorrect: "الْفَّرْحُ", type: "moon", letter: "ف", minModule: 10 }
       ];
 
       var HARAKAT_MARK = {
@@ -3348,6 +3354,7 @@
         gameHarakatPanel.hidden = category !== "harakat";
         gameSortPanel.hidden = category !== "sort";
         gameSortAllPanel.hidden = true;
+        gameOrderPanel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -3497,6 +3504,7 @@
         gameHarakatPanel.hidden = true;
         gameSortPanel.hidden = true;
         gameSortAllPanel.hidden = false;
+        gameOrderPanel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -3597,6 +3605,128 @@
         }
       }
 
+      // "L'alphabet dans l'ordre" (Module 14, jeu libre sans score ni audio) :
+      // les 28 lettres melangees sont placees dans un tableau numerote ; la
+      // verification se fait a la fin (bouton), les lettres fausses sont
+      // marquees en rouge et peuvent etre retirees puis replacees.
+      var ORDER_LANG = isGerman ? "de" : isArabic ? "ar" : isRussian ? "ru" : isEnglish ? "en" : "fr";
+      var ORDER_TXT = {
+        fr: { partial: "{n} / 28 lettres bien placées. Touche une lettre en rouge pour la retirer et la replacer.", done: "Bravo ! Les 28 lettres sont dans le bon ordre." },
+        en: { partial: "{n} / 28 letters correctly placed. Touch a red letter to remove it and place it again.", done: "Well done! All 28 letters are in the right order." },
+        ru: { partial: "Правильно размещено {n} / 28 букв. Коснись красной буквы, чтобы убрать её и поставить заново.", done: "Отлично! Все 28 букв стоят в правильном порядке." },
+        de: { partial: "{n} / 28 Buchstaben richtig platziert. Tippe auf einen roten Buchstaben, um ihn zu entfernen und neu zu platzieren.", done: "Gut gemacht! Alle 28 Buchstaben stehen in der richtigen Reihenfolge." },
+        ar: { partial: "{n} / 28 حرفًا في مكانه الصحيح. المس حرفًا أحمر لإزالته ثم ضعه من جديد.", done: "أحسنت! الحروف الثمانية والعشرون في ترتيبها الصحيح." }
+      }[ORDER_LANG];
+      var orderState = null;
+
+      function orderIds() {
+        var ids = [];
+        MODULES.forEach(function (m) { ids = ids.concat(m.letterIds); });
+        return ids;
+      }
+
+      function resetOrderGame() {
+        var ids = orderIds();
+        orderState = { ids: ids, slots: ids.map(function () { return null; }), pool: shuffleArray(ids.slice()), armedId: null, marks: null, done: false };
+        orderFeedback.hidden = true;
+        orderFeedback.className = "game-feedback";
+        orderFeedback.textContent = "";
+        orderCheckBtn.hidden = false;
+        renderOrderGame();
+      }
+
+      function clearOrderMarks() {
+        orderState.marks = null;
+        orderFeedback.hidden = true;
+      }
+
+      function renderOrderGame() {
+        orderGrid.innerHTML = "";
+        orderPool.innerHTML = "";
+        orderState.slots.forEach(function (id, i) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          var cls = "order-slot" + (id ? " is-filled" : "");
+          if (orderState.marks && id) { cls += orderState.marks[i] ? " is-correct" : " is-wrong"; }
+          btn.className = cls;
+          btn.setAttribute("aria-label", String(i + 1));
+          var num = document.createElement("span");
+          num.className = "order-num";
+          num.textContent = String(i + 1);
+          var letter = document.createElement("span");
+          letter.className = "order-letter";
+          letter.textContent = id ? ALL_LETTERS_BY_ID[id].char : "";
+          btn.appendChild(num);
+          btn.appendChild(letter);
+          btn.addEventListener("click", function () { placeOrderLetter(i); });
+          orderGrid.appendChild(btn);
+        });
+        orderState.pool.forEach(function (id) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "letterlab-cell sortall-letter" + (orderState.armedId === id ? " is-armed" : "");
+          btn.textContent = ALL_LETTERS_BY_ID[id].char;
+          btn.addEventListener("click", function () {
+            if (orderState.done) return;
+            orderState.armedId = orderState.armedId === id ? null : id;
+            renderOrderGame();
+          });
+          orderPool.appendChild(btn);
+        });
+        orderCheckBtn.disabled = orderState.pool.length > 0;
+      }
+
+      function placeOrderLetter(i) {
+        if (!orderState || orderState.done) return;
+        var current = orderState.slots[i];
+        if (orderState.armedId) {
+          if (current) { orderState.pool.push(current); }
+          orderState.slots[i] = orderState.armedId;
+          orderState.pool = orderState.pool.filter(function (id) { return id !== orderState.armedId; });
+          orderState.armedId = null;
+        } else if (current) {
+          orderState.slots[i] = null;
+          orderState.pool.push(current);
+        } else {
+          return;
+        }
+        clearOrderMarks();
+        renderOrderGame();
+      }
+
+      function checkOrderGame() {
+        if (!orderState || orderState.pool.length) return;
+        var good = 0;
+        orderState.marks = orderState.slots.map(function (id, i) {
+          var ok = id === orderState.ids[i];
+          if (ok) { good += 1; }
+          return ok;
+        });
+        var allGood = good === orderState.ids.length;
+        orderFeedback.hidden = false;
+        orderFeedback.className = "game-feedback " + (allGood ? "is-correct" : "is-wrong");
+        orderFeedback.textContent = allGood ? ORDER_TXT.done : ORDER_TXT.partial.replace("{n}", good);
+        if (allGood) { orderState.done = true; orderCheckBtn.hidden = true; }
+        renderOrderGame();
+      }
+
+      function startOrderGame(title) {
+        menuTitle = title;
+        gameModalTitle.textContent = title;
+        gamePrestartWarning.hidden = true;
+        gameMenuScreen.hidden = true;
+        gameEnd.hidden = true;
+        gameBody.hidden = false;
+        gameLevelInfo.textContent = "";
+        gameScoreEl.textContent = "";
+        gameBackToMenuBtn.hidden = true;
+        hideAllGamePanels();
+        gameOrderPanel.hidden = false;
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        resetOrderGame();
+      }
+
       // Dictee (page dediee dictee.html, 5 niveaux) : un seul fichier audio
       // par element (lettre, paire ou phrase - dicte tout d'un coup, pas de
       // decoupage). L'enfant ecoute, ecrit sur une feuille, puis affiche la
@@ -3613,6 +3743,7 @@
         gameHarakatPanel.hidden = true;
         gameSortPanel.hidden = true;
         gameSortAllPanel.hidden = true;
+        gameOrderPanel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -3719,6 +3850,7 @@
 
       function closeGame() {
         gameModal.classList.remove("is-open");
+        gameBackToMenuBtn.hidden = false;
         document.body.style.overflow = "";
         gamePrestartWarning.hidden = true;
         if (gameAudio) { gameAudio.pause(); }
@@ -3798,6 +3930,13 @@
           startSunMoonGame(btn.getAttribute("data-title"));
         });
       });
+      document.querySelectorAll(".js-open-order-game").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          startOrderGame(btn.getAttribute("data-title"));
+        });
+      });
+      orderCheckBtn.addEventListener("click", checkOrderGame);
+      orderResetBtn.addEventListener("click", resetOrderGame);
       document.querySelectorAll(".js-open-dictee-level").forEach(function (btn) {
         btn.addEventListener("click", function () {
           openDictee1LetterMenu(btn.getAttribute("data-level"), btn.getAttribute("data-title"));

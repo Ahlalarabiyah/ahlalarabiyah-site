@@ -1702,3 +1702,63 @@ html[dir="rtl"] .skip-link:focus { left: auto; right: 0; }
   padding-inline-start: 18px;
   margin-top: 26px;
 }
+
+/* ---------- Jeu : l'alphabet dans l'ordre ---------- */
+.game-back-btn[hidden] { display: none; }
+.game-order-panel { text-align: center; padding: 8px 0 4px; }
+.order-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  direction: rtl;
+  margin: 14px 0 18px;
+}
+.order-slot {
+  position: relative;
+  min-width: 0;
+  padding: 16px 0 6px;
+  border: 2px dashed var(--color-border);
+  border-radius: 10px;
+  background: var(--color-bg);
+  font-family: var(--font-arabic);
+  font-size: 1.5rem;
+  line-height: 1.5;
+  color: var(--color-navy);
+  cursor: pointer;
+  min-height: 62px;
+  transition: border-color .15s ease, background .15s ease;
+}
+.order-slot:hover { border-color: var(--color-teal); }
+.order-slot.is-filled { border-style: solid; background: #fff; }
+.order-slot.is-correct { background: var(--color-teal); border-color: var(--color-teal); color: #fff; }
+.order-slot.is-wrong { background: #E4534B; border-color: #E4534B; color: #fff; }
+.order-num {
+  position: absolute;
+  top: 2px; left: 0; right: 0;
+  direction: ltr;
+  font-family: var(--font-heading);
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+}
+.order-slot.is-correct .order-num, .order-slot.is-wrong .order-num { color: rgba(255,255,255,0.85); }
+.game-order-panel .btn { margin: 6px 8px; }
+@media (max-width: 480px) {
+  .order-grid { gap: 4px; }
+  .order-slot { font-size: 1.2rem; min-height: 54px; padding-top: 15px; }
+}
+#orderCheckBtn[hidden] { display: none; }
+.game-score:empty { display: none; }
+.order-pool {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  direction: rtl;
+  margin-bottom: 14px;
+}
+.order-pool .sortall-letter { min-width: 0; padding: 9px 0; font-size: 1.4rem; line-height: 1.4; }
+@media (max-width: 480px) {
+  .order-pool { gap: 4px; }
+  .order-pool .sortall-letter { padding: 6px 0; font-size: 1.2rem; }
+}
+.game-order-panel .btn:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }

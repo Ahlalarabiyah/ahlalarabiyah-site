@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=83">
+<link rel="stylesheet" href="../css/style.css?v=87">
 </head>
 <body>
 
@@ -284,6 +284,14 @@
         <p class="game-end-message-inline" id="sortAllDoneMessage" hidden></p>
         <button type="button" class="btn btn-outline btn-sm" id="sortAllReplayBtn" hidden>Restart</button>
       </div>
+      <div class="game-order-panel" id="gameOrderPanel" hidden>
+        <p class="game-instruction">Put the letters of the Arabic alphabet in order: touch a letter, then the numbered box where it goes.</p>
+        <div class="order-grid" id="orderGrid"></div>
+        <div class="sortall-pool order-pool" id="orderPool"></div>
+        <p class="game-feedback" id="orderFeedback" hidden></p>
+        <button type="button" class="btn btn-primary btn-sm" id="orderCheckBtn" disabled>Check</button>
+        <button type="button" class="btn btn-outline btn-sm" id="orderResetBtn">Restart</button>
+      </div>
     </div>
   </div>
   <div class="game-end" id="gameEnd" hidden>
@@ -306,6 +314,6 @@
   </div>
 </div>
 
-<script src="../js/main.js?v=135"></script>
+<script src="../js/main.js?v=137"></script>
 </body>
 </html>

@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=83">
+<link rel="stylesheet" href="../css/style.css?v=87">
 </head>
 <body>
 
@@ -226,6 +226,17 @@
           </button>
         </article>
 
+        <article class="module-card module-card-bonus">
+          <span class="module-number">Модуль 14</span>
+          <p class="module-letters">١ ٢ ٣</p>
+          <p class="module-progress">Алфавит по порядку</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-order-game"
+                  data-title="Модуль 14 — Алфавит по порядку">
+            <svg viewBox="0 0 24 24" fill="none" width="16" height="16" aria-hidden="true"><path d="M6 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>
+            Играть
+          </button>
+        </article>
+
       </div>
 
       <p class="page-cta-back"><a href="modules.html" class="btn btn-outline btn-sm">Открыть модули →</a></p>
@@ -371,6 +382,14 @@
         <p class="game-end-message-inline" id="sortAllDoneMessage" hidden></p>
         <button type="button" class="btn btn-outline btn-sm" id="sortAllReplayBtn" hidden>Начать заново</button>
       </div>
+      <div class="game-order-panel" id="gameOrderPanel" hidden>
+        <p class="game-instruction">Расставь буквы арабского алфавита по порядку: коснись буквы, затем пронумерованной клетки, куда её поместить.</p>
+        <div class="order-grid" id="orderGrid"></div>
+        <div class="sortall-pool order-pool" id="orderPool"></div>
+        <p class="game-feedback" id="orderFeedback" hidden></p>
+        <button type="button" class="btn btn-primary btn-sm" id="orderCheckBtn" disabled>Проверить</button>
+        <button type="button" class="btn btn-outline btn-sm" id="orderResetBtn">Начать заново</button>
+      </div>
     </div>
   </div>
   <div class="game-end" id="gameEnd" hidden>
@@ -393,6 +412,6 @@
   </div>
 </div>
 
-<script src="../js/main.js?v=135"></script>
+<script src="../js/main.js?v=137"></script>
 </body>
 </html>
