@@ -2120,3 +2120,7 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .sound-hud-actions .btn[hidden], .game-sound-panel [hidden] { display: none; }
 /* ج ح خ : l'encre descend sous la ligne de base, on remonte la lettre pour la centrer dans sa case */
 .sound-cell.sound-tailed .letterlab-form, .sound-letter.sound-tailed .sound-letter-ink { position: relative; top: -0.3em; }
+/* Le degrade "background-clip:text" (voyelle + prolongation en rouge) ne peint que
+   dans la boite de l'element : les deux points de ي et la kasra, sous la ligne,
+   en sortaient et disparaissaient. Marge verticale = zone de peinture elargie. */
+.sound-cell .letterlab-form { padding: 0.5em 0; }
