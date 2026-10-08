@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=98">
+<link rel="stylesheet" href="css/style.css?v=101">
 </head>
 <body>
 
@@ -87,11 +87,12 @@
         <article class="price-card">
           <h3>Paiement par module</h3>
           <p class="price-lead">Pour acheter uniquement certains modules.</p>
+          <p class="price-perk">Chaque module payé débloque l’accès aux jeux correspondants.</p>
           <ul class="price-rows">
-            <li><span class="price-label">1 module</span><span class="price-amount">3,99&nbsp;€</span></li>
-            <li><span class="price-label">3 modules</span><span class="price-amount">9,99&nbsp;€</span></li>
-            <li><span class="price-label">6 modules</span><span class="price-amount">19,99&nbsp;€</span></li>
-            <li><span class="price-label">12 modules</span><span class="price-amount">29,99&nbsp;€</span></li>
+            <li><a class="price-buy" data-plan="module-1" href="#"><span class="price-label">1 module</span><span class="price-amount">3,99&nbsp;€</span></a></li>
+            <li><a class="price-buy" data-plan="module-3" href="#"><span class="price-label">3 modules</span><span class="price-amount">9,99&nbsp;€</span></a></li>
+            <li><a class="price-buy" data-plan="module-6" href="#"><span class="price-label">6 modules</span><span class="price-amount">19,99&nbsp;€</span></a></li>
+            <li><a class="price-buy" data-plan="module-12" href="#"><span class="price-label">12 modules</span><span class="price-amount">29,99&nbsp;€</span></a></li>
           </ul>
         </article>
 
@@ -99,14 +100,14 @@
           <h3>Formule de base</h3>
           <p class="price-lead">Abonnement de base, avec le parcours de dictées en option.</p>
           <div class="price-duo">
-            <div class="price-block"><p class="price-label">Mensuel</p><p class="price-big">6,99&nbsp;€<small> / mois</small></p></div>
-            <div class="price-block"><p class="price-label">Annuel</p><p class="price-big">39,99&nbsp;€<small> / an</small></p></div>
+            <a class="price-block price-buy" data-plan="base-month" href="#"><p class="price-label">Mensuel</p><p class="price-big">6,99&nbsp;€<small> / mois</small></p></a>
+            <a class="price-block price-buy" data-plan="base-year" href="#"><p class="price-label">Annuel</p><p class="price-big">39,99&nbsp;€<small> / an</small></p></a>
           </div>
           <div class="price-addon">
             <p class="price-addon-title">Parcours dictée 5 niveaux en option</p>
             <ul class="price-rows">
-            <li><span class="price-label">En supplément</span><span class="price-amount">+2&nbsp;€ <small>/ mois</small></span></li>
-            <li><span class="price-label">Ou en une seule fois</span><span class="price-amount">13,99&nbsp;€</span></li>
+            <li><a class="price-buy" data-plan="dictees-option-month" href="#"><span class="price-label">En supplément</span><span class="price-amount">+2&nbsp;€ <small>/ mois</small></span></a></li>
+            <li><a class="price-buy" data-plan="dictees-option-once" href="#"><span class="price-label">Ou en une seule fois</span><span class="price-amount">13,99&nbsp;€</span></a></li>
             </ul>
           </div>
         </article>
@@ -116,8 +117,8 @@
           <h3>Tout inclus</h3>
           <p class="price-lead">Modules + parcours dictées. La formule la plus complète en abonnement.</p>
           <div class="price-duo">
-            <div class="price-block"><p class="price-label">Mensuel</p><p class="price-big">7,99&nbsp;€<small> / mois</small></p></div>
-            <div class="price-block"><p class="price-label">Annuel</p><p class="price-big">45,99&nbsp;€<small> / an</small></p></div>
+            <a class="price-block price-buy" data-plan="all-month" href="#"><p class="price-label">Mensuel</p><p class="price-big">7,99&nbsp;€<small> / mois</small></p></a>
+            <a class="price-block price-buy" data-plan="all-year" href="#"><p class="price-label">Annuel</p><p class="price-big">45,99&nbsp;€<small> / an</small></p></a>
           </div>
         </article>
 
@@ -126,27 +127,27 @@
           <h3>Deviens un champion de la dictée</h3>
           <p class="price-lead">5 niveaux, des mots aux phrases, pour devenir très fort en écriture.</p>
           <div class="level-grid">
-            <div class="level-card"><p class="level-name">Niveau 1</p><p class="price-amount">2,99&nbsp;€</p></div>
-            <div class="level-card"><p class="level-name">Niveau 2</p><p class="price-amount">2,99&nbsp;€</p></div>
-            <div class="level-card"><p class="level-name">Niveau 3</p><p class="price-amount">2,99&nbsp;€</p></div>
-            <div class="level-card"><p class="level-name">Niveau 4</p><p class="price-amount">3,99&nbsp;€</p></div>
-            <div class="level-card"><p class="level-name">Niveau 5</p><p class="price-amount">4,99&nbsp;€</p></div>
+            <a class="level-card price-buy" data-plan="dictee-1" href="#"><p class="level-name">Niveau 1</p><p class="price-amount">2,99&nbsp;€</p></a>
+            <a class="level-card price-buy" data-plan="dictee-2" href="#"><p class="level-name">Niveau 2</p><p class="price-amount">2,99&nbsp;€</p></a>
+            <a class="level-card price-buy" data-plan="dictee-3" href="#"><p class="level-name">Niveau 3</p><p class="price-amount">2,99&nbsp;€</p></a>
+            <a class="level-card price-buy" data-plan="dictee-4" href="#"><p class="level-name">Niveau 4</p><p class="price-amount">3,99&nbsp;€</p></a>
+            <a class="level-card price-buy" data-plan="dictee-5" href="#"><p class="level-name">Niveau 5</p><p class="price-amount">4,99&nbsp;€</p></a>
           </div>
           <p class="pricing-note">Achetez les niveaux séparément ou les 5 niveaux complets.</p>
-          <div class="price-pack">
+          <a class="price-pack price-buy" data-plan="dictee-pack" href="#">
             <span class="price-tag price-tag-top">Économisez environ 4&nbsp;€</span>
             <div class="price-pack-main">
               <h4>Les 5 niveaux</h4>
               <p class="pack-was">au lieu de <s>17,95&nbsp;€</s></p>
             </div>
             <p class="pack-price">13,99&nbsp;€</p>
-          </div>
+          </a>
         </article>
 
         <article class="price-card price-card-wide price-card-dark" id="a-vie">
           <p class="eyebrow eyebrow-invert">Accès à vie</p>
           <h3>Vous préférez tout avoir&nbsp;?</h3>
-          <p class="lifetime-price">69,99&nbsp;€</p>
+          <p class="lifetime-wrap"><a class="lifetime-buy price-buy" data-plan="lifetime" href="#">69,99&nbsp;€</a></p>
           <p class="price-lead">Débloque tout, y compris les dictées.</p>
           <p class="lifetime-note">Achat unique, accès à l’ensemble du contenu inclus.</p>
         </article>
@@ -217,5 +218,6 @@
 </footer>
 
 <script src="js/main.js?v=140"></script>
+<script src="js/formules.js?v=1"></script>
 </body>
 </html>
