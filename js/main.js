@@ -4009,8 +4009,13 @@
         if (st.idx >= st.rounds.length) {
           if (soundAudioEl) { soundAudioEl.pause(); }
           soundEndScore.textContent = soundFill(SOUND_TXT.endScore, st.score, st.rounds.length);
+          // Couleur du score selon le pourcentage : vert des 75 %, orange de
+          // 50 a 75 %, rouge en dessous de 50 %.
           var ratio = st.score / st.rounds.length;
-          soundEndMessage.textContent = ratio >= 0.85 ? SOUND_TXT.great : ratio >= 0.6 ? SOUND_TXT.ok : SOUND_TXT.low;
+          var tier = ratio >= 0.75 ? "high" : ratio >= 0.5 ? "mid" : "low";
+          soundEndScore.className = "game-end-score sound-score-" + tier;
+          soundEndMessage.className = "sound-end-message sound-score-" + tier;
+          soundEndMessage.textContent = tier === "high" ? SOUND_TXT.great : tier === "mid" ? SOUND_TXT.ok : SOUND_TXT.low;
           soundShow("end");
           return;
         }

@@ -2124,3 +2124,11 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
    dans la boite de l'element : les deux points de ي et la kasra, sous la ligne,
    en sortaient et disparaissaient. Marge verticale = zone de peinture elargie. */
 .sound-cell .letterlab-form { padding: 0.5em 0; }
+
+/* Ecran final du jeu "Retrouve le son" : score colore selon le pourcentage */
+#soundEnd { text-align: center; padding: 8px 0; }
+#soundEnd .game-end-score { font-family: var(--font-heading); font-weight: 700; font-size: 1.5rem; margin: 10px 0 6px; }
+#soundEnd .sound-end-message { font-weight: 600; font-size: 1rem; line-height: 1.5; margin: 0 auto 20px; text-align: center; max-width: 420px; }
+.sound-score-high { color: #1F8A4C; }
+.sound-score-mid { color: #D9730D; }
+.sound-score-low { color: #C6362E; }
