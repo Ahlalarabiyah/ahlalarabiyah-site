@@ -2095,8 +2095,8 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .sound-cell {
   display: flex; align-items: center; justify-content: center;
   min-width: 0;
-  padding: 4px 0;
-  min-height: 46px;
+  padding: 0;
+  min-height: 80px;
   border: 0;
   font-family: var(--font-arabic);
   font-size: 1.5rem;
@@ -2111,7 +2111,7 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .sound-cell.is-wrong { background: #F8C9C5; box-shadow: inset 0 0 0 4px #E4534B; }
 @media (max-width: 480px) {
   .sound-letter { font-size: 1.3rem; }
-  .sound-cell { font-size: 1.2rem; min-height: 40px; }
+  .sound-cell { font-size: 1.2rem; min-height: 68px; }
   .sound-th-form { font-size: 0.62rem; }
   .sound-th-group { font-size: 0.8rem; }
   .sound-th-letter { font-size: 0.58rem; }
@@ -2119,4 +2119,4 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 }
 .sound-hud-actions .btn[hidden], .game-sound-panel [hidden] { display: none; }
 /* ج ح خ : l'encre descend sous la ligne de base, on remonte la lettre pour la centrer dans sa case */
-.sound-cell.sound-tailed .letterlab-form, .sound-letter.sound-tailed .sound-letter-ink { position: relative; top: -0.22em; }
+.sound-cell.sound-tailed .letterlab-form, .sound-letter.sound-tailed .sound-letter-ink { position: relative; top: -0.3em; }
