@@ -3892,14 +3892,17 @@
         });
         letters.forEach(function (letter) {
           var l = document.createElement("div");
-          l.className = "sound-letter";
-          l.textContent = letter.char;
+          l.className = "sound-letter" + (TAILED_LETTERS[letter.char] ? " sound-tailed" : "");
+          var ink = document.createElement("span");
+          ink.className = "sound-letter-ink";
+          ink.textContent = letter.char;
+          l.appendChild(ink);
           soundTable.appendChild(l);
           SOUND_KINDS.forEach(function (kind) {
             for (var i = 0; i < 3; i++) {
               var btn = document.createElement("button");
               btn.type = "button";
-              btn.className = "sound-cell sound-kind-" + kind;
+              btn.className = "sound-cell sound-kind-" + kind + (TAILED_LETTERS[letter.char] ? " sound-tailed" : "");
               btn.setAttribute("data-key", soundCellKey(letter, kind, i));
               renderLetterForm(btn, letter[kind][i][0], 1);
               btn.addEventListener("click", onSoundCell);
