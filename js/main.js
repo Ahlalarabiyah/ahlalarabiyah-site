@@ -651,7 +651,7 @@
     // Casse le cache navigateur quand un fichier audio est remplace sur le
     // serveur (meme piege deja rencontre avec le CSS/JS) : a incrementer
     // a chaque nouveau remplacement d'enregistrements.
-    var AUDIO_VERSION = "8";
+    var AUDIO_VERSION = "9";
 
     function playForm(id, cellEl) {
       if (currentAudio) { currentAudio.pause(); }
