@@ -2595,6 +2595,7 @@
       var orderFeedback = document.getElementById("orderFeedback");
       var orderCheckBtn = document.getElementById("orderCheckBtn");
       var orderResetBtn = document.getElementById("orderResetBtn");
+      var orderRevealBtn = document.getElementById("orderRevealBtn");
       var gameOrder5Panel = document.getElementById("gameOrder5Panel");
       var order5Round = document.getElementById("order5Round");
       var order5Grid = document.getElementById("order5Grid");
@@ -4005,10 +4006,50 @@
         });
       }
 
+      // Correction : apres une verification imparfaite, "Voir le tableau
+      // correct" affiche la bonne grille sous la reponse du joueur (qui reste,
+      // avec ses cases justes / fausses) pour pouvoir comparer.
+      var orderCompareEls = [];
+      var orderAnswerGrid = null;
+      function clearOrderCompare() {
+        orderCompareEls.forEach(function (el) { el.remove(); });
+        orderCompareEls = [];
+        orderAnswerGrid = null;
+      }
+
+      function revealOrderTable() {
+        if (!orderState || orderState.revealed) return;
+        orderState.revealed = true;
+        orderState.armedId = null;
+        orderState.marks = orderState.slots.map(function (id, i) { return id === orderState.ids[i]; });
+        clearOrderCompare();
+        var mine = document.createElement("p");
+        mine.className = "order5-compare-label";
+        mine.textContent = ORDER5_TXT.mineLabel;
+        orderGrid.parentNode.insertBefore(mine, orderGrid);
+        var label = document.createElement("p");
+        label.className = "order5-compare-label";
+        label.textContent = ORDER5_TXT.answerLabel;
+        orderAnswerGrid = document.createElement("div");
+        orderAnswerGrid.className = "order-grid order-answer";
+        orderGrid.parentNode.insertBefore(label, orderPool);
+        orderGrid.parentNode.insertBefore(orderAnswerGrid, orderPool);
+        orderCompareEls = [mine, label, orderAnswerGrid];
+        orderFeedback.hidden = false;
+        orderFeedback.className = "game-feedback is-correct";
+        orderFeedback.textContent = ORDER5_TXT.revealMsg;
+        orderCheckBtn.hidden = true;
+        orderRevealBtn.hidden = true;
+        renderOrderGame();
+        if (mine.scrollIntoView) { mine.scrollIntoView({ block: "start", behavior: "smooth" }); }
+      }
+
       function resetOrderGame() {
         if (orderEndTimer) { clearTimeout(orderEndTimer); orderEndTimer = null; }
         var ids = orderIds();
-        orderState = { ids: ids, slots: ids.map(function () { return null; }), pool: shuffleArray(ids.slice()), armedId: null, marks: null, done: false };
+        clearOrderCompare();
+        orderRevealBtn.hidden = true;
+        orderState = { ids: ids, slots: ids.map(function () { return null; }), pool: shuffleArray(ids.slice()), armedId: null, marks: null, done: false, revealed: false };
         orderFeedback.hidden = true;
         orderFeedback.className = "game-feedback";
         orderFeedback.textContent = "";
@@ -4039,7 +4080,20 @@
           btn.addEventListener("click", function () { placeOrderLetter(i); });
           orderGrid.appendChild(btn);
         });
-        orderState.pool.forEach(function (id) {
+        if (orderState.revealed && orderAnswerGrid) {
+          orderAnswerGrid.innerHTML = "";
+          orderState.ids.forEach(function (id, i) {
+            var cell = document.createElement("div");
+            cell.className = "order-slot is-filled is-correct";
+            var num = document.createElement("span");
+            num.className = "order-num";
+            num.textContent = String(i + 1);
+            cell.appendChild(num);
+            cell.appendChild(orderLetterSpan(ALL_LETTERS_BY_ID[id].char));
+            orderAnswerGrid.appendChild(cell);
+          });
+        }
+        (orderState.revealed ? [] : orderState.pool).forEach(function (id) {
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "letterlab-cell sortall-letter" + (orderState.armedId === id ? " is-armed" : "");
@@ -4052,11 +4106,11 @@
           orderPool.appendChild(btn);
         });
         orderCheckBtn.disabled = orderState.pool.length > 0;
-        centerOrderLetters();
+        centerOrderLetters(orderAnswerGrid ? [orderGrid, orderAnswerGrid, orderPool] : null);
       }
 
       function placeOrderLetter(i) {
-        if (!orderState || orderState.done) return;
+        if (!orderState || orderState.done || orderState.revealed) return;
         var current = orderState.slots[i];
         if (orderState.armedId) {
           if (current) { orderState.pool.push(current); }
@@ -4086,6 +4140,7 @@
         orderFeedback.hidden = false;
         orderFeedback.className = "game-feedback " + (allGood ? "is-correct" : "is-wrong");
         orderFeedback.textContent = allGood ? ORDER_TXT.done : ORDER_TXT.partial.replace("{n}", good);
+        orderRevealBtn.hidden = allGood;
         if (allGood) {
           orderState.done = true;
           orderCheckBtn.hidden = true;
@@ -4962,6 +5017,7 @@
       });
       orderCheckBtn.addEventListener("click", checkOrderGame);
       orderResetBtn.addEventListener("click", resetOrderGame);
+      orderRevealBtn.addEventListener("click", revealOrderTable);
       order5CheckBtn.addEventListener("click", order5Check);
       order5NextBtn.addEventListener("click", order5Next);
       order5RevealBtn.addEventListener("click", order5Reveal);
