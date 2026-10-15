@@ -2453,3 +2453,6 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
   .order5-grid .order-slot { min-height: 76px; font-size: 1.8rem; }
   .order5-pool .sortall-letter { padding: 10px 0; font-size: 1.7rem; }
 }
+.order5-compare-label { margin: 12px 0 4px; font-family: var(--font-heading); font-weight: 600; font-size: 0.85rem; color: var(--color-text-light); }
+.order5-answer { margin-bottom: 14px; }
+.order5-answer .order-slot { cursor: default; }

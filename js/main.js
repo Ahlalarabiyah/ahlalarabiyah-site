@@ -4138,17 +4138,41 @@
       var ORDER5_ROUNDS = 3;
       var ORDER5_SIZE = 5;
       var ORDER5_TXT = {
-        fr: { revealMsg: "Voici la bonne réponse. Retiens bien cet ordre !", round: "Manche {n} / {t}", partial: "{n} / 5 lettres bien placées. Touche une lettre en rouge pour la retirer et la replacer.", done: "Bravo ! Les 5 lettres sont dans le bon ordre.", doneLate: "C’est juste ! (Seule la première vérification compte pour les points.)", next: "Manche suivante →", result: "Voir mon résultat →", great: "Excellent, tu connais très bien l’ordre des lettres !", ok: "Bien joué ! Encore un peu d’entraînement et ce sera parfait.", low: "Continue de t’entraîner : revois l’alphabet dans l’ordre, puis reviens jouer." },
-        en: { revealMsg: "Here is the right order. Remember it!", round: "Round {n} / {t}", partial: "{n} / 5 letters correctly placed. Touch a red letter to remove it and place it again.", done: "Well done! The 5 letters are in the right order.", doneLate: "Correct! (Only the first check counts for points.)", next: "Next round →", result: "See my result →", great: "Excellent, you know the order of the letters very well!", ok: "Well played! A little more practice and it will be perfect.", low: "Keep practising: go over the alphabet in order, then come back and play." },
-        ru: { revealMsg: "Вот правильный порядок. Запомни его!", round: "Раунд {n} / {t}", partial: "Правильно размещено {n} / 5 букв. Коснись красной буквы, чтобы убрать её и поставить заново.", done: "Отлично! Все 5 букв стоят в правильном порядке.", doneLate: "Верно! (Баллы засчитываются только за первую проверку.)", next: "Следующий раунд →", result: "Посмотреть результат →", great: "Отлично, ты очень хорошо знаешь порядок букв!", ok: "Хорошо сыграно! Ещё немного практики, и будет идеально.", low: "Продолжай тренироваться: повтори алфавит по порядку и возвращайся играть." },
-        de: { revealMsg: "Hier ist die richtige Reihenfolge. Präg sie dir gut ein!", round: "Runde {n} / {t}", partial: "{n} / 5 Buchstaben richtig platziert. Tippe auf einen roten Buchstaben, um ihn zu entfernen und neu zu platzieren.", done: "Gut gemacht! Die 5 Buchstaben stehen in der richtigen Reihenfolge.", doneLate: "Richtig! (Nur die erste Prüfung zählt für die Punkte.)", next: "Nächste Runde →", result: "Ergebnis ansehen →", great: "Ausgezeichnet, du kennst die Reihenfolge der Buchstaben sehr gut!", ok: "Gut gespielt! Noch etwas Übung und es wird perfekt.", low: "Übe weiter: Geh das Alphabet der Reihe nach durch und komm dann zurück zum Spielen." },
-        ar: { revealMsg: "هذا هو الترتيب الصحيح. تذكّره جيدًا!", round: "الجولة {n} / {t}", partial: "{n} / 5 حروف في مكانها الصحيح. المس حرفًا أحمر لإزالته ثم ضعه من جديد.", done: "أحسنت! الحروف الخمسة في ترتيبها الصحيح.", doneLate: "صحيح! (تُحتسب النقاط من التحقق الأول فقط.)", next: "الجولة التالية ←", result: "عرض النتيجة ←", great: "ممتاز، أنت تعرف ترتيب الحروف جيدًا جدًا!", ok: "لعبٌ جيد! قليل من التدريب وسيكون الأداء مثاليًا.", low: "واصل التدرّب: راجع الأبجدية بالترتيب ثم عد للعب." }
+        fr: { revealMsg: "Compare avec ta réponse et retiens bien cet ordre !", mineLabel: "Ta réponse", answerLabel: "Bonne réponse", round: "Manche {n} / {t}", partial: "{n} / 5 lettres bien placées. Touche une lettre en rouge pour la retirer et la replacer.", done: "Bravo ! Les 5 lettres sont dans le bon ordre.", doneLate: "C’est juste ! (Seule la première vérification compte pour les points.)", next: "Manche suivante →", result: "Voir mon résultat →", great: "Excellent, tu connais très bien l’ordre des lettres !", ok: "Bien joué ! Encore un peu d’entraînement et ce sera parfait.", low: "Continue de t’entraîner : revois l’alphabet dans l’ordre, puis reviens jouer." },
+        en: { revealMsg: "Compare it with your answer and remember this order!", mineLabel: "Your answer", answerLabel: "Correct answer", round: "Round {n} / {t}", partial: "{n} / 5 letters correctly placed. Touch a red letter to remove it and place it again.", done: "Well done! The 5 letters are in the right order.", doneLate: "Correct! (Only the first check counts for points.)", next: "Next round →", result: "See my result →", great: "Excellent, you know the order of the letters very well!", ok: "Well played! A little more practice and it will be perfect.", low: "Keep practising: go over the alphabet in order, then come back and play." },
+        ru: { revealMsg: "Сравни со своим ответом и запомни этот порядок!", mineLabel: "Твой ответ", answerLabel: "Правильный ответ", round: "Раунд {n} / {t}", partial: "Правильно размещено {n} / 5 букв. Коснись красной буквы, чтобы убрать её и поставить заново.", done: "Отлично! Все 5 букв стоят в правильном порядке.", doneLate: "Верно! (Баллы засчитываются только за первую проверку.)", next: "Следующий раунд →", result: "Посмотреть результат →", great: "Отлично, ты очень хорошо знаешь порядок букв!", ok: "Хорошо сыграно! Ещё немного практики, и будет идеально.", low: "Продолжай тренироваться: повтори алфавит по порядку и возвращайся играть." },
+        de: { revealMsg: "Vergleiche mit deiner Antwort und präg dir die Reihenfolge ein!", mineLabel: "Deine Antwort", answerLabel: "Richtige Antwort", round: "Runde {n} / {t}", partial: "{n} / 5 Buchstaben richtig platziert. Tippe auf einen roten Buchstaben, um ihn zu entfernen und neu zu platzieren.", done: "Gut gemacht! Die 5 Buchstaben stehen in der richtigen Reihenfolge.", doneLate: "Richtig! (Nur die erste Prüfung zählt für die Punkte.)", next: "Nächste Runde →", result: "Ergebnis ansehen →", great: "Ausgezeichnet, du kennst die Reihenfolge der Buchstaben sehr gut!", ok: "Gut gespielt! Noch etwas Übung und es wird perfekt.", low: "Übe weiter: Geh das Alphabet der Reihe nach durch und komm dann zurück zum Spielen." },
+        ar: { revealMsg: "قارن مع إجابتك وتذكّر هذا الترتيب!", mineLabel: "إجابتك", answerLabel: "الإجابة الصحيحة", round: "الجولة {n} / {t}", partial: "{n} / 5 حروف في مكانها الصحيح. المس حرفًا أحمر لإزالته ثم ضعه من جديد.", done: "أحسنت! الحروف الخمسة في ترتيبها الصحيح.", doneLate: "صحيح! (تُحتسب النقاط من التحقق الأول فقط.)", next: "الجولة التالية ←", result: "عرض النتيجة ←", great: "ممتاز، أنت تعرف ترتيب الحروف جيدًا جدًا!", ok: "لعبٌ جيد! قليل من التدريب وسيكون الأداء مثاليًا.", low: "واصل التدرّب: راجع الأبجدية بالترتيب ثم عد للعب." }
       }[ORDER_LANG];
       var order5State = null;
       var order5AutoTimer = null;
       var ORDER5_AUTO_NEXT_MS = 2000;
       function clearOrder5Timer() {
         if (order5AutoTimer) { clearTimeout(order5AutoTimer); order5AutoTimer = null; }
+      }
+      // Affichage de la correction : ta combinaison reste en haut, la bonne
+      // reponse apparait dessous (meme grille) pour comparer.
+      var order5CompareEls = [];
+      var order5AnswerGrid = null;
+      function clearOrder5Compare() {
+        order5CompareEls.forEach(function (el) { el.remove(); });
+        order5CompareEls = [];
+        order5AnswerGrid = null;
+      }
+      function buildOrder5Compare() {
+        clearOrder5Compare();
+        var mine = document.createElement("p");
+        mine.className = "order5-compare-label";
+        mine.textContent = ORDER5_TXT.mineLabel;
+        order5Grid.parentNode.insertBefore(mine, order5Grid);
+        var label = document.createElement("p");
+        label.className = "order5-compare-label";
+        label.textContent = ORDER5_TXT.answerLabel;
+        order5AnswerGrid = document.createElement("div");
+        order5AnswerGrid.className = "order-grid order5-grid order5-answer";
+        order5Grid.parentNode.insertBefore(label, order5Pool);
+        order5Grid.parentNode.insertBefore(order5AnswerGrid, order5Pool);
+        order5CompareEls = [mine, label, order5AnswerGrid];
       }
 
       function order5Fill(text, n, t) { return text.replace("{n}", n).replace("{t}", t); }
@@ -4176,6 +4200,7 @@
         st.marks = null;
         st.attempts = 0;
         st.solved = false;
+        st.revealed = false;
         order5Round.textContent = order5Fill(ORDER5_TXT.round, st.idx + 1, ORDER5_ROUNDS);
         order5Feedback.hidden = true;
         order5Feedback.className = "game-feedback";
@@ -4183,6 +4208,7 @@
         order5CheckBtn.hidden = false;
         order5NextBtn.hidden = true;
         order5RevealBtn.hidden = true;
+        clearOrder5Compare();
         renderOrder5();
       }
 
@@ -4205,7 +4231,20 @@
           btn.addEventListener("click", function () { order5Place(i); });
           order5Grid.appendChild(btn);
         });
-        st.pool.forEach(function (id) {
+        if (st.revealed && order5AnswerGrid) {
+          order5AnswerGrid.innerHTML = "";
+          st.ids.forEach(function (id, i) {
+            var cell = document.createElement("div");
+            cell.className = "order-slot is-filled is-correct";
+            var num = document.createElement("span");
+            num.className = "order-num";
+            num.textContent = String(i + 1);
+            cell.appendChild(num);
+            cell.appendChild(orderLetterSpan(ALL_LETTERS_BY_ID[id].char));
+            order5AnswerGrid.appendChild(cell);
+          });
+        }
+        (st.revealed ? [] : st.pool).forEach(function (id) {
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "letterlab-cell sortall-letter" + (st.armedId === id ? " is-armed" : "");
@@ -4218,7 +4257,7 @@
           order5Pool.appendChild(btn);
         });
         order5CheckBtn.disabled = st.pool.length > 0;
-        centerOrderLetters([order5Grid, order5Pool]);
+        centerOrderLetters(order5AnswerGrid ? [order5Grid, order5AnswerGrid, order5Pool] : [order5Grid, order5Pool]);
       }
 
       function order5Place(i) {
@@ -4284,12 +4323,14 @@
       function order5Reveal() {
         var st = order5State;
         if (!st || st.solved) return;
-        st.slots = st.ids.slice();
-        st.pool = [];
+        // On GARDE la combinaison du joueur (cases justes en vert, fausses en
+        // rouge) et on affiche la bonne reponse en dessous, pour comparer.
+        st.marks = st.slots.map(function (id, i) { return id === st.ids[i]; });
         st.armedId = null;
-        st.marks = st.ids.map(function () { return true; });
+        st.revealed = true;
         st.solved = true;
         clearOrder5Timer();
+        buildOrder5Compare();
         order5Feedback.hidden = false;
         order5Feedback.className = "game-feedback is-correct";
         order5Feedback.textContent = ORDER5_TXT.revealMsg;
@@ -4322,6 +4363,7 @@
 
       function startOrder5Game(title) {
         clearOrder5Timer();
+        clearOrder5Compare();
         menuTitle = title;
         gameModalTitle.textContent = title;
         gamePrestartWarning.hidden = true;
