@@ -2147,3 +2147,14 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
   font-weight: 600;
   font-size: 0.78rem;
 }
+
+/* Jeu "Reconnaitre le mot" : message avant l'apparition des propositions */
+.game-answers-hint {
+  grid-column: 1 / -1;
+  margin: 18px 0;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--color-text-light);
+  text-align: center;
+}

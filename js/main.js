@@ -2881,6 +2881,62 @@
         });
       }
 
+      // Sons ludiques synthetises par Web Audio (aucun fichier audio a
+      // ajouter) : bonne / mauvaise reponse et signaux du compte a rebours.
+      // Le contexte audio est cree/reveille au premier clic du joueur
+      // (exigence de Safari/iOS), puis reutilise par les minuteries.
+      var fxCtx = null;
+      function fxContext() {
+        try {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) return null;
+          if (!fxCtx) { fxCtx = new AC(); }
+          if (fxCtx.state === "suspended" && fxCtx.resume) { fxCtx.resume(); }
+          return fxCtx;
+        } catch (e) { return null; }
+      }
+      function fxTone(freq, delay, dur, type, vol, slideTo) {
+        var ctx = fxContext();
+        if (!ctx) return;
+        try {
+          var t0 = ctx.currentTime + delay;
+          var osc = ctx.createOscillator();
+          var gain = ctx.createGain();
+          osc.type = type || "sine";
+          osc.frequency.setValueAtTime(freq, t0);
+          if (slideTo) { osc.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur); }
+          gain.gain.setValueAtTime(0.0001, t0);
+          gain.gain.exponentialRampToValueAtTime(vol, t0 + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t0);
+          osc.stop(t0 + dur + 0.03);
+        } catch (e) { /* pas de son : le jeu continue */ }
+      }
+      var gameFx = {
+        // petite fanfare montante (do-mi-sol-do) + note finale
+        correct: function () {
+          [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) { fxTone(f, i * 0.085, 0.16, "triangle", 0.22); });
+          fxTone(1318.5, 0.34, 0.32, "sine", 0.13);
+        },
+        // "womp womp" descendant, rigolo plutot que punitif
+        wrong: function () {
+          fxTone(330, 0, 0.2, "triangle", 0.26, 277);
+          fxTone(277, 0.21, 0.4, "triangle", 0.26, 185);
+        },
+        // top depart du compte a rebours
+        start: function () {
+          fxTone(660, 0, 0.09, "sine", 0.16);
+          fxTone(990, 0.1, 0.12, "sine", 0.16);
+        },
+        // bip des 3, 2, 1 dernieres secondes
+        tick: function () { fxTone(880, 0, 0.1, "square", 0.08); },
+        // fin du temps : buzzer grave
+        timeUp: function () { fxTone(190, 0, 0.6, "sawtooth", 0.14, 110); }
+      };
+      function playResultFx(ok) { if (ok) { gameFx.correct(); } else { gameFx.wrong(); } }
+
       function playSound(item) {
         if (gameAudio) { gameAudio.pause(); }
         gameAudio = new Audio(item.audioBase + item.audioId + ".m4a?v=" + AUDIO_VERSION);
@@ -2941,6 +2997,7 @@
       }
 
       function nextQuestion() {
+        clearWordReveal();
         if (gameState.questionIndex >= QUESTIONS_PER_ROUND) {
           showEnd();
           return;
@@ -2996,6 +3053,17 @@
         gameNextBtn.hidden = true;
         renderScore();
 
+        if (gameState.category === "word") {
+          // "Reconnaitre le mot" : les propositions n'apparaissent pas
+          // d'emblee. Le joueur doit d'abord appuyer sur "Ecouter", et
+          // elles s'affichent 3 secondes plus tard (voir gamePlayBtn).
+          showWordHint(false);
+        } else {
+          renderQuizAnswers(choices);
+        }
+      }
+
+      function renderQuizAnswers(choices) {
         gameAnswers.innerHTML = "";
         gameAnswers.classList.toggle("game-answers-word", gameState.category === "word");
         choices.forEach(function (choice) {
@@ -3011,6 +3079,48 @@
           btn.addEventListener("click", function () { onAnswer(choice, btn); });
           gameAnswers.appendChild(btn);
         });
+      }
+
+      var WORD_REVEAL_DELAY_MS = 3000;
+      var wordRevealTimer = null;
+      var WORD_HINT_TXT = isGerman
+        ? { press: "Tippe auf „Laut anhören“, um das Wort zu hören.", wait: "Hör gut zu … die Antworten erscheinen gleich." }
+        : isArabic
+        ? { press: "اضغط على «استمع إلى الصوت» لسماع الكلمة.", wait: "استمع جيدًا… ستظهر الاختيارات بعد ثوانٍ." }
+        : isRussian
+        ? { press: "Нажми «Слушать звук», чтобы услышать слово.", wait: "Слушай внимательно… варианты появятся через несколько секунд." }
+        : isEnglish
+        ? { press: "Press “Listen to the sound” to hear the word.", wait: "Listen carefully… the choices appear in a few seconds." }
+        : { press: "Appuie sur « Écouter le son » pour entendre le mot.", wait: "Écoute bien… les propositions arrivent dans quelques secondes." };
+
+      function clearWordReveal() {
+        if (wordRevealTimer) { clearTimeout(wordRevealTimer); wordRevealTimer = null; }
+      }
+
+      function showWordHint(waiting) {
+        gameAnswers.innerHTML = "";
+        gameAnswers.classList.remove("game-answers-word");
+        var hint = document.createElement("p");
+        hint.className = "game-answers-hint";
+        hint.textContent = waiting ? WORD_HINT_TXT.wait : WORD_HINT_TXT.press;
+        gameAnswers.appendChild(hint);
+      }
+
+      // Bouton "Ecouter" du jeu "Reconnaitre le mot" : premier appui = lance
+      // le mot et programme l'affichage des propositions ; appuis suivants
+      // (ou apres l'affichage) = simple reecoute.
+      function onQuizListen() {
+        if (!gameState || !gameState.current || gameState.category === "script") return;
+        var cur = gameState.current;
+        playSound(cur.correct);
+        if (gameState.category !== "word" || cur.revealed || wordRevealTimer) return;
+        showWordHint(true);
+        wordRevealTimer = setTimeout(function () {
+          wordRevealTimer = null;
+          if (!gameState || gameState.current !== cur) return;
+          cur.revealed = true;
+          renderQuizAnswers(cur.choices);
+        }, WORD_REVEAL_DELAY_MS);
       }
 
       // "Lire un mot" : aucun choix a faire, aucun audio automatique.
@@ -3209,6 +3319,7 @@
         gameState.current.answered = true;
         var isCorrect = choice.key === "correct";
         if (isCorrect) { gameState.score += 1; }
+        playResultFx(isCorrect);
 
         Array.prototype.forEach.call(gameAnswers.children, function (btn) {
           btn.disabled = true;
@@ -3288,6 +3399,7 @@
         var item = gameState.current.item;
         var isCorrect = type === item.type;
         if (isCorrect) { gameState.score += 1; }
+        playResultFx(isCorrect);
 
         gameSortSunBtn.disabled = true;
         gameSortMoonBtn.disabled = true;
@@ -3332,6 +3444,7 @@
         gameState.current.answered = true;
         var isCorrect = choice.key === gameState.current.correct.key;
         if (isCorrect) { gameState.score += 1; }
+        playResultFx(isCorrect);
 
         Array.prototype.forEach.call(gameAnswers.children, function (btn) {
           btn.disabled = true;
@@ -3589,6 +3702,7 @@
 
         var isCorrect = item.type === type;
         if (isCorrect) { sortAllState.correctCount += 1; }
+        playResultFx(isCorrect);
         sortAllState.remaining -= 1;
 
         var tile = document.createElement("span");
@@ -3768,6 +3882,7 @@
           return ok;
         });
         var allGood = good === orderState.ids.length;
+        playResultFx(allGood);
         orderFeedback.hidden = false;
         orderFeedback.className = "game-feedback " + (allGood ? "is-correct" : "is-wrong");
         orderFeedback.textContent = allGood ? ORDER_TXT.done : ORDER_TXT.partial.replace("{n}", good);
@@ -3930,7 +4045,13 @@
         if (!st) { soundStopTimer(); return; }
         var total = SOUND_SECONDS[st.level] * 1000;
         var rem = Math.max(0, st.deadline - Date.now());
-        soundTimerNum.textContent = String(Math.ceil(rem / 1000));
+        var secsLeft = Math.ceil(rem / 1000);
+        // bip a 3, 2 puis 1 seconde restante (le buzzer de fin sonne a 0)
+        if (secsLeft >= 1 && secsLeft <= 3 && st.lastTick !== secsLeft) {
+          st.lastTick = secsLeft;
+          gameFx.tick();
+        }
+        soundTimerNum.textContent = String(secsLeft);
         soundTimerBar.style.width = (rem / total * 100) + "%";
         soundTimerBar.parentNode.classList.toggle("is-low", rem <= total * 0.5);
         soundTimerBar.parentNode.classList.toggle("is-critical", rem <= total * 0.25);
@@ -3941,7 +4062,9 @@
         var st = soundState;
         if (!st || st.idx !== roundIdx || st.locked || st.timerOn) return;
         st.timerOn = true;
+        st.lastTick = null;
         st.deadline = Date.now() + SOUND_SECONDS[st.level] * 1000;
+        gameFx.start();
         soundUpdateTimer();
         soundTimerId = setInterval(soundUpdateTimer, 100);
       }
@@ -3949,6 +4072,7 @@
       function soundStartRound() {
         var st = soundState;
         soundStopTimer();
+        fxContext();
         st.current = st.rounds[st.idx];
         st.locked = false;
         st.timerOn = false;
@@ -3984,8 +4108,10 @@
         correctCell.classList.add("is-correct");
         if (ok) {
           st.score += 1;
+          gameFx.correct();
           soundFeedback.textContent = SOUND_TXT.correct;
         } else {
+          if (clickedKey) { gameFx.wrong(); } else { gameFx.timeUp(); }
           if (clickedKey) { soundCellByKey(clickedKey).classList.add("is-wrong"); }
           soundFeedback.textContent = clickedKey ? SOUND_TXT.wrong : SOUND_TXT.timeout;
           if (correctCell.scrollIntoView) { correctCell.scrollIntoView({ block: "center", behavior: "smooth" }); }
@@ -4204,6 +4330,7 @@
         gamePrestartWarning.hidden = true;
         if (gameAudio) { gameAudio.pause(); }
         soundStop();
+        clearWordReveal();
       }
 
       // Rappel non bloquant : si le module precedent n'a pas encore ete
@@ -4354,9 +4481,7 @@
         dictee1State.index = (dictee1State.index + 1) % dictee1Level.entries.length;
         renderDictee1Letter();
       });
-      gamePlayBtn.addEventListener("click", function () {
-        if (gameState && gameState.category !== "script" && gameState.current) playSound(gameState.current.correct);
-      });
+      gamePlayBtn.addEventListener("click", onQuizListen);
       gameNextBtn.addEventListener("click", nextQuestion);
       gameSortSunBtn.addEventListener("click", function () {
         if (!gameState || gameState.category !== "sort") return;
@@ -4400,6 +4525,7 @@
           harakatSlots.children[idx].classList.add(isRight ? "is-correct" : "is-wrong");
         });
         if (allCorrect) { gameState.score += 1; }
+        playResultFx(allCorrect);
 
         Array.prototype.forEach.call(harakatPicker.children, function (b) { b.disabled = true; });
         gameHarakatCheckBtn.hidden = true;
