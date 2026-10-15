@@ -3171,7 +3171,7 @@
         });
       }
 
-      var WORD_REVEAL_DELAY_MS = 5000;
+      var WORD_REVEAL_DELAY_MS = 4500;
       var WORD_FADE_STEP_S = 0.8;
       var wordRevealTimer = null;
       var WORD_HINT_TXT = isGerman
