@@ -4214,7 +4214,12 @@
           return;
         }
         var wrap = document.createElement("span");
-        wrap.className = "sound-form";
+        // marque au-dessus (fatha, damma, tanwin) ou en dessous (kasra,
+        // kasratan) : decale la forme pour que lettre + marque restent
+        // centrees dans la case (le tanwin damma est la marque la plus haute).
+        var markCode = text.charCodeAt(1);
+        wrap.className = "sound-form " + (markCode === 0x064C ? "sound-form-above-tall"
+          : (markCode === 0x0650 || markCode === 0x064D) ? "sound-form-below" : "sound-form-above");
         var full = document.createElement("span");
         full.className = "sound-form-full";
         full.textContent = text;
