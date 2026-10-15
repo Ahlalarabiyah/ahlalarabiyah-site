@@ -3059,7 +3059,28 @@
         }
       }
 
+      // Ecran de fin partage par les jeux qui n'ont pas la serie de 10
+      // questions (Module 15, tri des lettres, alphabet dans l'ordre) :
+      // meme DA que showEnd (score colore, emoji, confettis, score parfait).
+      // opts : scoreText, pct, message, onReplay (relance le jeu), back
+      // (affiche "Retour aux jeux" quand le jeu a un menu).
+      var endReplayHandler = null;
+      function showGameEnd(opts) {
+        clearEndCelebration();
+        gameBody.hidden = true;
+        gameEnd.hidden = false;
+        gameEndScore.textContent = opts.scoreText;
+        applyEndMood(opts.pct);
+        gameEndMessage.hidden = !opts.message;
+        gameEndMessage.textContent = opts.message || "";
+        gameContinueBtn.hidden = true;
+        gameEndBackToMenuBtn.hidden = !opts.back;
+        endReplayHandler = opts.onReplay || null;
+      }
+
       function showEnd() {
+        endReplayHandler = null;
+        gameEndBackToMenuBtn.hidden = false;
         gameBody.hidden = true;
         gameEnd.hidden = false;
         gameEndScore.textContent = gameState.category === "read"
@@ -3747,6 +3768,8 @@
       }
 
       var sortAllState = null;
+      var sortAllEndTimer = null;
+      var orderEndTimer = null;
 
       function showSortAllPanel() {
         gameQuizPanel.hidden = true;
@@ -3761,6 +3784,7 @@
       }
 
       function startSortAllGame() {
+        if (sortAllEndTimer) { clearTimeout(sortAllEndTimer); sortAllEndTimer = null; }
         gamePrestartWarning.hidden = true;
         gameMenuScreen.hidden = true;
         gameModalTitle.textContent = menuTitle;
@@ -3844,8 +3868,7 @@
 
         if (sortAllState.remaining === 0) {
           sortAllFeedback.hidden = true;
-          sortAllDoneMessage.hidden = false;
-          sortAllDoneMessage.textContent = isGerman
+          var sortAllDoneText = isGerman
             ? "Du hast " + sortAllState.correctCount + " / " + sortAllState.total + " Buchstaben richtig eingeordnet!"
             : isArabic
             ? "لقد صنّفتَ " + sortAllState.correctCount + " / " + sortAllState.total + " حرفًا بشكل صحيح!"
@@ -3854,7 +3877,19 @@
             : isEnglish
             ? "You correctly classified " + sortAllState.correctCount + " / " + sortAllState.total + " letters!"
             : "Tu as classé " + sortAllState.correctCount + " / " + sortAllState.total + " lettres correctement !";
-          sortAllReplayBtn.hidden = false;
+          // Laisse voir le dernier retour, puis meme ecran de fin que les
+          // autres jeux (score colore, emoji, confettis).
+          var sortAllResult = { good: sortAllState.correctCount, total: sortAllState.total };
+          sortAllEndTimer = setTimeout(function () {
+            sortAllEndTimer = null;
+            showGameEnd({
+              scoreText: sortAllResult.good + " / " + sortAllResult.total,
+              pct: Math.round(sortAllResult.good / sortAllResult.total * 100),
+              message: sortAllDoneText,
+              onReplay: startSortAllGame,
+              back: true
+            });
+          }, 1400);
         }
       }
 
@@ -3927,6 +3962,7 @@
       }
 
       function resetOrderGame() {
+        if (orderEndTimer) { clearTimeout(orderEndTimer); orderEndTimer = null; }
         var ids = orderIds();
         orderState = { ids: ids, slots: ids.map(function () { return null; }), pool: shuffleArray(ids.slice()), armedId: null, marks: null, done: false };
         orderFeedback.hidden = true;
@@ -4006,7 +4042,14 @@
         orderFeedback.hidden = false;
         orderFeedback.className = "game-feedback " + (allGood ? "is-correct" : "is-wrong");
         orderFeedback.textContent = allGood ? ORDER_TXT.done : ORDER_TXT.partial.replace("{n}", good);
-        if (allGood) { orderState.done = true; orderCheckBtn.hidden = true; }
+        if (allGood) {
+          orderState.done = true;
+          orderCheckBtn.hidden = true;
+          orderEndTimer = setTimeout(function () {
+            orderEndTimer = null;
+            showGameEnd({ scoreText: "28 / 28", pct: 100, message: ORDER_TXT.done, onReplay: resetOrderGame, back: false });
+          }, 1200);
+        }
         renderOrderGame();
       }
 
@@ -4051,7 +4094,7 @@
         de: { correct: "Bravo!", wrong: "Daneben – das richtige Feld ist grün.", timeout: "Zeit abgelaufen! Das richtige Feld ist grün.", next: "Nächster Laut →", result: "Ergebnis ansehen →", progress: "Laut {n} / {t}", score: "Punkte: {n}", listen: "🔊 Nochmal hören", quit: "Einstellungen", endScore: "Du hast {n} von {t} Lauten gefunden.", great: "Ausgezeichnet, du erkennst die Laute sehr gut!", ok: "Gut gespielt! Noch etwas Übung und es wird perfekt.", low: "Übe weiter: Höre dir die Buchstaben im Labor an und komm dann zurück zum Spielen." },
         ar: { correct: "أحسنت!", wrong: "إجابة خاطئة — المربع الصحيح باللون الأخضر.", timeout: "انتهى الوقت! المربع الصحيح باللون الأخضر.", next: "الصوت التالي ←", result: "عرض النتيجة ←", progress: "الصوت {n} / {t}", score: "النتيجة: {n}", listen: "🔊 أعد الاستماع", quit: "الإعدادات", endScore: "وجدتَ {n} أصواتًا من أصل {t}.", great: "ممتاز، أنت تميّز الأصوات جيدًا جدًا!", ok: "لعبٌ جيد! قليل من التدريب وسيكون الأداء مثاليًا.", low: "واصل التدرّب: استمع إلى الحروف في المختبر ثم عد للعب." }
       }[ORDER_LANG];
-      var soundChoice = { table: "1", level: "easy" };
+      var soundChoice = { table: "g1", level: "easy" };
       var soundState = null;
       var soundTimerId = null;
       var soundStartFallbackId = null;
@@ -4061,11 +4104,13 @@
         return text.replace("{n}", n).replace("{t}", t);
       }
 
+      // Un tableau = 5 lettres au plus, dans l'ordre de l'alphabet :
+      // g1 = أ ب ت ث ج, g2 = ح خ د ذ ر, ... g6 = ه و ي (3 lettres).
+      var SOUND_GROUP_SIZE = 5;
       function soundLetters(table) {
-        if (table === "2") return LETTERS_F2;
-        if (table === "3") return LETTERS_F3;
-        if (table === "all") return LETTERS_F1.concat(LETTERS_F2, LETTERS_F3);
-        return LETTERS_F1;
+        var all = LETTERS_F1.concat(LETTERS_F2, LETTERS_F3);
+        var g = parseInt(String(table).replace("g", ""), 10) || 1;
+        return all.slice((g - 1) * SOUND_GROUP_SIZE, g * SOUND_GROUP_SIZE);
       }
 
       function soundStopTimer() {
@@ -4080,6 +4125,9 @@
       }
 
       function soundShow(which) {
+        // En partie, le panneau prend toute la hauteur/largeur utile pour que
+        // le tableau tienne a l'ecran sans defilement (voir .is-sound-play).
+        gameBody.classList.toggle("is-sound-play", which === "play");
         soundSetup.hidden = which !== "setup";
         soundPlay.hidden = which !== "play";
         soundEnd.hidden = which !== "end";
@@ -4254,15 +4302,16 @@
         st.idx += 1;
         if (st.idx >= st.rounds.length) {
           if (soundAudioEl) { soundAudioEl.pause(); }
-          soundEndScore.textContent = soundFill(SOUND_TXT.endScore, st.score, st.rounds.length);
-          // Couleur du score selon le pourcentage : vert des 75 %, orange de
-          // 50 a 75 %, rouge en dessous de 50 %.
-          var ratio = st.score / st.rounds.length;
-          var tier = ratio >= 0.75 ? "high" : ratio >= 0.5 ? "mid" : "low";
-          soundEndScore.className = "game-end-score sound-score-" + tier;
-          soundEndMessage.className = "sound-end-message sound-score-" + tier;
-          soundEndMessage.textContent = tier === "high" ? SOUND_TXT.great : tier === "mid" ? SOUND_TXT.ok : SOUND_TXT.low;
-          soundShow("end");
+          // Meme ecran de fin que les autres jeux (score colore, emoji,
+          // confettis) : >= 80 % vert, 50-79 % orange, < 50 % rouge.
+          var endPct = Math.round(st.score / st.rounds.length * 100);
+          showGameEnd({
+            scoreText: st.score + " / " + st.rounds.length,
+            pct: endPct,
+            message: endPct >= 80 ? SOUND_TXT.great : endPct >= 50 ? SOUND_TXT.ok : SOUND_TXT.low,
+            onReplay: showSoundSetup,
+            back: false
+          });
           return;
         }
         soundStartRound();
@@ -4331,6 +4380,7 @@
       var dictee1State = null;
 
       function hideAllGamePanels() {
+        gameBody.classList.remove("is-sound-play");
         gameQuizPanel.hidden = true;
         gameReadPanel.hidden = true;
         gameDicteePanel.hidden = true;
@@ -4450,8 +4500,13 @@
         gamePrestartWarning.hidden = true;
         if (gameAudio) { gameAudio.pause(); }
         soundStop();
+        gameBody.classList.remove("is-sound-play");
         clearWordReveal();
         clearEndCelebration();
+        endReplayHandler = null;
+        gameEndBackToMenuBtn.hidden = false;
+        if (sortAllEndTimer) { clearTimeout(sortAllEndTimer); sortAllEndTimer = null; }
+        if (orderEndTimer) { clearTimeout(orderEndTimer); orderEndTimer = null; }
       }
 
       // Rappel non bloquant : si le module precedent n'a pas encore ete
@@ -4672,6 +4727,15 @@
       });
       gameHarakatNextBtn.addEventListener("click", nextQuestion);
       gameReplayBtn.addEventListener("click", function () {
+        if (endReplayHandler) {
+          var replay = endReplayHandler;
+          endReplayHandler = null;
+          clearEndCelebration();
+          gameEnd.hidden = true;
+          gameBody.hidden = false;
+          replay();
+          return;
+        }
         startRound(gameState.moduleNumber, gameState.title, gameState.category);
       });
       gameContinueBtn.addEventListener("click", function () {

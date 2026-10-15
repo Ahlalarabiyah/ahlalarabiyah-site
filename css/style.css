@@ -2274,3 +2274,41 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 @media (prefers-reduced-motion: reduce) {
   .game-end.is-perfect::before, .game-end.is-perfect .game-end-badge, .game-end-perfect-label, .game-end.is-perfect #gameEndScore { animation: none; }
 }
+.game-end-back-btn[hidden] { display: none; }
+
+/* Choix des lettres du jeu "Retrouve le son" : pastilles arabes (5 lettres au plus) */
+.sound-choice-letters { font-family: var(--font-arabic); font-size: 1.15rem; font-weight: 400; direction: rtl; letter-spacing: 0.08em; padding: 8px 16px; }
+.sound-choice-letters { flex: 0 0 calc(33.333% - 8px); min-width: 0; padding-left: 6px; padding-right: 6px; }
+@media (max-width: 420px) { .sound-choice-letters { flex-basis: calc(50% - 8px); } }
+
+/* ---------- "Retrouve le son" : grosses lettres, tableau entierement visible sans defilement ---------- */
+/* Hauteur d'une ligne = (hauteur de l'ecran - bandeau, en-tetes et marges) / 5 lignes. */
+.game-body.is-sound-play {
+  --sound-row: clamp(56px, min(calc((100vh - 345px) / 5), 18vw), 108px);
+  padding: 0 12px 10px;
+}
+@supports (height: 100dvh) {
+  .game-body.is-sound-play { --sound-row: clamp(56px, min(calc((100dvh - 345px) / 5), 18vw), 108px); }
+}
+.game-body.is-sound-play .game-panel { max-width: 800px; padding: 10px 16px 12px; }
+.game-body.is-sound-play .sound-hud { padding-top: 0; margin-bottom: 6px; }
+.game-body.is-sound-play .sound-timer { margin: 2px 0; }
+.game-body.is-sound-play .sound-timer .btn { flex: 0 0 auto; white-space: nowrap; }
+.game-body.is-sound-play .sound-hud-actions { min-height: 38px; }
+.game-body.is-sound-play .sound-cell {
+  min-height: var(--sound-row);
+  font-size: clamp(1.3rem, min(calc(var(--sound-row) * 0.46), 6vw), 3.1rem);
+}
+.game-body.is-sound-play .sound-letter {
+  font-size: clamp(1.4rem, min(calc(var(--sound-row) * 0.5), 6.6vw), 3.3rem);
+}
+.game-body.is-sound-play .sound-th-letter { font-size: clamp(0.58rem, 1.6vw, 0.8rem); }
+.game-body.is-sound-play .sound-th-form { font-size: clamp(0.62rem, 1.7vw, 0.85rem); }
+.game-body.is-sound-play .sound-th-group { font-size: clamp(0.8rem, 2.2vw, 1.05rem); }
+.game-body.is-sound-play .sound-cell { line-height: 1.1; }
+.game-body.is-sound-play .sound-cell .letterlab-form { padding: 0.35em 0; }
+.game-body.is-sound-play .sound-letter { line-height: 1.1; }
+.game-body.is-sound-play .sound-hud-actions { display: flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: 8px; min-height: 46px; }
+.game-body.is-sound-play .sound-feedback { flex: 1 1 auto; margin: 0; font-size: 0.85rem; line-height: 1.25; text-align: center; }
+.game-body.is-sound-play .sound-feedback:empty { display: block; }
+.game-body.is-sound-play .sound-hud-actions .btn { flex: 0 0 auto; }

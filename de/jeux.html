@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=118">
+<link rel="stylesheet" href="../css/style.css?v=125">
 </head>
 <body>
 
@@ -404,12 +404,14 @@
         <div id="soundSetup">
           <p class="game-instruction">Höre den Laut und tippe auf das richtige Feld der Tabelle, bevor der Countdown abläuft.</p>
           <div class="sound-setup-group">
-            <p class="sound-setup-label">Wähle die Tabelle</p>
+            <p class="sound-setup-label">Wähle die Buchstaben</p>
             <div class="sound-choices">
-            <button type="button" class="sound-choice" data-sound-table="1" aria-pressed="false">Heft 1</button>
-            <button type="button" class="sound-choice" data-sound-table="2" aria-pressed="false">Heft 2</button>
-            <button type="button" class="sound-choice" data-sound-table="3" aria-pressed="false">Heft 3</button>
-            <button type="button" class="sound-choice" data-sound-table="all" aria-pressed="false">Alle drei Hefte</button>
+            <button type="button" class="sound-choice sound-choice-letters" data-sound-table="g1" aria-pressed="false">أ ب ت ث ج</button>
+            <button type="button" class="sound-choice sound-choice-letters" data-sound-table="g2" aria-pressed="false">ح خ د ذ ر</button>
+            <button type="button" class="sound-choice sound-choice-letters" data-sound-table="g3" aria-pressed="false">ز س ش ص ض</button>
+            <button type="button" class="sound-choice sound-choice-letters" data-sound-table="g4" aria-pressed="false">ط ظ ع غ ف</button>
+            <button type="button" class="sound-choice sound-choice-letters" data-sound-table="g5" aria-pressed="false">ق ك ل م ن</button>
+            <button type="button" class="sound-choice sound-choice-letters" data-sound-table="g6" aria-pressed="false">ه و ي</button>
             </div>
           </div>
           <div class="sound-setup-group">
@@ -430,11 +432,11 @@
               <button type="button" class="sound-quit" id="soundQuitBtn"></button>
             </div>
             <div class="sound-timer">
+              <button type="button" class="btn btn-outline btn-sm" id="soundListenBtn"></button>
               <div class="sound-timer-track"><span id="soundTimerBar"></span></div>
               <span class="sound-timer-num" id="soundTimerNum" aria-live="off"></span>
             </div>
             <div class="sound-hud-actions">
-              <button type="button" class="btn btn-outline btn-sm" id="soundListenBtn"></button>
               <p class="game-feedback sound-feedback" id="soundFeedback"></p>
               <button type="button" class="btn btn-primary btn-sm" id="soundNextBtn" hidden></button>
             </div>
@@ -471,6 +473,6 @@
   </div>
 </div>
 
-<script src="../js/main.js?v=158"></script>
+<script src="../js/main.js?v=161"></script>
 </body>
 </html>
