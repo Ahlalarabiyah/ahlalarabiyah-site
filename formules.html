@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=143">
+<link rel="stylesheet" href="css/style.css?v=146">
 </head>
 <body>
 
@@ -88,12 +88,32 @@
           <h3>Paiement par module</h3>
           <p class="price-lead">Pour acheter uniquement certains modules.</p>
           <p class="price-perk">Chaque module payé débloque l’accès aux jeux correspondants.</p>
-          <ul class="price-rows">
-            <li><a class="price-buy" data-plan="module-1" href="#"><span class="price-label">1 module</span><span class="price-amount">3,99&nbsp;€</span></a></li>
-            <li><a class="price-buy" data-plan="module-3" href="#"><span class="price-label">3 modules</span><span class="price-amount">9,99&nbsp;€</span></a></li>
-            <li><a class="price-buy" data-plan="module-6" href="#"><span class="price-label">6 modules</span><span class="price-amount">19,99&nbsp;€</span></a></li>
-            <li><a class="price-buy" data-plan="module-12" href="#"><span class="price-label">12 modules</span><span class="price-amount">29,99&nbsp;€</span></a></li>
-          </ul>
+          <div class="module-picker" id="modulePicker">
+            <p class="picker-step"><span class="picker-step-num">1</span> Choisis ta formule</p>
+            <div class="module-plans" role="radiogroup" aria-label="Formule par module">
+              <button type="button" class="module-plan" role="radio" aria-checked="false" data-module-plan="1"><span class="price-label">1 module</span><span class="price-amount">3,99&nbsp;€</span></button>
+              <button type="button" class="module-plan" role="radio" aria-checked="false" data-module-plan="3"><span class="price-label">3 modules</span><span class="price-amount">9,99&nbsp;€</span></button>
+              <button type="button" class="module-plan" role="radio" aria-checked="false" data-module-plan="6"><span class="price-label">6 modules</span><span class="price-amount">19,99&nbsp;€</span></button>
+              <button type="button" class="module-plan" role="radio" aria-checked="false" data-module-plan="12"><span class="price-label">Tous les modules</span><span class="price-amount">29,99&nbsp;€</span></button>
+            </div>
+            <p class="picker-step"><span class="picker-step-num">2</span> Choisis tes modules <span class="picker-counter" id="pickerCounter"></span></p>
+            <div class="module-chips" id="moduleChips">
+            <button type="button" class="module-chip" data-module="2" aria-pressed="false"><span class="module-chip-num">Module 2</span><span class="module-chip-letters" lang="ar" dir="rtl">ب ت ث</span></button>
+            <button type="button" class="module-chip" data-module="3" aria-pressed="false"><span class="module-chip-num">Module 3</span><span class="module-chip-letters" lang="ar" dir="rtl">ج ح خ</span></button>
+            <button type="button" class="module-chip" data-module="4" aria-pressed="false"><span class="module-chip-num">Module 4</span><span class="module-chip-letters" lang="ar" dir="rtl">د ذ</span></button>
+            <button type="button" class="module-chip" data-module="5" aria-pressed="false"><span class="module-chip-num">Module 5</span><span class="module-chip-letters" lang="ar" dir="rtl">ر ز</span></button>
+            <button type="button" class="module-chip" data-module="6" aria-pressed="false"><span class="module-chip-num">Module 6</span><span class="module-chip-letters" lang="ar" dir="rtl">س ش</span></button>
+            <button type="button" class="module-chip" data-module="7" aria-pressed="false"><span class="module-chip-num">Module 7</span><span class="module-chip-letters" lang="ar" dir="rtl">ص ض</span></button>
+            <button type="button" class="module-chip" data-module="8" aria-pressed="false"><span class="module-chip-num">Module 8</span><span class="module-chip-letters" lang="ar" dir="rtl">ط ظ</span></button>
+            <button type="button" class="module-chip" data-module="9" aria-pressed="false"><span class="module-chip-num">Module 9</span><span class="module-chip-letters" lang="ar" dir="rtl">ع غ</span></button>
+            <button type="button" class="module-chip" data-module="10" aria-pressed="false"><span class="module-chip-num">Module 10</span><span class="module-chip-letters" lang="ar" dir="rtl">ف ق ك</span></button>
+            <button type="button" class="module-chip" data-module="11" aria-pressed="false"><span class="module-chip-num">Module 11</span><span class="module-chip-letters" lang="ar" dir="rtl">ل م ن</span></button>
+            <button type="button" class="module-chip" data-module="12" aria-pressed="false"><span class="module-chip-num">Module 12</span><span class="module-chip-letters" lang="ar" dir="rtl">ه و ي</span></button>
+            </div>
+            <p class="picker-free">Le Module 1 (<span lang="ar" dir="rtl">أ</span>) est offert.</p>
+            <p class="picker-hint" id="pickerHint" aria-live="polite"></p>
+            <a class="picker-pay" id="modulePay" href="#" role="button" aria-disabled="true">Choisis ta formule</a>
+          </div>
         </article>
 
         <article class="price-card">
@@ -218,6 +238,6 @@
 </footer>
 
 <script src="js/main.js?v=169"></script>
-<script src="js/formules.js?v=1"></script>
+<script src="js/formules.js?v=2"></script>
 </body>
 </html>

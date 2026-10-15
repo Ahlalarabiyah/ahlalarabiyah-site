@@ -2387,3 +2387,49 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 /* 7 groupes de 4 lettres : 4 pastilles par ligne (3 sur petit telephone) */
 .sound-choice-letters { flex-basis: calc(25% - 9px); }
 @media (max-width: 420px) { .sound-choice-letters { flex-basis: calc(33.333% - 8px); } }
+
+/* ---------- Nos formules : choix de la formule puis des modules ---------- */
+.module-picker { margin-top: 6px; }
+.picker-step { display: flex; align-items: center; gap: 8px; margin: 14px 0 8px; font-family: var(--font-heading); font-weight: 600; font-size: 0.92rem; color: var(--color-navy); }
+.picker-step-num { display: inline-flex; align-items: center; justify-content: center; flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--color-teal); color: #fff; font-size: 0.78rem; font-weight: 700; }
+.picker-counter { font-weight: 500; color: var(--color-text-light); }
+.module-plans { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.module-plan {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  padding: 10px 12px; text-align: left;
+  border: 2px solid var(--color-border); border-radius: 12px; background: #fff;
+  font: inherit; color: var(--color-navy); cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.module-plan .price-label { font-size: 0.82rem; color: var(--color-text-light); }
+.module-plan .price-amount { font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; }
+.module-plan:hover { border-color: var(--color-teal); }
+.module-plan.is-selected { background: var(--color-navy); border-color: var(--color-navy); color: #fff; }
+.module-plan.is-selected .price-label { color: rgba(255,255,255,0.8); }
+.module-chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.module-chip {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  min-width: 0; padding: 8px 4px;
+  border: 2px solid var(--color-border); border-radius: 12px; background: #fff;
+  font: inherit; color: var(--color-navy); cursor: pointer;
+  transition: border-color .15s ease, background .15s ease, color .15s ease, opacity .15s ease;
+}
+.module-chip:disabled { cursor: default; opacity: 0.55; }
+.module-chip:not(:disabled):hover { border-color: var(--color-teal); }
+.module-chip.is-selected { background: var(--color-teal); border-color: var(--color-teal); color: #fff; opacity: 1; }
+.module-chip:disabled.is-selected { opacity: 0.85; }
+.module-chip-num { font-family: var(--font-heading); font-weight: 600; font-size: 0.74rem; letter-spacing: 0.02em; }
+.module-chip-letters { font-family: var(--font-arabic); font-size: 1.15rem; line-height: 1.5; white-space: nowrap; }
+.picker-free { margin: 10px 0 0; font-size: 0.84rem; color: var(--color-text-light); }
+.picker-hint { min-height: 1.3em; margin: 6px 0 0; font-size: 0.84rem; font-weight: 600; color: #C6362E; }
+.picker-pay {
+  display: block; margin-top: 8px; padding: 14px 16px; border-radius: 999px; text-align: center;
+  background: var(--color-border); color: var(--color-text-light);
+  font-family: var(--font-heading); font-weight: 700; font-size: 0.95rem; text-decoration: none;
+  cursor: not-allowed; transition: background .15s ease, color .15s ease, transform .15s ease;
+}
+.picker-pay.is-ready { background: linear-gradient(135deg, var(--color-teal), var(--color-teal-dark)); color: #fff; cursor: pointer; box-shadow: 0 8px 20px rgba(22,160,160,0.25); }
+.picker-pay.is-ready:hover { transform: translateY(-1px); }
+.picker-pay:focus-visible { outline: 3px solid var(--color-teal); outline-offset: 2px; }
+.module-plan.is-selected .price-amount { color: #fff; }
+.picker-free [lang="ar"] { font-family: var(--font-arabic); font-size: 1.15rem; }
