@@ -2998,9 +2998,60 @@
         gameAudio.play().catch(function () {});
       }
 
+      // Compteur de serie intuitif : "Question 3 / 10" + une rangee de 10
+      // pastilles (vertes = juste, rouges = fausse, bleue = en cours) + le
+      // score. On sait ainsi des le debut combien de questions seront posees.
+      var PROGRESS_UNIT = {
+        question: isGerman ? "Frage" : isArabic ? "السؤال" : isRussian ? "Вопрос" : "Question",
+        word: isGerman ? "Wort" : isArabic ? "الكلمة" : isRussian ? "Слово" : isEnglish ? "Word" : "Mot",
+        sorted: isGerman ? "Eingeordnet" : isArabic ? "مصنّفة" : isRussian ? "Распределено" : isEnglish ? "Sorted" : "Classées"
+      };
+      function progressReset(extraClass) {
+        gameScoreEl.className = "game-score game-progress" + (extraClass ? " " + extraClass : "");
+        gameScoreEl.textContent = "";
+      }
+      function progressLabel(text) {
+        var label = document.createElement("span");
+        label.className = "game-progress-label";
+        label.textContent = text;
+        gameScoreEl.appendChild(label);
+      }
+      function renderProgress(unit, showScore) {
+        var st = gameState;
+        var total = QUESTIONS_PER_ROUND;
+        var n = Math.min(st.questionIndex, total);
+        progressReset();
+        progressLabel(unit + " " + n + " / " + total);
+        var dots = document.createElement("span");
+        dots.className = "game-progress-dots";
+        dots.setAttribute("aria-hidden", "true");
+        for (var i = 0; i < total; i++) {
+          var dot = document.createElement("i");
+          var r = st.results ? st.results[i] : undefined;
+          dot.className = r === true ? "is-right" : r === false ? "is-wrong" : i < n - 1 ? "is-done" : i === n - 1 ? "is-current" : "";
+          dots.appendChild(dot);
+        }
+        gameScoreEl.appendChild(dots);
+        if (showScore) {
+          var score = document.createElement("span");
+          score.className = "game-progress-score";
+          score.textContent = "✓ " + st.score;
+          gameScoreEl.appendChild(score);
+        }
+      }
+      function renderProgressBar(unit, done, total) {
+        progressReset("game-progress-bar-mode");
+        progressLabel(unit + " " + done + " / " + total);
+        var bar = document.createElement("span");
+        bar.className = "game-progress-bar";
+        bar.setAttribute("aria-hidden", "true");
+        var fill = document.createElement("i");
+        fill.style.width = Math.round(done / total * 100) + "%";
+        bar.appendChild(fill);
+        gameScoreEl.appendChild(bar);
+      }
       function renderScore() {
-        gameScoreEl.textContent = gameState.score + " / " + gameState.questionIndex +
-          (isGerman ? " richtig" : isArabic ? " إجابات صحيحة" : isRussian ? " правильных" : isEnglish ? " correct" : " bonnes réponses");
+        renderProgress(PROGRESS_UNIT.question, true);
       }
 
       // Ecran de fin "joyeux" : couleur, emoji et animation selon le
@@ -3313,7 +3364,7 @@
         renderArabicText(gameReadWord, stretchArabic(correct.arabic));
         gameReadListenBtn.textContent = isGerman ? "🔊 Anhören" : isArabic ? "🔊 استماع" : isRussian ? "🔊 Слушать" : isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameReadNextBtn.hidden = true;
-        gameScoreEl.textContent = (isGerman ? "Wort " : isArabic ? "الكلمة " : isRussian ? "Слово " : isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
+        renderProgress(PROGRESS_UNIT.word, false);
       }
 
       // "Dictee pure" : l'enfant entend le mot (jamais affiche a l'ecran)
@@ -3342,7 +3393,7 @@
         gameDicteeListenBtn.textContent = isGerman ? "🔊 Anhören" : isArabic ? "🔊 استماع" : isRussian ? "🔊 Слушать" : isEnglish ? "🔊 Listen" : "🔊 Écouter";
         gameDicteeRevealBtn.hidden = false;
         gameDicteeNextBtn.hidden = true;
-        gameScoreEl.textContent = (isGerman ? "Wort " : isArabic ? "الكلمة " : isRussian ? "Слово " : isEnglish ? "Word " : "Mot ") + gameState.questionIndex + " / " + QUESTIONS_PER_ROUND;
+        renderProgress(PROGRESS_UNIT.word, false);
       }
 
       // "J'ecoute et je place les harakat" : le squelette de lettres est
@@ -3495,6 +3546,7 @@
         gameState.current.answered = true;
         var isCorrect = choice.key === "correct";
         if (isCorrect) { gameState.score += 1; }
+        gameState.results[gameState.questionIndex - 1] = isCorrect;
         playResultFx(isCorrect);
 
         Array.prototype.forEach.call(gameAnswers.children, function (btn) {
@@ -3575,6 +3627,7 @@
         var item = gameState.current.item;
         var isCorrect = type === item.type;
         if (isCorrect) { gameState.score += 1; }
+        gameState.results[gameState.questionIndex - 1] = isCorrect;
         playResultFx(isCorrect);
 
         gameSortSunBtn.disabled = true;
@@ -3620,6 +3673,7 @@
         gameState.current.answered = true;
         var isCorrect = choice.key === gameState.current.correct.key;
         if (isCorrect) { gameState.score += 1; }
+        gameState.results[gameState.questionIndex - 1] = isCorrect;
         playResultFx(isCorrect);
 
         Array.prototype.forEach.call(gameAnswers.children, function (btn) {
@@ -3691,7 +3745,7 @@
           : category === "sort" ? buildSortPool()
           : buildWordPool(moduleNumber);
         if (!pool.length) return false;
-        gameState = { moduleNumber: moduleNumber, title: title, category: category, pool: pool, questionIndex: 0, score: 0, current: null, usedKeys: {} };
+        gameState = { moduleNumber: moduleNumber, title: title, category: category, pool: pool, questionIndex: 0, score: 0, current: null, usedKeys: {}, results: [] };
         gameModalTitle.textContent = title;
         var letterCount = cumulativeLetterCount(moduleNumber);
         gameLevelInfo.textContent = isGerman
@@ -3842,6 +3896,7 @@
         sortAllState = { pool: shuffleArray(buildSortPool()), armedId: null, correctCount: 0, total: 0, remaining: 0 };
         sortAllState.total = sortAllState.pool.length;
         sortAllState.remaining = sortAllState.pool.length;
+        renderProgressBar(PROGRESS_UNIT.sorted, 0, sortAllState.total);
 
         sortAllSunColumn.innerHTML = "";
         sortAllMoonColumn.innerHTML = "";
@@ -3893,6 +3948,7 @@
         if (isCorrect) { sortAllState.correctCount += 1; }
         playResultFx(isCorrect);
         sortAllState.remaining -= 1;
+        renderProgressBar(PROGRESS_UNIT.sorted, sortAllState.total - sortAllState.remaining, sortAllState.total);
 
         var tile = document.createElement("span");
         tile.className = "sortall-tile " + (isCorrect ? "is-correct" : "is-wrong");
@@ -5216,6 +5272,7 @@
           harakatSlots.children[idx].classList.add(isRight ? "is-correct" : "is-wrong");
         });
         if (allCorrect) { gameState.score += 1; }
+        gameState.results[gameState.questionIndex - 1] = allCorrect;
         playResultFx(allCorrect);
 
         Array.prototype.forEach.call(harakatPicker.children, function (b) { b.disabled = true; });

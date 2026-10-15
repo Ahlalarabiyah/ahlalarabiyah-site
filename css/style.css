@@ -2478,3 +2478,21 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .order-score-msg { font-family: var(--font-heading); font-weight: 700; font-size: 0.95rem; color: var(--tier); }
 @keyframes orderScorePop { from { transform: scale(0.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .order-score, .order-score-emoji { animation: none; } .order-score-bar i { transition: none; } }
+
+/* ---------- Compteur de serie : "Question 3 / 10" + pastilles + score ---------- */
+.game-progress {
+  display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 8px 14px; padding: 8px 16px;
+}
+.game-progress:empty { display: none; }
+.game-progress-label { font-size: 0.9rem; font-weight: 700; color: var(--color-navy); }
+.game-progress-dots { display: inline-flex; gap: 5px; }
+.game-progress-dots i { width: 10px; height: 10px; border-radius: 50%; background: rgba(16, 60, 70, 0.16); transition: background .25s ease, transform .25s ease; }
+.game-progress-dots i.is-done { background: var(--color-teal); }
+.game-progress-dots i.is-right { background: #1F8A4C; }
+.game-progress-dots i.is-wrong { background: #E4534B; }
+.game-progress-dots i.is-current { background: var(--color-navy); transform: scale(1.35); }
+.game-progress-score { font-size: 0.9rem; font-weight: 800; color: #1F8A4C; }
+.game-progress-bar { display: block; width: 110px; height: 8px; border-radius: 999px; background: rgba(16, 60, 70, 0.14); overflow: hidden; }
+.game-progress-bar i { display: block; height: 100%; width: 0; border-radius: 999px; background: var(--color-teal); transition: width .4s ease; }
+@media (max-width: 480px) { .game-progress-dots i { width: 8px; height: 8px; } .game-progress-dots { gap: 4px; } }
