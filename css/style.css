@@ -2439,3 +2439,17 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .harakat-form-full { color: var(--color-harakat-red); }
 .harakat-form-base { position: absolute; top: 0; left: 0; right: 0; color: var(--color-navy); }
 .harakat-picker-btn.is-armed .harakat-form-full, .harakat-picker-btn.is-armed .harakat-form-base { color: #fff; }
+
+/* ---------- "5 lettres dans l'ordre" (Module 14) ---------- */
+.order5-round { margin: 4px 0 0; font-family: var(--font-heading); font-weight: 600; font-size: 0.9rem; color: var(--color-text-light); }
+.order5-grid { grid-template-columns: repeat(5, 1fr); max-width: 460px; margin-left: auto; margin-right: auto; gap: 10px; }
+.order5-grid .order-slot { min-height: 92px; font-size: 2.2rem; }
+.order5-pool { grid-template-columns: repeat(5, 1fr); max-width: 460px; margin-left: auto; margin-right: auto; gap: 10px; min-height: 64px; }
+.order5-pool .sortall-letter { padding: 14px 0; font-size: 2.1rem; }
+.order5-grid, .order5-pool { direction: rtl; }
+#order5CheckBtn[hidden], #order5NextBtn[hidden] { display: none; }
+@media (max-width: 480px) {
+  .order5-grid, .order5-pool { gap: 6px; }
+  .order5-grid .order-slot { min-height: 76px; font-size: 1.8rem; }
+  .order5-pool .sortall-letter { padding: 10px 0; font-size: 1.7rem; }
+}

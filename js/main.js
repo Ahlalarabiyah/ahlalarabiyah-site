@@ -2595,6 +2595,13 @@
       var orderFeedback = document.getElementById("orderFeedback");
       var orderCheckBtn = document.getElementById("orderCheckBtn");
       var orderResetBtn = document.getElementById("orderResetBtn");
+      var gameOrder5Panel = document.getElementById("gameOrder5Panel");
+      var order5Round = document.getElementById("order5Round");
+      var order5Grid = document.getElementById("order5Grid");
+      var order5Pool = document.getElementById("order5Pool");
+      var order5Feedback = document.getElementById("order5Feedback");
+      var order5CheckBtn = document.getElementById("order5CheckBtn");
+      var order5NextBtn = document.getElementById("order5NextBtn");
       var gameSoundPanel = document.getElementById("gameSoundPanel");
       var soundSetup = document.getElementById("soundSetup");
       var soundPlay = document.getElementById("soundPlay");
@@ -2648,7 +2655,9 @@
         harakat: { icon: "🖍️", title: "Setze die Vokalzeichen" },
         script: { icon: "✍️", title: "Die richtige Schreibweise" },
         sort: { icon: "☀️🌙", title: "Sonne oder Mond?" },
-        sortall: { icon: "🗂️", title: "Sortiere alle Buchstaben" }
+        sortall: { icon: "🗂️", title: "Sortiere alle Buchstaben" },
+        orderall: { icon: "🔠", title: "Alle 28 Buchstaben" },
+        order5: { icon: "🔢", title: "5 Buchstaben ordnen" }
       } : isArabic ? {
         sound: { icon: "🎧", title: "التعرّف على الصوت" },
         word: { icon: "📖", title: "التعرّف على الكلمة" },
@@ -2657,7 +2666,9 @@
         harakat: { icon: "🖍️", title: "ضع الحركات" },
         script: { icon: "✍️", title: "الكتابة الصحيحة" },
         sort: { icon: "☀️🌙", title: "شمسي أم قمري؟" },
-        sortall: { icon: "🗂️", title: "رتّب كل الحروف" }
+        sortall: { icon: "🗂️", title: "رتّب كل الحروف" },
+        orderall: { icon: "🔠", title: "الحروف الثمانية والعشرون" },
+        order5: { icon: "🔢", title: "رتّب ٥ حروف" }
       } : isRussian ? {
         sound: { icon: "🎧", title: "Узнать звук" },
         word: { icon: "📖", title: "Узнать слово" },
@@ -2666,7 +2677,9 @@
         harakat: { icon: "🖍️", title: "Расставь огласовки" },
         script: { icon: "✍️", title: "Правильное написание" },
         sort: { icon: "☀️🌙", title: "Солнечная или лунная?" },
-        sortall: { icon: "🗂️", title: "Рассортируй все буквы" }
+        sortall: { icon: "🗂️", title: "Рассортируй все буквы" },
+        orderall: { icon: "🔠", title: "Все 28 букв" },
+        order5: { icon: "🔢", title: "5 букв по порядку" }
       } : {
         sound: { icon: "🎧", title: isEnglish ? "Recognize the sound" : "Reconnaître le son" },
         word: { icon: "📖", title: isEnglish ? "Recognize the word" : "Reconnaître le mot" },
@@ -2675,8 +2688,14 @@
         harakat: { icon: "🖍️", title: isEnglish ? "Place the harakāt" : "Place les harakāt" },
         script: { icon: "✍️", title: isEnglish ? "The correct spelling" : "La bonne écriture" },
         sort: { icon: "☀️🌙", title: isEnglish ? "Sun or moon?" : "Solaire ou lunaire ?" },
-        sortall: { icon: "🗂️", title: isEnglish ? "Sort all the letters" : "Trie toutes les lettres" }
+        sortall: { icon: "🗂️", title: isEnglish ? "Sort all the letters" : "Trie toutes les lettres" },
+        orderall: { icon: "🔠", title: isEnglish ? "All 28 letters" : "Les 28 lettres" },
+        order5: { icon: "🔢", title: isEnglish ? "5 letters in order" : "5 lettres dans l’ordre" }
       };
+      var ORDER_MENU_ITEMS = [
+        { category: "orderall", disabled: false },
+        { category: "order5", disabled: false }
+      ];
       var SUN_MOON_MENU_ITEMS = [
         { category: "script", disabled: false },
         { category: "sort", disabled: false },
@@ -3641,6 +3660,7 @@
         gameSortAllPanel.hidden = true;
         gameOrderPanel.hidden = true;
         gameSoundPanel.hidden = true;
+        gameOrder5Panel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -3747,6 +3767,14 @@
           startSortAllGame();
           return;
         }
+        if (category === "orderall") {
+          startOrderGame(menuTitle, true);
+          return;
+        }
+        if (category === "order5") {
+          startOrder5Game(menuTitle);
+          return;
+        }
         startRound(menuModuleNumber, menuTitle, category);
       }
 
@@ -3794,6 +3822,7 @@
         gameSortAllPanel.hidden = false;
         gameOrderPanel.hidden = true;
         gameSoundPanel.hidden = true;
+        gameOrder5Panel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -3956,8 +3985,8 @@
         return span;
       }
 
-      function centerOrderLetters() {
-        [orderGrid, orderPool].forEach(function (box) {
+      function centerOrderLetters(boxes) {
+        (boxes || [orderGrid, orderPool]).forEach(function (box) {
           Array.prototype.forEach.call(box.querySelectorAll(".order-letter"), function (span) {
             var host = span.parentNode.getBoundingClientRect();
             if (!host.height) return;
@@ -4061,13 +4090,21 @@
           orderCheckBtn.hidden = true;
           orderEndTimer = setTimeout(function () {
             orderEndTimer = null;
-            showGameEnd({ scoreText: "28 / 28", pct: 100, message: ORDER_TXT.done, onReplay: resetOrderGame, back: false });
+            showGameEnd({ scoreText: "28 / 28", pct: 100, message: ORDER_TXT.done, onReplay: resetOrderGame, back: true });
           }, 1200);
         }
         renderOrderGame();
       }
 
-      function startOrderGame(title) {
+      // Module 14 : la carte ouvre un petit menu (les 28 lettres / 5 lettres
+      // dans l'ordre), comme le Module 13.
+      function startOrderMenu(title) {
+        openGameMenu("14", title, ORDER_MENU_ITEMS);
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function startOrderGame(title, fromMenu) {
         menuTitle = title;
         gameModalTitle.textContent = title;
         gamePrestartWarning.hidden = true;
@@ -4076,16 +4113,189 @@
         gameBody.hidden = false;
         gameLevelInfo.textContent = "";
         gameScoreEl.textContent = "";
-        gameBackToMenuBtn.hidden = true;
+        gameBackToMenuBtn.hidden = !fromMenu;
         hideAllGamePanels();
         gameOrderPanel.hidden = false;
         gameSoundPanel.hidden = true;
+        gameOrder5Panel.hidden = true;
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
         resetOrderGame();
         if (document.fonts && document.fonts.load) {
           document.fonts.load("24px 'Amiri Quran'", "\u0623\u0628").then(function () {
             if (orderState) { renderOrderGame(); }
+          });
+        }
+      }
+
+      // "5 lettres dans l'ordre" (Module 14, menu a 2 jeux) : serie de 5
+      // manches. Chaque manche propose 5 lettres qui se suivent dans
+      // l'alphabet (ex. ح خ د ذ ر), melangees ; on les remet dans l'ordre
+      // (toucher une lettre, puis la case numerotee). Un point par manche
+      // reussie du premier coup ; en cas d'erreur, on corrige et on revalide.
+      var ORDER5_ROUNDS = 5;
+      var ORDER5_SIZE = 5;
+      var ORDER5_TXT = {
+        fr: { round: "Manche {n} / {t}", partial: "{n} / 5 lettres bien placées. Touche une lettre en rouge pour la retirer et la replacer.", done: "Bravo ! Les 5 lettres sont dans le bon ordre.", doneLate: "C’est juste ! (Le point se gagne du premier coup.)", next: "Manche suivante →", result: "Voir mon résultat →", great: "Excellent, tu connais très bien l’ordre des lettres !", ok: "Bien joué ! Encore un peu d’entraînement et ce sera parfait.", low: "Continue de t’entraîner : revois l’alphabet dans l’ordre, puis reviens jouer." },
+        en: { round: "Round {n} / {t}", partial: "{n} / 5 letters correctly placed. Touch a red letter to remove it and place it again.", done: "Well done! The 5 letters are in the right order.", doneLate: "Correct! (The point is earned on the first try.)", next: "Next round →", result: "See my result →", great: "Excellent, you know the order of the letters very well!", ok: "Well played! A little more practice and it will be perfect.", low: "Keep practising: go over the alphabet in order, then come back and play." },
+        ru: { round: "Раунд {n} / {t}", partial: "Правильно размещено {n} / 5 букв. Коснись красной буквы, чтобы убрать её и поставить заново.", done: "Отлично! Все 5 букв стоят в правильном порядке.", doneLate: "Верно! (Балл дают за ответ с первой попытки.)", next: "Следующий раунд →", result: "Посмотреть результат →", great: "Отлично, ты очень хорошо знаешь порядок букв!", ok: "Хорошо сыграно! Ещё немного практики, и будет идеально.", low: "Продолжай тренироваться: повтори алфавит по порядку и возвращайся играть." },
+        de: { round: "Runde {n} / {t}", partial: "{n} / 5 Buchstaben richtig platziert. Tippe auf einen roten Buchstaben, um ihn zu entfernen und neu zu platzieren.", done: "Gut gemacht! Die 5 Buchstaben stehen in der richtigen Reihenfolge.", doneLate: "Richtig! (Den Punkt gibt es beim ersten Versuch.)", next: "Nächste Runde →", result: "Ergebnis ansehen →", great: "Ausgezeichnet, du kennst die Reihenfolge der Buchstaben sehr gut!", ok: "Gut gespielt! Noch etwas Übung und es wird perfekt.", low: "Übe weiter: Geh das Alphabet der Reihe nach durch und komm dann zurück zum Spielen." },
+        ar: { round: "الجولة {n} / {t}", partial: "{n} / 5 حروف في مكانها الصحيح. المس حرفًا أحمر لإزالته ثم ضعه من جديد.", done: "أحسنت! الحروف الخمسة في ترتيبها الصحيح.", doneLate: "صحيح! (تُكسب النقطة من المحاولة الأولى.)", next: "الجولة التالية ←", result: "عرض النتيجة ←", great: "ممتاز، أنت تعرف ترتيب الحروف جيدًا جدًا!", ok: "لعبٌ جيد! قليل من التدريب وسيكون الأداء مثاليًا.", low: "واصل التدرّب: راجع الأبجدية بالترتيب ثم عد للعب." }
+      }[ORDER_LANG];
+      var order5State = null;
+
+      function order5Fill(text, n, t) { return text.replace("{n}", n).replace("{t}", t); }
+
+      // 5 positions de depart distinctes dans l'alphabet (0 a 23).
+      function order5PickStarts() {
+        var starts = [];
+        for (var i = 0; i <= 28 - ORDER5_SIZE; i++) { starts.push(i); }
+        return shuffleArray(starts).slice(0, ORDER5_ROUNDS);
+      }
+
+      function order5StartRound() {
+        var st = order5State;
+        var all = orderIds();
+        var ids = all.slice(st.starts[st.idx], st.starts[st.idx] + ORDER5_SIZE);
+        var shuffled = ids.slice();
+        var guard = 0;
+        do { shuffled = shuffleArray(ids.slice()); guard++; }
+        while (guard < 20 && shuffled.every(function (id, i) { return id === ids[i]; }));
+        st.ids = ids;
+        st.slots = ids.map(function () { return null; });
+        st.pool = shuffled;
+        st.armedId = null;
+        st.marks = null;
+        st.attempts = 0;
+        st.solved = false;
+        order5Round.textContent = order5Fill(ORDER5_TXT.round, st.idx + 1, ORDER5_ROUNDS);
+        order5Feedback.hidden = true;
+        order5Feedback.className = "game-feedback";
+        order5Feedback.textContent = "";
+        order5CheckBtn.hidden = false;
+        order5NextBtn.hidden = true;
+        renderOrder5();
+      }
+
+      function renderOrder5() {
+        var st = order5State;
+        order5Grid.innerHTML = "";
+        order5Pool.innerHTML = "";
+        st.slots.forEach(function (id, i) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          var cls = "order-slot" + (id ? " is-filled" : "");
+          if (st.marks && id) { cls += st.marks[i] ? " is-correct" : " is-wrong"; }
+          btn.className = cls;
+          btn.setAttribute("aria-label", String(i + 1));
+          var num = document.createElement("span");
+          num.className = "order-num";
+          num.textContent = String(i + 1);
+          btn.appendChild(num);
+          if (id) { btn.appendChild(orderLetterSpan(ALL_LETTERS_BY_ID[id].char)); }
+          btn.addEventListener("click", function () { order5Place(i); });
+          order5Grid.appendChild(btn);
+        });
+        st.pool.forEach(function (id) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "letterlab-cell sortall-letter" + (st.armedId === id ? " is-armed" : "");
+          btn.appendChild(orderLetterSpan(ALL_LETTERS_BY_ID[id].char));
+          btn.addEventListener("click", function () {
+            if (st.solved) return;
+            st.armedId = st.armedId === id ? null : id;
+            renderOrder5();
+          });
+          order5Pool.appendChild(btn);
+        });
+        order5CheckBtn.disabled = st.pool.length > 0;
+        centerOrderLetters([order5Grid, order5Pool]);
+      }
+
+      function order5Place(i) {
+        var st = order5State;
+        if (!st || st.solved) return;
+        var current = st.slots[i];
+        if (st.armedId) {
+          if (current) { st.pool.push(current); }
+          st.slots[i] = st.armedId;
+          st.pool = st.pool.filter(function (id) { return id !== st.armedId; });
+          st.armedId = null;
+        } else if (current) {
+          st.slots[i] = null;
+          st.pool.push(current);
+        } else {
+          return;
+        }
+        st.marks = null;
+        order5Feedback.hidden = true;
+        renderOrder5();
+      }
+
+      function order5Check() {
+        var st = order5State;
+        if (!st || st.pool.length || st.solved) return;
+        var good = 0;
+        st.marks = st.slots.map(function (id, i) {
+          var ok = id === st.ids[i];
+          if (ok) { good += 1; }
+          return ok;
+        });
+        var allGood = good === st.ids.length;
+        playResultFx(allGood);
+        order5Feedback.hidden = false;
+        order5Feedback.className = "game-feedback " + (allGood ? "is-correct" : "is-wrong");
+        if (allGood) {
+          st.solved = true;
+          if (st.attempts === 0) { st.score += 1; }
+          order5Feedback.textContent = st.attempts === 0 ? ORDER5_TXT.done : ORDER5_TXT.doneLate;
+          order5CheckBtn.hidden = true;
+          order5NextBtn.textContent = st.idx + 1 >= ORDER5_ROUNDS ? ORDER5_TXT.result : ORDER5_TXT.next;
+          order5NextBtn.hidden = false;
+        } else {
+          st.attempts += 1;
+          order5Feedback.textContent = order5Fill(ORDER5_TXT.partial, good, ORDER5_SIZE);
+        }
+        renderOrder5();
+      }
+
+      function order5Next() {
+        var st = order5State;
+        if (!st || !st.solved) return;
+        st.idx += 1;
+        if (st.idx >= ORDER5_ROUNDS) {
+          var pct = Math.round(st.score / ORDER5_ROUNDS * 100);
+          showGameEnd({
+            scoreText: st.score + " / " + ORDER5_ROUNDS,
+            pct: pct,
+            message: pct >= 80 ? ORDER5_TXT.great : pct >= 50 ? ORDER5_TXT.ok : ORDER5_TXT.low,
+            onReplay: function () { startOrder5Game(menuTitle); },
+            back: true
+          });
+          return;
+        }
+        order5StartRound();
+      }
+
+      function startOrder5Game(title) {
+        menuTitle = title;
+        gameModalTitle.textContent = title;
+        gamePrestartWarning.hidden = true;
+        gameMenuScreen.hidden = true;
+        gameEnd.hidden = true;
+        gameBody.hidden = false;
+        gameLevelInfo.textContent = "";
+        gameScoreEl.textContent = "";
+        gameBackToMenuBtn.hidden = false;
+        hideAllGamePanels();
+        gameOrder5Panel.hidden = false;
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        order5State = { starts: order5PickStarts(), idx: 0, score: 0, ids: [], slots: [], pool: [], armedId: null, marks: null, attempts: 0, solved: false };
+        order5StartRound();
+        if (document.fonts && document.fonts.load) {
+          document.fonts.load("24px 'Amiri Quran'", "أب").then(function () {
+            if (order5State && !gameOrder5Panel.hidden) { renderOrder5(); }
           });
         }
       }
@@ -4463,6 +4673,7 @@
         gameSortAllPanel.hidden = true;
         gameOrderPanel.hidden = true;
         gameSoundPanel.hidden = true;
+        gameOrder5Panel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -4659,11 +4870,13 @@
       });
       document.querySelectorAll(".js-open-order-game").forEach(function (btn) {
         btn.addEventListener("click", function () {
-          startOrderGame(btn.getAttribute("data-title"));
+          startOrderMenu(btn.getAttribute("data-title"));
         });
       });
       orderCheckBtn.addEventListener("click", checkOrderGame);
       orderResetBtn.addEventListener("click", resetOrderGame);
+      order5CheckBtn.addEventListener("click", order5Check);
+      order5NextBtn.addEventListener("click", order5Next);
       document.querySelectorAll(".js-open-sound-game").forEach(function (btn) {
         btn.addEventListener("click", function () {
           startSoundGame(btn.getAttribute("data-title"));
