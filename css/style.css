@@ -2119,7 +2119,8 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 }
 .sound-hud-actions .btn[hidden], .game-sound-panel [hidden] { display: none; }
 /* ج ح خ : l'encre descend sous la ligne de base, on remonte la lettre pour la centrer dans sa case */
-.sound-cell.sound-tailed .letterlab-form, .sound-letter.sound-tailed .sound-letter-ink { position: relative; top: -0.3em; }
+.sound-letter.sound-tailed .sound-letter-ink { position: relative; top: -0.3em; }
+.sound-cell.sound-tailed .letterlab-form { position: relative; top: -0.14em; }
 /* Le degrade "background-clip:text" (voyelle + prolongation en rouge) ne peint que
    dans la boite de l'element : les deux points de ي et la kasra, sous la ligne,
    en sortaient et disparaissaient. Marge verticale = zone de peinture elargie. */
@@ -2312,3 +2313,18 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .game-body.is-sound-play .sound-feedback { flex: 1 1 auto; margin: 0; font-size: 0.85rem; line-height: 1.25; text-align: center; }
 .game-body.is-sound-play .sound-feedback:empty { display: block; }
 .game-body.is-sound-play .sound-hud-actions .btn { flex: 0 0 auto; }
+
+/* Tableau "Retrouve le son" : la kasra / kasratan (sous la lettre) restent dans leur propre case.
+   - le decalage vers le bas prevu pour les cartes du labo est supprime ici ;
+   - la zone de peinture du degrade est agrandie (marge compensee) pour ne couper ni la kasra
+     ni les deux points du ya. */
+.sound-cell .letterlab-mark-widened { top: -0.16em; }
+.sound-cell .letterlab-mark-widened-tailed { top: -0.1em; }
+.game-body.is-sound-play .sound-cell .letterlab-form { padding: 0.7em 0; margin: -0.7em 0; }
+
+/* Tableau "Retrouve le son" : police Amiri (marques bien placees), marque en rouge via ::highlight,
+   plus aucun decalage manuel (position:relative) qui pouvait faire chevaucher lettres et marques. */
+.sound-table { font-family: 'Amiri', 'Amiri Quran', serif; }
+.sound-cell, .sound-letter { font-family: 'Amiri', 'Amiri Quran', serif; }
+.sound-form { display: inline-block; line-height: 1.7; }
+.sound-cell.sound-tailed .sound-form { position: relative; top: -0.14em; }

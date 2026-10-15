@@ -4187,12 +4187,30 @@
               btn.type = "button";
               btn.className = "sound-cell sound-kind-" + kind + (TAILED_LETTERS[letter.char] ? " sound-tailed" : "");
               btn.setAttribute("data-key", soundCellKey(letter, kind, i));
-              renderLetterForm(btn, letter[kind][i][0], 1);
+              renderSoundForm(btn, letter[kind][i][0]);
               btn.addEventListener("click", onSoundCell);
               soundTable.appendChild(btn);
             }
           });
         });
+      }
+
+      // Forme "lettre + une seule marque" (fatha, damma, kasra, tanwin) : le
+      // tout reste dans UN SEUL noeud texte, donc la police place elle-meme la
+      // marque par rapport a la lettre : jamais de chevauchement, jamais de
+      // marque qui glisse dans la case voisine ni coupee. La couleur du
+      // type de son est portee par le fond de la colonne (vert / gris / rose).
+      // Les formes avec prolongation (madd, tanwin fatha) gardent le degrade
+      // rouge de renderLetterForm (deja un seul noeud texte).
+      function renderSoundForm(container, text) {
+        if (text.length !== 2 || !COMBINING_MARKS[text.charAt(1)]) {
+          renderLetterForm(container, text, 1);
+          return;
+        }
+        var wrap = document.createElement("span");
+        wrap.className = "sound-form";
+        wrap.textContent = text;
+        container.appendChild(wrap);
       }
 
       function soundCellByKey(key) {
