@@ -1386,7 +1386,7 @@ section[id] { scroll-margin-top: 88px; }
   align-items: center;
   justify-content: center;
   font-size: 2.8rem;
-  color: var(--color-teal-dark);
+  color: var(--color-harakat-red);
   background: #fff;
 }
 .harakat-slot.is-armed .harakat-slot-placeholder { border-color: var(--color-orange); border-style: solid; }
@@ -2433,3 +2433,9 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .picker-pay:focus-visible { outline: 3px solid var(--color-teal); outline-offset: 2px; }
 .module-plan.is-selected .price-amount { color: #fff; }
 .picker-free [lang="ar"] { font-family: var(--font-arabic); font-size: 1.15rem; }
+
+/* "Place les harakat" : voyelles en rouge (tatwil bleu fonce dessous/dessus) */
+.harakat-form { position: relative; display: inline-block; }
+.harakat-form-full { color: var(--color-harakat-red); }
+.harakat-form-base { position: absolute; top: 0; left: 0; right: 0; color: var(--color-navy); }
+.harakat-picker-btn.is-armed .harakat-form-full, .harakat-picker-btn.is-armed .harakat-form-base { color: #fff; }

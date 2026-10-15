@@ -3407,7 +3407,21 @@
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "harakat-picker-btn harakat-picker-btn-" + form;
-          btn.textContent = HARAKAT_LABEL[form];
+          // Tatwil en bleu fonce, voyelle en rouge : copie rouge (tatwil + marque)
+          // sous une copie bleue du tatwil seul, exactement superposees (la
+          // marque reste ainsi a sa place naturelle, collee au tatwil).
+          var full = document.createElement("span");
+          full.className = "harakat-form-full";
+          full.textContent = HARAKAT_LABEL[form];
+          var base = document.createElement("span");
+          base.className = "harakat-form-base";
+          base.setAttribute("aria-hidden", "true");
+          base.textContent = "\u0640";
+          var wrap = document.createElement("span");
+          wrap.className = "harakat-form";
+          wrap.appendChild(full);
+          wrap.appendChild(base);
+          btn.appendChild(wrap);
           btn.addEventListener("click", function () { armHarakat(form, btn); });
           harakatPicker.appendChild(btn);
         });
