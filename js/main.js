@@ -4082,8 +4082,8 @@
       // du fascicule, la case qui correspond avant la fin du compte a rebours
       // (12 / 8 / 4 secondes selon la difficulte). 15 sons par partie.
       var SOUND_ROUNDS = 15;
-      // Temps par son : tableaux de 4 lettres (12 / 8 / 4 s) ; fascicule
-      // complet ou toutes les lettres, tableau plus grand a parcourir
+      // Temps par son : tableaux de 4 lettres (12 / 8 / 4 s) ; toutes les
+      // lettres (28), tableau plus grand a parcourir
       // (20 / 14 / 8 s).
       var SOUND_SECONDS = { easy: 12, medium: 8, hard: 4 };
       var SOUND_SECONDS_FULL = { easy: 20, medium: 14, hard: 8 };
@@ -4122,9 +4122,6 @@
       var SOUND_GROUP_SIZE = 4;
       function soundLetters(table) {
         var t = String(table);
-        if (t === "f1") return LETTERS_F1;
-        if (t === "f2") return LETTERS_F2;
-        if (t === "f3") return LETTERS_F3;
         var all = LETTERS_F1.concat(LETTERS_F2, LETTERS_F3);
         if (t === "all") return all;
         var g = parseInt(t.replace("g", ""), 10) || 1;
