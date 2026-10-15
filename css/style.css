@@ -1378,27 +1378,27 @@ section[id] { scroll-margin-top: 88px; }
    line-height trop serre. */
 .harakat-slot-base { font-size: 2.6rem; color: var(--color-navy); line-height: 1.6; }
 .harakat-slot-placeholder {
-  width: 34px;
-  height: 34px;
-  border-radius: 8px;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
   border: 2px dashed var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.3rem;
+  font-size: 2.8rem;
   color: var(--color-teal-dark);
   background: #fff;
 }
 .harakat-slot.is-armed .harakat-slot-placeholder { border-color: var(--color-orange); border-style: solid; }
 .harakat-slot.is-correct .harakat-slot-placeholder { border-color: var(--color-teal); border-style: solid; background: var(--color-teal); color: #fff; }
 .harakat-slot.is-wrong .harakat-slot-placeholder { border-color: #E4534B; border-style: solid; background: #E4534B; color: #fff; }
-.harakat-picker { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 22px; }
+.harakat-picker { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 22px; }
 .harakat-picker-btn {
   font-family: var(--font-arabic);
-  font-size: 1.5rem;
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+  font-size: 3.4rem;
+  width: 90px;
+  height: 90px;
+  border-radius: 16px;
   border: 2px solid var(--color-border);
   background: #fff;
   color: var(--color-navy);
@@ -1414,8 +1414,15 @@ section[id] { scroll-margin-top: 88px; }
 /* La kasra (marque sous la lettre) deborde sous le carre si on la centre
    comme fatha/damma (marques au-dessus) : on remonte son contenu pour
    qu'elle reste visible dans le cadre. */
-.harakat-picker-btn-kasra, .harakat-picker-btn-shadda-kasra { padding-bottom: 16px; }
-.harakat-slot-placeholder-kasra, .harakat-slot-placeholder-shadda-kasra { padding-bottom: 16px; }
+.harakat-picker-btn-kasra, .harakat-picker-btn-shadda-kasra { padding-bottom: 36px; }
+.harakat-slot-placeholder-kasra, .harakat-slot-placeholder-shadda-kasra { padding-bottom: 28px; }
+@media (max-width: 480px) {
+  .harakat-picker { gap: 10px; }
+  .harakat-picker-btn { width: 72px; height: 72px; font-size: 2.7rem; }
+  .harakat-picker-btn-kasra, .harakat-picker-btn-shadda-kasra { padding-bottom: 28px; }
+  .harakat-slot-placeholder { width: 54px; height: 54px; font-size: 2.2rem; }
+  .harakat-slot-placeholder-kasra, .harakat-slot-placeholder-shadda-kasra { padding-bottom: 22px; }
+}
 #gameHarakatCheckBtn[hidden] { display: none; }
 #gameHarakatNextBtn[hidden] { display: none; }
 
@@ -2285,11 +2292,11 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 /* ---------- "Retrouve le son" : grosses lettres, tableau entierement visible sans defilement ---------- */
 /* Hauteur d'une ligne = (hauteur de l'ecran - bandeau, en-tetes et marges) / 5 lignes. */
 .game-body.is-sound-play {
-  --sound-row: clamp(56px, min(calc((100vh - 345px) / 5), 18vw), 108px);
+  --sound-row: clamp(56px, min(calc((100vh - 345px) / 4), 20vw), 108px);
   padding: 0 12px 10px;
 }
 @supports (height: 100dvh) {
-  .game-body.is-sound-play { --sound-row: clamp(56px, min(calc((100dvh - 345px) / 5), 18vw), 108px); }
+  .game-body.is-sound-play { --sound-row: clamp(56px, min(calc((100dvh - 345px) / 4), 20vw), 108px); }
 }
 .game-body.is-sound-play .game-panel { max-width: 800px; padding: 10px 16px 12px; }
 .game-body.is-sound-play .sound-hud { padding-top: 0; margin-bottom: 6px; }
@@ -2373,3 +2380,10 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
   line-height: 1.55;
   text-align: center;
 }
+
+/* Fascicule complet / toutes les lettres : plus de 5 lignes, hauteur fixe, on fait defiler le tableau */
+.game-body.is-sound-play.is-sound-long { --sound-row: clamp(56px, 18vw, 70px); }
+
+/* 7 groupes de 4 lettres : 4 pastilles par ligne (3 sur petit telephone) */
+.sound-choice-letters { flex-basis: calc(25% - 9px); }
+@media (max-width: 420px) { .sound-choice-letters { flex-basis: calc(33.333% - 8px); } }

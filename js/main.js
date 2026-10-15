@@ -4082,7 +4082,20 @@
       // du fascicule, la case qui correspond avant la fin du compte a rebours
       // (12 / 8 / 4 secondes selon la difficulte). 15 sons par partie.
       var SOUND_ROUNDS = 15;
+      // Temps par son : tableaux de 4 lettres (12 / 8 / 4 s) ; fascicule
+      // complet ou toutes les lettres, tableau plus grand a parcourir
+      // (20 / 14 / 8 s).
       var SOUND_SECONDS = { easy: 12, medium: 8, hard: 4 };
+      var SOUND_SECONDS_FULL = { easy: 20, medium: 14, hard: 8 };
+      var SOUND_LEVEL_NAMES = {
+        fr: ["Facile", "Intermédiaire", "Difficile", "s"],
+        en: ["Easy", "Medium", "Hard", "s"],
+        ru: ["Лёгкий", "Средний", "Сложный", "с"],
+        de: ["Leicht", "Mittel", "Schwer", "s"],
+        ar: ["سهل", "متوسط", "صعب", "ث"]
+      }[ORDER_LANG];
+      function soundIsFull(table) { return String(table).charAt(0) !== "g"; }
+      function soundSecondsFor(table) { return soundIsFull(table) ? SOUND_SECONDS_FULL : SOUND_SECONDS; }
       var SOUND_KINDS = ["harakat", "moudoud", "tanwin"];
       var SOUND_HEAD_GROUPS = ["الحَرَكَاتُ", "المُدُودُ", "التَّنْوِينُ"];
       var SOUND_HEAD_FORMS = ["الفَتْحَةُ", "الضَّمَّةُ", "الكَسْرَةُ"];
@@ -4104,12 +4117,17 @@
         return text.replace("{n}", n).replace("{t}", t);
       }
 
-      // Un tableau = 5 lettres au plus, dans l'ordre de l'alphabet :
-      // g1 = أ ب ت ث ج, g2 = ح خ د ذ ر, ... g6 = ه و ي (3 lettres).
-      var SOUND_GROUP_SIZE = 5;
+      // Un tableau = 4 lettres, dans l'ordre de l'alphabet :
+      // g1 = أ ب ت ث, g2 = ج ح خ د, ... g7 = ن ه و ي.
+      var SOUND_GROUP_SIZE = 4;
       function soundLetters(table) {
+        var t = String(table);
+        if (t === "f1") return LETTERS_F1;
+        if (t === "f2") return LETTERS_F2;
+        if (t === "f3") return LETTERS_F3;
         var all = LETTERS_F1.concat(LETTERS_F2, LETTERS_F3);
-        var g = parseInt(String(table).replace("g", ""), 10) || 1;
+        if (t === "all") return all;
+        var g = parseInt(t.replace("g", ""), 10) || 1;
         return all.slice((g - 1) * SOUND_GROUP_SIZE, g * SOUND_GROUP_SIZE);
       }
 
@@ -4128,6 +4146,7 @@
         // En partie, le panneau prend toute la hauteur/largeur utile pour que
         // le tableau tienne a l'ecran sans defilement (voir .is-sound-play).
         gameBody.classList.toggle("is-sound-play", which === "play");
+        if (which !== "play") { gameBody.classList.remove("is-sound-long"); }
         soundSetup.hidden = which !== "setup";
         soundPlay.hidden = which !== "play";
         soundEnd.hidden = which !== "end";
@@ -4141,8 +4160,12 @@
           b.classList.toggle("is-selected", on);
           b.setAttribute("aria-pressed", on ? "true" : "false");
         });
+        var levelSecs = soundSecondsFor(soundChoice.table);
+        var levelIdx = { easy: 0, medium: 1, hard: 2 };
         gameSoundPanel.querySelectorAll("[data-sound-level]").forEach(function (b) {
-          var on = b.getAttribute("data-sound-level") === soundChoice.level;
+          var lv = b.getAttribute("data-sound-level");
+          b.textContent = SOUND_LEVEL_NAMES[levelIdx[lv]] + " \u00b7 " + levelSecs[lv] + " " + SOUND_LEVEL_NAMES[3];
+          var on = lv === soundChoice.level;
           b.classList.toggle("is-selected", on);
           b.setAttribute("aria-pressed", on ? "true" : "false");
         });
@@ -4248,7 +4271,7 @@
       function soundUpdateTimer() {
         var st = soundState;
         if (!st) { soundStopTimer(); return; }
-        var total = SOUND_SECONDS[st.level] * 1000;
+        var total = st.secs * 1000;
         var rem = Math.max(0, st.deadline - Date.now());
         var secsLeft = Math.ceil(rem / 1000);
         // bip a 3, 2 puis 1 seconde restante (le buzzer de fin sonne a 0)
@@ -4268,7 +4291,7 @@
         if (!st || st.idx !== roundIdx || st.locked || st.timerOn) return;
         st.timerOn = true;
         st.lastTick = null;
-        st.deadline = Date.now() + SOUND_SECONDS[st.level] * 1000;
+        st.deadline = Date.now() + st.secs * 1000;
         gameFx.start();
         soundUpdateTimer();
         soundTimerId = setInterval(soundUpdateTimer, 100);
@@ -4289,7 +4312,7 @@
         soundNextBtn.hidden = true;
         soundProgress.textContent = soundFill(SOUND_TXT.progress, st.idx + 1, st.rounds.length);
         soundScore.textContent = soundFill(SOUND_TXT.score, st.score, st.rounds.length);
-        var secs = SOUND_SECONDS[st.level];
+        var secs = st.secs;
         soundTimerNum.textContent = String(secs);
         soundTimerBar.style.width = "100%";
         soundTimerBar.parentNode.classList.remove("is-low", "is-critical");
@@ -4367,6 +4390,7 @@
         soundStop();
         soundState = {
           level: soundChoice.level,
+          secs: soundSecondsFor(soundChoice.table)[soundChoice.level],
           rounds: shuffleArray(pool).slice(0, SOUND_ROUNDS),
           idx: 0,
           score: 0,
@@ -4376,6 +4400,8 @@
           deadline: 0
         };
         soundShow("play");
+        // Plus de 4 lettres : lignes plus basses, le tableau se parcourt en defilant.
+        gameBody.classList.toggle("is-sound-long", letters.length > SOUND_GROUP_SIZE);
         buildSoundTable(letters);
         gameBody.scrollTop = 0;
         soundStartRound();
@@ -4417,7 +4443,7 @@
       var dictee1State = null;
 
       function hideAllGamePanels() {
-        gameBody.classList.remove("is-sound-play");
+        gameBody.classList.remove("is-sound-play", "is-sound-long");
         gameQuizPanel.hidden = true;
         gameReadPanel.hidden = true;
         gameDicteePanel.hidden = true;
@@ -4537,7 +4563,7 @@
         gamePrestartWarning.hidden = true;
         if (gameAudio) { gameAudio.pause(); }
         soundStop();
-        gameBody.classList.remove("is-sound-play");
+        gameBody.classList.remove("is-sound-play", "is-sound-long");
         clearWordReveal();
         clearEndCelebration();
         endReplayHandler = null;
