@@ -4175,7 +4175,7 @@
         });
         letters.forEach(function (letter) {
           var l = document.createElement("div");
-          l.className = "sound-letter" + (TAILED_LETTERS[letter.char] ? " sound-tailed" : "");
+          l.className = "sound-letter" + (TAILED_LETTERS[letter.char] ? " sound-tailed" : "") + (letter.id === "alif" ? " sound-alif" : "");
           var ink = document.createElement("span");
           ink.className = "sound-letter-ink";
           ink.textContent = letter.char;
@@ -4185,7 +4185,7 @@
             for (var i = 0; i < 3; i++) {
               var btn = document.createElement("button");
               btn.type = "button";
-              btn.className = "sound-cell sound-kind-" + kind + (TAILED_LETTERS[letter.char] ? " sound-tailed" : "");
+              btn.className = "sound-cell sound-kind-" + kind + (TAILED_LETTERS[letter.char] ? " sound-tailed" : "") + (letter.id === "alif" ? " sound-alif" : "");
               btn.setAttribute("data-key", soundCellKey(letter, kind, i));
               renderSoundForm(btn, letter[kind][i][0]);
               btn.addEventListener("click", onSoundCell);
@@ -4195,11 +4195,17 @@
         });
       }
 
-      // Forme "lettre + une seule marque" (fatha, damma, kasra, tanwin) : le
-      // tout reste dans UN SEUL noeud texte, donc la police place elle-meme la
-      // marque par rapport a la lettre : jamais de chevauchement, jamais de
-      // marque qui glisse dans la case voisine ni coupee. La couleur du
-      // type de son est portee par le fond de la colonne (vert / gris / rose).
+      // Forme "lettre + une seule marque" (fatha, damma, kasra, tanwin) : la
+      // police place elle-meme la marque par rapport a la lettre (jamais de
+      // chevauchement ni de marque qui glisse dans la case voisine), ce qui
+      // exige que lettre + marque restent dans UN SEUL noeud texte. Or une
+      // couleur ne peut pas separer la marque de sa lettre dans ce cas : on
+      // superpose donc deux copies exactement alignees --
+      //   dessous : lettre + marque, en ROUGE ;
+      //   dessus  : la lettre seule, en bleu fonce (avec un fin contour de la
+      //             meme couleur pour couvrir le liseré rouge de l'anti-
+      //             crenelage), qui masque le rouge de la lettre.
+      // Seule la marque reste donc visible en rouge, a sa place naturelle.
       // Les formes avec prolongation (madd, tanwin fatha) gardent le degrade
       // rouge de renderLetterForm (deja un seul noeud texte).
       function renderSoundForm(container, text) {
@@ -4209,7 +4215,15 @@
         }
         var wrap = document.createElement("span");
         wrap.className = "sound-form";
-        wrap.textContent = text;
+        var full = document.createElement("span");
+        full.className = "sound-form-full";
+        full.textContent = text;
+        var base = document.createElement("span");
+        base.className = "sound-form-base";
+        base.setAttribute("aria-hidden", "true");
+        base.textContent = text.charAt(0);
+        wrap.appendChild(full);
+        wrap.appendChild(base);
         container.appendChild(wrap);
       }
 

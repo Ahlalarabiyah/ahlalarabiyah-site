@@ -2328,3 +2328,20 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .sound-cell, .sound-letter { font-family: 'Amiri', 'Amiri Quran', serif; }
 .sound-form { display: inline-block; line-height: 1.7; }
 .sound-cell.sound-tailed .sound-form { position: relative; top: -0.14em; }
+
+/* Voyelle rouge a sa place naturelle : copie rouge (lettre + marque) sous une copie bleue (lettre seule). */
+.sound-form { position: relative; display: inline-block; }
+.sound-form-full { color: var(--color-harakat-red); }
+.sound-form-base {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  color: var(--color-navy);
+  -webkit-text-stroke: 0.028em var(--color-navy);
+  pointer-events: none;
+}
+
+/* Alif : glyphe haut (tout au-dessus de la ligne) -> on le descend pour le centrer dans la case */
+.sound-cell.sound-alif .sound-form, .sound-cell.sound-alif .letterlab-form { position: relative; top: 0.16em; }
+.sound-letter.sound-alif .sound-letter-ink { position: relative; top: 0.16em; }
