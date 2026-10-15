@@ -4691,6 +4691,15 @@
         gameEnd.hidden = true;
         gameMenuScreen.hidden = false;
       });
+      var LISTEN_AGAIN_LABEL = isGerman ? "🔊 Nochmal anhören" : isArabic ? "🔊 استمع مرة أخرى" : isRussian ? "🔊 Послушать ещё раз" : isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
+      // Apres un bouton "suivant" (geste du joueur) : lance l'audio de la
+      // nouvelle question sans passer par "Ecouter" (sauf si la serie est
+      // terminee). Le bouton "Ecouter" reste visible, devenu "Reecouter".
+      function autoPlayCurrent(listenBtn) {
+        if (!gameState || !gameState.current || !gameEnd.hidden) return;
+        playSound(gameState.current.correct);
+        if (listenBtn) { listenBtn.textContent = LISTEN_AGAIN_LABEL; }
+      }
       gameDictee1ListenBtn.addEventListener("click", function () {
         if (!dictee1State || !dictee1State.current) return;
         playSound({ audioBase: ROOT_BASE + "assets/audio/" + dictee1Level.audioFolder + "/", audioId: dictee1State.current.id });
@@ -4707,25 +4716,33 @@
       // l'alif apres yaa) plutot que de forcer un ecran de fin : avec
       // le choix libre de la lettre (voir openDictee1LetterMenu), il
       // n'y a plus de "fin" naturelle de parcours a imposer.
+      function autoPlayDictee1() {
+        if (!dictee1State || !dictee1State.current) return;
+        playSound({ audioBase: ROOT_BASE + "assets/audio/" + dictee1Level.audioFolder + "/", audioId: dictee1State.current.id });
+        gameDictee1ListenBtn.textContent = LISTEN_AGAIN_LABEL;
+      }
       gameDictee1PrevBtn.addEventListener("click", function () {
         if (!dictee1State || dictee1State.index === 0) return;
         dictee1State.index -= 1;
         renderDictee1Letter();
+        autoPlayDictee1();
       });
       gameDictee1NextBtn.addEventListener("click", function () {
         if (!dictee1State) return;
         dictee1State.index = (dictee1State.index + 1) % dictee1Level.entries.length;
         renderDictee1Letter();
+        autoPlayDictee1();
       });
       gamePlayBtn.addEventListener("click", onQuizListen);
       gameNextBtn.addEventListener("click", function () {
         nextQuestion();
-        // "Reconnaitre le mot" : apres "Question suivante", le mot se lance
-        // tout seul (le clic compte comme geste du joueur, donc Safari/iOS
-        // l'autorise) ; le bouton "Ecouter le son" reste la pour reecouter.
-        // La 1re question de la serie, elle, attend toujours l'appui.
-        if (gameState && gameState.category === "word" && gameEnd.hidden && gameState.current &&
-            !gameState.current.answered && !gameState.current.revealed) {
+        // "Reconnaitre le son" / "Reconnaitre le mot" : apres "Question
+        // suivante", le son se lance tout seul (le clic compte comme geste
+        // du joueur, donc Safari/iOS l'autorise) ; le bouton "Ecouter le son"
+        // reste la pour reecouter. La 1re question de la serie, elle,
+        // attend toujours l'appui.
+        if (gameState && (gameState.category === "word" || gameState.category === "sound") &&
+            gameEnd.hidden && gameState.current && !gameState.current.answered && !gameState.current.revealed) {
           onQuizListen();
         }
       });
@@ -4757,7 +4774,11 @@
         gameDicteeRevealBtn.hidden = true;
         gameDicteeNextBtn.hidden = false;
       });
-      gameDicteeNextBtn.addEventListener("click", nextQuestion);
+      gameDicteeNextBtn.addEventListener("click", function () {
+        nextQuestion();
+        // Dictee pure : le mot suivant se dicte tout seul.
+        autoPlayCurrent(gameDicteeListenBtn);
+      });
       gameHarakatListenBtn.addEventListener("click", function () {
         if (gameState && gameState.current) playSound(gameState.current.correct);
       });
@@ -4785,7 +4806,11 @@
         gameHarakatNextBtn.hidden = false;
         renderScore();
       });
-      gameHarakatNextBtn.addEventListener("click", nextQuestion);
+      gameHarakatNextBtn.addEventListener("click", function () {
+        nextQuestion();
+        // Place les harakat : le mot suivant se lit tout seul.
+        autoPlayCurrent(gameHarakatListenBtn);
+      });
       gameReplayBtn.addEventListener("click", function () {
         if (endReplayHandler) {
           var replay = endReplayHandler;
