@@ -4128,21 +4128,27 @@
         }
       }
 
-      // "5 lettres dans l'ordre" (Module 14, menu a 2 jeux) : serie de 5
+      // "5 lettres dans l'ordre" (Module 14, menu a 2 jeux) : serie de 3
       // manches. Chaque manche propose 5 lettres qui se suivent dans
       // l'alphabet (ex. ح خ د ذ ر), melangees ; on les remet dans l'ordre
-      // (toucher une lettre, puis la case numerotee). Un point par manche
-      // reussie du premier coup ; en cas d'erreur, on corrige et on revalide.
-      var ORDER5_ROUNDS = 5;
+      // (toucher une lettre, puis la case numerotee). Un point par lettre bien
+      // placee a la premiere verification (score sur 15) ; en cas d'erreur,
+      // on corrige et on revalide sans point de plus.
+      var ORDER5_ROUNDS = 3;
       var ORDER5_SIZE = 5;
       var ORDER5_TXT = {
-        fr: { round: "Manche {n} / {t}", partial: "{n} / 5 lettres bien placées. Touche une lettre en rouge pour la retirer et la replacer.", done: "Bravo ! Les 5 lettres sont dans le bon ordre.", doneLate: "C’est juste ! (Le point se gagne du premier coup.)", next: "Manche suivante →", result: "Voir mon résultat →", great: "Excellent, tu connais très bien l’ordre des lettres !", ok: "Bien joué ! Encore un peu d’entraînement et ce sera parfait.", low: "Continue de t’entraîner : revois l’alphabet dans l’ordre, puis reviens jouer." },
-        en: { round: "Round {n} / {t}", partial: "{n} / 5 letters correctly placed. Touch a red letter to remove it and place it again.", done: "Well done! The 5 letters are in the right order.", doneLate: "Correct! (The point is earned on the first try.)", next: "Next round →", result: "See my result →", great: "Excellent, you know the order of the letters very well!", ok: "Well played! A little more practice and it will be perfect.", low: "Keep practising: go over the alphabet in order, then come back and play." },
-        ru: { round: "Раунд {n} / {t}", partial: "Правильно размещено {n} / 5 букв. Коснись красной буквы, чтобы убрать её и поставить заново.", done: "Отлично! Все 5 букв стоят в правильном порядке.", doneLate: "Верно! (Балл дают за ответ с первой попытки.)", next: "Следующий раунд →", result: "Посмотреть результат →", great: "Отлично, ты очень хорошо знаешь порядок букв!", ok: "Хорошо сыграно! Ещё немного практики, и будет идеально.", low: "Продолжай тренироваться: повтори алфавит по порядку и возвращайся играть." },
-        de: { round: "Runde {n} / {t}", partial: "{n} / 5 Buchstaben richtig platziert. Tippe auf einen roten Buchstaben, um ihn zu entfernen und neu zu platzieren.", done: "Gut gemacht! Die 5 Buchstaben stehen in der richtigen Reihenfolge.", doneLate: "Richtig! (Den Punkt gibt es beim ersten Versuch.)", next: "Nächste Runde →", result: "Ergebnis ansehen →", great: "Ausgezeichnet, du kennst die Reihenfolge der Buchstaben sehr gut!", ok: "Gut gespielt! Noch etwas Übung und es wird perfekt.", low: "Übe weiter: Geh das Alphabet der Reihe nach durch und komm dann zurück zum Spielen." },
-        ar: { round: "الجولة {n} / {t}", partial: "{n} / 5 حروف في مكانها الصحيح. المس حرفًا أحمر لإزالته ثم ضعه من جديد.", done: "أحسنت! الحروف الخمسة في ترتيبها الصحيح.", doneLate: "صحيح! (تُكسب النقطة من المحاولة الأولى.)", next: "الجولة التالية ←", result: "عرض النتيجة ←", great: "ممتاز، أنت تعرف ترتيب الحروف جيدًا جدًا!", ok: "لعبٌ جيد! قليل من التدريب وسيكون الأداء مثاليًا.", low: "واصل التدرّب: راجع الأبجدية بالترتيب ثم عد للعب." }
+        fr: { round: "Manche {n} / {t}", partial: "{n} / 5 lettres bien placées. Touche une lettre en rouge pour la retirer et la replacer.", done: "Bravo ! Les 5 lettres sont dans le bon ordre.", doneLate: "C’est juste ! (Seule la première vérification compte pour les points.)", next: "Manche suivante →", result: "Voir mon résultat →", great: "Excellent, tu connais très bien l’ordre des lettres !", ok: "Bien joué ! Encore un peu d’entraînement et ce sera parfait.", low: "Continue de t’entraîner : revois l’alphabet dans l’ordre, puis reviens jouer." },
+        en: { round: "Round {n} / {t}", partial: "{n} / 5 letters correctly placed. Touch a red letter to remove it and place it again.", done: "Well done! The 5 letters are in the right order.", doneLate: "Correct! (Only the first check counts for points.)", next: "Next round →", result: "See my result →", great: "Excellent, you know the order of the letters very well!", ok: "Well played! A little more practice and it will be perfect.", low: "Keep practising: go over the alphabet in order, then come back and play." },
+        ru: { round: "Раунд {n} / {t}", partial: "Правильно размещено {n} / 5 букв. Коснись красной буквы, чтобы убрать её и поставить заново.", done: "Отлично! Все 5 букв стоят в правильном порядке.", doneLate: "Верно! (Баллы засчитываются только за первую проверку.)", next: "Следующий раунд →", result: "Посмотреть результат →", great: "Отлично, ты очень хорошо знаешь порядок букв!", ok: "Хорошо сыграно! Ещё немного практики, и будет идеально.", low: "Продолжай тренироваться: повтори алфавит по порядку и возвращайся играть." },
+        de: { round: "Runde {n} / {t}", partial: "{n} / 5 Buchstaben richtig platziert. Tippe auf einen roten Buchstaben, um ihn zu entfernen und neu zu platzieren.", done: "Gut gemacht! Die 5 Buchstaben stehen in der richtigen Reihenfolge.", doneLate: "Richtig! (Nur die erste Prüfung zählt für die Punkte.)", next: "Nächste Runde →", result: "Ergebnis ansehen →", great: "Ausgezeichnet, du kennst die Reihenfolge der Buchstaben sehr gut!", ok: "Gut gespielt! Noch etwas Übung und es wird perfekt.", low: "Übe weiter: Geh das Alphabet der Reihe nach durch und komm dann zurück zum Spielen." },
+        ar: { round: "الجولة {n} / {t}", partial: "{n} / 5 حروف في مكانها الصحيح. المس حرفًا أحمر لإزالته ثم ضعه من جديد.", done: "أحسنت! الحروف الخمسة في ترتيبها الصحيح.", doneLate: "صحيح! (تُحتسب النقاط من التحقق الأول فقط.)", next: "الجولة التالية ←", result: "عرض النتيجة ←", great: "ممتاز، أنت تعرف ترتيب الحروف جيدًا جدًا!", ok: "لعبٌ جيد! قليل من التدريب وسيكون الأداء مثاليًا.", low: "واصل التدرّب: راجع الأبجدية بالترتيب ثم عد للعب." }
       }[ORDER_LANG];
       var order5State = null;
+      var order5AutoTimer = null;
+      var ORDER5_AUTO_NEXT_MS = 2000;
+      function clearOrder5Timer() {
+        if (order5AutoTimer) { clearTimeout(order5AutoTimer); order5AutoTimer = null; }
+      }
 
       function order5Fill(text, n, t) { return text.replace("{n}", n).replace("{t}", t); }
 
@@ -4154,6 +4160,7 @@
       }
 
       function order5StartRound() {
+        clearOrder5Timer();
         var st = order5State;
         var all = orderIds();
         var ids = all.slice(st.starts[st.idx], st.starts[st.idx] + ORDER5_SIZE);
@@ -4242,16 +4249,23 @@
           return ok;
         });
         var allGood = good === st.ids.length;
+        // 1 point par lettre bien placee a la PREMIERE verification de la
+        // manche (5 lettres x 3 manches = 15 points) ; les corrections
+        // ulterieures ne rapportent rien.
+        if (st.attempts === 0) { st.score += good; }
         playResultFx(allGood);
         order5Feedback.hidden = false;
         order5Feedback.className = "game-feedback " + (allGood ? "is-correct" : "is-wrong");
         if (allGood) {
           st.solved = true;
-          if (st.attempts === 0) { st.score += 1; }
           order5Feedback.textContent = st.attempts === 0 ? ORDER5_TXT.done : ORDER5_TXT.doneLate;
           order5CheckBtn.hidden = true;
           order5NextBtn.textContent = st.idx + 1 >= ORDER5_ROUNDS ? ORDER5_TXT.result : ORDER5_TXT.next;
           order5NextBtn.hidden = false;
+          // Apres une courte pause (pour voir la reussite), on passe tout
+          // seul a la manche suivante ; le bouton permet de ne pas attendre.
+          clearOrder5Timer();
+          order5AutoTimer = setTimeout(function () { order5AutoTimer = null; order5Next(); }, ORDER5_AUTO_NEXT_MS);
         } else {
           st.attempts += 1;
           order5Feedback.textContent = order5Fill(ORDER5_TXT.partial, good, ORDER5_SIZE);
@@ -4260,13 +4274,15 @@
       }
 
       function order5Next() {
+        clearOrder5Timer();
         var st = order5State;
         if (!st || !st.solved) return;
         st.idx += 1;
         if (st.idx >= ORDER5_ROUNDS) {
-          var pct = Math.round(st.score / ORDER5_ROUNDS * 100);
+          var maxScore = ORDER5_ROUNDS * ORDER5_SIZE;
+          var pct = Math.round(st.score / maxScore * 100);
           showGameEnd({
-            scoreText: st.score + " / " + ORDER5_ROUNDS,
+            scoreText: st.score + " / " + maxScore,
             pct: pct,
             message: pct >= 80 ? ORDER5_TXT.great : pct >= 50 ? ORDER5_TXT.ok : ORDER5_TXT.low,
             onReplay: function () { startOrder5Game(menuTitle); },
@@ -4278,6 +4294,7 @@
       }
 
       function startOrder5Game(title) {
+        clearOrder5Timer();
         menuTitle = title;
         gameModalTitle.textContent = title;
         gamePrestartWarning.hidden = true;
@@ -4790,6 +4807,7 @@
         clearEndCelebration();
         endReplayHandler = null;
         gameEndBackToMenuBtn.hidden = false;
+        clearOrder5Timer();
         if (sortAllEndTimer) { clearTimeout(sortAllEndTimer); sortAllEndTimer = null; }
         if (orderEndTimer) { clearTimeout(orderEndTimer); orderEndTimer = null; }
       }
@@ -4911,6 +4929,7 @@
       // un module, choix de lettre pour Dictee - Niveau 1 - voir
       // openDictee1LetterMenu), jamais directement a la grille des jeux.
       gameBackToMenuBtn.addEventListener("click", function () {
+        clearOrder5Timer();
         gameBody.hidden = true;
         gameMenuScreen.hidden = false;
       });
