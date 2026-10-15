@@ -4011,10 +4011,57 @@
       // avec ses cases justes / fausses) pour pouvoir comparer.
       var orderCompareEls = [];
       var orderAnswerGrid = null;
+      var orderScoreEl = null;
+
+      // Resultat "x / 28" ludique : carte coloree selon le pourcentage (vert
+      // des 80 %, orange de 50 a 79 %, rouge en dessous) avec emoji anime,
+      // gros score, barre de progression et petit mot d'encouragement.
+      var ORDER_SCORE_TXT = {
+        fr: { high: "Presque parfait !", mid: "Bien joué, continue !", low: "Courage, tu vas y arriver !" },
+        en: { high: "Almost perfect!", mid: "Well played, keep going!", low: "Keep it up, you’ll get there!" },
+        ru: { high: "Почти идеально!", mid: "Хорошо, продолжай!", low: "Не сдавайся, у тебя получится!" },
+        de: { high: "Fast perfekt!", mid: "Gut gemacht, weiter so!", low: "Nur Mut, du schaffst das!" },
+        ar: { high: "تقريبًا مثالي!", mid: "أحسنت، واصل!", low: "تشجّع، ستنجح!" }
+      }[ORDER_LANG];
+      var ORDER_SCORE_EMOJI = { high: "🎉", mid: "👏", low: "💪" };
+      function showOrderScore(good) {
+        var total = orderState.ids.length;
+        if (orderScoreEl) { orderScoreEl.remove(); }
+        orderScoreEl = document.createElement("div");
+        var pct = Math.round(good / total * 100);
+        var tier = pct >= 80 ? "high" : pct >= 50 ? "mid" : "low";
+        orderScoreEl.className = "order-score order-score-" + tier;
+        var emoji = document.createElement("span");
+        emoji.className = "order-score-emoji";
+        emoji.setAttribute("aria-hidden", "true");
+        emoji.textContent = ORDER_SCORE_EMOJI[tier];
+        var num = document.createElement("span");
+        num.className = "order-score-num";
+        num.textContent = good + " / " + total;
+        var bar = document.createElement("span");
+        bar.className = "order-score-bar";
+        var fill = document.createElement("i");
+        fill.style.width = "0%";
+        bar.appendChild(fill);
+        var msg = document.createElement("span");
+        msg.className = "order-score-msg";
+        msg.textContent = ORDER_SCORE_TXT[tier];
+        orderScoreEl.appendChild(emoji);
+        orderScoreEl.appendChild(num);
+        orderScoreEl.appendChild(bar);
+        orderScoreEl.appendChild(msg);
+        orderGrid.parentNode.insertBefore(orderScoreEl, orderGrid);
+        // la barre se remplit apres l'apparition de la carte
+        requestAnimationFrame(function () { requestAnimationFrame(function () { fill.style.width = pct + "%"; }); });
+      }
+      function hideOrderScore() {
+        if (orderScoreEl) { orderScoreEl.remove(); orderScoreEl = null; }
+      }
       function clearOrderCompare() {
         orderCompareEls.forEach(function (el) { el.remove(); });
         orderCompareEls = [];
         orderAnswerGrid = null;
+        hideOrderScore();
       }
 
       function revealOrderTable() {
@@ -4022,7 +4069,9 @@
         orderState.revealed = true;
         orderState.armedId = null;
         orderState.marks = orderState.slots.map(function (id, i) { return id === orderState.ids[i]; });
+        var goodNow = orderState.marks.filter(Boolean).length;
         clearOrderCompare();
+        showOrderScore(goodNow);
         var mine = document.createElement("p");
         mine.className = "order5-compare-label";
         mine.textContent = ORDER5_TXT.mineLabel;
@@ -4041,7 +4090,8 @@
         orderCheckBtn.hidden = true;
         orderRevealBtn.hidden = true;
         renderOrderGame();
-        if (mine.scrollIntoView) { mine.scrollIntoView({ block: "start", behavior: "smooth" }); }
+        var scrollTarget = orderScoreEl || mine;
+        if (scrollTarget.scrollIntoView) { scrollTarget.scrollIntoView({ block: "start", behavior: "smooth" }); }
       }
 
       function resetOrderGame() {
@@ -4060,6 +4110,7 @@
       function clearOrderMarks() {
         orderState.marks = null;
         orderFeedback.hidden = true;
+        hideOrderScore();
       }
 
       function renderOrderGame() {
@@ -4141,6 +4192,7 @@
         orderFeedback.className = "game-feedback " + (allGood ? "is-correct" : "is-wrong");
         orderFeedback.textContent = allGood ? ORDER_TXT.done : ORDER_TXT.partial.replace("{n}", good);
         orderRevealBtn.hidden = allGood;
+        if (allGood) { hideOrderScore(); } else { showOrderScore(good); }
         if (allGood) {
           orderState.done = true;
           orderCheckBtn.hidden = true;
