@@ -2338,10 +2338,12 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
   right: 0;
   left: 0;
   color: var(--color-navy);
-  -webkit-text-stroke: 0.028em var(--color-navy);
   pointer-events: none;
 }
 
 /* Alif : glyphe haut (tout au-dessus de la ligne) -> on le descend pour le centrer dans la case */
 .sound-cell.sound-alif .sound-form, .sound-cell.sound-alif .letterlab-form { position: relative; top: 0.16em; }
 .sound-letter.sound-alif .sound-letter-ink { position: relative; top: 0.16em; }
+
+/* Lettres du tableau "Retrouve le son" : graisse normale partout (pas de gras). */
+.sound-table, .sound-table * { font-weight: 400; }
