@@ -3096,10 +3096,12 @@
         }
       }
 
-      function renderQuizAnswers(choices) {
+      // fade = true : les propositions apparaissent l'une apres l'autre, en
+      // fondu progressif (jeu "Reconnaitre le mot" apres l'ecoute).
+      function renderQuizAnswers(choices, fade) {
         gameAnswers.innerHTML = "";
         gameAnswers.classList.toggle("game-answers-word", gameState.category === "word");
-        choices.forEach(function (choice) {
+        choices.forEach(function (choice, i) {
           var btn = document.createElement("button");
           btn.type = "button";
           if (choice.kind === "word") {
@@ -3109,12 +3111,17 @@
             btn.className = "letterlab-cell game-answer";
             renderLetterForm(btn, choice.text, choice.baseLen);
           }
+          if (fade) {
+            btn.classList.add("game-answer-fadein");
+            btn.style.animationDelay = (i * WORD_FADE_STEP_S) + "s";
+          }
           btn.addEventListener("click", function () { onAnswer(choice, btn); });
           gameAnswers.appendChild(btn);
         });
       }
 
-      var WORD_REVEAL_DELAY_MS = 4000;
+      var WORD_REVEAL_DELAY_MS = 5000;
+      var WORD_FADE_STEP_S = 0.8;
       var wordRevealTimer = null;
       var WORD_HINT_TXT = isGerman
         ? { press: "Tippe auf „Laut anhören“, um das Wort zu hören.", wait: "Hör gut zu … die Antworten erscheinen gleich." }
@@ -3152,7 +3159,7 @@
           wordRevealTimer = null;
           if (!gameState || gameState.current !== cur) return;
           cur.revealed = true;
-          renderQuizAnswers(cur.choices);
+          renderQuizAnswers(cur.choices, true);
         }, WORD_REVEAL_DELAY_MS);
       }
 

@@ -2158,3 +2158,13 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
   color: var(--color-text-light);
   text-align: center;
 }
+
+/* Propositions du jeu "Reconnaitre le mot" : fondu progressif, une par une.
+   Invisibles (et non cliquables) tant que leur tour n'est pas venu. */
+.game-answer-fadein {
+  animation: gameAnswerFadeIn 0.8s ease both;
+}
+@keyframes gameAnswerFadeIn {
+  from { opacity: 0; pointer-events: none; }
+  to { opacity: 1; pointer-events: auto; }
+}
