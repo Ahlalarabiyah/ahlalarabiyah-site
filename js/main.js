@@ -2914,6 +2914,39 @@
           osc.stop(t0 + dur + 0.03);
         } catch (e) { /* pas de son : le jeu continue */ }
       }
+      // Sonnerie d'ecole (cloche electrique) : trois partiels metalliques
+      // non harmoniques dont le volume est "frappe" ~18 fois par seconde
+      // par le marteau, puis qui s'eteint (dring-dring-dring...).
+      function fxSchoolBell() {
+        var ctx = fxContext();
+        if (!ctx) return;
+        try {
+          var t0 = ctx.currentTime;
+          var dur = 1.5;
+          var step = 0.055;
+          var out = ctx.createGain();
+          out.gain.setValueAtTime(0.0001, t0);
+          for (var t = 0; t < dur; t += step) {
+            var fade = t > dur - 0.35 ? (dur - t) / 0.35 : 1;
+            out.gain.setValueAtTime(0.0001, t0 + t);
+            out.gain.exponentialRampToValueAtTime(Math.max(0.0001, 0.2 * fade), t0 + t + 0.004);
+            out.gain.exponentialRampToValueAtTime(0.03 * fade + 0.0001, t0 + t + step - 0.004);
+          }
+          out.gain.setValueAtTime(0.0001, t0 + dur);
+          out.connect(ctx.destination);
+          [[1760, 1], [2637, 0.7], [3520, 0.4]].forEach(function (partial) {
+            var osc = ctx.createOscillator();
+            var g = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(partial[0], t0);
+            g.gain.setValueAtTime(partial[1], t0);
+            osc.connect(g);
+            g.connect(out);
+            osc.start(t0);
+            osc.stop(t0 + dur + 0.05);
+          });
+        } catch (e) { /* pas de son : le jeu continue */ }
+      }
       var gameFx = {
         // petite fanfare montante (do-mi-sol-do) + note finale
         correct: function () {
@@ -2932,8 +2965,8 @@
         },
         // bip des 3, 2, 1 dernieres secondes
         tick: function () { fxTone(880, 0, 0.1, "square", 0.08); },
-        // fin du temps : buzzer grave
-        timeUp: function () { fxTone(190, 0, 0.6, "sawtooth", 0.14, 110); }
+        // fin du temps : sonnerie d'ecole
+        timeUp: function () { fxSchoolBell(); }
       };
       function playResultFx(ok) { if (ok) { gameFx.correct(); } else { gameFx.wrong(); } }
 
@@ -3081,7 +3114,7 @@
         });
       }
 
-      var WORD_REVEAL_DELAY_MS = 3000;
+      var WORD_REVEAL_DELAY_MS = 4000;
       var wordRevealTimer = null;
       var WORD_HINT_TXT = isGerman
         ? { press: "Tippe auf „Laut anhören“, um das Wort zu hören.", wait: "Hör gut zu … die Antworten erscheinen gleich." }
