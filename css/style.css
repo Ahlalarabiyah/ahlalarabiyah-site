@@ -2213,3 +2213,64 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 @media (prefers-reduced-motion: reduce) {
   .game-end-badge, .game-end.is-win #gameEndScore, .game-end.is-mid #gameEndScore, .game-end.is-lose #gameEndScore { animation: none; }
 }
+
+/* ---------- Score parfait (10/10) : trophee, rayons dores, score dore scintillant ---------- */
+.game-end.is-perfect > *:not(.game-confetti) { position: relative; z-index: 1; }
+.game-end.is-perfect::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: 780px;
+  height: 780px;
+  margin: -390px 0 0 -390px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(251, 191, 36, 0.24) 0 8deg, transparent 8deg 20deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0, transparent 66%);
+  mask-image: radial-gradient(circle, #000 0, transparent 66%);
+  animation: perfectRays 16s linear infinite;
+  pointer-events: none;
+}
+.game-end.is-perfect { background: radial-gradient(ellipse at 50% 30%, rgba(251, 191, 36, 0.3), transparent 64%); }
+.game-end.is-perfect .game-end-badge {
+  font-size: 5.2rem;
+  filter: drop-shadow(0 0 22px rgba(251, 191, 36, 0.85));
+  animation: perfectBadgeIn 0.9s cubic-bezier(.2, 1.6, .4, 1) both, perfectBadgeWiggle 2.6s ease-in-out 1s infinite;
+}
+.game-end-perfect-label {
+  display: inline-block;
+  margin: 0 0 10px !important;
+  padding: 5px 16px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #F59E0B, #FDE68A, #F59E0B);
+  color: #5B3A00 !important;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.95rem !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 0 24px rgba(251, 191, 36, 0.6);
+  animation: perfectLabelIn 0.6s 0.2s cubic-bezier(.2, 1.5, .4, 1) both;
+}
+.game-end.is-perfect #gameEndScore {
+  font-size: 4rem;
+  background: linear-gradient(100deg, #FDE68A 0%, #F59E0B 30%, #FFF7CC 50%, #F59E0B 70%, #FDE68A 100%);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  filter: drop-shadow(0 0 18px rgba(251, 191, 36, 0.7));
+  animation: endScorePop 0.6s 0.15s cubic-bezier(.2, 1.5, .4, 1) both, perfectShimmer 2.4s linear infinite;
+}
+.game-end.is-perfect .game-end-message { background: rgba(251, 191, 36, 0.16); border: 1px solid rgba(251, 191, 36, 0.6); }
+.game-confetti-star { background: none !important; width: auto !important; height: auto !important; line-height: 1; }
+@keyframes perfectRays { to { transform: rotate(360deg); } }
+@keyframes perfectShimmer { from { background-position: 0% 0; } to { background-position: -250% 0; } }
+@keyframes perfectBadgeIn { from { transform: scale(0) rotate(-200deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+@keyframes perfectBadgeWiggle { 0%, 100% { transform: rotate(0) scale(1); } 25% { transform: rotate(-8deg) scale(1.06); } 75% { transform: rotate(8deg) scale(1.06); } }
+@keyframes perfectLabelIn { from { transform: scale(0.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .game-end.is-perfect::before, .game-end.is-perfect .game-end-badge, .game-end-perfect-label, .game-end.is-perfect #gameEndScore { animation: none; }
+}

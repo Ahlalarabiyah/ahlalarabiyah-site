@@ -2986,29 +2986,45 @@
       // resultat. >= 80 % = objectif atteint (vert + confettis), 50-79 %
       // = presque (orange), < 50 % = on retente (rouge/corail).
       var END_MOODS = {
+        perfect: { emoji: "🏆" },
         win: { emoji: "🎉" },
         mid: { emoji: "👏" },
         lose: { emoji: "💪" }
       };
       var confettiTimer = null;
+      var confettiWave2Timer = null;
+      var PERFECT_LABEL = isGerman ? "Perfektes Ergebnis!" : isArabic ? "نتيجة مثالية!" : isRussian ? "Идеальный результат!" : isEnglish ? "Perfect score!" : "Score parfait !";
 
       function clearEndCelebration() {
-        gameEnd.classList.remove("is-win", "is-mid", "is-lose");
+        gameEnd.classList.remove("is-win", "is-mid", "is-lose", "is-perfect");
+        var label = gameEnd.querySelector(".game-end-perfect-label");
+        if (label) { label.remove(); }
+        if (confettiWave2Timer) { clearTimeout(confettiWave2Timer); confettiWave2Timer = null; }
         if (gameEndBadge) { gameEndBadge.hidden = true; gameEndBadge.textContent = ""; }
-        var old = gameEnd.querySelector(".game-confetti");
-        if (old) { old.remove(); }
+        gameEnd.querySelectorAll(".game-confetti").forEach(function (old) { old.remove(); });
         if (confettiTimer) { clearTimeout(confettiTimer); confettiTimer = null; }
       }
 
-      function launchConfetti() {
+      function launchConfetti(count, withStars) {
         if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
         var box = document.createElement("div");
         box.className = "game-confetti";
         box.setAttribute("aria-hidden", "true");
         var colors = ["#4ADE80", "#FBBF24", "#60A5FA", "#F472B6", "#FB923C", "#A78BFA", "#2DD4BF"];
-        for (var i = 0; i < 46; i++) {
+        for (var i = 0; i < count; i++) {
           var piece = document.createElement("span");
           piece.style.left = (Math.random() * 100) + "%";
+          if (withStars && i % 4 === 0) {
+            // etoiles dorees (score parfait)
+            piece.textContent = "★";
+            piece.className = "game-confetti-star";
+            piece.style.color = i % 8 === 0 ? "#FDE68A" : "#FBBF24";
+            piece.style.fontSize = (14 + Math.random() * 12) + "px";
+            piece.style.animationDelay = (Math.random() * 1.4) + "s";
+            piece.style.animationDuration = (2.6 + Math.random() * 2) + "s";
+            box.appendChild(piece);
+            continue;
+          }
           piece.style.background = colors[i % colors.length];
           piece.style.animationDelay = (Math.random() * 1.2) + "s";
           piece.style.animationDuration = (2.4 + Math.random() * 1.8) + "s";
@@ -3017,17 +3033,30 @@
           box.appendChild(piece);
         }
         gameEnd.appendChild(box);
-        confettiTimer = setTimeout(function () { box.remove(); confettiTimer = null; }, 6000);
+        confettiTimer = setTimeout(function () { box.remove(); confettiTimer = null; }, 6500);
       }
 
       function applyEndMood(pct) {
-        var mood = pct >= 80 ? "win" : pct >= 50 ? "mid" : "lose";
-        gameEnd.classList.add("is-" + mood);
+        // 100 % = score parfait : fete plus grande que le simple "objectif atteint"
+        var mood = pct >= 100 ? "perfect" : pct >= 80 ? "win" : pct >= 50 ? "mid" : "lose";
+        gameEnd.classList.add(mood === "perfect" ? "is-win" : "is-" + mood);
+        if (mood === "perfect") {
+          gameEnd.classList.add("is-perfect");
+          var label = document.createElement("p");
+          label.className = "game-end-perfect-label";
+          label.textContent = PERFECT_LABEL;
+          gameEnd.insertBefore(label, gameEnd.querySelector("h3"));
+        }
         if (gameEndBadge) {
           gameEndBadge.textContent = END_MOODS[mood].emoji;
           gameEndBadge.hidden = false;
         }
-        if (mood === "win") { launchConfetti(); }
+        if (mood === "win") { launchConfetti(46, false); }
+        if (mood === "perfect") {
+          launchConfetti(90, true);
+          // deuxieme volee de confettis pour prolonger la fete
+          confettiWave2Timer = setTimeout(function () { confettiWave2Timer = null; launchConfetti(70, true); }, 2200);
+        }
       }
 
       function showEnd() {
@@ -4574,7 +4603,17 @@
         renderDictee1Letter();
       });
       gamePlayBtn.addEventListener("click", onQuizListen);
-      gameNextBtn.addEventListener("click", nextQuestion);
+      gameNextBtn.addEventListener("click", function () {
+        nextQuestion();
+        // "Reconnaitre le mot" : apres "Question suivante", le mot se lance
+        // tout seul (le clic compte comme geste du joueur, donc Safari/iOS
+        // l'autorise) ; le bouton "Ecouter le son" reste la pour reecouter.
+        // La 1re question de la serie, elle, attend toujours l'appui.
+        if (gameState && gameState.category === "word" && gameEnd.hidden && gameState.current &&
+            !gameState.current.answered && !gameState.current.revealed) {
+          onQuizListen();
+        }
+      });
       gameSortSunBtn.addEventListener("click", function () {
         if (!gameState || gameState.category !== "sort") return;
         onSortAnswer("sun", gameSortSunBtn);
