@@ -2168,3 +2168,48 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
   from { opacity: 0; pointer-events: none; }
   to { opacity: 1; pointer-events: auto; }
 }
+
+/* ---------- Ecran de fin des jeux : version joyeuse, coloree selon le score ---------- */
+.game-end { position: relative; overflow: hidden; }
+.game-end-badge {
+  font-size: 4rem;
+  line-height: 1;
+  margin-bottom: 6px;
+  animation: endBadgePop 0.7s cubic-bezier(.2, 1.6, .4, 1) both, endBadgeBob 2.4s ease-in-out 0.8s infinite;
+}
+.game-end-badge[hidden] { display: none; }
+.game-end.is-win #gameEndScore, .game-end.is-mid #gameEndScore, .game-end.is-lose #gameEndScore {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 3.2rem;
+  line-height: 1.1;
+  margin-bottom: 20px;
+  animation: endScorePop 0.6s 0.15s cubic-bezier(.2, 1.5, .4, 1) both;
+}
+.game-end.is-win #gameEndScore { color: #4ADE80; text-shadow: 0 0 28px rgba(74, 222, 128, 0.55); }
+.game-end.is-mid #gameEndScore { color: #FBBF24; text-shadow: 0 0 28px rgba(251, 191, 36, 0.5); }
+.game-end.is-lose #gameEndScore { color: #FB7185; text-shadow: 0 0 28px rgba(251, 113, 133, 0.5); }
+.game-end.is-win .game-end-message { background: rgba(74, 222, 128, 0.16); border: 1px solid rgba(74, 222, 128, 0.5); }
+.game-end.is-mid .game-end-message { background: rgba(251, 191, 36, 0.14); border: 1px solid rgba(251, 191, 36, 0.5); }
+.game-end.is-lose .game-end-message { background: rgba(251, 113, 133, 0.14); border: 1px solid rgba(251, 113, 133, 0.5); }
+.game-end.is-win { background: radial-gradient(ellipse at 50% 28%, rgba(74, 222, 128, 0.22), transparent 62%); }
+.game-end.is-mid { background: radial-gradient(ellipse at 50% 28%, rgba(251, 191, 36, 0.18), transparent 62%); }
+.game-end.is-lose { background: radial-gradient(ellipse at 50% 28%, rgba(251, 113, 133, 0.2), transparent 62%); }
+@keyframes endBadgePop { from { transform: scale(0) rotate(-25deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+@keyframes endBadgeBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes endScorePop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.game-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.game-confetti span {
+  position: absolute;
+  top: -24px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0.9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .game-end-badge, .game-end.is-win #gameEndScore, .game-end.is-mid #gameEndScore, .game-end.is-lose #gameEndScore { animation: none; }
+}

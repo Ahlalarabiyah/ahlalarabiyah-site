@@ -2554,6 +2554,7 @@
       var gameNextBtn = document.getElementById("gameNextBtn");
       var gameEndScore = document.getElementById("gameEndScore");
       var gameEndMessage = document.getElementById("gameEndMessage");
+      var gameEndBadge = document.getElementById("gameEndBadge");
       var gameReplayBtn = document.getElementById("gameReplayBtn");
       var gameContinueBtn = document.getElementById("gameContinueBtn");
       var gamePrestartWarning = document.getElementById("gamePrestartWarning");
@@ -2981,6 +2982,54 @@
           (isGerman ? " richtig" : isArabic ? " إجابات صحيحة" : isRussian ? " правильных" : isEnglish ? " correct" : " bonnes réponses");
       }
 
+      // Ecran de fin "joyeux" : couleur, emoji et animation selon le
+      // resultat. >= 80 % = objectif atteint (vert + confettis), 50-79 %
+      // = presque (orange), < 50 % = on retente (rouge/corail).
+      var END_MOODS = {
+        win: { emoji: "🎉" },
+        mid: { emoji: "👏" },
+        lose: { emoji: "💪" }
+      };
+      var confettiTimer = null;
+
+      function clearEndCelebration() {
+        gameEnd.classList.remove("is-win", "is-mid", "is-lose");
+        if (gameEndBadge) { gameEndBadge.hidden = true; gameEndBadge.textContent = ""; }
+        var old = gameEnd.querySelector(".game-confetti");
+        if (old) { old.remove(); }
+        if (confettiTimer) { clearTimeout(confettiTimer); confettiTimer = null; }
+      }
+
+      function launchConfetti() {
+        if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        var box = document.createElement("div");
+        box.className = "game-confetti";
+        box.setAttribute("aria-hidden", "true");
+        var colors = ["#4ADE80", "#FBBF24", "#60A5FA", "#F472B6", "#FB923C", "#A78BFA", "#2DD4BF"];
+        for (var i = 0; i < 46; i++) {
+          var piece = document.createElement("span");
+          piece.style.left = (Math.random() * 100) + "%";
+          piece.style.background = colors[i % colors.length];
+          piece.style.animationDelay = (Math.random() * 1.2) + "s";
+          piece.style.animationDuration = (2.4 + Math.random() * 1.8) + "s";
+          piece.style.width = (6 + Math.random() * 6) + "px";
+          piece.style.height = (10 + Math.random() * 8) + "px";
+          box.appendChild(piece);
+        }
+        gameEnd.appendChild(box);
+        confettiTimer = setTimeout(function () { box.remove(); confettiTimer = null; }, 6000);
+      }
+
+      function applyEndMood(pct) {
+        var mood = pct >= 80 ? "win" : pct >= 50 ? "mid" : "lose";
+        gameEnd.classList.add("is-" + mood);
+        if (gameEndBadge) {
+          gameEndBadge.textContent = END_MOODS[mood].emoji;
+          gameEndBadge.hidden = false;
+        }
+        if (mood === "win") { launchConfetti(); }
+      }
+
       function showEnd() {
         gameBody.hidden = true;
         gameEnd.hidden = false;
@@ -2994,9 +3043,11 @@
         // bloque JAMAIS l'acces au module suivant - uniquement pour les
         // categories a score objectif (SCORED_CATEGORIES).
         var nextModuleBtn = document.querySelector('.js-open-game[data-module="' + (Number(gameState.moduleNumber) + 1) + '"]');
+        clearEndCelebration();
         if (SCORED_CATEGORIES[gameState.category]) {
           var pct = Math.round((gameState.score / QUESTIONS_PER_ROUND) * 100);
           saveModuleBestPct(gameState.moduleNumber, pct);
+          applyEndMood(pct);
           refreshModuleBadges();
           gameEndMessage.hidden = false;
           if (pct >= 80) {
@@ -4371,6 +4422,7 @@
         if (gameAudio) { gameAudio.pause(); }
         soundStop();
         clearWordReveal();
+        clearEndCelebration();
       }
 
       // Rappel non bloquant : si le module precedent n'a pas encore ete
