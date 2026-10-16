@@ -5091,7 +5091,15 @@
         var prevModule = Number(pendingModuleNumber) - 1;
         var prevBtn = document.querySelector('.js-open-game[data-module="' + prevModule + '"]');
         if (!prevBtn) { closeGame(); return; }
-        startGame(String(prevModule), prevBtn.getAttribute("data-title"));
+        // "Retour au Module N-1" ouvre ce module comme si on avait touche sa
+        // carte : s'il est lui-meme verrouille (80 % du module precedent non
+        // atteints), on affiche d'abord son propre rappel, et ainsi de suite.
+        var prevTitle = prevBtn.getAttribute("data-title");
+        if (moduleUnlockState(String(prevModule)) === "locked") {
+          openPrestartWarning(String(prevModule), prevTitle);
+          return;
+        }
+        startGame(String(prevModule), prevTitle);
       });
       gamePrestartContinueBtn.addEventListener("click", function () {
         saveModuleOverride(pendingModuleNumber);
