@@ -3407,6 +3407,7 @@
       // (fatha/damma/kasra) sur chaque lettre avant de valider. Pool filtre
       // par buildHarakatPool (voyelles simples uniquement pour l'instant).
       function nextHarakatQuestion() {
+        gameBody.classList.remove("is-harakat-answered");
         var pool = gameState.pool;
         var recentSet = recentWordSet("harakat", gameState.moduleNumber);
 
@@ -3431,10 +3432,30 @@
         renderScore();
       }
 
+      // Forme "tatwil + voyelle" : tatwil bleu fonce et voyelle rouge (copie rouge
+      // sous une copie bleue du tatwil seul, exactement superposees). Meme rendu pour
+      // les boutons a choisir et pour la voyelle posee dans une case : la voyelle est
+      // ancree sur le tatwil, donc centree dans la case.
+      function harakatFormEl(form) {
+        var full = document.createElement("span");
+        full.className = "harakat-form-full";
+        full.textContent = HARAKAT_LABEL[form];
+        var base = document.createElement("span");
+        base.className = "harakat-form-base";
+        base.setAttribute("aria-hidden", "true");
+        base.textContent = "\u0640";
+        var wrap = document.createElement("span");
+        wrap.className = "harakat-form";
+        wrap.appendChild(full);
+        wrap.appendChild(base);
+        return wrap;
+      }
+
       function renderHarakatSlotContent(idx) {
         var slot = gameState.current.slots[idx];
         var placeholder = harakatSlots.children[idx].querySelector(".harakat-slot-placeholder");
-        placeholder.textContent = slot.filled ? HARAKAT_MARK[slot.filled] : "";
+        placeholder.textContent = "";
+        if (slot.filled) { placeholder.appendChild(harakatFormEl(slot.filled)); }
         placeholder.className = "harakat-slot-placeholder" + (slot.filled ? " harakat-slot-placeholder-" + slot.filled : "");
       }
 
@@ -3485,20 +3506,7 @@
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "harakat-picker-btn harakat-picker-btn-" + form;
-          // Tatwil en bleu fonce, voyelle en rouge : copie rouge (tatwil + marque)
-          // sous une copie bleue du tatwil seul, exactement superposees (la
-          // marque reste ainsi a sa place naturelle, collee au tatwil).
-          var full = document.createElement("span");
-          full.className = "harakat-form-full";
-          full.textContent = HARAKAT_LABEL[form];
-          var base = document.createElement("span");
-          base.className = "harakat-form-base";
-          base.setAttribute("aria-hidden", "true");
-          base.textContent = "\u0640";
-          var wrap = document.createElement("span");
-          wrap.className = "harakat-form";
-          wrap.appendChild(full);
-          wrap.appendChild(base);
+          var wrap = harakatFormEl(form);
           btn.appendChild(wrap);
           btn.addEventListener("click", function () { armHarakat(form, btn); });
           harakatPicker.appendChild(btn);
@@ -3718,6 +3726,8 @@
         gameReadPanel.hidden = category !== "read";
         gameDicteePanel.hidden = category !== "dictee";
         gameHarakatPanel.hidden = category !== "harakat";
+        // vue compacte : tout (voyelles, mot, "Mot suivant") tient sans defiler
+        gameBody.classList.toggle("is-harakat-play", category === "harakat");
         gameSortPanel.hidden = category !== "sort";
         gameSortAllPanel.hidden = true;
         gameOrderPanel.hidden = true;
@@ -5238,7 +5248,7 @@
       var dictee1State = null;
 
       function hideAllGamePanels() {
-        gameBody.classList.remove("is-sound-play", "is-sound-long");
+        gameBody.classList.remove("is-sound-play", "is-sound-long", "is-harakat-play", "is-harakat-answered");
         gameQuizPanel.hidden = true;
         gameReadPanel.hidden = true;
         gameDicteePanel.hidden = true;
@@ -5360,7 +5370,7 @@
         gamePrestartWarning.hidden = true;
         if (gameAudio) { gameAudio.pause(); }
         soundStop();
-        gameBody.classList.remove("is-sound-play", "is-sound-long");
+        gameBody.classList.remove("is-sound-play", "is-sound-long", "is-harakat-play", "is-harakat-answered");
         clearWordReveal();
         clearEndCelebration();
         endReplayHandler = null;
@@ -5606,6 +5616,9 @@
       gameHarakatCheckBtn.addEventListener("click", function () {
         if (!gameState || !gameState.current || gameState.current.checked) return;
         gameState.current.checked = true;
+        // apres la verification : on masque les voyelles a poser (desactivees) et la
+        // consigne pour que le mot correct et "Mot suivant" restent visibles sans defiler
+        gameBody.classList.add("is-harakat-answered");
         var allCorrect = true;
         gameState.current.slots.forEach(function (slot, idx) {
           var isRight = slot.filled === unitForm(slot.unitId);

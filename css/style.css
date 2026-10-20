@@ -2542,3 +2542,74 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .referral-status { min-height: 1.3em; margin: 8px 0 0; font-size: 0.88rem; color: var(--color-teal-dark); font-weight: 600; }
 .referral-line { margin: 6px 0 0; font-family: var(--font-heading); font-weight: 700; color: var(--color-navy); }
 .referral-note { margin: 10px 0 0; font-size: 0.82rem; color: var(--color-text-light); }
+
+/* ---------- "Place les harakat" : vue compacte, tout tient sans defiler ---------- */
+/* Les tailles suivent la hauteur de l'ecran : lettres, cases, voyelles (sur une seule
+   ligne), mot correct et bouton "Mot suivant" restent visibles ensemble. */
+.game-body.is-harakat-play .game-panel { max-width: 800px; padding: 12px 22px 16px; }
+.game-body.is-harakat-play .game-instruction { margin-bottom: 8px; }
+.game-body.is-harakat-play .game-level-info { margin-bottom: 2px; }
+.game-body.is-harakat-play .game-score { margin-bottom: 6px; }
+.game-body.is-harakat-play .game-play-btn { margin-bottom: clamp(6px, 1.6vh, 18px); }
+.game-body.is-harakat-play .harakat-slot-base { font-size: clamp(1.9rem, 6.6vh, 2.6rem); line-height: 1.4; }
+.game-body.is-harakat-play .harakat-slots { margin-bottom: clamp(8px, 1.8vh, 18px); gap: 12px; }
+.game-body.is-harakat-play .harakat-slot { gap: clamp(6px, 1.2vh, 12px); }
+.game-body.is-harakat-play .harakat-slot-placeholder { width: clamp(46px, 8.4vh, 64px); height: clamp(46px, 8.4vh, 64px); font-size: clamp(1.9rem, 6.2vh, 2.8rem); }
+.game-body.is-harakat-play .harakat-picker { flex-wrap: nowrap; gap: 8px; margin-bottom: clamp(6px, 1.4vh, 14px); }
+.game-body.is-harakat-play .harakat-picker-btn {
+  flex: 1 1 0; min-width: 0; max-width: 84px;
+  width: auto; height: clamp(56px, 10.4vh, 84px); font-size: clamp(2.1rem, 7.4vh, 3.1rem);
+}
+.game-body.is-harakat-play .harakat-picker-btn-kasra, .game-body.is-harakat-play .harakat-picker-btn-shadda-kasra { padding-bottom: clamp(14px, 3.2vh, 28px); }
+.game-body.is-harakat-play .game-read-word { font-size: clamp(2.2rem, 7.6vh, 3.2rem); margin-bottom: clamp(8px, 1.6vh, 20px); line-height: 1.35; }
+.game-body.is-harakat-play .game-feedback { margin-bottom: clamp(6px, 1.2vh, 14px); }
+@media (max-width: 560px) {
+  .game-body.is-harakat-play .harakat-picker { flex-wrap: wrap; }
+  .game-body.is-harakat-play .harakat-picker-btn { flex: 0 0 auto; width: clamp(56px, 18vw, 72px); height: clamp(56px, 18vw, 72px); font-size: clamp(2rem, 8vw, 2.7rem); }
+}
+.game-body.is-harakat-answered .harakat-picker,
+.game-body.is-harakat-answered .game-harakat-panel .game-read-hint,
+.game-body.is-harakat-answered .game-level-info { display: none; }
+
+/* Voyelle posee dans une case : ancree sur le tatwil (centree), sans decalage de remplissage ;
+   blanche sur fond vert / rouge (juste / faux). Plus d'ecart entre la lettre et sa case. */
+.harakat-slot-placeholder .harakat-form { line-height: 1; }
+.harakat-slot-placeholder-kasra, .harakat-slot-placeholder-shadda-kasra { padding-bottom: 0; }
+.harakat-slot.is-correct .harakat-form-full, .harakat-slot.is-correct .harakat-form-base,
+.harakat-slot.is-wrong .harakat-form-full, .harakat-slot.is-wrong .harakat-form-base { color: #fff; }
+.harakat-slot { gap: 22px; }
+.game-body.is-harakat-play .harakat-slot { gap: clamp(16px, 2.8vh, 24px); }
+.game-body.is-harakat-play .harakat-slot-placeholder { width: clamp(54px, 9.4vh, 72px); height: clamp(54px, 9.4vh, 72px); font-size: clamp(1.5rem, 4.6vh, 2rem); }
+.game-body.is-harakat-play .harakat-slot-placeholder-kasra, .game-body.is-harakat-play .harakat-slot-placeholder-shadda-kasra { padding-bottom: 0; }
+.game-body.is-harakat-answered #gameInstruction { display: none; }
+@media (max-width: 560px) {
+  .game-body.is-harakat-play .harakat-slot-placeholder { width: clamp(46px, 14vw, 60px); height: clamp(46px, 14vw, 60px); }
+}
+
+.harakat-slot-placeholder { font-size: 2.1rem; }
+.harakat-slot-placeholder .harakat-form { transform: translateY(-1px); }
+.game-body.is-harakat-play .game-harakat-panel .game-read-hint { margin: 4px 0 8px; }
+.game-body.is-harakat-play { padding-bottom: 6px; }
+.game-body.is-harakat-play .game-read-word { margin-bottom: clamp(14px, 2.8vh, 26px); line-height: 1.5; }
+/* Voyelle posee dans sa case : on decale la forme selon la position de la marque pour que
+   tatwil + marque restent entierement DANS la case (kasra vers le haut, marques du dessus
+   vers le bas). */
+.harakat-slot-placeholder .harakat-form { transform: none; }
+.harakat-slot-placeholder-kasra .harakat-form { transform: translateY(-0.34em); }
+.harakat-slot-placeholder-fatha .harakat-form,
+.harakat-slot-placeholder-damma .harakat-form,
+.harakat-slot-placeholder-sukoon .harakat-form { transform: translateY(0.3em); }
+.harakat-slot-placeholder-shadda-fatha .harakat-form,
+.harakat-slot-placeholder-shadda-damma .harakat-form { transform: translateY(0.42em); }
+.harakat-slot-placeholder-shadda-kasra .harakat-form { transform: translateY(-0.12em); }
+
+/* Harakat : espace clair entre les lettres et les cases (lettres remontees) */
+.game-body.is-harakat-play .harakat-slot-base { transform: translateY(clamp(-14px, -2vh, -8px)); }
+.game-body.is-harakat-play .harakat-slot { gap: clamp(24px, 4.2vh, 36px); }
+
+/* Harakat : voyelles du choix (kasra comprise) DANS les boutons */
+.harakat-picker-btn-kasra, .harakat-picker-btn-shadda-kasra,
+.game-body.is-harakat-play .harakat-picker-btn-kasra, .game-body.is-harakat-play .harakat-picker-btn-shadda-kasra { padding-bottom: 0; }
+.harakat-picker-btn .harakat-form { line-height: 1; }
+.harakat-picker-btn-kasra .harakat-form { transform: translateY(-0.5em); }
+.harakat-picker-btn-shadda-kasra .harakat-form { font-size: .76em; transform: translateY(-0.26em); }
