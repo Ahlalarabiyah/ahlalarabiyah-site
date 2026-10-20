@@ -2604,6 +2604,12 @@
       var order5CheckBtn = document.getElementById("order5CheckBtn");
       var order5NextBtn = document.getElementById("order5NextBtn");
       var order5RevealBtn = document.getElementById("order5RevealBtn");
+      var gamePuzzlePanel = document.getElementById("gamePuzzlePanel");
+      var puzzleOpts = document.getElementById("puzzleOpts");
+      var puzzleListenBtn = document.getElementById("puzzleListenBtn");
+      var puzzleFeedback = document.getElementById("puzzleFeedback");
+      var puzzleLegend = document.getElementById("puzzleLegend");
+      var puzzleNextBtn = document.getElementById("puzzleNextBtn");
       var gameSoundPanel = document.getElementById("gameSoundPanel");
       var soundSetup = document.getElementById("soundSetup");
       var soundPlay = document.getElementById("soundPlay");
@@ -3717,6 +3723,7 @@
         gameOrderPanel.hidden = true;
         gameSoundPanel.hidden = true;
         gameOrder5Panel.hidden = true;
+        gamePuzzlePanel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -3879,6 +3886,7 @@
         gameOrderPanel.hidden = true;
         gameSoundPanel.hidden = true;
         gameOrder5Panel.hidden = true;
+        gamePuzzlePanel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -4282,6 +4290,7 @@
         gameOrderPanel.hidden = false;
         gameSoundPanel.hidden = true;
         gameOrder5Panel.hidden = true;
+        gamePuzzlePanel.hidden = true;
         gameModal.classList.add("is-open");
         document.body.style.overflow = "hidden";
         resetOrderGame();
@@ -4601,6 +4610,268 @@
             if (order5State && !gameOrder5Panel.hidden) { renderOrder5(); }
           });
         }
+      }
+
+      // "Puzzle" (Module 16, jeu libre) : on entend un mot, puis on choisit sa
+      // bonne ecriture parmi 4 propositions (1 bonne + 3 fausses). Les fausses
+      // gardent les bonnes lettres mais cassent une ou deux liaisons : un madd
+      // non attache alors qu'il devrait l'etre, une lettre attachee "par
+      // derriere", toutes les lettres isolees... Serie de 5 mots.
+      var PUZZLE_ROUNDS = 5;
+      var PUZZLE_TXT = {
+        fr: { listen: "🔊 Écouter le mot", again: "🔊 Réécouter", ok: "Bravo, c’est la bonne écriture !", ko: "Pas tout à fait — voici la bonne écriture.", legend: "Chaque lettre prend sa forme selon ses voisines :", next: "Mot suivant →", result: "Voir mon résultat →", great: "Excellent, tu reconnais très bien l’écriture des mots !", mid: "Bien joué ! Encore un peu d’entraînement et ce sera parfait.", low: "Continue de t’entraîner : observe bien comment les lettres se lient, puis reviens jouer.", forms: { isolated: "isolée", initial: "début", medial: "milieu", final: "fin" } },
+        en: { listen: "🔊 Listen to the word", again: "🔊 Listen again", ok: "Well done, that is the correct spelling!", ko: "Not quite — here is the correct spelling.", legend: "Each letter takes its shape from its neighbours:", next: "Next word →", result: "See my result →", great: "Excellent, you recognise how words are written very well!", mid: "Well played! A little more practice and it will be perfect.", low: "Keep practising: look closely at how the letters join, then come back and play.", forms: { isolated: "isolated", initial: "initial", medial: "medial", final: "final" } },
+        ru: { listen: "🔊 Послушать слово", again: "🔊 Послушать ещё раз", ok: "Верно, это правильное написание!", ko: "Не совсем — вот правильное написание.", legend: "Каждая буква меняет форму в зависимости от соседей:", next: "Следующее слово →", result: "Посмотреть результат →", great: "Отлично, ты очень хорошо знаешь, как пишутся слова!", mid: "Хорошо сыграно! Ещё немного практики, и будет идеально.", low: "Продолжай тренироваться: внимательно смотри, как соединяются буквы, и возвращайся играть.", forms: { isolated: "отдельная", initial: "в начале", medial: "в середине", final: "в конце" } },
+        de: { listen: "🔊 Wort anhören", again: "🔊 Nochmal anhören", ok: "Richtig, das ist die richtige Schreibweise!", ko: "Nicht ganz — hier ist die richtige Schreibweise.", legend: "Jeder Buchstabe nimmt seine Form je nach Nachbarn an:", next: "Nächstes Wort →", result: "Ergebnis ansehen →", great: "Ausgezeichnet, du erkennst die Schreibweise der Wörter sehr gut!", mid: "Gut gespielt! Noch etwas Übung und es wird perfekt.", low: "Übe weiter: Achte genau darauf, wie sich die Buchstaben verbinden, und komm dann zurück zum Spielen.", forms: { isolated: "einzeln", initial: "Anfang", medial: "Mitte", final: "Ende" } },
+        ar: { listen: "🔊 استمع إلى الكلمة", again: "🔊 استمع مرة أخرى", ok: "أحسنت، هذه هي الكتابة الصحيحة!", ko: "ليس تمامًا — هذه هي الكتابة الصحيحة.", legend: "يتخذ كل حرف شكله بحسب جاره:", next: "الكلمة التالية ←", result: "عرض النتيجة ←", great: "ممتاز، أنت تعرف كتابة الكلمات جيدًا جدًا!", mid: "لعبٌ جيد! قليل من التدريب وسيكون الأداء مثاليًا.", low: "واصل التدرّب: لاحظ جيدًا كيف تتصل الحروف ثم عد للعب.", forms: { isolated: "منفصل", initial: "أول", medial: "وسط", final: "آخر" } }
+      }[ORDER_LANG];
+      // Lettres arabes de base gerees (ni hamza sur ligne, ni ta marbouta, ni alif maqsura...).
+      var PUZZLE_CONNECTS = "بتثجحخسشصضطظعغفقكلمنهي";                        // se lient a la lettre suivante
+      var PUZZLE_NO_CONNECT = "اأإآدذرزو";                                   // ne se lient pas a la suivante
+      var PUZZLE_MARK = /[ً-ْٰ]/;
+      var PUZZLE_ZWJ = "‍";
+      var PUZZLE_ZWNJ = "‌";
+      var puzzleState = null;
+      var puzzleWordCache = null;
+
+      function puzzleConnects(ch) { return PUZZLE_CONNECTS.indexOf(ch) !== -1; }
+
+      // "خَرَجَ" -> [{ ch: "خ", marks: "َ" }, ...]
+      function puzzleClusters(text) {
+        var out = [];
+        text.split("").forEach(function (c) {
+          if (PUZZLE_MARK.test(c) && out.length) { out[out.length - 1].marks += c; } else { out.push({ ch: c, marks: "" }); }
+        });
+        return out;
+      }
+
+      // Mots reels du site avec enregistrement, dont toutes les lettres sont gerees
+      // et sans lam-alif (ligature qu'un caractere de jonction casserait).
+      function puzzleWords() {
+        if (puzzleWordCache) return puzzleWordCache;
+        function ok(arabic) {
+          var bare = arabic.replace(/[ً-ْٰ]/g, "");
+          if (!bare || /\s/.test(bare)) return false;
+          if (/ل[اأإآ]/.test(bare)) return false;
+          return bare.split("").every(function (c) { return PUZZLE_CONNECTS.indexOf(c) !== -1 || PUZZLE_NO_CONNECT.indexOf(c) !== -1; }) && bare.length >= 3;
+        }
+        function from(list, folder) {
+          return list.filter(function (w) { return w.audioId && w.arabic && ok(w.arabic); }).map(function (w) {
+            return { key: folder + ":" + w.id, arabic: w.arabic, audio: ROOT_BASE + "assets/audio/" + folder + "/" + w.audioId + ".m4a?v=" + AUDIO_VERSION };
+          });
+        }
+        puzzleWordCache = from(WORDS, "words").concat(from(WORDS_REAL, "mots-reels"));
+        return puzzleWordCache;
+      }
+
+      function puzzleCorrectFlags(cl) {
+        return cl.map(function (c, i) {
+          return { pre: i > 0 && puzzleConnects(cl[i - 1].ch), post: i < cl.length - 1 && puzzleConnects(c.ch) };
+        });
+      }
+      function puzzleCorrectForms(cl) {
+        return puzzleCorrectFlags(cl).map(function (f) { return f.pre && f.post ? "medial" : f.pre ? "final" : f.post ? "initial" : "isolated"; });
+      }
+      function puzzleRender(cl, flags, spaced) {
+        return cl.map(function (c, i) {
+          return (flags[i].pre ? PUZZLE_ZWJ : PUZZLE_ZWNJ) + c.ch + c.marks + (flags[i].post ? PUZZLE_ZWJ : PUZZLE_ZWNJ);
+        }).join(spaced ? " " : "");
+      }
+      // signature visuelle : une lettre qui ne se lie jamais vers l'avant n'a pas de "post"
+      function puzzleSignature(cl, flags) {
+        return cl.map(function (c, i) { return (flags[i].pre ? "1" : "0") + (puzzleConnects(c.ch) && flags[i].post ? "1" : "0"); }).join("");
+      }
+
+      // 3 fausses propositions bien differentes entre elles et de la bonne : on part de la
+      // bonne ecriture et on "casse" une ou deux liaisons (coupee la ou elle devrait
+      // exister, ou ajoutee "par derriere"), avec une preference pour un madd non attache.
+      function puzzleWrongVariants(cl, good) {
+        var flips = [];
+        cl.forEach(function (c, i) {
+          flips.push({ i: i, k: "pre" });
+          if (puzzleConnects(c.ch)) { flips.push({ i: i, k: "post" }); }
+        });
+        var cands = [];
+        var seen = {};
+        seen[puzzleSignature(cl, good)] = true;
+        function applied(set) {
+          var f = good.map(function (x) { return { pre: x.pre, post: x.post }; });
+          set.forEach(function (st) { f[st.i][st.k] = !f[st.i][st.k]; });
+          return f;
+        }
+        function add(flags, weight) {
+          var sg = puzzleSignature(cl, flags);
+          if (seen[sg]) return;
+          seen[sg] = true;
+          cands.push({ flags: flags, sig: sg, weight: weight });
+        }
+        flips.forEach(function (st) { add(applied([st]), 2); });
+        for (var x = 0; x < flips.length; x++) {
+          for (var y = x + 1; y < flips.length; y++) { add(applied([flips[x], flips[y]]), 1); }
+        }
+        cands.forEach(function (c) {
+          cl.forEach(function (cc, i) { if (/[اوي]/.test(cc.ch) && i > 0 && good[i].pre && !c.flags[i].pre) { c.weight += 3; } });
+        });
+        function dist(a, b) { var d = 0; for (var q = 0; q < a.length; q++) { if (a.charAt(q) !== b.charAt(q)) { d++; } } return d; }
+        var picks = [];
+        var chosen = [puzzleSignature(cl, good)];
+        var pool = cands.slice();
+        while (picks.length < 3 && pool.length) {
+          var far = pool.filter(function (c) {
+            return Math.min.apply(null, chosen.map(function (sg) { return dist(c.sig, sg); })) >= 2;
+          });
+          var from = far.length ? far : pool;
+          var total = from.reduce(function (sum, c) { return sum + c.weight; }, 0);
+          var r = Math.random() * total;
+          var k = 0;
+          for (; k < from.length - 1; k++) { r -= from[k].weight; if (r <= 0) break; }
+          var pick = from[k];
+          pool.splice(pool.indexOf(pick), 1);
+          chosen.push(pick.sig);
+          picks.push(puzzleRender(cl, pick.flags, false));
+        }
+        // de temps en temps, toutes les lettres isolees et espacees
+        if (picks.length && Math.random() < 0.3) {
+          picks[Math.floor(Math.random() * picks.length)] = puzzleRender(cl, cl.map(function () { return { pre: false, post: false }; }), true);
+        }
+        return picks;
+      }
+
+      function puzzlePlay() {
+        var st = puzzleState;
+        if (!st || !st.current) return;
+        if (gameAudio) { gameAudio.pause(); }
+        gameAudio = new Audio(st.current.word.audio);
+        gameAudio.play().catch(function () {});
+        puzzleListenBtn.textContent = PUZZLE_TXT.again;
+      }
+
+      function puzzleRenderProgress() {
+        var st = puzzleState;
+        progressReset();
+        progressLabel(PROGRESS_UNIT.word + " " + Math.min(st.idx + 1, PUZZLE_ROUNDS) + " / " + PUZZLE_ROUNDS);
+        var dots = document.createElement("span");
+        dots.className = "game-progress-dots";
+        dots.setAttribute("aria-hidden", "true");
+        for (var i = 0; i < PUZZLE_ROUNDS; i++) {
+          var dot = document.createElement("i");
+          var r = st.results[i];
+          dot.className = r === true ? "is-right" : r === false ? "is-wrong" : i === st.idx ? "is-current" : "";
+          dots.appendChild(dot);
+        }
+        gameScoreEl.appendChild(dots);
+        var score = document.createElement("span");
+        score.className = "game-progress-score";
+        score.textContent = "✓ " + st.score;
+        gameScoreEl.appendChild(score);
+      }
+
+      function puzzleStartRound(autoPlay) {
+        var st = puzzleState;
+        var word = st.words[st.idx];
+        var cl = puzzleClusters(word.arabic);
+        var good = puzzleCorrectFlags(cl);
+        var opts = shuffleArray([{ text: word.arabic, ok: true }].concat(puzzleWrongVariants(cl, good).map(function (t) { return { text: t, ok: false }; })));
+        st.current = { word: word, cl: cl, opts: opts, answered: false };
+        puzzleOpts.innerHTML = "";
+        opts.forEach(function (o) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "puzzle-opt";
+          btn.textContent = o.text;
+          btn.addEventListener("click", function () { puzzleAnswer(o, btn); });
+          o.el = btn;
+          puzzleOpts.appendChild(btn);
+        });
+        puzzleFeedback.hidden = true;
+        puzzleFeedback.className = "game-feedback";
+        puzzleFeedback.textContent = "";
+        puzzleLegend.hidden = true;
+        puzzleLegend.innerHTML = "";
+        puzzleNextBtn.hidden = true;
+        puzzleListenBtn.textContent = PUZZLE_TXT.listen;
+        puzzleRenderProgress();
+        if (autoPlay) { puzzlePlay(); }
+      }
+
+      function puzzleAnswer(o, btn) {
+        var st = puzzleState;
+        var cur = st && st.current;
+        if (!cur || cur.answered) return;
+        cur.answered = true;
+        st.results[st.idx] = o.ok;
+        if (o.ok) { st.score += 1; }
+        playResultFx(o.ok);
+        cur.opts.forEach(function (x) { x.el.disabled = true; if (x.ok) { x.el.classList.add("is-correct"); } });
+        if (!o.ok) { btn.classList.add("is-wrong"); }
+        puzzleFeedback.hidden = false;
+        puzzleFeedback.className = "game-feedback " + (o.ok ? "is-correct" : "is-wrong");
+        puzzleFeedback.textContent = o.ok ? PUZZLE_TXT.ok : PUZZLE_TXT.ko;
+        // forme de chaque lettre dans le mot
+        var forms = puzzleCorrectForms(cur.cl);
+        puzzleLegend.innerHTML = "";
+        var intro = document.createElement("span");
+        intro.className = "puzzle-legend-intro";
+        intro.textContent = PUZZLE_TXT.legend;
+        puzzleLegend.appendChild(intro);
+        var tags = document.createElement("span");
+        tags.className = "puzzle-legend-tags";
+        cur.cl.forEach(function (c, i) {
+          var tag = document.createElement("span");
+          tag.className = "puzzle-tag puzzle-tag-" + forms[i];
+          var letter = document.createElement("span");
+          letter.className = "puzzle-tag-letter";
+          letter.setAttribute("lang", "ar");
+          letter.textContent = c.ch;
+          tag.appendChild(letter);
+          tag.appendChild(document.createTextNode(" " + PUZZLE_TXT.forms[forms[i]]));
+          tags.appendChild(tag);
+        });
+        puzzleLegend.appendChild(tags);
+        puzzleLegend.hidden = false;
+        puzzleNextBtn.textContent = st.idx + 1 >= PUZZLE_ROUNDS ? PUZZLE_TXT.result : PUZZLE_TXT.next;
+        puzzleNextBtn.hidden = false;
+        puzzleRenderProgress();
+      }
+
+      function puzzleNext() {
+        var st = puzzleState;
+        if (!st || !st.current || !st.current.answered) return;
+        st.idx += 1;
+        if (st.idx >= PUZZLE_ROUNDS) {
+          if (gameAudio) { gameAudio.pause(); }
+          var pct = Math.round(st.score / PUZZLE_ROUNDS * 100);
+          showGameEnd({
+            scoreText: st.score + " / " + PUZZLE_ROUNDS,
+            pct: pct,
+            message: pct >= 80 ? PUZZLE_TXT.great : pct >= 50 ? PUZZLE_TXT.mid : PUZZLE_TXT.low,
+            onReplay: function () { startPuzzleGame(menuTitle); },
+            back: false
+          });
+          return;
+        }
+        // le clic sur "suivant" est un geste du joueur : le mot se lance tout seul
+        puzzleStartRound(true);
+      }
+
+      function startPuzzleGame(title) {
+        var words = shuffleArray(puzzleWords()).slice(0, PUZZLE_ROUNDS);
+        if (words.length < PUZZLE_ROUNDS) return;
+        menuTitle = title;
+        gameModalTitle.textContent = title;
+        gamePrestartWarning.hidden = true;
+        gameMenuScreen.hidden = true;
+        gameEnd.hidden = true;
+        gameBody.hidden = false;
+        gameLevelInfo.textContent = "";
+        gameScoreEl.textContent = "";
+        gameBackToMenuBtn.hidden = true;
+        hideAllGamePanels();
+        gamePuzzlePanel.hidden = false;
+        gameModal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        puzzleState = { words: words, idx: 0, results: [], score: 0, current: null };
+        puzzleStartRound(false);
       }
 
       // "Retrouve le son dans le tableau" (Module 15, jeu libre chronometre) :
@@ -4977,6 +5248,7 @@
         gameOrderPanel.hidden = true;
         gameSoundPanel.hidden = true;
         gameOrder5Panel.hidden = true;
+        gamePuzzlePanel.hidden = true;
         gameDictee1Panel.hidden = true;
       }
 
@@ -5191,6 +5463,13 @@
       order5CheckBtn.addEventListener("click", order5Check);
       order5NextBtn.addEventListener("click", order5Next);
       order5RevealBtn.addEventListener("click", order5Reveal);
+      document.querySelectorAll(".js-open-puzzle-game").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          startPuzzleGame(btn.getAttribute("data-title"));
+        });
+      });
+      puzzleListenBtn.addEventListener("click", puzzlePlay);
+      puzzleNextBtn.addEventListener("click", puzzleNext);
       document.querySelectorAll(".js-open-sound-game").forEach(function (btn) {
         btn.addEventListener("click", function () {
           startSoundGame(btn.getAttribute("data-title"));

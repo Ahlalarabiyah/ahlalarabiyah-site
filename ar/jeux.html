@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=154">
+<link rel="stylesheet" href="../css/style.css?v=155">
 </head>
 <body>
 
@@ -248,6 +248,18 @@
           </button>
         </article>
 
+        <article class="module-card module-card-bonus">
+          <span class="module-number">الوحدة 16</span>
+          <p class="module-letters">ت ا ج ر</p>
+          <p class="module-progress">أحجية: الكتابة الصحيحة</p>
+          <p class="module-audio-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>تمرين استماع</p>
+          <button type="button" class="btn btn-primary btn-sm module-listen js-open-puzzle-game"
+                  data-title="الوحدة 16 — أحجية: الكتابة الصحيحة">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+            العب
+          </button>
+        </article>
+
       </div>
 
       <p class="page-cta-back"><a href="modules.html" class="btn btn-outline btn-sm">اكتشف الوحدات ←</a></p>
@@ -411,6 +423,15 @@
         <button type="button" class="btn btn-outline btn-sm" id="order5RevealBtn" hidden>عرض الإجابة الصحيحة</button>
         <button type="button" class="btn btn-primary btn-sm" id="order5NextBtn" hidden></button>
       </div>
+      <div class="game-puzzle-panel" id="gamePuzzlePanel" hidden>
+        <p class="game-instruction">استمع إلى الكلمة ثم اختر كتابتها الصحيحة: أشكال الحروف الصحيحة والوصل الصحيح.</p>
+        <div class="puzzle-listen"><button type="button" class="btn btn-primary btn-sm" id="puzzleListenBtn"></button></div>
+        <p class="puzzle-question">كيف تُكتب الكلمة كتابةً صحيحة؟</p>
+        <div class="puzzle-opts" id="puzzleOpts"></div>
+        <p class="game-feedback" id="puzzleFeedback" hidden></p>
+        <div class="puzzle-legend" id="puzzleLegend" hidden></div>
+        <button type="button" class="btn btn-primary btn-sm" id="puzzleNextBtn" hidden></button>
+      </div>
       <div class="game-sound-panel" id="gameSoundPanel" hidden>
         <div id="soundSetup">
           <p class="game-instruction">استمع إلى الصوت ثم المس المربع الصحيح في الجدول قبل انتهاء العدّ التنازلي.</p>
@@ -492,6 +513,6 @@
   </div>
 </div>
 
-<script src="../js/main.js?v=185"></script>
+<script src="../js/main.js?v=186"></script>
 </body>
 </html>

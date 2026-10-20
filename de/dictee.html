@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=154">
+<link rel="stylesheet" href="../css/style.css?v=155">
 </head>
 <body>
 
@@ -301,6 +301,15 @@
         <button type="button" class="btn btn-outline btn-sm" id="order5RevealBtn" hidden>Lösung anzeigen</button>
         <button type="button" class="btn btn-primary btn-sm" id="order5NextBtn" hidden></button>
       </div>
+      <div class="game-puzzle-panel" id="gamePuzzlePanel" hidden>
+        <p class="game-instruction">Höre das Wort und wähle die richtige Schreibweise: die richtigen Buchstabenformen und Verbindungen.</p>
+        <div class="puzzle-listen"><button type="button" class="btn btn-primary btn-sm" id="puzzleListenBtn"></button></div>
+        <p class="puzzle-question">Wie wird das Wort richtig geschrieben?</p>
+        <div class="puzzle-opts" id="puzzleOpts"></div>
+        <p class="game-feedback" id="puzzleFeedback" hidden></p>
+        <div class="puzzle-legend" id="puzzleLegend" hidden></div>
+        <button type="button" class="btn btn-primary btn-sm" id="puzzleNextBtn" hidden></button>
+      </div>
       <div class="game-sound-panel" id="gameSoundPanel" hidden>
         <div id="soundSetup">
           <p class="game-instruction">Höre den Laut und tippe auf das richtige Feld der Tabelle, bevor der Countdown abläuft.</p>
@@ -382,6 +391,6 @@
   </div>
 </div>
 
-<script src="../js/main.js?v=185"></script>
+<script src="../js/main.js?v=186"></script>
 </body>
 </html>
