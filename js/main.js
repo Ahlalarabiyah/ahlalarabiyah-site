@@ -4340,11 +4340,65 @@
 
       function order5Fill(text, n, t) { return text.replace("{n}", n).replace("{t}", t); }
 
-      // 5 positions de depart distinctes dans l'alphabet (0 a 23).
+      // Choix des 3 suites de 5 lettres d'une partie. Deux garde-fous pour que
+      // "ca ne tourne pas toujours autour des memes lettres" :
+      //  1. une suite dans chaque tiers de l'alphabet (debut, milieu, fin),
+      //     sans chevauchement, melangees dans l'ordre des manches ;
+      //  2. a l'interieur d'un tiers, les suites qui contiennent les lettres
+      //     les moins vues sont favorisees (compteur memorise sur
+      //     l'appareil, localStorage) : sans cela, les lettres du milieu
+      //     (presentes dans 5 suites possibles) sortaient 5 fois plus que
+      //     alif ou ya (presentes dans une seule).
+      var ORDER5_SEEN_KEY = "ahl_order5_seen_v1";
+      var ORDER5_TOTAL = 28;
+      function order5LoadSeen() {
+        try {
+          var raw = JSON.parse(localStorage.getItem(ORDER5_SEEN_KEY));
+          if (Array.isArray(raw) && raw.length === ORDER5_TOTAL) {
+            return raw.map(function (n) { return Number(n) || 0; });
+          }
+        } catch (e) { /* stockage indisponible : tirage sans memoire */ }
+        var empty = [];
+        for (var i = 0; i < ORDER5_TOTAL; i++) { empty.push(0); }
+        return empty;
+      }
+      function order5SaveSeen(seen) {
+        try { localStorage.setItem(ORDER5_SEEN_KEY, JSON.stringify(seen)); } catch (e) { /* ignore */ }
+      }
       function order5PickStarts() {
-        var starts = [];
-        for (var i = 0; i <= 28 - ORDER5_SIZE; i++) { starts.push(i); }
-        return shuffleArray(starts).slice(0, ORDER5_ROUNDS);
+        var seen = order5LoadSeen();
+        var lastStart = ORDER5_TOTAL - ORDER5_SIZE;               // 23
+        var zones = [[0, 7], [8, 15], [16, lastStart]];            // tiers de l'alphabet
+        var picks = [];
+        zones.forEach(function (zone) {
+          // pas de chevauchement avec la suite du tiers precedent
+          var from = Math.max(zone[0], picks.length ? picks[picks.length - 1] + ORDER5_SIZE : 0);
+          var starts = [];
+          var weights = [];
+          for (var s = from; s <= zone[1]; s++) {
+            var w = 0;
+            for (var l = s; l < s + ORDER5_SIZE; l++) { w += 1 / Math.pow(1 + seen[l], 2); }
+            starts.push(s);
+            weights.push(w);
+          }
+          var total = weights.reduce(function (a, b) { return a + b; }, 0);
+          var r = Math.random() * total;
+          var pick = starts[starts.length - 1];
+          for (var i = 0; i < starts.length; i++) {
+            r -= weights[i];
+            if (r <= 0) { pick = starts[i]; break; }
+          }
+          picks.push(pick);
+        });
+        picks.forEach(function (s) {
+          for (var l = s; l < s + ORDER5_SIZE; l++) { seen[l] += 1; }
+        });
+        // compteurs relatifs et bornes : on retire le minimum commun et on
+        // plafonne l'ecart, pour qu'un ancien historique ne fige pas le tirage
+        var min = Math.min.apply(null, seen);
+        seen = seen.map(function (n) { return Math.min(n - min, 8); });
+        order5SaveSeen(seen);
+        return shuffleArray(picks);
       }
 
       function order5StartRound() {
