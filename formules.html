@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=155">
+<link rel="stylesheet" href="css/style.css?v=157">
 </head>
 <body>
 
@@ -72,6 +72,7 @@
           Acheter quelques modules, suivre le parcours de dictées, s’abonner ou prendre
           l’accès à vie&nbsp;: choisissez la façon d’accéder aux contenus qui vous convient.
         </p>
+        <p class="pricing-free"><span aria-hidden="true">✓</span> Les modules 1 et 2 sont gratuits.</p>
       </div>
     </div>
   </section>
@@ -98,7 +99,6 @@
             </div>
             <p class="picker-step"><span class="picker-step-num">2</span> Choisis tes modules <span class="picker-counter" id="pickerCounter"></span></p>
             <div class="module-chips" id="moduleChips">
-            <button type="button" class="module-chip" data-module="2" aria-pressed="false"><span class="module-chip-num">Module 2</span><span class="module-chip-letters" lang="ar" dir="rtl">ب ت ث</span></button>
             <button type="button" class="module-chip" data-module="3" aria-pressed="false"><span class="module-chip-num">Module 3</span><span class="module-chip-letters" lang="ar" dir="rtl">ج ح خ</span></button>
             <button type="button" class="module-chip" data-module="4" aria-pressed="false"><span class="module-chip-num">Module 4</span><span class="module-chip-letters" lang="ar" dir="rtl">د ذ</span></button>
             <button type="button" class="module-chip" data-module="5" aria-pressed="false"><span class="module-chip-num">Module 5</span><span class="module-chip-letters" lang="ar" dir="rtl">ر ز</span></button>
@@ -110,7 +110,7 @@
             <button type="button" class="module-chip" data-module="11" aria-pressed="false"><span class="module-chip-num">Module 11</span><span class="module-chip-letters" lang="ar" dir="rtl">ل م ن</span></button>
             <button type="button" class="module-chip" data-module="12" aria-pressed="false"><span class="module-chip-num">Module 12</span><span class="module-chip-letters" lang="ar" dir="rtl">ه و ي</span></button>
             </div>
-            <p class="picker-free">Le Module 1 (<span lang="ar" dir="rtl">أ</span>) est offert.</p>
+            <p class="picker-free">Les modules 1 (<span lang="ar" dir="rtl">أ</span>) et 2 (<span lang="ar" dir="rtl">ب ت ث</span>) sont gratuits : on choisit parmi les modules 3 à 12.</p>
             <p class="picker-hint" id="pickerHint" aria-live="polite"></p>
             <a class="picker-pay" id="modulePay" href="#" role="button" aria-disabled="true">Choisis ta formule</a>
           </div>
@@ -133,7 +133,7 @@
         </article>
 
         <article class="price-card">
-          <span class="price-tag price-tag-top">Essai gratuit des premières lettres</span>
+          <span class="price-tag price-tag-top">Modules 1 et 2 gratuits</span>
           <h3>Tout inclus</h3>
           <p class="price-lead">Modules + parcours dictées. La formule la plus complète en abonnement.</p>
           <div class="price-duo">
@@ -171,6 +171,21 @@
           <p class="price-lead">Débloque tout, y compris les dictées.</p>
           <p class="lifetime-note">Achat unique, accès à l’ensemble du contenu inclus.</p>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PARRAINAGE ===================== -->
+  <section class="section" id="parrainage">
+    <div class="container">
+      <div class="referral-card">
+        <span class="referral-icon" aria-hidden="true">🎁</span>
+        <h2>Parraine un ami, gagne des récompenses</h2>
+        <p class="referral-sub">Partage ton code, et quand ton ami s’abonne, tu reçois une dictée débloquée.</p>
+        <button type="button" class="btn btn-primary referral-share" id="referralShare">Partager mon code</button>
+        <p class="referral-status" id="referralStatus" aria-live="polite"></p>
+        <p class="referral-line">Ton ami reçoit aussi 10% de réduction sur son premier achat.</p>
+        <p class="referral-note">Parrainage réservé aux utilisateurs de l’application.</p>
       </div>
     </div>
   </section>
@@ -238,6 +253,6 @@
 </footer>
 
 <script src="js/main.js?v=186"></script>
-<script src="js/formules.js?v=2"></script>
+<script src="js/formules.js?v=4"></script>
 </body>
 </html>

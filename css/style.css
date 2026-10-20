@@ -2521,3 +2521,24 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .puzzle-tag-initial { background: #D6F1EC; } .puzzle-tag-medial { background: #E7E0F7; } .puzzle-tag-final { background: #FCE4C8; }
 .puzzle-tag-letter { font-family: 'Scheherazade New', 'Amiri', serif; font-size: 1.15rem; margin-inline-end: 2px; }
 @media (max-width: 480px) { .puzzle-opt { font-size: 2.5rem; padding: 8px 6px; } }
+
+/* Bandeau "modules 1 et 2 gratuits" sous le titre de la page Nos formules */
+.pricing-free {
+  display: inline-flex; align-items: center; gap: 8px; margin: 14px auto 0; padding: 8px 18px;
+  border-radius: 999px; background: var(--color-teal-10); border: 1px solid rgba(22, 160, 160, 0.3);
+  font-family: var(--font-heading); font-weight: 700; font-size: 0.95rem; color: var(--color-teal-dark);
+}
+
+/* ---------- Nos formules : parrainage ---------- */
+.referral-card {
+  max-width: 640px; margin: 0 auto; padding: 32px 26px 26px; text-align: center;
+  border: 2px solid rgba(22, 160, 160, 0.35); border-radius: 24px;
+  background: linear-gradient(160deg, var(--color-teal-10), #fff 70%);
+}
+.referral-icon { display: block; font-size: 2.6rem; line-height: 1; margin-bottom: 10px; }
+.referral-card h2 { margin: 0 0 8px; font-size: 1.6rem; }
+.referral-sub { margin: 0 auto 18px; max-width: 460px; color: var(--color-text-light); font-size: 1.02rem; }
+.referral-share.is-inactive { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+.referral-status { min-height: 1.3em; margin: 8px 0 0; font-size: 0.88rem; color: var(--color-teal-dark); font-weight: 600; }
+.referral-line { margin: 6px 0 0; font-family: var(--font-heading); font-weight: 700; color: var(--color-navy); }
+.referral-note { margin: 10px 0 0; font-size: 0.82rem; color: var(--color-text-light); }

@@ -26,7 +26,7 @@
 
   // ---- Paiement par module : formule (1 / 3 / 6 / tous) puis choix des modules ----
   // La personne choisit d'abord sa formule, puis coche exactement ce nombre
-  // de modules (Module 1 offert : on choisit parmi les modules 2 a 12).
+  // de modules (modules 1 et 2 gratuits : on choisit parmi les modules 3 a 12).
   // Les modules choisis sont transmis au paiement Stripe via
   // client_reference_id ("modules-2-5-9" / "modules-all"), visible dans le
   // tableau de bord Stripe pour savoir quoi debloquer.
@@ -158,4 +158,34 @@
       el.addEventListener("click", function (e) { e.preventDefault(); });
     }
   });
+
+  // ---- Parrainage ----
+  // Chaque utilisateur de l'application aura son propre code (ex. "moh123"). Le site n'a pas
+  // encore de comptes : tant que l'application ne fournit pas le code ici, le bouton reste
+  // inactif (comme les boutons de paiement sans lien). Une fois renseigne, "Partager mon
+  // code" ouvre le partage du telephone (ou copie le message dans le presse-papiers).
+  var REFERRAL_CODE = "";
+  var shareBtn = document.getElementById("referralShare");
+  var shareStatus = document.getElementById("referralStatus");
+  if (shareBtn) {
+    if (!/^[A-Za-z0-9_-]{3,32}$/.test(REFERRAL_CODE)) {
+      shareBtn.setAttribute("aria-disabled", "true");
+      shareBtn.classList.add("is-inactive");
+      shareBtn.addEventListener("click", function (e) { e.preventDefault(); });
+    } else {
+      shareBtn.addEventListener("click", function () {
+        var text = "Rejoins-moi sur Ahl Al Arabiyah ! Avec mon code " + REFERRAL_CODE +
+          ", tu as 10% de réduction sur ton premier achat.";
+        var url = "https://ahlalarabiyah.com/";
+        function done(msg) { if (shareStatus) { shareStatus.textContent = msg; } }
+        if (navigator.share) {
+          navigator.share({ title: "Ahl Al Arabiyah", text: text, url: url }).catch(function () {});
+        } else if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text + " " + url).then(function () { done("Message copié : colle-le pour inviter ton ami."); }, function () { done(text + " " + url); });
+        } else {
+          done(text + " " + url);
+        }
+      });
+    }
+  }
 })();
