@@ -56,6 +56,7 @@
 
     var TXT = {
       fr: {
+        codeLink: "J’ai un code d’accès", codePlaceholder: "Code d’accès", codeSubmit: "Valider", codeWrong: "Code incorrect.",
         badge: "🔒 Payant", title: "Module {n} : accès payant",
         sub: "Les modules 1 et 2 sont gratuits. Choisis une formule pour débloquer ce module.",
         single: "Ce module seul", singleDesc: "Module {n}, accès à vie",
@@ -65,6 +66,7 @@
         seeAll: "Voir toutes les formules", close: "Fermer"
       },
       en: {
+        codeLink: "I have an access code", codePlaceholder: "Access code", codeSubmit: "Unlock", codeWrong: "Incorrect code.",
         badge: "🔒 Premium", title: "Module {n}: paid access",
         sub: "Modules 1 and 2 are free. Choose a plan to unlock this module.",
         single: "This module only", singleDesc: "Module {n}, lifetime access",
@@ -74,6 +76,7 @@
         seeAll: "See all plans", close: "Close"
       },
       ru: {
+        codeLink: "У меня есть код доступа", codePlaceholder: "Код доступа", codeSubmit: "Открыть", codeWrong: "Неверный код.",
         badge: "🔒 Платно", title: "Модуль {n}: платный доступ",
         sub: "Модули 1 и 2 бесплатны. Выбери тариф, чтобы открыть этот модуль.",
         single: "Только этот модуль", singleDesc: "Модуль {n}, доступ навсегда",
@@ -83,6 +86,7 @@
         seeAll: "Все тарифы", close: "Закрыть"
       },
       de: {
+        codeLink: "Ich habe einen Zugangscode", codePlaceholder: "Zugangscode", codeSubmit: "Freischalten", codeWrong: "Falscher Code.",
         badge: "🔒 Kostenpflichtig", title: "Modul {n}: kostenpflichtiger Zugang",
         sub: "Die Module 1 und 2 sind kostenlos. Wähle ein Angebot, um dieses Modul freizuschalten.",
         single: "Nur dieses Modul", singleDesc: "Modul {n}, lebenslanger Zugang",
@@ -92,6 +96,7 @@
         seeAll: "Alle Angebote ansehen", close: "Schließen"
       },
       ar: {
+        codeLink: "لدي رمز وصول", codePlaceholder: "رمز الوصول", codeSubmit: "فتح", codeWrong: "الرمز غير صحيح.",
         badge: "🔒 مدفوع", title: "الوحدة {n}: وصول مدفوع",
         sub: "الوحدتان 1 و2 مجانيتان. اختر باقة لفتح هذه الوحدة.",
         single: "هذه الوحدة فقط", singleDesc: "الوحدة {n}، وصول دائم",
@@ -126,6 +131,17 @@
     // ---- Fenetre "debloquer ce module" ----
     var paywallEl = null;
     var paywallPrevFocus = null;
+    var paywallTrigger = null;
+
+    // Code d'acces provisoire (en attendant le deblocage apres paiement) :
+    // seule l'empreinte SHA-256 est stockee ici, jamais le code en clair.
+    var ACCESS_CODE_HASH = "1e14e1797eb4e258ebe2c720a8104e3c9b934210d905f78481d989ceb2d870f8";
+    function sha256Hex(text) {
+      if (!window.crypto || !window.crypto.subtle || !window.TextEncoder) return Promise.resolve("");
+      return window.crypto.subtle.digest("SHA-256", new TextEncoder().encode(text)).then(function (buf) {
+        return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+      });
+    }
 
     function checkoutHref(key, ref) {
       var links = window.AHL_CHECKOUT_LINKS || {};
@@ -174,7 +190,8 @@
       if (paywallPrevFocus && paywallPrevFocus.focus) paywallPrevFocus.focus();
     }
 
-    function openPaywall(n) {
+    function openPaywall(n, trigger) {
+      paywallTrigger = trigger || null;
       if (!paywallEl) {
         paywallEl = el("div", "paywall");
         paywallEl.id = "paywall";
@@ -214,6 +231,47 @@
       all.href = ROOT_BASE + "formules.html";
       box.appendChild(all);
 
+      // Code d'acces : champ replie derriere un lien discret.
+      var codeWrap = el("div", "paywall-code");
+      var codeToggle = el("button", "paywall-code-toggle", T.codeLink);
+      codeToggle.type = "button";
+      var codeForm = el("form", "paywall-code-form");
+      codeForm.hidden = true;
+      var codeInput = el("input", "paywall-code-input");
+      codeInput.type = "password";
+      codeInput.placeholder = T.codePlaceholder;
+      codeInput.autocomplete = "off";
+      codeInput.setAttribute("autocapitalize", "none");
+      codeInput.setAttribute("aria-label", T.codePlaceholder);
+      var codeBtn = el("button", "paywall-code-submit", T.codeSubmit);
+      codeBtn.type = "submit";
+      var codeMsg = el("p", "paywall-code-msg");
+      codeMsg.setAttribute("aria-live", "polite");
+      codeForm.appendChild(codeInput);
+      codeForm.appendChild(codeBtn);
+      codeToggle.addEventListener("click", function () {
+        codeForm.hidden = !codeForm.hidden;
+        if (!codeForm.hidden) codeInput.focus();
+      });
+      codeForm.addEventListener("submit", function (ev) {
+        ev.preventDefault();
+        sha256Hex(codeInput.value.trim().toLowerCase()).then(function (h) {
+          if (h && h === ACCESS_CODE_HASH) {
+            writeAccess({ all: true });
+            var trigger = paywallTrigger;
+            closePaywall();
+            if (trigger && document.body.contains(trigger)) trigger.click();
+          } else {
+            codeMsg.textContent = T.codeWrong;
+            codeInput.select();
+          }
+        });
+      });
+      codeWrap.appendChild(codeToggle);
+      codeWrap.appendChild(codeForm);
+      codeWrap.appendChild(codeMsg);
+      box.appendChild(codeWrap);
+
       paywallEl.appendChild(box);
       if (!paywallEl.parentNode) document.body.appendChild(paywallEl);
       paywallEl.hidden = false;
@@ -230,7 +288,7 @@
       if (hasModuleAccess(n)) return;
       e.preventDefault();
       e.stopImmediatePropagation();
-      openPaywall(n);
+      openPaywall(n, btn);
     }, true);
 
     refreshLocks();
