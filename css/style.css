@@ -2645,3 +2645,8 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
   .main-nav ul { gap: 20px; }
   .nav-link { font-size: 0.9rem; }
 }
+.tips-intro { margin: 0 0 4px; font-weight: 600; color: var(--color-text-light); }
+.tips-text { margin: 0 0 12px; line-height: 1.65; }
+.tips-sub + .tips-text { margin-top: 0; }
+.tips-method { margin-top: 26px; padding: 4px 20px 8px; border-radius: var(--radius-md); background: var(--color-teal-10); }
+.tips-method .tips-text { margin-bottom: 8px; font-weight: 500; }
