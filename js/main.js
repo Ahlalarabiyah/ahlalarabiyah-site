@@ -901,8 +901,8 @@
     // besoin d'aide a la prononciation, elles n'affichent donc pas ce
     // bloc (pas d'oubli).
     var LETTER_PRONUNCIATION_NOTES = {
-      thaa: "Sortir le bout de la langue et la mettre entre les incisives du bas et du haut, et la mordre un petit peu, puis souffler.",
-      haa: "Comme le fait de vouloir retirer la buée présente sur des lunettes afin de les nettoyer.",
+      thaa: "Sortez légèrement le bout de la langue entre les incisives supérieures et inférieures, sans la mordre. Puis soufflez doucement, sans faire vibrer la gorge.",
+      haa: "Comme lorsque l’on souffle sur ses lunettes pour les nettoyer : un souffle fort et sec qui sort du fond de la gorge, sans vibration de la voix.",
       khaa: "Comme vouloir sortir des glaires ou une arête de poisson coincée dans la gorge.",
       thal: "Positionner la langue comme pour le « ث », puis faire comme le son du téléphone qui vibre sur une table.",
       reh: "La langue frappe le palais de façon rapide, comme le « r » en espagnol.",
