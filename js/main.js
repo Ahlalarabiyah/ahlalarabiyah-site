@@ -6,6 +6,236 @@
   var SCRIPT_SRC = document.currentScript ? document.currentScript.src : "";
   var ROOT_BASE = SCRIPT_SRC.replace(/js\/main\.js.*$/, "");
 
+  // ---- Acces payant : les modules 1 et 2 sont gratuits, le reste est verrouille ----
+  // Le site est statique : il ne peut pas verifier un paiement tout seul. Tout
+  // passe par hasModuleAccess(n), alimente pour l'instant par un reglage local
+  // (localStorage "ahl_access_v1") que l'on active a la main pour tester :
+  //   ahlAccess.grantAll()            -> tout debloquer (abonnement / acces a vie)
+  //   ahlAccess.grantModules([3, 5])  -> debloquer des modules precis
+  //   ahlAccess.reset()               -> retour a l'etat gratuit
+  // Le vrai deblocage apres paiement Stripe viendra se brancher a cet endroit.
+  (function () {
+    var LANG = (document.documentElement.lang || "fr").slice(0, 2);
+    var FREE_MAX = 2;
+    var ACCESS_KEY = "ahl_access_v1";
+    var GATED = ".js-open-game, .js-open-module, .js-open-formlab, .js-open-shadda, .js-open-sunmoon, " +
+      ".js-open-sunmoon-game, .js-open-order-game, .js-open-sound-game, .js-open-puzzle-game";
+
+    function readAccess() {
+      try {
+        var a = JSON.parse(localStorage.getItem(ACCESS_KEY) || "{}");
+        return a && typeof a === "object" ? a : {};
+      } catch (e) { return {}; }
+    }
+    function writeAccess(a) {
+      try { localStorage.setItem(ACCESS_KEY, JSON.stringify(a)); } catch (e) { /* stockage indisponible */ }
+      refreshLocks();
+    }
+    function hasModuleAccess(n) {
+      n = Number(n);
+      if (!n || n <= FREE_MAX) return true;
+      var a = readAccess();
+      return !!a.all || (Array.isArray(a.modules) && a.modules.indexOf(n) !== -1);
+    }
+    window.ahlAccess = {
+      grantAll: function () { writeAccess({ all: true }); },
+      grantModules: function (list) { writeAccess({ modules: (list || []).map(Number) }); },
+      reset: function () { writeAccess({}); },
+      has: hasModuleAccess
+    };
+
+    // Numero de module d'un bouton : lu sur sa carte ("Module 7", "Модуль 7"...).
+    function moduleOf(el) {
+      var card = el.closest ? el.closest(".module-card") : null;
+      var num = card && card.querySelector(".module-number");
+      var m = num && num.textContent.match(/\d+/);
+      if (m) return Number(m[0]);
+      var d = el.getAttribute && el.getAttribute("data-module");
+      return d ? Number(d) : 0;
+    }
+
+    var TXT = {
+      fr: {
+        badge: "🔒 Payant", title: "Module {n} : accès payant",
+        sub: "Les modules 1 et 2 sont gratuits. Choisis une formule pour débloquer ce module.",
+        single: "Ce module seul", singleDesc: "Module {n}, accès à vie",
+        subscribe: "Abonnement", base: "Formule de base", baseDesc: "Accès aux modules",
+        all: "Tout inclus", allDesc: "Modules + parcours de dictées",
+        month: "/ mois", year: "/ an", lifetime: "Accès à vie", lifetimeDesc: "Achat unique, tout est débloqué, dictées comprises.",
+        seeAll: "Voir toutes les formules", close: "Fermer"
+      },
+      en: {
+        badge: "🔒 Premium", title: "Module {n}: paid access",
+        sub: "Modules 1 and 2 are free. Choose a plan to unlock this module.",
+        single: "This module only", singleDesc: "Module {n}, lifetime access",
+        subscribe: "Subscription", base: "Basic plan", baseDesc: "Access to the modules",
+        all: "All-inclusive", allDesc: "Modules + dictation course",
+        month: "/ month", year: "/ year", lifetime: "Lifetime access", lifetimeDesc: "One-time purchase, everything unlocked, dictations included.",
+        seeAll: "See all plans", close: "Close"
+      },
+      ru: {
+        badge: "🔒 Платно", title: "Модуль {n}: платный доступ",
+        sub: "Модули 1 и 2 бесплатны. Выбери тариф, чтобы открыть этот модуль.",
+        single: "Только этот модуль", singleDesc: "Модуль {n}, доступ навсегда",
+        subscribe: "Подписка", base: "Базовый тариф", baseDesc: "Доступ к модулям",
+        all: "Всё включено", allDesc: "Модули + курс диктантов",
+        month: "/ мес.", year: "/ год", lifetime: "Доступ навсегда", lifetimeDesc: "Разовая покупка, всё открыто, включая диктанты.",
+        seeAll: "Все тарифы", close: "Закрыть"
+      },
+      de: {
+        badge: "🔒 Kostenpflichtig", title: "Modul {n}: kostenpflichtiger Zugang",
+        sub: "Die Module 1 und 2 sind kostenlos. Wähle ein Angebot, um dieses Modul freizuschalten.",
+        single: "Nur dieses Modul", singleDesc: "Modul {n}, lebenslanger Zugang",
+        subscribe: "Abonnement", base: "Basis-Angebot", baseDesc: "Zugang zu den Modulen",
+        all: "Alles inklusive", allDesc: "Module + Diktat-Kurs",
+        month: "/ Monat", year: "/ Jahr", lifetime: "Lebenslanger Zugang", lifetimeDesc: "Einmaliger Kauf, alles freigeschaltet, Diktate inklusive.",
+        seeAll: "Alle Angebote ansehen", close: "Schließen"
+      },
+      ar: {
+        badge: "🔒 مدفوع", title: "الوحدة {n}: وصول مدفوع",
+        sub: "الوحدتان 1 و2 مجانيتان. اختر باقة لفتح هذه الوحدة.",
+        single: "هذه الوحدة فقط", singleDesc: "الوحدة {n}، وصول دائم",
+        subscribe: "اشتراك", base: "الباقة الأساسية", baseDesc: "الوصول إلى الوحدات",
+        all: "كل شيء مشمول", allDesc: "الوحدات + مسار الإملاء",
+        month: "/ شهريًا", year: "/ سنويًا", lifetime: "وصول مدى الحياة", lifetimeDesc: "دفعة واحدة، كل شيء مفتوح بما في ذلك الإملاء.",
+        seeAll: "عرض كل الباقات", close: "إغلاق"
+      }
+    };
+    var T = TXT[LANG] || TXT.fr;
+
+    // ---- Cadenas sur les cartes ----
+    function refreshLocks() {
+      document.querySelectorAll(".module-card").forEach(function (card) {
+        var n = moduleOf(card);
+        var locked = !!n && !hasModuleAccess(n);
+        card.classList.toggle("module-card-locked", locked);
+        var badge = card.querySelector(".module-paywall");
+        if (locked && !badge) {
+          badge = document.createElement("p");
+          badge.className = "module-paywall";
+          badge.textContent = T.badge;
+          var firstBtn = card.querySelector("button");
+          card.insertBefore(badge, firstBtn || null);
+        } else if (!locked && badge) {
+          badge.remove();
+        }
+        card.querySelectorAll(GATED).forEach(function (b) { b.classList.toggle("is-paywalled", locked); });
+      });
+    }
+
+    // ---- Fenetre "debloquer ce module" ----
+    var paywallEl = null;
+    var paywallPrevFocus = null;
+
+    function checkoutHref(key, ref) {
+      var links = window.AHL_CHECKOUT_LINKS || {};
+      var base = links[key];
+      if (typeof base === "string" && /^https:\/\//.test(base)) {
+        try {
+          var u = new URL(base);
+          if (ref) u.searchParams.set("client_reference_id", ref);
+          return u.toString();
+        } catch (e) { /* lien invalide : repli ci-dessous */ }
+      }
+      return ROOT_BASE + "formules.html#formules";
+    }
+
+    function el(tag, cls, text) {
+      var e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text != null) e.textContent = text;
+      return e;
+    }
+    function option(href, labelText, descText, priceText, cls) {
+      var a = el("a", "paywall-opt" + (cls ? " " + cls : ""));
+      a.href = href;
+      var left = el("span", "paywall-opt-left");
+      left.appendChild(el("span", "paywall-opt-label", labelText));
+      if (descText) left.appendChild(el("span", "paywall-opt-desc", descText));
+      a.appendChild(left);
+      a.appendChild(el("span", "paywall-opt-price", priceText));
+      return a;
+    }
+    function priceCard(title, desc, monthKey, yearKey, monthPrice, yearPrice) {
+      var c = el("div", "paywall-plan");
+      c.appendChild(el("p", "paywall-plan-title", title));
+      c.appendChild(el("p", "paywall-plan-desc", desc));
+      c.appendChild(option(checkoutHref(monthKey), monthPrice + " " + T.month, "", "", "paywall-opt-small"));
+      c.appendChild(option(checkoutHref(yearKey), yearPrice + " " + T.year, "", "", "paywall-opt-small"));
+      return c;
+    }
+
+    function closePaywall() {
+      if (!paywallEl) return;
+      paywallEl.hidden = true;
+      if (!document.querySelector(".game-modal.is-open, .letterlab-modal.is-open, .is-open[role='dialog']")) {
+        document.body.style.overflow = "";
+      }
+      if (paywallPrevFocus && paywallPrevFocus.focus) paywallPrevFocus.focus();
+    }
+
+    function openPaywall(n) {
+      if (!paywallEl) {
+        paywallEl = el("div", "paywall");
+        paywallEl.id = "paywall";
+        paywallEl.setAttribute("role", "dialog");
+        paywallEl.setAttribute("aria-modal", "true");
+        paywallEl.addEventListener("click", function (e) { if (e.target === paywallEl) closePaywall(); });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && paywallEl && !paywallEl.hidden) closePaywall();
+        });
+      }
+      paywallPrevFocus = document.activeElement;
+      paywallEl.textContent = "";
+      var box = el("div", "paywall-box");
+      var close = el("button", "paywall-close", "×");
+      close.type = "button";
+      close.setAttribute("aria-label", T.close);
+      close.addEventListener("click", closePaywall);
+      box.appendChild(close);
+      var title = el("h2", "paywall-title", T.title.replace("{n}", n));
+      title.id = "paywallTitle";
+      paywallEl.setAttribute("aria-labelledby", "paywallTitle");
+      box.appendChild(title);
+      box.appendChild(el("p", "paywall-sub", T.sub));
+
+      // Achat du module seul : possible pour les modules 3 a 12 (les jeux
+      // bonus 13 a 16 se debloquent avec un abonnement ou l'acces a vie).
+      if (n >= 3 && n <= 12) {
+        box.appendChild(option(checkoutHref("module-1", "modules-" + n), T.single, T.singleDesc.replace("{n}", n), "3,99 €"));
+      }
+      box.appendChild(el("p", "paywall-group", T.subscribe));
+      var plans = el("div", "paywall-plans");
+      plans.appendChild(priceCard(T.base, T.baseDesc, "base-month", "base-year", "6,99 €", "39,99 €"));
+      plans.appendChild(priceCard(T.all, T.allDesc, "all-month", "all-year", "7,99 €", "45,99 €"));
+      box.appendChild(plans);
+      box.appendChild(option(checkoutHref("lifetime"), T.lifetime, T.lifetimeDesc, "64,99 €", "paywall-opt-dark"));
+      var all = el("a", "paywall-all", T.seeAll + " →");
+      all.href = ROOT_BASE + "formules.html";
+      box.appendChild(all);
+
+      paywallEl.appendChild(box);
+      if (!paywallEl.parentNode) document.body.appendChild(paywallEl);
+      paywallEl.hidden = false;
+      document.body.style.overflow = "hidden";
+      close.focus();
+    }
+
+    // Capture : intercepte tout bouton de module verrouille avant les autres
+    // gestionnaires (y compris les clics programmes "module suivant").
+    document.addEventListener("click", function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest(GATED) : null;
+      if (!btn) return;
+      var n = moduleOf(btn);
+      if (hasModuleAccess(n)) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      openPaywall(n);
+    }, true);
+
+    refreshLocks();
+  })();
+
   // ---- Menu deroulant des langues : se ferme au clic ailleurs / Echap ----
   var langMenu = document.querySelector(".lang-menu");
   if (langMenu) {

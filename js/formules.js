@@ -1,28 +1,8 @@
 (function () {
   "use strict";
 
-  // Liens de paiement Stripe (Payment Links), un par prix : collez ici
-  // l'URL "https://buy.stripe.com/..." de chaque produit. Tant qu'un lien
-  // est vide, le bouton correspondant reste inactif (aucun paiement).
-  var CHECKOUT_LINKS = {
-    "module-1": "",
-    "module-3": "",
-    "module-6": "",
-    "module-12": "",
-    "base-month": "",
-    "base-year": "",
-    "dictees-option-month": "",
-    "dictees-option-once": "",
-    "all-month": "",
-    "all-year": "",
-    "dictee-1": "",
-    "dictee-2": "",
-    "dictee-3": "",
-    "dictee-4": "",
-    "dictee-5": "",
-    "dictee-pack": "",
-    "lifetime": ""
-  };
+  // Liens de paiement Stripe : voir js/checkout-links.js (a renseigner la-bas).
+  var CHECKOUT_LINKS = window.AHL_CHECKOUT_LINKS || {};
 
   // ---- Paiement par module : formule (1 / 3 / 6 / tous) puis choix des modules ----
   // La personne choisit d'abord sa formule, puis coche exactement ce nombre
