@@ -920,6 +920,24 @@
       heh: "L'air léger venant des poumons — et non de la gorge — après une petite course très lente."
     };
 
+    // Meme principe en anglais (textes fournis par l'utilisateur) ; les
+    // autres lettres n'ont pas besoin d'aide a la prononciation.
+    var LETTER_PRONUNCIATION_NOTES_EN = {
+      thaa: "Put the tip of your tongue lightly between your teeth and blow air out: th… Examples: think, three, thank.",
+      haa: "Breathe out strongly from deep in your throat, without using your voice: ḥ… Only an approximation; ح is deeper and stronger. Example: hat.",
+      khaa: "Make a soft, rough kh sound from the back of your mouth, like gently clearing your throat. Example: loch.",
+      thal: "Put the tip of your tongue lightly between your teeth and make a voiced sound: dh… Examples: this, that, mother.",
+      reh: "Quickly tap the tip of your tongue behind your upper teeth (incisors): r… Do not pull your tongue back, as you would for the English “r”. Spanish: perro.",
+      sad: "Say s, but make your tongue heavier and pull it slightly back.",
+      dad: "Say d, but make your tongue heavier and pull it slightly back.",
+      tah: "Say t, but make your tongue heavier and pull it slightly back.",
+      zah: "Say th as in “this”, but make your tongue heavier and pull it slightly back.",
+      ain: "Gently tighten your throat, then make a voiced sound through it. There is no exact English sound.",
+      ghain: "Make a soft, vibrating gh sound from the back of your throat.",
+      qaf: "Make a k sound much deeper in the mouth, near the throat: q…",
+      heh: "Breathe out softly, like h in “house”."
+    };
+
     var GROUP_TITLES = isGerman
       ? {
           harakat: "Vokale (الْحَرَكَات)", moudoud: "Dehnungen (الْمُدُود)", tanwin: "Tanwin (التَّنْوِين)",
@@ -953,7 +971,7 @@
         currentAudioBase = ROOT_BASE + "assets/audio/fascicule-" + letter.fascicule + "/";
       }
       letterLabName.textContent = letter.name;
-      var note = !isEnglish && !isRussian && !isGerman && !isArabic && LETTER_PRONUNCIATION_NOTES[letter.id];
+      var note = isEnglish ? LETTER_PRONUNCIATION_NOTES_EN[letter.id] : (!isRussian && !isGerman && !isArabic && LETTER_PRONUNCIATION_NOTES[letter.id]);
       letterLabPronunciation.hidden = !note;
       letterLabPronunciationText.textContent = note || "";
       letterLabGroups.innerHTML = "";

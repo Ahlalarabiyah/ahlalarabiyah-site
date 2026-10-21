@@ -2641,9 +2641,9 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .tips-nav-link { display: inline-flex; align-items: center; gap: 6px; }
 
 /* Menu a 8 onglets : resserre l'espacement avant le passage en menu burger */
-@media (min-width: 1201px) and (max-width: 1340px) {
-  .main-nav ul { gap: 20px; }
-  .nav-link { font-size: 0.9rem; }
+@media (min-width: 1201px) {
+  .main-nav ul { gap: 16px; }
+  .nav-link { font-size: 0.88rem; white-space: nowrap; }
 }
 .tips-intro { margin: 0 0 4px; font-weight: 600; color: var(--color-text-light); }
 .tips-text { margin: 0 0 12px; line-height: 1.65; }
