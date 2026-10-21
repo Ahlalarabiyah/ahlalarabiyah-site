@@ -2130,7 +2130,7 @@
         { id: "aaddaytu", arabic: "أَدَّيْتُ", letters: ["alif", "dal", "yeh", "taa"], audioId: "aaddaytu", units: ["alif-fatha", "dal-shadda-fatha", "yeh-sukoon", "taa-damma"] },
         { id: "aajjaja", arabic: "أَجَّجَ", letters: ["alif", "jim"], audioId: "aajjaja", units: ["alif-fatha", "jim-shadda-fatha", "jim-fatha"] },
         { id: "thaaabin", arabic: "ثَأَبٍ", letters: ["thaa", "alif", "baa"], audioId: "thaaabin", units: ["thaa-fatha", "alif-fatha", "baa-tanwin-kasra"] },
-        { id: "shiriyrun", arabic: "شِرِيرٌ", letters: ["sheen", "reh"], audioId: "shiriyrun", units: ["sheen-kasra", "reh-madd-kasra", "reh-tanwin-damma"] },
+        { id: "shiriyrun", arabic: "شِرِّيرٌ", letters: ["sheen", "reh"], audioId: "shiriyrun", units: ["sheen-kasra", "reh-madd-shadda-kasra", "reh-tanwin-damma"] },
         { id: "huquwqin", arabic: "حُقُوقٍ", letters: ["haa", "qaf"], audioId: "huquwqin", units: ["haa-damma", "qaf-madd-damma", "qaf-tanwin-kasra"] },
         { id: "fiy", arabic: "فِي", letters: ["feh"], audioId: "fiy", units: ["feh-madd-kasra"] },
         { id: "kuttaabin", arabic: "كُتَّابٍ", letters: ["kaf", "taa", "baa"], audioId: "kuttaabin", units: ["kaf-damma", "taa-madd-shadda-fatha", "baa-tanwin-kasra"] },
