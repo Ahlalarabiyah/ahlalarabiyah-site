@@ -4080,6 +4080,8 @@
           : isEnglish
           ? "Letters learned so far: " + letterCount
           : "Lettres apprises : " + letterCount;
+        gamePrestartWarning.hidden = true;
+        gameMenuScreen.hidden = true;
         gameBody.hidden = false;
         gameEnd.hidden = true;
         setActiveTab(category);
@@ -5723,6 +5725,19 @@
           ? "Continue anyway to Module " + moduleNumber + " →"
           : "Accéder quand même au Module " + moduleNumber + " →";
         gameModalTitle.textContent = title;
+        // Le rappel s'affiche SEUL : aucun jeu (ni celui du module precedent)
+        // ne doit rester visible ou actif derriere lui. Le jeu du module N-1
+        // ne s'ouvre qu'avec "Retour au Module N-1".
+        if (gameAudio) { gameAudio.pause(); }
+        soundStop();
+        clearWordReveal();
+        clearEndCelebration();
+        endReplayHandler = null;
+        clearOrder5Timer();
+        if (sortAllEndTimer) { clearTimeout(sortAllEndTimer); sortAllEndTimer = null; }
+        if (orderEndTimer) { clearTimeout(orderEndTimer); orderEndTimer = null; }
+        hideAllGamePanels();
+        gameMenuScreen.hidden = true;
         gameBody.hidden = true;
         gameEnd.hidden = true;
         gamePrestartWarning.hidden = false;
