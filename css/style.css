@@ -2650,3 +2650,10 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .tips-sub + .tips-text { margin-top: 0; }
 .tips-method { margin-top: 26px; padding: 4px 20px 8px; border-radius: var(--radius-md); background: var(--color-teal-10); }
 .tips-method .tips-text { margin-bottom: 8px; font-weight: 500; }
+
+/* Harakat : les cases sont AU-DESSUS de la lettre (la plupart des voyelles
+   s'ecrivent en haut du mot, seule la kasra est en bas) */
+.harakat-slot { flex-direction: column-reverse; }
+.game-body.is-harakat-play .harakat-slot { gap: clamp(8px, 1.6vh, 14px); }
+.game-body.is-harakat-play .harakat-slot-base { transform: none; }
+.game-body.is-harakat-play .harakat-slots { margin-bottom: clamp(18px, 3.4vh, 32px); }
