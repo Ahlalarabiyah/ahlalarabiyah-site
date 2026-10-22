@@ -2717,3 +2717,18 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .paywall-code-submit { padding: 10px 18px; border: none; border-radius: var(--radius-sm); background: var(--color-teal); color: #fff; font-weight: 700; cursor: pointer; }
 .paywall-code-submit:hover { background: var(--color-teal-dark); }
 .paywall-code-msg { margin: 6px 0 0; min-height: 1.2em; font-size: .85rem; color: #E4534B; }
+
+/* ---------- Dictees : barre de lecture (lecture, pause, stop, +/- 3 s) ---------- */
+.audio-controls { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 18px 0 4px; direction: ltr; }
+.audio-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-width: 46px; height: 46px; padding: 0 12px;
+  border-radius: 999px; border: 1.5px solid var(--color-border); background: #fff; color: var(--color-navy); cursor: pointer;
+  font: inherit; font-weight: 600; font-size: .8rem; transition: border-color .15s ease, background .15s ease, color .15s ease;
+}
+.audio-btn:hover:not(:disabled) { border-color: var(--color-teal); background: var(--color-teal-10); }
+.audio-btn:disabled { opacity: .4; cursor: default; }
+.audio-btn-play { background: var(--color-teal); border-color: var(--color-teal); color: #fff; }
+.audio-btn-play:hover:not(:disabled) { background: var(--color-teal-dark); border-color: var(--color-teal-dark); }
+.audio-btn-sec { font-size: .75rem; color: var(--color-text-light); }
+.audio-time { margin: 6px 0 14px; text-align: center; font-size: .85rem; color: var(--color-text-light); font-variant-numeric: tabular-nums; direction: ltr; }
+@media (max-width: 420px) { .audio-controls { gap: 6px; } .audio-btn { min-width: 40px; padding: 0 9px; } }

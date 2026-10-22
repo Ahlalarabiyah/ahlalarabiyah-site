@@ -3341,7 +3341,11 @@
       function playSound(item) {
         if (gameAudio) { gameAudio.pause(); }
         gameAudio = new Audio(item.audioBase + item.audioId + ".m4a?v=" + AUDIO_VERSION);
+        ["play", "pause", "ended", "timeupdate", "loadedmetadata", "durationchange"].forEach(function (ev) {
+          gameAudio.addEventListener(ev, dictee1SyncControls);
+        });
         gameAudio.play().catch(function () {});
+        dictee1SyncControls();
       }
 
       // Compteur de serie intuitif : "Question 3 / 10" + une rangee de 10
@@ -5668,6 +5672,8 @@
         var entry = entries[dictee1State.index];
         var display = dictee1EntryDisplay(entry);
         dictee1State.current = entry;
+        if (gameAudio) { gameAudio.pause(); gameAudio = null; }
+        dictee1SyncControls();
 
         var unit = isGerman ? dictee1Level.unitDe : isArabic ? dictee1Level.unitAr : isRussian ? dictee1Level.unitRu : isEnglish ? dictee1Level.unitEn : dictee1Level.unitFr;
         gameLevelInfo.textContent = unit + " " + (dictee1State.index + 1) + " / " + entries.length +
@@ -5886,6 +5892,99 @@
         playSound(gameState.current.correct);
         if (listenBtn) { listenBtn.textContent = LISTEN_AGAIN_LABEL; }
       }
+      // ---- Barre de lecture des dictees (5 niveaux) : lecture, pause, stop,
+      // recul / avance de 3 secondes, avec le temps ecoule. Elle agit sur
+      // l'audio courant (gameAudio) ; l'entree n'est creee qu'au premier
+      // appui sur "lecture".
+      var DICTEE1_SKIP_SECONDS = 3;
+      var DICTEE1_CTRL_TXT = {
+        fr: { back: "Reculer de 3 secondes", play: "Lecture", pause: "Pause", stop: "Stop", fwd: "Avancer de 3 secondes", bar: "Contrôles audio" },
+        en: { back: "Back 3 seconds", play: "Play", pause: "Pause", stop: "Stop", fwd: "Forward 3 seconds", bar: "Audio controls" },
+        ru: { back: "Назад на 3 секунды", play: "Воспроизвести", pause: "Пауза", stop: "Стоп", fwd: "Вперёд на 3 секунды", bar: "Управление аудио" },
+        de: { back: "3 Sekunden zurück", play: "Wiedergabe", pause: "Pause", stop: "Stopp", fwd: "3 Sekunden vor", bar: "Audio-Steuerung" },
+        ar: { back: "رجوع 3 ثوانٍ", play: "تشغيل", pause: "إيقاف مؤقت", stop: "إيقاف", fwd: "تقديم 3 ثوانٍ", bar: "أزرار التحكم بالصوت" }
+      };
+      var D1T = isGerman ? DICTEE1_CTRL_TXT.de : isArabic ? DICTEE1_CTRL_TXT.ar : isRussian ? DICTEE1_CTRL_TXT.ru : isEnglish ? DICTEE1_CTRL_TXT.en : DICTEE1_CTRL_TXT.fr;
+      var D1_ICONS = {
+        back: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M11 6 4 12l7 6V6Zm9 0-7 6 7 6V6Z" fill="currentColor"/></svg>',
+        play: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M7 4.5v15l13-7.5-13-7.5Z" fill="currentColor"/></svg>',
+        pause: '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M7 5h3.5v14H7V5Zm6.5 0H17v14h-3.5V5Z" fill="currentColor"/></svg>',
+        stop: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></svg>',
+        fwd: '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="m13 6 7 6-7 6V6ZM4 6l7 6-7 6V6Z" fill="currentColor"/></svg>'
+      };
+      var d1Ctrl = null;
+      function dictee1BuildControls() {
+        var bar = document.createElement("div");
+        bar.className = "audio-controls";
+        bar.setAttribute("role", "group");
+        bar.setAttribute("aria-label", D1T.bar);
+        function mk(kind, extra) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "audio-btn audio-btn-" + kind;
+          b.setAttribute("aria-label", D1T[kind]);
+          b.title = D1T[kind];
+          b.innerHTML = (kind === "back" ? '<span class="audio-btn-sec">\u22123\u00a0s</span>' : "") + D1_ICONS[kind] + (kind === "fwd" ? '<span class="audio-btn-sec">+3\u00a0s</span>' : "");
+          bar.appendChild(b);
+          return b;
+        }
+        d1Ctrl = {
+          bar: bar,
+          back: mk("back"), play: mk("play"), pause: mk("pause"), stop: mk("stop"), fwd: mk("fwd"),
+          time: document.createElement("p")
+        };
+        d1Ctrl.time.className = "audio-time";
+        d1Ctrl.time.setAttribute("aria-live", "off");
+        gameDictee1ListenBtn.parentNode.insertBefore(bar, gameDictee1RevealBtn);
+        gameDictee1ListenBtn.parentNode.insertBefore(d1Ctrl.time, gameDictee1RevealBtn);
+
+        d1Ctrl.play.addEventListener("click", function () {
+          if (!dictee1State || !dictee1State.current) return;
+          if (gameAudio && gameAudio.paused && !gameAudio.ended && gameAudio.currentTime > 0) {
+            gameAudio.play().catch(function () {});
+          } else {
+            gameDictee1ListenBtn.click();
+          }
+        });
+        d1Ctrl.pause.addEventListener("click", function () { if (gameAudio) { gameAudio.pause(); } });
+        d1Ctrl.stop.addEventListener("click", function () {
+          if (!gameAudio) return;
+          gameAudio.pause();
+          gameAudio.currentTime = 0;
+          dictee1SyncControls();
+        });
+        d1Ctrl.back.addEventListener("click", function () {
+          if (!gameAudio) return;
+          gameAudio.currentTime = Math.max(0, gameAudio.currentTime - DICTEE1_SKIP_SECONDS);
+          dictee1SyncControls();
+        });
+        d1Ctrl.fwd.addEventListener("click", function () {
+          if (!gameAudio) return;
+          var d = gameAudio.duration;
+          var t = gameAudio.currentTime + DICTEE1_SKIP_SECONDS;
+          gameAudio.currentTime = isFinite(d) ? Math.min(d, t) : t;
+          dictee1SyncControls();
+        });
+        dictee1SyncControls();
+      }
+      function d1Fmt(sec) {
+        sec = isFinite(sec) && sec > 0 ? Math.floor(sec) : 0;
+        return Math.floor(sec / 60) + ":" + ("0" + (sec % 60)).slice(-2);
+      }
+      function dictee1SyncControls() {
+        if (!d1Ctrl) return;
+        var a = gameAudio;
+        var playing = !!a && !a.paused && !a.ended;
+        d1Ctrl.play.disabled = playing;
+        d1Ctrl.pause.disabled = !playing;
+        d1Ctrl.stop.disabled = !a || (!playing && !(a.currentTime > 0));
+        d1Ctrl.back.disabled = !a;
+        d1Ctrl.fwd.disabled = !a;
+        d1Ctrl.bar.classList.toggle("is-playing", playing);
+        d1Ctrl.time.textContent = d1Fmt(a ? a.currentTime : 0) + " / " + d1Fmt(a ? a.duration : 0);
+      }
+      dictee1BuildControls();
+
       gameDictee1ListenBtn.addEventListener("click", function () {
         if (!dictee1State || !dictee1State.current) return;
         playSound({ audioBase: ROOT_BASE + "assets/audio/" + dictee1Level.audioFolder + "/", audioId: dictee1State.current.id });
