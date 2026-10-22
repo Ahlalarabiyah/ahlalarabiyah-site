@@ -1226,6 +1226,40 @@
       heh: "Breathe out softly, like h in “house”."
     };
 
+    // Russe (textes fournis par l'utilisateur) ; memes lettres qu'en anglais.
+    var LETTER_PRONUNCIATION_NOTES_RU = {
+      thaa: "Положите кончик языка слегка между зубами и выдохните воздух: ث… Как английское th в слове «think».",
+      thal: "Положите кончик языка слегка между зубами и произнесите звук с голосом: ذ… Как английское th в слове «this».",
+      haa: "Сильно выдохните из глубины горла, без голоса: ح… Сильный придыхательный «х», как в слове «хлеб».",
+      khaa: "Произнесите мягкий, шершавый звук «х» глубоко в горле. Примеры: «хлеб», «хороший».",
+      ain: "Слегка напрягите горло и произнесите звук с голосом через это напряжение. Русского эквивалента нет.",
+      ghain: "Произнесите мягкий звонкий звук «г»/«х», похожий на французское r. Звонкое «х»/«г»: как в «хлеб», но с голосом.",
+      qaf: "Произнесите «к», но гораздо глубже, ближе к горлу: ق… Глубокое «к», как в словах «кот», «класс».",
+      sad: "Произнесите «с», но тяжелее и немного глубже. Тяжёлое «с», как в словах «сад», «сок».",
+      dad: "Произнесите «д», но тяжелее и немного глубже. Тяжёлое «д», как в словах «дом», «да».",
+      tah: "Произнесите «т», но тяжелее и немного глубже. Тяжёлое «т», как в словах «там», «тётя».",
+      zah: "Произнесите звонкий звук «з»/«д» с языком между зубами, тяжелее и глубже. Тяжёлое «з»/«д», как в слове «зонт».",
+      reh: "Коснитесь кончиком языка за верхними зубами и быстро произнесите «р»: ر… Примеры: «рука», «метро».",
+      heh: "Мягко выдохните, как в звуке «х», но легче: هـ… Лёгкое «х», как в слове «хлеб»."
+    };
+
+    // Allemand (textes fournis par l'utilisateur) ; memes lettres qu'en anglais.
+    var LETTER_PRONUNCIATION_NOTES_DE = {
+      thaa: "Englisches th (think, three). Kein echtes deutsches Gegenstück. Die Zungenspitze liegt leicht zwischen den Zähnen.",
+      thal: "Englisches th (this, that). Wie ث, aber mit Stimme aus dem Hals.",
+      haa: "Kräftiges h (Haus, Hund, Hallo). ح ist tiefer und stärker als das deutsche h.",
+      khaa: "ch nach a, o, u (Bach, Buch, acht). Sehr gute Annäherung; خ ist meist etwas tiefer.",
+      reh: "Spanisches/italienisches r (perro, rosso). Nicht das deutsche Zäpfchen-r in „rot“ verwenden; mit der Zungenspitze kurz hinter den oberen Zähnen tippen.",
+      sad: "Schweres s (Sonne, Satz). Wie deutsches s, aber schwerer und tiefer.",
+      dad: "Schweres d (Dach, Tag). Wie deutsches d, aber schwerer und tiefer.",
+      tah: "Schweres t (Tisch, Tag). Wie deutsches t, aber schwerer und tiefer.",
+      zah: "Schweres englisches th (this). Wie ذ, aber schwerer und tiefer.",
+      ain: "Kein deutsches Gegenstück. Die Mitte des Rachens leicht verengen und kurz mit Stimme sprechen; Audio ist wichtig.",
+      ghain: "Stimmhaftes ch (Bach + Stimme). Wie das ch in Bach, aber mit Vibration im Hals.",
+      qaf: "Tiefes k (Karte, Kind, Kuchen). Wie deutsches k, aber viel weiter hinten im Mund, nahe am Rachen.",
+      heh: "h (Haus, Hund, Hallo). Sehr ähnlich; هـ ist ein leichter Atemlaut."
+    };
+
     var GROUP_TITLES = isGerman
       ? {
           harakat: "Vokale (الْحَرَكَات)", moudoud: "Dehnungen (الْمُدُود)", tanwin: "Tanwin (التَّنْوِين)",
@@ -1259,7 +1293,7 @@
         currentAudioBase = ROOT_BASE + "assets/audio/fascicule-" + letter.fascicule + "/";
       }
       letterLabName.textContent = letter.name;
-      var note = isEnglish ? LETTER_PRONUNCIATION_NOTES_EN[letter.id] : (!isRussian && !isGerman && !isArabic && LETTER_PRONUNCIATION_NOTES[letter.id]);
+      var note = isEnglish ? LETTER_PRONUNCIATION_NOTES_EN[letter.id] : isRussian ? LETTER_PRONUNCIATION_NOTES_RU[letter.id] : isGerman ? LETTER_PRONUNCIATION_NOTES_DE[letter.id] : (!isArabic && LETTER_PRONUNCIATION_NOTES[letter.id]);
       letterLabPronunciation.hidden = !note;
       letterLabPronunciationText.textContent = note || "";
       letterLabGroups.innerHTML = "";
