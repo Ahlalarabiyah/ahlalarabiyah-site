@@ -1794,6 +1794,27 @@
       // les mots utilisent la synthese vocale du navigateur (aucun fichier
       // genere ni stocke) - uniquement les mots, jamais les lettres du
       // tableau de reference.
+      // Les mots solaires / lunaires ont de vrais fichiers audio
+      // (assets/audio/sunmoon/, generes avec une voix arabe) : ils sonnent
+      // sur tous les appareils. La synthese vocale du navigateur ne sert
+      // plus que de secours si le fichier ne se charge pas (beaucoup
+      // d'iPhone n'ont aucune voix arabe installee et restent muets).
+      var sunMoonAudio = null;
+      function playSunMoonWord(type, id, text) {
+        if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
+        if (sunMoonAudio) { sunMoonAudio.pause(); }
+        var audio = new Audio(ROOT_BASE + "assets/audio/sunmoon/" + type + "-" + id + ".m4a?v=" + AUDIO_VERSION);
+        sunMoonAudio = audio;
+        var fellBack = false;
+        function fallback() {
+          if (fellBack || sunMoonAudio !== audio) return;
+          fellBack = true;
+          speakArabicWord(text);
+        }
+        audio.addEventListener("error", fallback);
+        audio.play().catch(fallback);
+      }
+
       function speakArabicWord(text) {
         if (!window.speechSynthesis) return;
         window.speechSynthesis.cancel();
@@ -1882,7 +1903,7 @@
             card.appendChild(label);
             card.appendChild(word);
             card.appendChild(play);
-            card.addEventListener("click", function () { speakArabicWord(wordsMap[id]); });
+            card.addEventListener("click", function () { playSunMoonWord(type, id, wordsMap[id]); });
             grid.appendChild(card);
           });
           sunMoonPanel.appendChild(grid);
