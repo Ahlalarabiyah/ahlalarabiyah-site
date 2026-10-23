@@ -2010,6 +2010,8 @@
             origin.lang = "ar";
             origin.dir = "rtl";
             var letterChar = ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : "";
+            // الْإِمَامُ commence par un alif avec hamza EN DESSOUS (إ), pas au-dessus.
+            if (id === "alif") { letterChar = "إ"; label.textContent = "إ"; }
             if (SUN_MOON_BASE[id]) {
               var baseSpan = document.createElement("span");
               baseSpan.className = "sm-origin-base";
