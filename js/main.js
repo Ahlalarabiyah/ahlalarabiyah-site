@@ -1463,6 +1463,19 @@
         waw: "الْوَلَدُ", yeh: "الْيَدُ"
       };
 
+      // Le meme mot sans l'article "الـ" (origine du mot), affiche a cote :
+      // "تِينٌ ... ال+ت = التِّينُ". Pas d'origine pour اللَّهُ.
+      var SUN_MOON_BASE = {
+        taa: "تِينٌ", thaa: "ثَوَابٌ", dal: "دِينٌ", thal: "ذُنُوبٌ",
+        reh: "رَحْمَٰنٌ", zain: "زَيْتُونٌ", seen: "سُورَةٌ", sheen: "شَمْسٌ",
+        sad: "صَلَاةٌ", dad: "ضَلَالٌ", tah: "طَالِبٌ", zah: "ظُلْمٌ",
+        noon: "نُورٌ",
+        khaa: "خُبْزٌ", ghain: "غَفَّارٌ", qaf: "قَلَمٌ", alif: "إِمَامٌ",
+        baa: "بَابٌ", jim: "جَنَّةٌ", haa: "حَلَالٌ", ain: "عِيدٌ",
+        feh: "فَلَقٌ", kaf: "كَافِرٌ", meem: "مُسْلِمٌ", heh: "هِجْرَةٌ",
+        waw: "وَلَدٌ", yeh: "يَدٌ"
+      };
+
       // Lettres qui ne se lient jamais a la lettre suivante (regle reelle
       // de l'ecriture arabe, pas une simplification) : leurs formes
       // "milieu" et "fin" sont donc visuellement identiques - seule la
@@ -1952,14 +1965,52 @@
             var label = document.createElement("p");
             label.className = "formlab-card-label";
             label.textContent = ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id;
+            // Mot complet : l'article "الـ" colore (rouge = solaire, bleu = lunaire),
+            // puis, dessous, l'origine du mot sans article.
+            var stretched = stretchArabic(wordsMap[id]);
+            var al = stretched.match(/^ا[\u064B-\u0652]*ل[\u064B-\u0652]*ـ?/);
             var word = document.createElement("p");
             word.className = "formlab-word";
-            renderArabicText(word, stretchArabic(wordsMap[id]));
+            if (al) {
+              var alSpan = document.createElement("span");
+              alSpan.className = "sm-al sm-al-" + type;
+              renderArabicText(alSpan, al[0]);
+              word.appendChild(alSpan);
+              var rest = document.createElement("span");
+              renderArabicText(rest, stretched.slice(al[0].length));
+              word.appendChild(rest);
+            } else {
+              renderArabicText(word, stretched);
+            }
+            var origin = document.createElement("p");
+            origin.className = "sunmoon-origin";
+            origin.lang = "ar";
+            origin.dir = "rtl";
+            var letterChar = ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : "";
+            if (SUN_MOON_BASE[id]) {
+              var baseSpan = document.createElement("span");
+              baseSpan.className = "sm-origin-base";
+              renderArabicText(baseSpan, stretchArabic(SUN_MOON_BASE[id]));
+              origin.appendChild(baseSpan);
+              origin.appendChild(document.createTextNode(" … "));
+            }
+            var formula = document.createElement("span");
+            formula.className = "sm-origin-formula";
+            var alMini = document.createElement("span");
+            alMini.className = "sm-al sm-al-" + type;
+            alMini.textContent = "ال";
+            formula.appendChild(alMini);
+            formula.appendChild(document.createTextNode("+" + letterChar));
+            origin.appendChild(formula);
+            var wordBox = document.createElement("div");
+            wordBox.className = "sunmoon-word-box";
+            wordBox.appendChild(word);
+            wordBox.appendChild(origin);
             var play = document.createElement("span");
             play.className = "sunmoon-word-play";
             play.textContent = "🔊";
             card.appendChild(label);
-            card.appendChild(word);
+            card.appendChild(wordBox);
             card.appendChild(play);
             card.addEventListener("click", function () { playSunMoonWord(type, id, wordsMap[id]); });
             grid.appendChild(card);

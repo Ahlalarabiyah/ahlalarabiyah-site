@@ -2820,3 +2820,11 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
   .sm-left .sm-count { flex-basis: clamp(24px, 4.4vh, 44px); height: clamp(24px, 4.4vh, 44px); font-size: clamp(.75rem, 2vh, 1.15rem); }
   .sm-left .sm-bracket { margin: clamp(3px, .9vh, 9px) 0; }
 }
+
+/* Mots solaires / lunaires : article "الـ" colore et origine du mot sans article */
+.sm-al-sun { color: #D92D20; }
+.sm-al-moon { color: #2563EB; }
+.sunmoon-word-box { min-width: 0; text-align: center; }
+.sunmoon-word-card .sunmoon-word-box .formlab-word { margin: 0; }
+.sunmoon-origin { margin: 2px 0 0; font-family: var(--font-arabic); font-size: 1.12rem; line-height: 1.5; color: var(--color-navy); opacity: .85; direction: rtl; }
+.sm-origin-formula { font-weight: 700; white-space: nowrap; }
