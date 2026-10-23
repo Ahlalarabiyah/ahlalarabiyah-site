@@ -1840,6 +1840,16 @@
 
         sunMoonLabTitle.textContent = title;
         sunMoonPanel.innerHTML = "";
+        sunMoonPanel.classList.add("sunmoon-panel");
+        // Ecran large : le tableau a gauche, les mots avec leur audio a droite.
+        var smSplit = document.createElement("div");
+        smSplit.className = "sm-split";
+        var smLeft = document.createElement("div");
+        smLeft.className = "sm-left";
+        var smRight = document.createElement("div");
+        smRight.className = "sm-right";
+        smSplit.appendChild(smLeft);
+        smSplit.appendChild(smRight);
 
         // Tableau de reference clair, avant les exemples en situation :
         // deux colonnes (solaires a droite, lunaires a gauche, comme sur le
@@ -1907,7 +1917,7 @@
           col.appendChild(list);
           table.appendChild(col);
         });
-        sunMoonPanel.appendChild(table);
+        smLeft.appendChild(table);
 
         var intro = document.createElement("p");
         intro.className = "sunmoon-intro";
@@ -1920,7 +1930,7 @@
           : isEnglish
           ? "When you add الـ (\"the\") before a word, its first letter decides what happens to the ل:"
           : "Quand on ajoute الـ (« le / la / l’ ») devant un mot, sa première lettre décide ce qui arrive au « ل » :";
-        sunMoonPanel.appendChild(intro);
+        smRight.appendChild(intro);
 
         function addSection(type, ids, wordsMap) {
           if (!ids.length) return;
@@ -1929,7 +1939,7 @@
           h3.textContent = type === "sun"
             ? (isGerman ? "☀️ Sonne — der Buchstabe nach dem « ل » trägt eine Schadda" : isArabic ? "☀️ شمسي — الحرف بعد « ل » تلحقه شدّة" : isRussian ? "☀️ Солнечная — буква после « ل » принимает шадду" : isEnglish ? "☀️ Sun — the ل is silent, the letter takes a Shadda" : "☀️ Solaire — la lettre après le « ل » porte une Shadda")
             : (isGerman ? "🌙 Mond — das « ل » wird ausgesprochen" : isArabic ? "🌙 قمري — تُنطق « ل »" : isRussian ? "🌙 Лунная — « ل » произносится" : isEnglish ? "🌙 Moon — the ل is pronounced" : "🌙 Lunaire — le « ل » s'entend");
-          sunMoonPanel.appendChild(h3);
+          smRight.appendChild(h3);
           var grid = document.createElement("div");
           grid.className = "formlab-examples sunmoon-grid";
           ids.forEach(function (id) {
@@ -1954,11 +1964,12 @@
             card.addEventListener("click", function () { playSunMoonWord(type, id, wordsMap[id]); });
             grid.appendChild(card);
           });
-          sunMoonPanel.appendChild(grid);
+          smRight.appendChild(grid);
         }
 
         addSection("sun", sunIds, SUN_WORDS);
         addSection("moon", moonIds, MOON_WORDS);
+        sunMoonPanel.appendChild(smSplit);
 
         sunMoonLab.classList.add("is-open");
         document.body.style.overflow = "hidden";

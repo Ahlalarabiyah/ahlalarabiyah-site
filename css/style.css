@@ -2768,3 +2768,40 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
   .sm-title-local { font-size: .8rem; min-height: 2.4em; }
   .sm-badge { font-size: .95rem; padding: 5px 12px; }
 }
+
+/* Mots solaires / lunaires : mot a gauche, bouton audio a droite */
+.sunmoon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+.sunmoon-grid .formlab-card { max-width: none; }
+.sunmoon-word-card {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px;
+  direction: ltr; text-align: left; padding: 10px 12px;
+}
+.sunmoon-word-card .formlab-card-label {
+  margin: 0; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: var(--color-teal-10); font-size: 1rem;
+}
+.sunmoon-word-card .formlab-word { margin: 0; text-align: center; direction: rtl; }
+.sunmoon-word-card .sunmoon-word-play {
+  margin: 0; width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; background: #fff; border: 1.5px solid var(--color-teal); font-size: 1rem; opacity: 1;
+}
+.sunmoon-word-card:hover .sunmoon-word-play { background: var(--color-teal-10); }
+
+/* Module 13 : ecran large = tableau a gauche, mots + audio a droite */
+.sm-split { display: block; }
+@media (min-width: 900px) {
+  .formlab-panel.sunmoon-panel { max-width: min(1080px, 94vw); }
+  .sm-split { display: grid; grid-template-columns: 330px 1fr; gap: 28px; align-items: start; }
+  .sm-left { position: sticky; top: 0; align-self: start; }
+  .sm-left .sunmoon-schema { margin: 0; gap: 8px; }
+  .sm-left .sm-icon { font-size: 2.2rem; margin-bottom: 2px; }
+  .sm-left .sm-title-ar { font-size: 1.05rem; white-space: nowrap; }
+  .sm-left .sm-title-local { font-size: .8rem; margin-bottom: 6px; }
+  .sm-left .sm-badge { margin-bottom: 8px; padding: 3px 12px; font-size: .9rem; }
+  .sm-left .sm-letters { width: 42px; flex-basis: 42px; font-size: 1.2rem; line-height: 1.3; gap: 0; padding: 5px 0; }
+  .sm-left .sm-row:first-child .sm-letters { padding-top: 8px; }
+  .sm-left .sm-row:last-child .sm-letters { padding-bottom: 8px; }
+  .sm-left .sm-count { flex-basis: 32px; height: 32px; font-size: .95rem; }
+  .sm-left .sm-bracket { flex-basis: 8px; margin: 5px 0; }
+  .sm-right .sunmoon-intro { margin-top: 0; }
+}
