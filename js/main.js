@@ -1838,6 +1838,15 @@
         window.speechSynthesis.speak(utterance);
       }
 
+      // Colore le "الـ" d'un mot sans le couper en plusieurs noeuds texte.
+      function addAlHighlight(type, range) {
+        if (!window.CSS || !CSS.highlights || typeof Highlight === "undefined") return false;
+        var h = CSS.highlights.get("sm-al-" + type);
+        if (!h) { h = new Highlight(); CSS.highlights.set("sm-al-" + type, h); }
+        h.add(range);
+        return true;
+      }
+
       function openSunMoonLab(title) {
         var allIds = [];
         MODULES.forEach(function (m) { allIds = allIds.concat(m.letterIds); });
@@ -1852,6 +1861,7 @@
         if (!sunIds.length && !moonIds.length) return;
 
         sunMoonLabTitle.textContent = title;
+        if (window.CSS && CSS.highlights) { CSS.highlights.delete("sm-al-sun"); CSS.highlights.delete("sm-al-moon"); }
         sunMoonPanel.innerHTML = "";
         sunMoonPanel.classList.add("sunmoon-panel");
         // Ecran large : le tableau a gauche, les mots avec leur audio a droite.
@@ -1971,16 +1981,29 @@
             var al = stretched.match(/^ا[\u064B-\u0652]*ل[\u064B-\u0652]*ـ?/);
             var word = document.createElement("p");
             word.className = "formlab-word";
+            // Le mot reste dans UN SEUL noeud texte (sinon Safari/iPhone laisse un
+            // petit vide apres le "ال") ; la couleur est appliquee par la
+            // CSS Custom Highlight API. Sans elle, repli : deux morceaux colores.
+            renderArabicText(word, stretched);
             if (al) {
-              var alSpan = document.createElement("span");
-              alSpan.className = "sm-al sm-al-" + type;
-              renderArabicText(alSpan, al[0]);
-              word.appendChild(alSpan);
-              var rest = document.createElement("span");
-              renderArabicText(rest, stretched.slice(al[0].length));
-              word.appendChild(rest);
-            } else {
-              renderArabicText(word, stretched);
+              var firstNode = word.firstChild;
+              var done = false;
+              if (firstNode && firstNode.nodeType === 3 && firstNode.length >= al[0].length) {
+                var alRange = document.createRange();
+                alRange.setStart(firstNode, 0);
+                alRange.setEnd(firstNode, al[0].length);
+                done = addAlHighlight(type, alRange);
+              }
+              if (!done) {
+                word.textContent = "";
+                var alSpan = document.createElement("span");
+                alSpan.className = "sm-al sm-al-" + type;
+                renderArabicText(alSpan, al[0]);
+                word.appendChild(alSpan);
+                var rest = document.createElement("span");
+                renderArabicText(rest, stretched.slice(al[0].length));
+                word.appendChild(rest);
+              }
             }
             var origin = document.createElement("p");
             origin.className = "sunmoon-origin";

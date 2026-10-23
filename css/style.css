@@ -2828,3 +2828,5 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .sunmoon-word-card .sunmoon-word-box .formlab-word { margin: 0; }
 .sunmoon-origin { margin: 2px 0 0; font-family: var(--font-arabic); font-size: 1.12rem; line-height: 1.5; color: var(--color-navy); opacity: .85; direction: rtl; }
 .sm-origin-formula { font-weight: 700; white-space: nowrap; }
+::highlight(sm-al-sun) { color: #D92D20; }
+::highlight(sm-al-moon) { color: #2563EB; }
