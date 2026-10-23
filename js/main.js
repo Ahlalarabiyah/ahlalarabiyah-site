@@ -1451,15 +1451,16 @@
       // (lunaires, une fois ه و ي connus). alif est volontairement absent
       // (cas particulier peu clair pour un enfant, voir hamza).
       var SUN_WORDS = {
-        taa: "التَّمْر", thaa: "الثَّعْلَب", dal: "الدَّرْس", thal: "الذُّرَة",
-        reh: "الرَّجُل", zain: "الزُّجَاج", seen: "السَّمَك", sheen: "الشَّمْس",
-        sad: "الصَّقْر", dad: "الضَّفْدَع", tah: "الطِّفْل", zah: "الظَّلَام",
-        lam: "اللُّغَة", noon: "النَّجْم"
+        taa: "التِّينُ", thaa: "الثَّوَابُ", dal: "الدِّينُ", thal: "الذُّنُوبُ",
+        reh: "الرَّحْمَٰنُ", zain: "الزَّيْتُونُ", seen: "السُّورَةُ", sheen: "الشَّمْسُ",
+        sad: "الصَّلَاةُ", dad: "الضَّلَالُ", tah: "الطَّالِبُ", zah: "الظُّلْمُ",
+        lam: "اللَّهُ", noon: "النُّورُ"
       };
       var MOON_WORDS = {
-        baa: "الْبَاب", jim: "الْجَمَل", haa: "الْحِصَان", khaa: "الْخُبْز",
-        ain: "الْعَسَل", ghain: "الْغُرَاب", feh: "الْفَرَس", qaf: "الْقَمَر",
-        kaf: "الْكَلْب", meem: "الْمَطَر", heh: "الْهِلَال", waw: "الْوَرْدَة", yeh: "الْيَد"
+        khaa: "الخُبْزُ", ghain: "الغَفَّارُ", qaf: "القَلَمُ", alif: "الْإِمَامُ",
+        baa: "الْبَابُ", jim: "الْجَنَّةُ", haa: "الْحَلَالُ", ain: "الْعِيدُ",
+        feh: "الْفَلَقُ", kaf: "الْكَافِرُ", meem: "الْمُسْلِمُ", heh: "الْهِجْرَةُ",
+        waw: "الْوَلَدُ", yeh: "الْيَدُ"
       };
 
       // Lettres qui ne se lient jamais a la lettre suivante (regle reelle
@@ -1803,7 +1804,7 @@
       function playSunMoonWord(type, id, text) {
         if (window.speechSynthesis) { window.speechSynthesis.cancel(); }
         if (sunMoonAudio) { sunMoonAudio.pause(); }
-        var audio = new Audio(ROOT_BASE + "assets/audio/sunmoon/" + type + "-" + id + ".m4a?v=" + AUDIO_VERSION);
+        var audio = new Audio(ROOT_BASE + "assets/audio/sunmoon/" + type + "-" + id + ".m4a?v=2");
         sunMoonAudio = audio;
         var fellBack = false;
         function fallback() {
@@ -1840,23 +1841,70 @@
         sunMoonLabTitle.textContent = title;
         sunMoonPanel.innerHTML = "";
 
-        // Tableau de reference clair, avant les exemples en situation.
+        // Tableau de reference clair, avant les exemples en situation :
+        // deux colonnes (solaires a droite, lunaires a gauche, comme sur le
+        // schema de reference), les lettres dans l'ordre de l'alphabet
+        // regroupees par series avec leur nombre.
+        var SM_GROUPS = { sun: [2, 10, 2], moon: [2, 3, 2, 3, 4] };
+        var SM_TITLE_AR = { sun: "الحُرُوفُ الشَّمْسِيَّةُ", moon: "الحُرُوفُ القَمَرِيَّةُ" };
+        var SM_TITLE_LOCAL = {
+          sun: isGerman ? "Sonnenbuchstaben" : isRussian ? "Солнечные буквы" : isEnglish ? "Sun letters" : "Les lettres solaires",
+          moon: isGerman ? "Mondbuchstaben" : isRussian ? "Лунные буквы" : isEnglish ? "Moon letters" : "Les lettres lunaires"
+        };
         var table = document.createElement("div");
-        table.className = "sunmoon-table";
+        table.className = "sunmoon-schema";
         [["sun", allSunIds], ["moon", allMoonIds]].forEach(function (pair) {
           var type = pair[0], ids = pair[1];
           var col = document.createElement("div");
-          col.className = "sunmoon-table-col sunmoon-table-" + type;
-          var h4 = document.createElement("h4");
-          h4.className = "sunmoon-table-title";
-          h4.textContent = type === "sun"
-            ? (isGerman ? "☀️ Sonnenbuchstaben (14)" : isArabic ? "☀️ الحروف الشمسية (14)" : isRussian ? "☀️ Солнечные буквы (14)" : isEnglish ? "☀️ Sun letters (14)" : "☀️ Lettres solaires (14)")
-            : (isGerman ? "🌙 Mondbuchstaben (14)" : isArabic ? "🌙 الحروف القمرية (14)" : isRussian ? "🌙 Лунные буквы (14)" : isEnglish ? "🌙 Moon letters (14)" : "🌙 Lettres lunaires (14)");
-          var lettersP = document.createElement("p");
-          lettersP.className = "sunmoon-table-letters";
-          lettersP.textContent = ids.map(function (id) { return ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id; }).join("  ");
-          col.appendChild(h4);
-          col.appendChild(lettersP);
+          col.className = "sm-col sm-col-" + type;
+          var icon = document.createElement("div");
+          icon.className = "sm-icon";
+          icon.setAttribute("aria-hidden", "true");
+          icon.textContent = type === "sun" ? "☀️" : "🌙";
+          var titleAr = document.createElement("h4");
+          titleAr.className = "sm-title-ar";
+          titleAr.lang = "ar";
+          titleAr.dir = "rtl";
+          titleAr.textContent = SM_TITLE_AR[type];
+          col.appendChild(icon);
+          col.appendChild(titleAr);
+          if (!isArabic) {
+            var titleLocal = document.createElement("p");
+            titleLocal.className = "sm-title-local";
+            titleLocal.textContent = SM_TITLE_LOCAL[type];
+            col.appendChild(titleLocal);
+          }
+          var badge = document.createElement("p");
+          badge.className = "sm-badge";
+          badge.lang = "ar";
+          badge.dir = "rtl";
+          badge.textContent = ids.length + " حَرْفًا";
+          col.appendChild(badge);
+          var list = document.createElement("div");
+          list.className = "sm-list";
+          var at = 0;
+          SM_GROUPS[type].forEach(function (size) {
+            var row = document.createElement("div");
+            row.className = "sm-row";
+            var letters = document.createElement("div");
+            letters.className = "sm-letters";
+            ids.slice(at, at + size).forEach(function (id) {
+              var l = document.createElement("span");
+              l.textContent = ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id;
+              letters.appendChild(l);
+            });
+            at += size;
+            var bracket = document.createElement("div");
+            bracket.className = "sm-bracket";
+            var count = document.createElement("div");
+            count.className = "sm-count";
+            count.textContent = String(size);
+            row.appendChild(letters);
+            row.appendChild(bracket);
+            row.appendChild(count);
+            list.appendChild(row);
+          });
+          col.appendChild(list);
           table.appendChild(col);
         });
         sunMoonPanel.appendChild(table);

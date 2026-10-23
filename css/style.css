@@ -2732,3 +2732,39 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .audio-btn-sec { font-size: .75rem; color: var(--color-text-light); }
 .audio-time { margin: 6px 0 14px; text-align: center; font-size: .85rem; color: var(--color-text-light); font-variant-numeric: tabular-nums; direction: ltr; }
 @media (max-width: 420px) { .audio-controls { gap: 6px; } .audio-btn { min-width: 40px; padding: 0 9px; } }
+
+/* ---------- Lettres solaires et lunaires : schema en deux colonnes ---------- */
+.sunmoon-schema { display: grid; grid-template-columns: 1fr 1fr; direction: rtl; gap: 14px; margin: 0 0 22px; }
+.sm-col { direction: ltr; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+.sm-icon { font-size: 3.2rem; line-height: 1; margin-bottom: 6px; }
+.sm-title-ar { margin: 0; font-family: var(--font-arabic); font-size: 1.35rem; line-height: 1.5; color: var(--color-navy); text-align: center; }
+.sm-title-local { margin: 0 0 10px; font-weight: 700; font-size: .95rem; color: var(--color-navy); text-align: center; }
+.sm-badge {
+  margin: 0 0 14px; padding: 6px 18px; border-radius: 12px; border: 1.5px solid var(--sm-border);
+  background: var(--sm-soft); font-family: var(--font-arabic); font-weight: 700; font-size: 1.05rem; color: var(--color-navy);
+}
+.sm-col-sun { --sm-soft: #E4F6D3; --sm-border: #B5DE96; --sm-count: #D6EEFB; --sm-count-border: #7CC6EE; }
+.sm-col-moon { --sm-soft: #E8E0F7; --sm-border: #BDAAE6; --sm-count: #FBD0D0; --sm-count-border: #EE8D8D; }
+.sm-list { display: flex; flex-direction: column; }
+.sm-row { display: flex; align-items: stretch; gap: 6px; }
+.sm-letters {
+  width: 56px; flex: 0 0 56px; display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 8px 0; background: var(--sm-soft); border-inline: 1.5px solid var(--sm-border);
+  font-family: var(--font-arabic); font-size: 1.55rem; line-height: 1.45; color: var(--color-navy);
+}
+.sm-row:first-child .sm-letters { border-top: 1.5px solid var(--sm-border); border-radius: 18px 18px 0 0; padding-top: 12px; }
+.sm-row:last-child .sm-letters { border-bottom: 1.5px solid var(--sm-border); border-radius: 0 0 18px 18px; padding-bottom: 12px; }
+.sm-bracket { flex: 0 0 9px; margin: 8px 0; border: 2px solid #55606b; border-left: none; border-radius: 0 9px 9px 0; }
+.sm-count {
+  flex: 0 0 40px; align-self: center; height: 40px; display: flex; align-items: center; justify-content: center;
+  border-radius: 10px; border: 1.5px solid var(--sm-count-border); background: var(--sm-count);
+  font-family: var(--font-heading); font-weight: 700; font-size: 1.1rem; color: var(--color-navy);
+}
+@media (max-width: 380px) { .sm-letters { width: 48px; flex-basis: 48px; font-size: 1.35rem; } .sm-count { flex-basis: 34px; height: 34px; } }
+@media (max-width: 480px) {
+  .sunmoon-schema { gap: 6px; }
+  .sm-icon { font-size: 2.6rem; }
+  .sm-title-ar { font-size: .98rem; white-space: nowrap; }
+  .sm-title-local { font-size: .8rem; min-height: 2.4em; }
+  .sm-badge { font-size: .95rem; padding: 5px 12px; }
+}
