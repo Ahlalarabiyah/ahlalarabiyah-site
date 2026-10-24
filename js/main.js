@@ -2576,11 +2576,11 @@
 
       var WRITE_FORMS = ["isolated", "initial", "medial", "final"];
       var WRITE_TXT = {
-        fr: { pen: "Crayon", eraser: "Gomme", clear: "Tout effacer", check: "Vérifier", nextBtn: "Suivant →", draw: "Trace d’abord la lettre avec ton doigt.", more: "Il manque encore une partie de la lettre.", finished: "🎉 Tu as écrit toutes les lettres de ce module !", title: "Écriture", pick: "Choisis la lettre", forms: ["Isolée", "Début", "Milieu", "Fin"], how: "Trace la lettre avec ton doigt en suivant les pointillés et la flèche. Commence au point orange.", ok: "✓ Bien écrit !", again: "Recommencer", bad: "Presque : suis bien les pointillés.", dot: "Touche maintenant les points.", next: "Trace le trait suivant.", notebook: "Prends ton cahier ou ton ardoise et reproduis la lettre plusieurs fois.", words: "Des mots pour t’exercer", close: "Fermer", btn: "Écrire les lettres" },
-        en: { pen: "Pencil", eraser: "Eraser", clear: "Clear all", check: "Check", nextBtn: "Next →", draw: "First trace the letter with your finger.", more: "Part of the letter is still missing.", finished: "🎉 You have written all the letters of this module!", title: "Writing", pick: "Choose the letter", forms: ["Isolated", "Start", "Middle", "End"], how: "Trace the letter with your finger, following the dotted line and the arrow. Start at the orange dot.", ok: "✓ Well written!", again: "Start again", bad: "Almost: follow the dotted line.", dot: "Now tap the dot.", next: "Draw the next stroke.", notebook: "Take your notebook or slate and copy the letter several times.", words: "Words to practise", close: "Close", btn: "Write the letters" },
-        ru: { pen: "Карандаш", eraser: "Ластик", clear: "Стереть всё", check: "Проверить", nextBtn: "Дальше →", draw: "Сначала обведи букву пальцем.", more: "Ещё не хватает части буквы.", finished: "🎉 Ты написал(а) все буквы этого модуля!", title: "Письмо", pick: "Выбери букву", forms: ["Отдельно", "В начале", "В середине", "В конце"], how: "Обведи букву пальцем по пунктиру и стрелке. Начни с оранжевой точки.", ok: "✓ Хорошо написано!", again: "Заново", bad: "Почти: следуй пунктиру.", dot: "Теперь коснись точки.", next: "Проведи следующую линию.", notebook: "Возьми тетрадь или грифельную доску и повтори букву несколько раз.", words: "Слова для тренировки", close: "Закрыть", btn: "Писать буквы" },
-        de: { pen: "Stift", eraser: "Radierer", clear: "Alles löschen", check: "Prüfen", nextBtn: "Weiter →", draw: "Fahre zuerst den Buchstaben mit dem Finger nach.", more: "Ein Teil des Buchstabens fehlt noch.", finished: "🎉 Du hast alle Buchstaben dieses Moduls geschrieben!", title: "Schreiben", pick: "Wähle den Buchstaben", forms: ["Einzeln", "Anfang", "Mitte", "Ende"], how: "Fahre den Buchstaben mit dem Finger nach, entlang der gepunkteten Linie und des Pfeils. Beginne beim orangen Punkt.", ok: "✓ Gut geschrieben!", again: "Nochmal", bad: "Fast: folge der gepunkteten Linie.", dot: "Tippe jetzt auf den Punkt.", next: "Zeichne den nächsten Strich.", notebook: "Nimm dein Heft oder deine Tafel und schreibe den Buchstaben mehrmals ab.", words: "Wörter zum Üben", close: "Schließen", btn: "Buchstaben schreiben" },
-        ar: { pen: "قلم", eraser: "ممحاة", clear: "مسح الكل", check: "تحقق", nextBtn: "← التالي", draw: "ارسم الحرف أولًا بإصبعك.", more: "ما زال جزء من الحرف ناقصًا.", finished: "🎉 لقد كتبت كل حروف هذه الوحدة!", title: "الكتابة", pick: "اختر الحرف", forms: ["منفصل", "أول الكلمة", "وسط الكلمة", "آخر الكلمة"], how: "ارسم الحرف بإصبعك متبعًا الخط المنقّط والسهم. ابدأ من النقطة البرتقالية.", ok: "✓ أحسنت!", again: "من جديد", bad: "اقتربت: اتبع الخط المنقّط.", dot: "المس النقطة الآن.", next: "ارسم الخط التالي.", notebook: "خذ دفترك أو لوحتك وأعد كتابة الحرف عدة مرات.", words: "كلمات للتمرين", close: "إغلاق", btn: "كتابة الحروف" }
+        fr: { extra: "Il y a un point en trop : enlève-le avec la gomme.", pen: "Crayon", eraser: "Gomme", clear: "Tout effacer", check: "Vérifier", nextBtn: "Suivant →", draw: "Trace d’abord la lettre avec ton doigt.", more: "Il manque encore une partie de la lettre.", finished: "🎉 Tu as écrit toutes les lettres de ce module !", title: "Écriture", pick: "Choisis la lettre", forms: ["Isolée", "Début", "Milieu", "Fin"], how: "Trace la lettre avec ton doigt en suivant les pointillés et la flèche. Commence au point orange.", ok: "✓ Bien écrit !", again: "Recommencer", bad: "Presque : suis bien les pointillés.", dot: "Touche maintenant les points.", next: "Trace le trait suivant.", notebook: "Prends ton cahier ou ton ardoise et reproduis la lettre plusieurs fois.", words: "Des mots pour t’exercer", close: "Fermer", btn: "Écrire les lettres" },
+        en: { extra: "There is an extra dot: remove it with the eraser.", pen: "Pencil", eraser: "Eraser", clear: "Clear all", check: "Check", nextBtn: "Next →", draw: "First trace the letter with your finger.", more: "Part of the letter is still missing.", finished: "🎉 You have written all the letters of this module!", title: "Writing", pick: "Choose the letter", forms: ["Isolated", "Start", "Middle", "End"], how: "Trace the letter with your finger, following the dotted line and the arrow. Start at the orange dot.", ok: "✓ Well written!", again: "Start again", bad: "Almost: follow the dotted line.", dot: "Now tap the dot.", next: "Draw the next stroke.", notebook: "Take your notebook or slate and copy the letter several times.", words: "Words to practise", close: "Close", btn: "Write the letters" },
+        ru: { extra: "Лишняя точка: сотри её ластиком.", pen: "Карандаш", eraser: "Ластик", clear: "Стереть всё", check: "Проверить", nextBtn: "Дальше →", draw: "Сначала обведи букву пальцем.", more: "Ещё не хватает части буквы.", finished: "🎉 Ты написал(а) все буквы этого модуля!", title: "Письмо", pick: "Выбери букву", forms: ["Отдельно", "В начале", "В середине", "В конце"], how: "Обведи букву пальцем по пунктиру и стрелке. Начни с оранжевой точки.", ok: "✓ Хорошо написано!", again: "Заново", bad: "Почти: следуй пунктиру.", dot: "Теперь коснись точки.", next: "Проведи следующую линию.", notebook: "Возьми тетрадь или грифельную доску и повтори букву несколько раз.", words: "Слова для тренировки", close: "Закрыть", btn: "Писать буквы" },
+        de: { extra: "Ein Punkt zu viel: entferne ihn mit dem Radierer.", pen: "Stift", eraser: "Radierer", clear: "Alles löschen", check: "Prüfen", nextBtn: "Weiter →", draw: "Fahre zuerst den Buchstaben mit dem Finger nach.", more: "Ein Teil des Buchstabens fehlt noch.", finished: "🎉 Du hast alle Buchstaben dieses Moduls geschrieben!", title: "Schreiben", pick: "Wähle den Buchstaben", forms: ["Einzeln", "Anfang", "Mitte", "Ende"], how: "Fahre den Buchstaben mit dem Finger nach, entlang der gepunkteten Linie und des Pfeils. Beginne beim orangen Punkt.", ok: "✓ Gut geschrieben!", again: "Nochmal", bad: "Fast: folge der gepunkteten Linie.", dot: "Tippe jetzt auf den Punkt.", next: "Zeichne den nächsten Strich.", notebook: "Nimm dein Heft oder deine Tafel und schreibe den Buchstaben mehrmals ab.", words: "Wörter zum Üben", close: "Schließen", btn: "Buchstaben schreiben" },
+        ar: { extra: "هناك نقطة زائدة: امسحها بالممحاة.", pen: "قلم", eraser: "ممحاة", clear: "مسح الكل", check: "تحقق", nextBtn: "← التالي", draw: "ارسم الحرف أولًا بإصبعك.", more: "ما زال جزء من الحرف ناقصًا.", finished: "🎉 لقد كتبت كل حروف هذه الوحدة!", title: "الكتابة", pick: "اختر الحرف", forms: ["منفصل", "أول الكلمة", "وسط الكلمة", "آخر الكلمة"], how: "ارسم الحرف بإصبعك متبعًا الخط المنقّط والسهم. ابدأ من النقطة البرتقالية.", ok: "✓ أحسنت!", again: "من جديد", bad: "اقتربت: اتبع الخط المنقّط.", dot: "المس النقطة الآن.", next: "ارسم الخط التالي.", notebook: "خذ دفترك أو لوحتك وأعد كتابة الحرف عدة مرات.", words: "كلمات للتمرين", close: "إغلاق", btn: "كتابة الحروف" }
       };
       var WT = isGerman ? WRITE_TXT.de : isArabic ? WRITE_TXT.ar : isRussian ? WRITE_TXT.ru : isEnglish ? WRITE_TXT.en : WRITE_TXT.fr;
       var WRITE_LETTER_FORM_TEXT = function (ch, form) {
@@ -2870,15 +2870,23 @@
           var c = centroid(u);
           return current().dots.some(function (d) { return Math.hypot(c[0] - d[0], c[1] - d[1]) < 32; });
         }
-        function dotsHit() {
-          return current().dots.map(function (d) {
-            return state.user.some(function (e) {
-              if (!e.tap) return false;
-              var c = centroid(e.pts);
-              return Math.hypot(c[0] - d[0], c[1] - d[1]) < 32;
+        // Chaque appui valide au plus un point (le plus proche encore libre) ;
+        // un appui qui ne correspond a aucun point libre est un appui en trop.
+        function matchTaps() {
+          var dots = current().dots, hit = dots.map(function () { return false; }), strays = [];
+          state.user.forEach(function (e) {
+            if (!e.tap) return;
+            var c = centroid(e.pts), best = -1, bd = 32, near = false;
+            dots.forEach(function (d, k) {
+              var dist = Math.hypot(c[0] - d[0], c[1] - d[1]);
+              if (dist < 32) near = true;
+              if (!hit[k] && dist < bd) { bd = dist; best = k; }
             });
+            if (best >= 0) hit[best] = true; else strays.push({ entry: e, nearDot: near });
           });
+          return { hit: hit, strays: strays };
         }
+        function dotsHit() { return matchTaps().hit; }
         function refreshDots() {
           var hit = dotsHit();
           Array.prototype.forEach.call(board.querySelectorAll(".write-dot"), function (c) {
@@ -2905,6 +2913,11 @@
             ink = ink.concat(sp);
             inkLen += writePathLen(smoothPts(sp));
           });
+          // points en trop : appui loin de la lettre, ou appui supplementaire sur un point deja fait
+          var extra = 0;
+          matchTaps().strays.forEach(function (st) {
+            if (st.nearDot || st.entry.pts.some(function (q) { return !nearAny(q, ref, 12); })) extra++;
+          });
           var covered = 0, precise = 0;
           ref.forEach(function (r) { if (nearAny(r, ink, 14)) covered++; });
           ink.forEach(function (q) { if (nearAny(q, ref, 12)) precise++; });
@@ -2912,7 +2925,7 @@
           return {
             coverage: ref.length ? covered / ref.length : 0,
             precision: ink.length ? precise / ink.length : 1,
-            ratio: refLen ? inkLen / refLen : 1,
+            ratio: refLen ? inkLen / refLen : 1, extra: extra,
             onDot: onDot, hasInk: ink.length > 0, dotsOk: hit.every(Boolean)
           };
         }
@@ -2928,11 +2941,12 @@
           if (state.done) return;
           var ev = evaluate();
           try { board.setAttribute("data-eval", JSON.stringify(ev)); } catch (err) { /* ignore */ }
-          var shapeOk = ev.hasInk && ev.coverage >= 0.85 && ev.precision >= 0.85 && ev.ratio <= 1.35 && !ev.onDot;
+          var shapeOk = ev.hasInk && ev.coverage >= 0.85 && ev.precision >= 0.85 && ev.ratio <= 1.35 && !ev.onDot && !ev.extra;
           if (shapeOk && ev.dotsOk) { markDone(); return; }
           status.className = "write-status is-bad";
           if (!ev.hasInk && !state.user.length) { status.textContent = WT.draw; status.className = "write-status"; }
           else if (!ev.hasInk || ev.coverage < 0.85) status.textContent = WT.more;
+          else if (ev.extra) status.textContent = WT.extra;
           else if (shapeOk) { status.textContent = WT.dot; status.className = "write-status"; }
           else status.textContent = WT.bad;
         });
