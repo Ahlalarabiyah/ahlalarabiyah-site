@@ -19,7 +19,7 @@
     var FREE_MAX = 2;
     var ACCESS_KEY = "ahl_access_v1";
     var GATED = ".js-open-game, .js-open-module, .js-open-formlab, .js-open-shadda, .js-open-sunmoon, " +
-      ".js-open-sunmoon-game, .js-open-order-game, .js-open-sound-game, .js-open-puzzle-game";
+      ".js-open-sunmoon-game, .js-open-order-game, .js-open-sound-game, .js-open-puzzle-game, .js-open-write";
 
     function readAccess() {
       try {
@@ -697,6 +697,93 @@
       { number: 10, letterIds: ["feh", "qaf", "kaf"] },
       { number: 11, letterIds: ["lam", "meem", "noon"] },
       { number: 12, letterIds: ["heh", "waw", "yeh"] }
+    ];
+
+    // Mots pour le jeu "Reconnaitre un mot", disponible a partir du
+    // Module 2. AUCUNE synthese vocale : ce sont tous des vrais verbes
+    // arabes (passe, forme dictionnaire) dont l'orthographe est
+    // entierement voyellee (chaque lettre porte fatha/damma/kasra ou une
+    // prolongation), donc assemblables proprement a partir des vrais
+    // enregistrements de lettres - exactement comme les pseudo-mots
+    // (voir PSEUDO_WORDS). Les noms/mots se terminant par une consonne
+    // muette (sukun) sont volontairement exclus : cette coupe n'existe
+    // pas proprement dans les enregistrements fournis (pas de silence
+    // entre le contexte et la lettre cible dans les fichiers sukun du
+    // fascicule 4). Le module minimal d'un mot est deduit automatiquement
+    // de ses lettres (jamais saisi a la main).
+    var WORDS = [
+      { id: "taba", arabic: "تَابَ", letters: ["baa", "taa"], audioId: "taba", units: ["taa-madd-fatha", "baa-fatha"] },
+      { id: "thabata", arabic: "ثَبَتَ", letters: ["baa", "taa", "thaa"], audioId: "thabata", units: ["thaa-fatha", "baa-fatha", "taa-fatha"] },
+      { id: "baata", arabic: "بَاتَ", letters: ["baa", "taa"], audioId: "baata", units: ["baa-madd-fatha", "taa-fatha"] },
+      { id: "thaaba", arabic: "ثَابَ", letters: ["baa", "thaa"], audioId: "thaaba", units: ["thaa-madd-fatha", "baa-fatha"] },
+      { id: "bahatha", arabic: "بَحَثَ", letters: ["baa", "haa", "thaa"], audioId: "bahatha", units: ["baa-fatha", "haa-fatha", "thaa-fatha"] },
+      { id: "khaba", arabic: "خَابَ", letters: ["baa", "khaa"], audioId: "khaba", units: ["khaa-madd-fatha", "baa-fatha"] },
+      { id: "jaba", arabic: "جَابَ", letters: ["baa", "jim"], audioId: "jaba", units: ["jim-madd-fatha", "baa-fatha"] },
+      { id: "hajaba", arabic: "حَجَبَ", letters: ["baa", "haa", "jim"], audioId: "hajaba", units: ["haa-fatha", "jim-fatha", "baa-fatha"] },
+      { id: "akhadha", arabic: "أَخَذَ", letters: ["alif", "khaa", "thal"], audioId: "akhadha", units: ["alif-fatha", "khaa-fatha", "thal-fatha"] },
+      { id: "dhaba", arabic: "ذَابَ", letters: ["baa", "thal"], audioId: "dhaba", units: ["thal-madd-fatha", "baa-fatha"] },
+      { id: "bada", arabic: "بَدَا", letters: ["baa", "dal"], audioId: "bada", units: ["baa-fatha", "dal-madd-fatha"] },
+      { id: "jadhaba", arabic: "جَذَبَ", letters: ["baa", "jim", "thal"], audioId: "jadhaba", units: ["jim-fatha", "thal-fatha", "baa-fatha"] },
+      { id: "hadatha", arabic: "حَدَثَ", letters: ["dal", "haa", "thaa"], audioId: "hadatha", units: ["haa-fatha", "dal-fatha", "thaa-fatha"] },
+      { id: "zajara", arabic: "زَجَرَ", letters: ["jim", "reh", "zain"], audioId: "zajara", units: ["zain-fatha", "jim-fatha", "reh-fatha"] },
+      { id: "kharaja", arabic: "خَرَجَ", letters: ["jim", "khaa", "reh"], audioId: "kharaja", units: ["khaa-fatha", "reh-fatha", "jim-fatha"] },
+      { id: "baraza", arabic: "بَرَزَ", letters: ["baa", "reh", "zain"], audioId: "baraza", units: ["baa-fatha", "reh-fatha", "zain-fatha"] },
+      { id: "zara", arabic: "زَارَ", letters: ["reh", "zain"], audioId: "zara", units: ["zain-madd-fatha", "reh-fatha"] },
+      { id: "shariba", arabic: "شَرِبَ", letters: ["baa", "reh", "sheen"], audioId: "shariba", units: ["sheen-fatha", "reh-kasra", "baa-fatha"] },
+      { id: "darasa", arabic: "دَرَسَ", letters: ["dal", "reh", "seen"], audioId: "darasa", units: ["dal-fatha", "reh-fatha", "seen-fatha"] },
+      { id: "sharaha", arabic: "شَرَحَ", letters: ["haa", "reh", "sheen"], audioId: "sharaha", units: ["sheen-fatha", "reh-fatha", "haa-fatha"] },
+      { id: "sahaba", arabic: "سَحَبَ", letters: ["baa", "haa", "seen"], audioId: "sahaba", units: ["seen-fatha", "haa-fatha", "baa-fatha"] },
+      { id: "daraba", arabic: "ضَرَبَ", letters: ["baa", "dad", "reh"], audioId: "daraba", units: ["dad-fatha", "reh-fatha", "baa-fatha"] },
+      { id: "rasada", arabic: "رَصَدَ", letters: ["dal", "reh", "sad"], audioId: "rasada", units: ["reh-fatha", "sad-fatha", "dal-fatha"] },
+      { id: "hadara", arabic: "حَضَرَ", letters: ["dad", "haa", "reh"], audioId: "hadara", units: ["haa-fatha", "dad-fatha", "reh-fatha"] },
+      { id: "sarakha", arabic: "صَرَخَ", letters: ["khaa", "reh", "sad"], audioId: "sarakha", units: ["sad-fatha", "reh-fatha", "khaa-fatha"] },
+      { id: "khataba", arabic: "خَطَبَ", letters: ["baa", "khaa", "tah"], audioId: "khataba", units: ["khaa-fatha", "tah-fatha", "baa-fatha"] },
+      { id: "dabata", arabic: "ضَبَطَ", letters: ["baa", "dad", "tah"], audioId: "dabata", units: ["dad-fatha", "baa-fatha", "tah-fatha"] },
+      { id: "khatara", arabic: "خَطَرَ", letters: ["khaa", "reh", "tah"], audioId: "khatara", units: ["khaa-fatha", "tah-fatha", "reh-fatha"] },
+      { id: "taraha", arabic: "طَرَحَ", letters: ["haa", "reh", "tah"], audioId: "taraha", units: ["tah-fatha", "reh-fatha", "haa-fatha"] },
+      { id: "ghadiba", arabic: "غَضِبَ", letters: ["baa", "dad", "ghain"], audioId: "ghadiba", units: ["ghain-fatha", "dad-kasra", "baa-fatha"] },
+      { id: "gharaba", arabic: "غَرَبَ", letters: ["baa", "ghain", "reh"], audioId: "gharaba", units: ["ghain-fatha", "reh-fatha", "baa-fatha"] },
+      { id: "abara", arabic: "عَبَرَ", letters: ["ain", "baa", "reh"], audioId: "abara", units: ["ain-fatha", "baa-fatha", "reh-fatha"] },
+      { id: "ghaza", arabic: "غَزَا", letters: ["ghain", "zain"], audioId: "ghaza", units: ["ghain-fatha", "zain-madd-fatha"] },
+      { id: "kataba", arabic: "كَتَبَ", letters: ["baa", "kaf", "taa"], audioId: "kataba", units: ["kaf-fatha", "taa-fatha", "baa-fatha"] },
+      { id: "qafaza", arabic: "قَفَزَ", letters: ["feh", "qaf", "zain"], audioId: "qafaza", units: ["qaf-fatha", "feh-fatha", "zain-fatha"] },
+      { id: "fataha", arabic: "فَتَحَ", letters: ["feh", "haa", "taa"], audioId: "fataha", units: ["feh-fatha", "taa-fatha", "haa-fatha"] },
+      { id: "arafa", arabic: "عَرَفَ", letters: ["ain", "feh", "reh"], audioId: "arafa", units: ["ain-fatha", "reh-fatha", "feh-fatha"] },
+      { id: "kabura", arabic: "كَبُرَ", letters: ["baa", "kaf", "reh"], audioId: "kabura", units: ["kaf-fatha", "baa-damma", "reh-fatha"] },
+      { id: "fariha", arabic: "فَرِحَ", letters: ["feh", "haa", "reh"], audioId: "fariha", units: ["feh-fatha", "reh-kasra", "haa-fatha"] },
+      { id: "amila", arabic: "عَمِلَ", letters: ["ain", "lam", "meem"], audioId: "amila", units: ["ain-fatha", "meem-kasra", "lam-fatha"] },
+      { id: "nazama", arabic: "نَظَمَ", letters: ["meem", "noon", "zah"], audioId: "nazama", units: ["noon-fatha", "zah-fatha", "meem-fatha"] },
+      { id: "laiba", arabic: "لَعِبَ", letters: ["ain", "baa", "lam"], audioId: "laiba", units: ["lam-fatha", "ain-kasra", "baa-fatha"] },
+      { id: "najaha", arabic: "نَجَحَ", letters: ["haa", "jim", "noon"], audioId: "najaha", units: ["noon-fatha", "jim-fatha", "haa-fatha"] },
+      { id: "hamala", arabic: "حَمَلَ", letters: ["haa", "lam", "meem"], audioId: "hamala", units: ["haa-fatha", "meem-fatha", "lam-fatha"] },
+      { id: "dakhala", arabic: "دَخَلَ", letters: ["dal", "khaa", "lam"], audioId: "dakhala", units: ["dal-fatha", "khaa-fatha", "lam-fatha"] },
+      { id: "jalasa", arabic: "جَلَسَ", letters: ["jim", "lam", "seen"], audioId: "jalasa", units: ["jim-fatha", "lam-fatha", "seen-fatha"] },
+      { id: "dhahaba", arabic: "ذَهَبَ", letters: ["baa", "heh", "thal"], audioId: "dhahaba", units: ["thal-fatha", "heh-fatha", "baa-fatha"] },
+      { id: "wajada", arabic: "وَجَدَ", letters: ["dal", "jim", "waw"], audioId: "wajada", units: ["waw-fatha", "jim-fatha", "dal-fatha"] },
+      { id: "wasala", arabic: "وَصَلَ", letters: ["lam", "sad", "waw"], audioId: "wasala", units: ["waw-fatha", "sad-fatha", "lam-fatha"] },
+      { id: "wahaba", arabic: "وَهَبَ", letters: ["baa", "heh", "waw"], audioId: "wahaba", units: ["waw-fatha", "heh-fatha", "baa-fatha"] },
+      { id: "haraba", arabic: "هَرَبَ", letters: ["baa", "heh", "reh"], audioId: "haraba", units: ["heh-fatha", "reh-fatha", "baa-fatha"] },
+      { id: "daraja", arabic: "دَرَجَ", letters: ["dal", "jim", "reh"], audioId: "daraja", units: ["dal-fatha", "reh-fatha", "jim-fatha"] },
+      { id: "hadhira", arabic: "حَذِرَ", letters: ["haa", "reh", "thal"], audioId: "hadhira", units: ["haa-fatha", "thal-kasra", "reh-fatha"] },
+      { id: "harasa", arabic: "حَرَسَ", letters: ["haa", "reh", "seen"], audioId: "harasa", units: ["haa-fatha", "reh-fatha", "seen-fatha"] },
+      { id: "sarada", arabic: "سَرَدَ", letters: ["dal", "reh", "seen"], audioId: "sarada", units: ["seen-fatha", "reh-fatha", "dal-fatha"] },
+      { id: "hasada", arabic: "حَصَدَ", letters: ["dal", "haa", "sad"], audioId: "hasada", units: ["haa-fatha", "sad-fatha", "dal-fatha"] },
+      { id: "sabara", arabic: "صَبَرَ", letters: ["baa", "reh", "sad"], audioId: "sabara", units: ["sad-fatha", "baa-fatha", "reh-fatha"] },
+      { id: "tabakha", arabic: "طَبَخَ", letters: ["baa", "khaa", "tah"], audioId: "tabakha", units: ["tah-fatha", "baa-fatha", "khaa-fatha"] },
+      { id: "basata", arabic: "بَسَطَ", letters: ["baa", "seen", "tah"], audioId: "basata", units: ["baa-fatha", "seen-fatha", "tah-fatha"] },
+      { id: "atisha", arabic: "عَطِشَ", letters: ["ain", "sheen", "tah"], audioId: "atisha", units: ["ain-fatha", "tah-kasra", "sheen-fatha"] },
+      { id: "abada", arabic: "عَبَدَ", letters: ["ain", "baa", "dal"], audioId: "abada", units: ["ain-fatha", "baa-fatha", "dal-fatha"] },
+      { id: "daaverb", arabic: "دَعَا", letters: ["ain", "dal"], audioId: "daaverb", units: ["dal-fatha", "ain-madd-fatha"] },
+      { id: "dahika", arabic: "ضَحِكَ", letters: ["dad", "haa", "kaf"], audioId: "dahika", units: ["dad-fatha", "haa-kasra", "kaf-fatha"] },
+      { id: "sakata", arabic: "سَكَتَ", letters: ["kaf", "seen", "taa"], audioId: "sakata", units: ["seen-fatha", "kaf-fatha", "taa-fatha"] },
+      { id: "rafaa", arabic: "رَفَعَ", letters: ["ain", "feh", "reh"], audioId: "rafaa", units: ["reh-fatha", "feh-fatha", "ain-fatha"] },
+      { id: "ghasala", arabic: "غَسَلَ", letters: ["ghain", "lam", "seen"], audioId: "ghasala", units: ["ghain-fatha", "seen-fatha", "lam-fatha"] },
+      { id: "nazara", arabic: "نَظَرَ", letters: ["noon", "reh", "zah"], audioId: "nazara", units: ["noon-fatha", "zah-fatha", "reh-fatha"] },
+      { id: "samia", arabic: "سَمِعَ", letters: ["ain", "meem", "seen"], audioId: "samia", units: ["seen-fatha", "meem-kasra", "ain-fatha"] },
+      { id: "talaba", arabic: "طَلَبَ", letters: ["baa", "lam", "tah"], audioId: "talaba", units: ["tah-fatha", "lam-fatha", "baa-fatha"] },
+      { id: "fahima", arabic: "فَهِمَ", letters: ["feh", "heh", "meem"], audioId: "fahima", units: ["feh-fatha", "heh-kasra", "meem-fatha"] },
+      { id: "waqafa", arabic: "وَقَفَ", letters: ["feh", "qaf", "waw"], audioId: "waqafa", units: ["waw-fatha", "qaf-fatha", "feh-fatha"] },
+      { id: "wasafa", arabic: "وَصَفَ", letters: ["feh", "sad", "waw"], audioId: "wasafa", units: ["waw-fatha", "sad-fatha", "feh-fatha"] }
     ];
 
     // Fascicule 4 : sukun et shadda. Chaque lettre est presentee dans le
@@ -2193,6 +2280,385 @@
         if (formLab.classList.contains("is-open") && e.key === "Escape") closeFormLab();
       });
 
+      // ---- Ecriture des lettres : tracer au doigt en suivant un guide ----
+      // Pour chaque lettre (et chaque forme : isolee, debut, milieu, fin), un
+      // modele de trace (traits dans l'ordre + points). L'eleve trace avec le
+      // doigt ; le site compare avec le modele (sens, forme, debut et fin du
+      // trait) et valide trait par trait. Repere 320 x 220, ligne d'ecriture
+      // a y = 135 ; l'ecriture va de la droite vers la gauche.
+      var WRITE_BASE = 135;
+      var WRITE_DATA = (function () {
+        function S(pts) { return { pts: pts, sharp: false }; }   // courbe lissee
+        function P(pts) { return { pts: pts, sharp: true }; }    // trait droit / angle
+        var BOWL_ISO = S([[252, 92], [244, 122], [220, 138], [172, 142], [126, 138], [98, 120], [88, 92]]);
+        var TOOTH_INIT = S([[256, 94], [248, 122], [228, 136], [196, 138], [140, 138]]);
+        var TOOTH_MED = P([[278, 138], [246, 138], [226, 112], [206, 138], [150, 138]]);
+        var BOWL_FIN = S([[278, 138], [228, 140], [182, 140], [142, 132], [120, 100]]);
+        var alif = {
+          isolated: { strokes: [P([[160, 24], [160, 136]])], dots: [] },
+          initial: null, medial: null,
+          final: { strokes: [P([[262, 136], [166, 136], [166, 24]])], dots: [] }
+        };
+        alif.initial = alif.isolated;
+        alif.medial = alif.final;
+        function family(dotsIso, dotsInit, dotsMed, dotsFin) {
+          return {
+            isolated: { strokes: [BOWL_ISO], dots: dotsIso },
+            initial: { strokes: [TOOTH_INIT], dots: dotsInit },
+            medial: { strokes: [TOOTH_MED], dots: dotsMed },
+            final: { strokes: [BOWL_FIN], dots: dotsFin }
+          };
+        }
+        return {
+          alif: alif,
+          baa: family([[170, 180]], [[208, 172]], [[226, 172]], [[170, 178]]),
+          taa: family([[150, 110], [192, 110]], [[198, 104], [232, 104]], [[212, 88], [240, 88]], [[160, 108], [200, 108]]),
+          thaa: family([[150, 112], [192, 112], [171, 86]], [[198, 108], [232, 108], [215, 82]], [[212, 90], [240, 90], [226, 66]], [[160, 110], [200, 110], [180, 84]])
+        };
+      })();
+
+      var WRITE_FORMS = ["isolated", "initial", "medial", "final"];
+      var WRITE_TXT = {
+        fr: { title: "Écriture", pick: "Choisis la lettre", forms: ["Isolée", "Début", "Milieu", "Fin"], how: "Trace la lettre avec ton doigt en suivant les pointillés et la flèche. Commence au point numéro 1.", ok: "✓ Bien écrit !", again: "Recommencer", bad: "Presque : suis bien les pointillés et le sens de la flèche.", dot: "Touche maintenant le point.", next: "Trace le trait suivant.", notebook: "Prends ton cahier ou ton ardoise et reproduis la lettre plusieurs fois.", words: "Des mots pour t’exercer", close: "Fermer", btn: "Écrire les lettres" },
+        en: { title: "Writing", pick: "Choose the letter", forms: ["Isolated", "Start", "Middle", "End"], how: "Trace the letter with your finger, following the dotted line and the arrow. Start at point number 1.", ok: "✓ Well written!", again: "Start again", bad: "Almost: follow the dotted line and the arrow’s direction.", dot: "Now tap the dot.", next: "Draw the next stroke.", notebook: "Take your notebook or slate and copy the letter several times.", words: "Words to practise", close: "Close", btn: "Write the letters" },
+        ru: { title: "Письмо", pick: "Выбери букву", forms: ["Отдельно", "В начале", "В середине", "В конце"], how: "Обведи букву пальцем по пунктиру и стрелке. Начни с точки номер 1.", ok: "✓ Хорошо написано!", again: "Заново", bad: "Почти: следуй пунктиру и направлению стрелки.", dot: "Теперь коснись точки.", next: "Проведи следующую линию.", notebook: "Возьми тетрадь или грифельную доску и повтори букву несколько раз.", words: "Слова для тренировки", close: "Закрыть", btn: "Писать буквы" },
+        de: { title: "Schreiben", pick: "Wähle den Buchstaben", forms: ["Einzeln", "Anfang", "Mitte", "Ende"], how: "Fahre den Buchstaben mit dem Finger nach, entlang der gepunkteten Linie und des Pfeils. Beginne bei Punkt 1.", ok: "✓ Gut geschrieben!", again: "Nochmal", bad: "Fast: folge der gepunkteten Linie und der Pfeilrichtung.", dot: "Tippe jetzt auf den Punkt.", next: "Zeichne den nächsten Strich.", notebook: "Nimm dein Heft oder deine Tafel und schreibe den Buchstaben mehrmals ab.", words: "Wörter zum Üben", close: "Schließen", btn: "Buchstaben schreiben" },
+        ar: { title: "الكتابة", pick: "اختر الحرف", forms: ["منفصل", "أول الكلمة", "وسط الكلمة", "آخر الكلمة"], how: "ارسم الحرف بإصبعك متبعًا الخط المنقّط والسهم. ابدأ من النقطة رقم 1.", ok: "✓ أحسنت!", again: "من جديد", bad: "اقتربت: اتبع الخط المنقّط واتجاه السهم.", dot: "المس النقطة الآن.", next: "ارسم الخط التالي.", notebook: "خذ دفترك أو لوحتك وأعد كتابة الحرف عدة مرات.", words: "كلمات للتمرين", close: "إغلاق", btn: "كتابة الحروف" }
+      };
+      var WT = isGerman ? WRITE_TXT.de : isArabic ? WRITE_TXT.ar : isRussian ? WRITE_TXT.ru : isEnglish ? WRITE_TXT.en : WRITE_TXT.fr;
+      var WRITE_LETTER_FORM_TEXT = function (ch, form) {
+        return form === "isolated" ? ch : form === "initial" ? ch + "ـ" : form === "medial" ? "ـ" + ch + "ـ" : "ـ" + ch;
+      };
+      var WRITE_BASE_CHAR = { alif: "ا", baa: "ب", taa: "ت", thaa: "ث" };
+
+      // Courbe de Catmull-Rom -> polyligne dense (les traits "sharp" restent droits).
+      function writeDense(stroke) {
+        var pts = stroke.pts, out = [];
+        if (stroke.sharp) {
+          for (var i = 0; i < pts.length - 1; i++) {
+            var a = pts[i], b = pts[i + 1];
+            var n = Math.max(2, Math.round(Math.hypot(b[0] - a[0], b[1] - a[1]) / 6));
+            for (var k = 0; k < n; k++) out.push([a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n]);
+          }
+          out.push(pts[pts.length - 1]);
+          return out;
+        }
+        for (var j = 0; j < pts.length - 1; j++) {
+          var p0 = pts[Math.max(0, j - 1)], p1 = pts[j], p2 = pts[j + 1], p3 = pts[Math.min(pts.length - 1, j + 2)];
+          for (var t = 0; t < 10; t++) {
+            var u = t / 10, u2 = u * u, u3 = u2 * u;
+            out.push([
+              0.5 * ((2 * p1[0]) + (-p0[0] + p2[0]) * u + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * u2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * u3),
+              0.5 * ((2 * p1[1]) + (-p0[1] + p2[1]) * u + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * u2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * u3)
+            ]);
+          }
+        }
+        out.push(pts[pts.length - 1]);
+        return out;
+      }
+      function writeResample(pts, n) {
+        var d = [0];
+        for (var i = 1; i < pts.length; i++) d.push(d[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+        var total = d[d.length - 1], out = [];
+        if (!total) { for (var z = 0; z < n; z++) out.push(pts[0].slice()); return out; }
+        var seg = 1;
+        for (var k = 0; k < n; k++) {
+          var target = total * k / (n - 1);
+          while (seg < d.length - 1 && d[seg] < target) seg++;
+          var span = d[seg] - d[seg - 1] || 1, f = (target - d[seg - 1]) / span;
+          out.push([pts[seg - 1][0] + (pts[seg][0] - pts[seg - 1][0]) * f, pts[seg - 1][1] + (pts[seg][1] - pts[seg - 1][1]) * f]);
+        }
+        return out;
+      }
+      function writePathLen(pts) {
+        var l = 0;
+        for (var i = 1; i < pts.length; i++) l += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
+        return l;
+      }
+      // Le trace de l'eleve correspond-il au trait attendu ? (sens compris)
+      function writeMatches(user, expected) {
+        if (user.length < 3) return false;
+        var lu = writePathLen(user), le = writePathLen(expected);
+        if (lu < le * 0.55 || lu > le * 1.8) return false;
+        var a = writeResample(user, 32), b = writeResample(expected, 32), sum = 0;
+        for (var i = 0; i < 32; i++) sum += Math.hypot(a[i][0] - b[i][0], a[i][1] - b[i][1]);
+        var avg = sum / 32;
+        var ds = Math.hypot(a[0][0] - b[0][0], a[0][1] - b[0][1]);
+        var de = Math.hypot(a[31][0] - b[31][0], a[31][1] - b[31][1]);
+        return avg <= 26 && ds <= 55 && de <= 55;
+      }
+
+      var writeLab = null;
+      function writeEl(tag, cls, text) {
+        var e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (text != null) e.textContent = text;
+        return e;
+      }
+      function svgEl(tag, attrs) {
+        var e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+        Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+        return e;
+      }
+
+      function openWriteLab(moduleNumber) {
+        var mod = MODULES.filter(function (m) { return String(m.number) === String(moduleNumber); })[0];
+        if (!mod) return;
+        var ids = mod.letterIds.filter(function (id) { return WRITE_DATA[id]; });
+        if (!ids.length) return;
+        var cumulative = [];
+        MODULES.forEach(function (m) { if (m.number <= mod.number) cumulative = cumulative.concat(m.letterIds); });
+        var state = { letter: ids[0], form: "isolated", step: 0, drawing: null, done: false };
+
+        if (!writeLab) {
+          writeLab = writeEl("div", "reader write-lab");
+          writeLab.setAttribute("role", "dialog");
+          writeLab.setAttribute("aria-modal", "true");
+          document.body.appendChild(writeLab);
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && writeLab.classList.contains("is-open")) closeWriteLab();
+          });
+        }
+        writeLab.textContent = "";
+        var bar = writeEl("div", "reader-bar");
+        bar.appendChild(writeEl("span", "reader-title", WT.title + " — " + (isArabic ? "الوحدة " : isRussian ? "Модуль " : isGerman ? "Modul " : "Module ") + mod.number));
+        var x = writeEl("button", "reader-close", "×");
+        x.type = "button";
+        x.setAttribute("aria-label", WT.close);
+        x.addEventListener("click", closeWriteLab);
+        bar.appendChild(x);
+        var body = writeEl("div", "reader-body");
+        var panel = writeEl("div", "formlab-panel write-panel");
+        var tabs = writeEl("div", "write-tabs");
+        var formsRow = writeEl("div", "write-forms");
+        var how = writeEl("p", "write-how", WT.how);
+        var board = svgEl("svg", { viewBox: "40 8 260 200", class: "write-board", role: "img" });
+        var status = writeEl("p", "write-status");
+        status.setAttribute("aria-live", "polite");
+        var again = writeEl("button", "btn btn-outline btn-sm write-again", WT.again);
+        again.type = "button";
+        var notebook = writeEl("p", "write-notebook");
+        notebook.appendChild(writeEl("span", "write-notebook-ico", "📒"));
+        notebook.appendChild(document.createTextNode(" " + WT.notebook));
+        var wordsBox = writeEl("div", "write-words");
+        panel.appendChild(tabs);
+        panel.appendChild(formsRow);
+        panel.appendChild(how);
+        panel.appendChild(board);
+        panel.appendChild(status);
+        panel.appendChild(again);
+        panel.appendChild(notebook);
+        panel.appendChild(wordsBox);
+        body.appendChild(panel);
+        writeLab.appendChild(bar);
+        writeLab.appendChild(body);
+        writeLab.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+
+        function current() { return WRITE_DATA[state.letter][state.form]; }
+
+        function renderTabs() {
+          tabs.textContent = "";
+          ids.forEach(function (id) {
+            var b = writeEl("button", "write-tab" + (id === state.letter ? " is-active" : ""), ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id);
+            b.type = "button";
+            b.lang = "ar";
+            b.addEventListener("click", function () { state.letter = id; state.form = "isolated"; reset(); renderTabs(); renderForms(); renderWords(); });
+            tabs.appendChild(b);
+          });
+          tabs.hidden = ids.length < 2;
+        }
+        function renderForms() {
+          formsRow.textContent = "";
+          WRITE_FORMS.forEach(function (f, i) {
+            var b = writeEl("button", "write-form" + (f === state.form ? " is-active" : ""));
+            b.type = "button";
+            var glyph = writeEl("span", "write-form-glyph", WRITE_LETTER_FORM_TEXT(WRITE_BASE_CHAR[state.letter] || "", f));
+            glyph.lang = "ar";
+            glyph.dir = "rtl";
+            b.appendChild(glyph);
+            b.appendChild(writeEl("span", "write-form-name", WT.forms[i]));
+            b.addEventListener("click", function () { state.form = f; reset(); renderForms(); });
+            formsRow.appendChild(b);
+          });
+        }
+        function renderWords() {
+          wordsBox.textContent = "";
+          var base = WRITE_BASE_CHAR[state.letter];
+          var list = WORDS.filter(function (w) {
+            if (!w.letters.every(function (l) { return cumulative.indexOf(l) !== -1; })) return false;
+            var bare = w.arabic.replace(/[ً-ْٰ]/g, "");
+            return state.letter === "alif" ? bare.indexOf("ا") !== -1 : w.letters.indexOf(state.letter) !== -1;
+          }).slice(0, 4);
+          if (!list.length) { wordsBox.hidden = true; return; }
+          wordsBox.hidden = false;
+          wordsBox.appendChild(writeEl("p", "write-words-title", WT.words));
+          var row = writeEl("div", "write-words-row");
+          list.forEach(function (w) {
+            var s = writeEl("span", "write-word");
+            s.lang = "ar";
+            s.dir = "rtl";
+            renderArabicText(s, stretchArabic(w.arabic));
+            row.appendChild(s);
+          });
+          wordsBox.appendChild(row);
+        }
+
+        // ---- Planche de trace ----
+        var layers = {};
+        function reset() {
+          state.step = 0; state.done = false; state.drawing = null;
+          board.textContent = "";
+          var form = current();
+          layers.guide = svgEl("g", {});
+          layers.ink = svgEl("g", {});
+          board.appendChild(svgEl("line", { x1: 10, y1: WRITE_BASE + 10, x2: 310, y2: WRITE_BASE + 10, class: "write-line" }));
+          form.strokes.forEach(function (st, i) {
+            var dense = writeDense(st);
+            st._dense = dense;
+            var d = "M" + dense.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" L");
+            var wide = svgEl("path", { d: d, class: "write-body", "data-i": i });
+            var dotted = svgEl("path", { d: d, class: "write-dotted", "data-i": i });
+            layers.guide.appendChild(wide);
+            layers.guide.appendChild(dotted);
+            // fleches le long du trait
+            var len = writePathLen(dense), acc = 0, nextAt = 40;
+            for (var k = 1; k < dense.length; k++) {
+              acc += Math.hypot(dense[k][0] - dense[k - 1][0], dense[k][1] - dense[k - 1][1]);
+              if (acc >= nextAt && acc < len - 18) {
+                var ang = Math.atan2(dense[k][1] - dense[k - 1][1], dense[k][0] - dense[k - 1][0]) * 180 / Math.PI;
+                var arrow = svgEl("path", { d: "M-6 -5 L6 0 L-6 5 Z", class: "write-arrow", transform: "translate(" + dense[k][0].toFixed(1) + " " + dense[k][1].toFixed(1) + ") rotate(" + ang.toFixed(1) + ")" });
+                layers.guide.appendChild(arrow);
+                nextAt += 55;
+              }
+            }
+          });
+          form.strokes.forEach(function (st, i) {
+            var p = st._dense[0];
+            var g = svgEl("g", { class: "write-start", "data-i": i, transform: "translate(" + p[0].toFixed(1) + " " + p[1].toFixed(1) + ")" });
+            g.appendChild(svgEl("circle", { r: 11 }));
+            var t = svgEl("text", { y: 4, "text-anchor": "middle" });
+            t.textContent = String(i + 1);
+            g.appendChild(t);
+            layers.guide.appendChild(g);
+          });
+          form.dots.forEach(function (p, i) {
+            layers.guide.appendChild(svgEl("circle", { cx: p[0], cy: p[1], r: 12, class: "write-dot", "data-d": i }));
+          });
+          board.appendChild(layers.guide);
+          board.appendChild(layers.ink);
+          status.textContent = "";
+          status.className = "write-status";
+          again.hidden = true;
+          highlight();
+        }
+        function totalSteps() { var f = current(); return f.strokes.length + f.dots.length; }
+        function highlight() {
+          var f = current();
+          Array.prototype.forEach.call(board.querySelectorAll(".write-start"), function (g) {
+            var i = Number(g.getAttribute("data-i"));
+            g.classList.toggle("is-active", !state.done && state.step === i);
+            g.classList.toggle("is-hidden", i < state.step || (state.step >= f.strokes.length));
+          });
+          Array.prototype.forEach.call(board.querySelectorAll(".write-dot"), function (c) {
+            var i = Number(c.getAttribute("data-d"));
+            c.classList.toggle("is-active", !state.done && state.step === f.strokes.length + i);
+            c.classList.toggle("is-done", state.step > f.strokes.length + i);
+          });
+          Array.prototype.forEach.call(board.querySelectorAll(".write-body, .write-dotted"), function (p) {
+            p.classList.toggle("is-done", Number(p.getAttribute("data-i")) < state.step);
+          });
+        }
+        function toBoard(e) {
+          var pt = board.createSVGPoint();
+          pt.x = e.clientX; pt.y = e.clientY;
+          var m = board.getScreenCTM();
+          var q = pt.matrixTransform(m.inverse());
+          return [q.x, q.y];
+        }
+        function finishStep(ok) {
+          layers.ink.textContent = "";
+          if (ok) {
+            state.step++;
+            if (state.step >= totalSteps()) {
+              state.done = true;
+              status.textContent = WT.ok;
+              status.className = "write-status is-ok";
+              again.hidden = false;
+            } else {
+              status.textContent = state.step < current().strokes.length ? WT.next : WT.dot;
+              status.className = "write-status";
+            }
+            highlight();
+          } else {
+            status.textContent = WT.bad;
+            status.className = "write-status is-bad";
+          }
+        }
+        board.addEventListener("pointerdown", function (e) {
+          if (state.done) return;
+          e.preventDefault();
+          try { board.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+          state.drawing = [toBoard(e)];
+          layers.ink.textContent = "";
+          state.ink = svgEl("path", { class: "write-ink", d: "" });
+          layers.ink.appendChild(state.ink);
+        });
+        board.addEventListener("pointermove", function (e) {
+          if (!state.drawing) return;
+          e.preventDefault();
+          state.drawing.push(toBoard(e));
+          state.ink.setAttribute("d", "M" + state.drawing.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" L"));
+        });
+        function endDraw(e) {
+          if (!state.drawing) return;
+          var pts = state.drawing;
+          state.drawing = null;
+          var f = current();
+          if (state.step < f.strokes.length) {
+            finishStep(writeMatches(pts, f.strokes[state.step]._dense));
+          } else {
+            // point : un simple appui (ou un tout petit trait) pres de la cible
+            var target = f.dots[state.step - f.strokes.length];
+            var cx = 0, cy = 0;
+            pts.forEach(function (p) { cx += p[0]; cy += p[1]; });
+            cx /= pts.length; cy /= pts.length;
+            finishStep(writePathLen(pts) < 40 && Math.hypot(cx - target[0], cy - target[1]) < 30);
+          }
+        }
+        board.addEventListener("pointerup", endDraw);
+        board.addEventListener("pointercancel", endDraw);
+        again.addEventListener("click", reset);
+
+        renderTabs();
+        renderForms();
+        renderWords();
+        reset();
+      }
+      function closeWriteLab() {
+        if (!writeLab) return;
+        writeLab.classList.remove("is-open");
+        document.body.style.overflow = "";
+      }
+
+      // Bouton "Ecrire les lettres" ajoute aux cartes de la page Modules ayant des modeles de trace.
+      document.querySelectorAll(".module-card").forEach(function (card) {
+        var num = card.querySelector(".module-number");
+        var m = num && num.textContent.match(/\d+/);
+        if (!m || !card.querySelector(".js-open-module")) return;
+        var n = Number(m[0]);
+        var mod = MODULES.filter(function (mm) { return mm.number === n; })[0];
+        if (!mod || !mod.letterIds.some(function (id) { return WRITE_DATA[id]; })) return;
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn btn-outline btn-sm module-write js-open-write";
+        b.setAttribute("data-module", String(n));
+        b.textContent = "✍️ " + WT.btn;
+        b.addEventListener("click", function () { openWriteLab(n); });
+        card.appendChild(b);
+      });
+
+
       document.querySelectorAll(".js-open-sunmoon").forEach(function (btn) {
         btn.addEventListener("click", function () {
           openSunMoonLab(btn.getAttribute("data-title"));
@@ -2273,92 +2739,6 @@
         return pool;
       }
 
-      // Mots pour le jeu "Reconnaitre un mot", disponible a partir du
-      // Module 2. AUCUNE synthese vocale : ce sont tous des vrais verbes
-      // arabes (passe, forme dictionnaire) dont l'orthographe est
-      // entierement voyellee (chaque lettre porte fatha/damma/kasra ou une
-      // prolongation), donc assemblables proprement a partir des vrais
-      // enregistrements de lettres - exactement comme les pseudo-mots
-      // (voir PSEUDO_WORDS). Les noms/mots se terminant par une consonne
-      // muette (sukun) sont volontairement exclus : cette coupe n'existe
-      // pas proprement dans les enregistrements fournis (pas de silence
-      // entre le contexte et la lettre cible dans les fichiers sukun du
-      // fascicule 4). Le module minimal d'un mot est deduit automatiquement
-      // de ses lettres (jamais saisi a la main).
-      var WORDS = [
-        { id: "taba", arabic: "تَابَ", letters: ["baa", "taa"], audioId: "taba", units: ["taa-madd-fatha", "baa-fatha"] },
-        { id: "thabata", arabic: "ثَبَتَ", letters: ["baa", "taa", "thaa"], audioId: "thabata", units: ["thaa-fatha", "baa-fatha", "taa-fatha"] },
-        { id: "baata", arabic: "بَاتَ", letters: ["baa", "taa"], audioId: "baata", units: ["baa-madd-fatha", "taa-fatha"] },
-        { id: "thaaba", arabic: "ثَابَ", letters: ["baa", "thaa"], audioId: "thaaba", units: ["thaa-madd-fatha", "baa-fatha"] },
-        { id: "bahatha", arabic: "بَحَثَ", letters: ["baa", "haa", "thaa"], audioId: "bahatha", units: ["baa-fatha", "haa-fatha", "thaa-fatha"] },
-        { id: "khaba", arabic: "خَابَ", letters: ["baa", "khaa"], audioId: "khaba", units: ["khaa-madd-fatha", "baa-fatha"] },
-        { id: "jaba", arabic: "جَابَ", letters: ["baa", "jim"], audioId: "jaba", units: ["jim-madd-fatha", "baa-fatha"] },
-        { id: "hajaba", arabic: "حَجَبَ", letters: ["baa", "haa", "jim"], audioId: "hajaba", units: ["haa-fatha", "jim-fatha", "baa-fatha"] },
-        { id: "akhadha", arabic: "أَخَذَ", letters: ["alif", "khaa", "thal"], audioId: "akhadha", units: ["alif-fatha", "khaa-fatha", "thal-fatha"] },
-        { id: "dhaba", arabic: "ذَابَ", letters: ["baa", "thal"], audioId: "dhaba", units: ["thal-madd-fatha", "baa-fatha"] },
-        { id: "bada", arabic: "بَدَا", letters: ["baa", "dal"], audioId: "bada", units: ["baa-fatha", "dal-madd-fatha"] },
-        { id: "jadhaba", arabic: "جَذَبَ", letters: ["baa", "jim", "thal"], audioId: "jadhaba", units: ["jim-fatha", "thal-fatha", "baa-fatha"] },
-        { id: "hadatha", arabic: "حَدَثَ", letters: ["dal", "haa", "thaa"], audioId: "hadatha", units: ["haa-fatha", "dal-fatha", "thaa-fatha"] },
-        { id: "zajara", arabic: "زَجَرَ", letters: ["jim", "reh", "zain"], audioId: "zajara", units: ["zain-fatha", "jim-fatha", "reh-fatha"] },
-        { id: "kharaja", arabic: "خَرَجَ", letters: ["jim", "khaa", "reh"], audioId: "kharaja", units: ["khaa-fatha", "reh-fatha", "jim-fatha"] },
-        { id: "baraza", arabic: "بَرَزَ", letters: ["baa", "reh", "zain"], audioId: "baraza", units: ["baa-fatha", "reh-fatha", "zain-fatha"] },
-        { id: "zara", arabic: "زَارَ", letters: ["reh", "zain"], audioId: "zara", units: ["zain-madd-fatha", "reh-fatha"] },
-        { id: "shariba", arabic: "شَرِبَ", letters: ["baa", "reh", "sheen"], audioId: "shariba", units: ["sheen-fatha", "reh-kasra", "baa-fatha"] },
-        { id: "darasa", arabic: "دَرَسَ", letters: ["dal", "reh", "seen"], audioId: "darasa", units: ["dal-fatha", "reh-fatha", "seen-fatha"] },
-        { id: "sharaha", arabic: "شَرَحَ", letters: ["haa", "reh", "sheen"], audioId: "sharaha", units: ["sheen-fatha", "reh-fatha", "haa-fatha"] },
-        { id: "sahaba", arabic: "سَحَبَ", letters: ["baa", "haa", "seen"], audioId: "sahaba", units: ["seen-fatha", "haa-fatha", "baa-fatha"] },
-        { id: "daraba", arabic: "ضَرَبَ", letters: ["baa", "dad", "reh"], audioId: "daraba", units: ["dad-fatha", "reh-fatha", "baa-fatha"] },
-        { id: "rasada", arabic: "رَصَدَ", letters: ["dal", "reh", "sad"], audioId: "rasada", units: ["reh-fatha", "sad-fatha", "dal-fatha"] },
-        { id: "hadara", arabic: "حَضَرَ", letters: ["dad", "haa", "reh"], audioId: "hadara", units: ["haa-fatha", "dad-fatha", "reh-fatha"] },
-        { id: "sarakha", arabic: "صَرَخَ", letters: ["khaa", "reh", "sad"], audioId: "sarakha", units: ["sad-fatha", "reh-fatha", "khaa-fatha"] },
-        { id: "khataba", arabic: "خَطَبَ", letters: ["baa", "khaa", "tah"], audioId: "khataba", units: ["khaa-fatha", "tah-fatha", "baa-fatha"] },
-        { id: "dabata", arabic: "ضَبَطَ", letters: ["baa", "dad", "tah"], audioId: "dabata", units: ["dad-fatha", "baa-fatha", "tah-fatha"] },
-        { id: "khatara", arabic: "خَطَرَ", letters: ["khaa", "reh", "tah"], audioId: "khatara", units: ["khaa-fatha", "tah-fatha", "reh-fatha"] },
-        { id: "taraha", arabic: "طَرَحَ", letters: ["haa", "reh", "tah"], audioId: "taraha", units: ["tah-fatha", "reh-fatha", "haa-fatha"] },
-        { id: "ghadiba", arabic: "غَضِبَ", letters: ["baa", "dad", "ghain"], audioId: "ghadiba", units: ["ghain-fatha", "dad-kasra", "baa-fatha"] },
-        { id: "gharaba", arabic: "غَرَبَ", letters: ["baa", "ghain", "reh"], audioId: "gharaba", units: ["ghain-fatha", "reh-fatha", "baa-fatha"] },
-        { id: "abara", arabic: "عَبَرَ", letters: ["ain", "baa", "reh"], audioId: "abara", units: ["ain-fatha", "baa-fatha", "reh-fatha"] },
-        { id: "ghaza", arabic: "غَزَا", letters: ["ghain", "zain"], audioId: "ghaza", units: ["ghain-fatha", "zain-madd-fatha"] },
-        { id: "kataba", arabic: "كَتَبَ", letters: ["baa", "kaf", "taa"], audioId: "kataba", units: ["kaf-fatha", "taa-fatha", "baa-fatha"] },
-        { id: "qafaza", arabic: "قَفَزَ", letters: ["feh", "qaf", "zain"], audioId: "qafaza", units: ["qaf-fatha", "feh-fatha", "zain-fatha"] },
-        { id: "fataha", arabic: "فَتَحَ", letters: ["feh", "haa", "taa"], audioId: "fataha", units: ["feh-fatha", "taa-fatha", "haa-fatha"] },
-        { id: "arafa", arabic: "عَرَفَ", letters: ["ain", "feh", "reh"], audioId: "arafa", units: ["ain-fatha", "reh-fatha", "feh-fatha"] },
-        { id: "kabura", arabic: "كَبُرَ", letters: ["baa", "kaf", "reh"], audioId: "kabura", units: ["kaf-fatha", "baa-damma", "reh-fatha"] },
-        { id: "fariha", arabic: "فَرِحَ", letters: ["feh", "haa", "reh"], audioId: "fariha", units: ["feh-fatha", "reh-kasra", "haa-fatha"] },
-        { id: "amila", arabic: "عَمِلَ", letters: ["ain", "lam", "meem"], audioId: "amila", units: ["ain-fatha", "meem-kasra", "lam-fatha"] },
-        { id: "nazama", arabic: "نَظَمَ", letters: ["meem", "noon", "zah"], audioId: "nazama", units: ["noon-fatha", "zah-fatha", "meem-fatha"] },
-        { id: "laiba", arabic: "لَعِبَ", letters: ["ain", "baa", "lam"], audioId: "laiba", units: ["lam-fatha", "ain-kasra", "baa-fatha"] },
-        { id: "najaha", arabic: "نَجَحَ", letters: ["haa", "jim", "noon"], audioId: "najaha", units: ["noon-fatha", "jim-fatha", "haa-fatha"] },
-        { id: "hamala", arabic: "حَمَلَ", letters: ["haa", "lam", "meem"], audioId: "hamala", units: ["haa-fatha", "meem-fatha", "lam-fatha"] },
-        { id: "dakhala", arabic: "دَخَلَ", letters: ["dal", "khaa", "lam"], audioId: "dakhala", units: ["dal-fatha", "khaa-fatha", "lam-fatha"] },
-        { id: "jalasa", arabic: "جَلَسَ", letters: ["jim", "lam", "seen"], audioId: "jalasa", units: ["jim-fatha", "lam-fatha", "seen-fatha"] },
-        { id: "dhahaba", arabic: "ذَهَبَ", letters: ["baa", "heh", "thal"], audioId: "dhahaba", units: ["thal-fatha", "heh-fatha", "baa-fatha"] },
-        { id: "wajada", arabic: "وَجَدَ", letters: ["dal", "jim", "waw"], audioId: "wajada", units: ["waw-fatha", "jim-fatha", "dal-fatha"] },
-        { id: "wasala", arabic: "وَصَلَ", letters: ["lam", "sad", "waw"], audioId: "wasala", units: ["waw-fatha", "sad-fatha", "lam-fatha"] },
-        { id: "wahaba", arabic: "وَهَبَ", letters: ["baa", "heh", "waw"], audioId: "wahaba", units: ["waw-fatha", "heh-fatha", "baa-fatha"] },
-        { id: "haraba", arabic: "هَرَبَ", letters: ["baa", "heh", "reh"], audioId: "haraba", units: ["heh-fatha", "reh-fatha", "baa-fatha"] },
-        { id: "daraja", arabic: "دَرَجَ", letters: ["dal", "jim", "reh"], audioId: "daraja", units: ["dal-fatha", "reh-fatha", "jim-fatha"] },
-        { id: "hadhira", arabic: "حَذِرَ", letters: ["haa", "reh", "thal"], audioId: "hadhira", units: ["haa-fatha", "thal-kasra", "reh-fatha"] },
-        { id: "harasa", arabic: "حَرَسَ", letters: ["haa", "reh", "seen"], audioId: "harasa", units: ["haa-fatha", "reh-fatha", "seen-fatha"] },
-        { id: "sarada", arabic: "سَرَدَ", letters: ["dal", "reh", "seen"], audioId: "sarada", units: ["seen-fatha", "reh-fatha", "dal-fatha"] },
-        { id: "hasada", arabic: "حَصَدَ", letters: ["dal", "haa", "sad"], audioId: "hasada", units: ["haa-fatha", "sad-fatha", "dal-fatha"] },
-        { id: "sabara", arabic: "صَبَرَ", letters: ["baa", "reh", "sad"], audioId: "sabara", units: ["sad-fatha", "baa-fatha", "reh-fatha"] },
-        { id: "tabakha", arabic: "طَبَخَ", letters: ["baa", "khaa", "tah"], audioId: "tabakha", units: ["tah-fatha", "baa-fatha", "khaa-fatha"] },
-        { id: "basata", arabic: "بَسَطَ", letters: ["baa", "seen", "tah"], audioId: "basata", units: ["baa-fatha", "seen-fatha", "tah-fatha"] },
-        { id: "atisha", arabic: "عَطِشَ", letters: ["ain", "sheen", "tah"], audioId: "atisha", units: ["ain-fatha", "tah-kasra", "sheen-fatha"] },
-        { id: "abada", arabic: "عَبَدَ", letters: ["ain", "baa", "dal"], audioId: "abada", units: ["ain-fatha", "baa-fatha", "dal-fatha"] },
-        { id: "daaverb", arabic: "دَعَا", letters: ["ain", "dal"], audioId: "daaverb", units: ["dal-fatha", "ain-madd-fatha"] },
-        { id: "dahika", arabic: "ضَحِكَ", letters: ["dad", "haa", "kaf"], audioId: "dahika", units: ["dad-fatha", "haa-kasra", "kaf-fatha"] },
-        { id: "sakata", arabic: "سَكَتَ", letters: ["kaf", "seen", "taa"], audioId: "sakata", units: ["seen-fatha", "kaf-fatha", "taa-fatha"] },
-        { id: "rafaa", arabic: "رَفَعَ", letters: ["ain", "feh", "reh"], audioId: "rafaa", units: ["reh-fatha", "feh-fatha", "ain-fatha"] },
-        { id: "ghasala", arabic: "غَسَلَ", letters: ["ghain", "lam", "seen"], audioId: "ghasala", units: ["ghain-fatha", "seen-fatha", "lam-fatha"] },
-        { id: "nazara", arabic: "نَظَرَ", letters: ["noon", "reh", "zah"], audioId: "nazara", units: ["noon-fatha", "zah-fatha", "reh-fatha"] },
-        { id: "samia", arabic: "سَمِعَ", letters: ["ain", "meem", "seen"], audioId: "samia", units: ["seen-fatha", "meem-kasra", "ain-fatha"] },
-        { id: "talaba", arabic: "طَلَبَ", letters: ["baa", "lam", "tah"], audioId: "talaba", units: ["tah-fatha", "lam-fatha", "baa-fatha"] },
-        { id: "fahima", arabic: "فَهِمَ", letters: ["feh", "heh", "meem"], audioId: "fahima", units: ["feh-fatha", "heh-kasra", "meem-fatha"] },
-        { id: "waqafa", arabic: "وَقَفَ", letters: ["feh", "qaf", "waw"], audioId: "waqafa", units: ["waw-fatha", "qaf-fatha", "feh-fatha"] },
-        { id: "wasafa", arabic: "وَصَفَ", letters: ["feh", "sad", "waw"], audioId: "wasafa", units: ["waw-fatha", "sad-fatha", "feh-fatha"] }
-      ];
 
       // Pseudo-mots : combinaisons phonetiquement valides construites en
       // assemblant de vrais enregistrements de lettres (jamais de TTS).
