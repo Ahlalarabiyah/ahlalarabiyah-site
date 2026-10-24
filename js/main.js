@@ -294,6 +294,127 @@
     refreshLocks();
   })();
 
+  // ---- Module "Introduction" : l'ordre de l'alphabet (page Modules) ----
+  // Carte placee avant le Module 1, gratuite ; ouvre une fenetre qui presente
+  // les 28 lettres dans leur ordre habituel, lettres solaires en couleur.
+  (function () {
+    var grid = document.querySelector(".module-grid");
+    if (!grid || !document.querySelector(".js-open-module")) return;
+    var LANG = (document.documentElement.lang || "fr").slice(0, 2);
+    var TXT = {
+      fr: {
+        name: "Introduction", sub: "L’ordre de l’alphabet", open: "Découvrir", close: "Fermer",
+        heading: "Bienvenue dans le Module « Introduction »",
+        p1: "Dans ce module, vous allez découvrir les 28 lettres de l’alphabet arabe, présentées dans leur ordre habituel.",
+        p2: "L’objectif ici est simplement de connaître l’ordre des lettres.",
+        p3: "Dans les 12 modules suivants, nous étudierons ces lettres progressivement, groupe par groupe.",
+        note: "Voici le premier des quatre ordres les plus connus pour classer les lettres de l’alphabet arabe. C’est l’ordre le plus utilisé et le plus simple."
+      },
+      en: {
+        name: "Introduction", sub: "The order of the alphabet", open: "Discover", close: "Close",
+        heading: "Welcome to the “Introduction” module",
+        p1: "In this module, you will discover the 28 letters of the Arabic alphabet, presented in their usual order.",
+        p2: "The goal here is simply to know the order of the letters.",
+        p3: "In the 12 following modules, we will study these letters progressively, group by group.",
+        note: "This is the first of the four best-known orders for arranging the letters of the Arabic alphabet. It is the most widely used and the simplest order."
+      },
+      ru: {
+        name: "Введение", sub: "Порядок алфавита", open: "Открыть", close: "Закрыть",
+        heading: "Добро пожаловать в модуль «Введение»",
+        p1: "В этом модуле вы познакомитесь с 28 буквами арабского алфавита, представленными в их привычном порядке.",
+        p2: "Цель здесь проста — узнать порядок букв.",
+        p3: "В следующих 12 модулях мы будем изучать эти буквы постепенно, группа за группой.",
+        note: "Это первый из четырёх самых известных порядков расположения букв арабского алфавита. Это самый распространённый и самый простой порядок."
+      },
+      de: {
+        name: "Einführung", sub: "Die Reihenfolge des Alphabets", open: "Entdecken", close: "Schließen",
+        heading: "Willkommen im Modul „Einführung“",
+        p1: "In diesem Modul entdecken Sie die 28 Buchstaben des arabischen Alphabets in ihrer gewohnten Reihenfolge.",
+        p2: "Das Ziel ist hier einfach, die Reihenfolge der Buchstaben zu kennen.",
+        p3: "In den 12 folgenden Modulen lernen wir diese Buchstaben schrittweise, Gruppe für Gruppe.",
+        note: "Dies ist die erste der vier bekanntesten Reihenfolgen, um die Buchstaben des arabischen Alphabets zu ordnen. Es ist die am häufigsten verwendete und einfachste Reihenfolge."
+      },
+      ar: {
+        name: "المقدمة", sub: "ترتيب الحروف", open: "اكتشف", close: "إغلاق",
+        heading: "مرحبًا بكم في وحدة «المقدمة»",
+        p1: "في هذه الوحدة ستتعرفون على الحروف الثمانية والعشرين للأبجدية العربية، مرتبةً بترتيبها المعتاد.",
+        p2: "الهدف هنا ببساطة هو معرفة ترتيب الحروف.",
+        p3: "في الوحدات الاثنتي عشرة التالية سندرس هذه الحروف تدريجيًا، مجموعةً بعد مجموعة.",
+        note: "هذا هو أول أشهر أربعة ترتيبات لحروف الهجاء العربية، وهو الأكثر استعمالًا والأبسط."
+      }
+    };
+    var T = TXT[LANG] || TXT.fr;
+    var ALPHABET = "أ ب ت ث ج ح خ د ذ ر ز س ش ص ض ط ظ ع غ ف ق ك ل م ن هـ و ي".split(" ");
+    var SUN = "ت ث د ذ ر ز س ش ص ض ط ظ ل ن".split(" ");
+
+    function el(tag, cls, text) {
+      var e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text != null) e.textContent = text;
+      return e;
+    }
+
+    // ---- Carte ----
+    var card = el("article", "module-card module-card-intro");
+    card.appendChild(el("span", "module-number", T.name));
+    var lettersP = el("p", "module-letters", "أ ب ت … ي");
+    lettersP.setAttribute("lang", "ar");
+    lettersP.setAttribute("dir", "rtl");
+    card.appendChild(lettersP);
+    card.appendChild(el("p", "module-progress", T.sub));
+    var openBtn = el("button", "btn btn-outline btn-sm module-listen js-open-intro", T.open);
+    openBtn.type = "button";
+    card.appendChild(openBtn);
+    grid.insertBefore(card, grid.firstChild);
+
+    // ---- Fenetre ----
+    var modal = null;
+    function close() {
+      if (!modal) return;
+      modal.classList.remove("is-open");
+      if (!document.querySelector(".reader.is-open, .game-modal.is-open")) document.body.style.overflow = "";
+    }
+    function build() {
+      modal = el("div", "reader");
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+      modal.setAttribute("aria-label", T.name);
+      var bar = el("div", "reader-bar");
+      bar.appendChild(el("span", "reader-title", T.name));
+      var x = el("button", "reader-close", "×");
+      x.type = "button";
+      x.setAttribute("aria-label", T.close);
+      x.addEventListener("click", close);
+      bar.appendChild(x);
+      var body = el("div", "reader-body");
+      var panel = el("div", "formlab-panel intro-panel");
+      panel.appendChild(el("h3", "intro-heading", T.heading));
+      panel.appendChild(el("p", "intro-text", T.p1));
+      panel.appendChild(el("p", "intro-text", T.p2));
+      panel.appendChild(el("p", "intro-text", T.p3));
+      var alpha = el("div", "intro-alphabet");
+      alpha.setAttribute("lang", "ar");
+      alpha.setAttribute("dir", "rtl");
+      ALPHABET.forEach(function (ch) {
+        var tile = el("span", "intro-letter" + (SUN.indexOf(ch) !== -1 ? " is-sun" : ""), ch);
+        alpha.appendChild(tile);
+      });
+      panel.appendChild(alpha);
+      panel.appendChild(el("p", "intro-note", T.note));
+      body.appendChild(panel);
+      modal.appendChild(bar);
+      modal.appendChild(body);
+      modal.addEventListener("click", function (e) { if (e.target === modal || e.target === body) close(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal.classList.contains("is-open")) close(); });
+      document.body.appendChild(modal);
+    }
+    openBtn.addEventListener("click", function () {
+      if (!modal) build();
+      modal.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+    });
+  })();
+
   // ---- Menu deroulant des langues : se ferme au clic ailleurs / Echap ----
   var langMenu = document.querySelector(".lang-menu");
   if (langMenu) {
