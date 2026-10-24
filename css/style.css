@@ -2894,3 +2894,15 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .write-word { font-family: var(--font-arabic); font-size: 1.9rem; line-height: 1.7; padding: 0 12px; border: 1px solid var(--color-border); border-radius: 12px; background: var(--color-bg); }
 
 .write-again[hidden] { display: none; }
+
+/* Ecriture : outils (crayon / gomme) et actions (effacer, verifier, suivant) */
+.write-tools { display: flex; justify-content: center; gap: 10px; margin: 12px 0 0; }
+.write-tool {
+  display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 999px;
+  border: 1.5px solid var(--color-border); background: #fff; color: var(--color-navy); font: inherit; font-weight: 600; font-size: .88rem; cursor: pointer;
+}
+.write-tool.is-active { border-color: var(--color-teal); background: var(--color-teal-10); color: var(--color-teal-dark); }
+.write-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 6px 0 4px; }
+.write-actions [hidden] { display: none; }
+.write-tapmark { fill: var(--color-teal); opacity: .9; }
+.write-board.is-erasing { cursor: cell; }
