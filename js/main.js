@@ -2307,10 +2307,13 @@
         var BAA_FIN_TAIL = S([[298, 110], [268, 112], [238, 114], [230, 110], [229, 94], [229, 78]]);
         // meme fin que le baa isole : trait plat sur la ligne puis crochet a gauche
         var BAA_FIN_BOWL = S([[233, 118], [218, 131], [180, 134], [148, 134], [125, 134], [105, 130], [100, 118], [100, 105], [105, 92], [117, 83], [130, 81]]);
+        // Un seul mouvement : la dent monte puis redescend, et le trait continue vers la gauche.
+        var BAA_MED_ONE = S([[278, 130], [245, 130], [236, 128], [233, 108], [232, 90], [230, 108], [228, 126], [221, 131], [177, 133], [100, 134]]);
+        var BAA_FIN_ONE = S([[298, 110], [268, 112], [240, 114], [232, 108], [230, 92], [229, 78], [227, 94], [227, 108], [226, 120], [216, 130], [180, 134], [148, 134], [125, 134], [105, 130], [100, 118], [100, 105], [105, 92], [117, 83], [130, 81]]);
         function baaFamily(iso, init, med, fin) {
           return {
             isolated: F([BAA_ISO], iso), initial: F([BAA_INIT], init),
-            medial: F([BAA_MED_LINE, BAA_MED_TOOTH], med), final: F([BAA_FIN_TAIL, BAA_FIN_BOWL], fin)
+            medial: F([BAA_MED_ONE], med), final: F([BAA_FIN_ONE], fin)
           };
         }
         D.baa = baaFamily([[189, 160]], [[258, 168]], [[229, 158]], [[174, 158]]);
@@ -2573,11 +2576,11 @@
 
       var WRITE_FORMS = ["isolated", "initial", "medial", "final"];
       var WRITE_TXT = {
-        fr: { title: "Écriture", pick: "Choisis la lettre", forms: ["Isolée", "Début", "Milieu", "Fin"], how: "Trace la lettre avec ton doigt en suivant les pointillés et la flèche. Commence au point numéro 1.", ok: "✓ Bien écrit !", again: "Recommencer", bad: "Presque : suis bien les pointillés et le sens de la flèche.", dot: "Touche maintenant le point.", next: "Trace le trait suivant.", notebook: "Prends ton cahier ou ton ardoise et reproduis la lettre plusieurs fois.", words: "Des mots pour t’exercer", close: "Fermer", btn: "Écrire les lettres" },
-        en: { title: "Writing", pick: "Choose the letter", forms: ["Isolated", "Start", "Middle", "End"], how: "Trace the letter with your finger, following the dotted line and the arrow. Start at point number 1.", ok: "✓ Well written!", again: "Start again", bad: "Almost: follow the dotted line and the arrow’s direction.", dot: "Now tap the dot.", next: "Draw the next stroke.", notebook: "Take your notebook or slate and copy the letter several times.", words: "Words to practise", close: "Close", btn: "Write the letters" },
-        ru: { title: "Письмо", pick: "Выбери букву", forms: ["Отдельно", "В начале", "В середине", "В конце"], how: "Обведи букву пальцем по пунктиру и стрелке. Начни с точки номер 1.", ok: "✓ Хорошо написано!", again: "Заново", bad: "Почти: следуй пунктиру и направлению стрелки.", dot: "Теперь коснись точки.", next: "Проведи следующую линию.", notebook: "Возьми тетрадь или грифельную доску и повтори букву несколько раз.", words: "Слова для тренировки", close: "Закрыть", btn: "Писать буквы" },
-        de: { title: "Schreiben", pick: "Wähle den Buchstaben", forms: ["Einzeln", "Anfang", "Mitte", "Ende"], how: "Fahre den Buchstaben mit dem Finger nach, entlang der gepunkteten Linie und des Pfeils. Beginne bei Punkt 1.", ok: "✓ Gut geschrieben!", again: "Nochmal", bad: "Fast: folge der gepunkteten Linie und der Pfeilrichtung.", dot: "Tippe jetzt auf den Punkt.", next: "Zeichne den nächsten Strich.", notebook: "Nimm dein Heft oder deine Tafel und schreibe den Buchstaben mehrmals ab.", words: "Wörter zum Üben", close: "Schließen", btn: "Buchstaben schreiben" },
-        ar: { title: "الكتابة", pick: "اختر الحرف", forms: ["منفصل", "أول الكلمة", "وسط الكلمة", "آخر الكلمة"], how: "ارسم الحرف بإصبعك متبعًا الخط المنقّط والسهم. ابدأ من النقطة رقم 1.", ok: "✓ أحسنت!", again: "من جديد", bad: "اقتربت: اتبع الخط المنقّط واتجاه السهم.", dot: "المس النقطة الآن.", next: "ارسم الخط التالي.", notebook: "خذ دفترك أو لوحتك وأعد كتابة الحرف عدة مرات.", words: "كلمات للتمرين", close: "إغلاق", btn: "كتابة الحروف" }
+        fr: { title: "Écriture", pick: "Choisis la lettre", forms: ["Isolée", "Début", "Milieu", "Fin"], how: "Trace la lettre avec ton doigt en suivant les pointillés et la flèche. Commence au point orange.", ok: "✓ Bien écrit !", again: "Recommencer", bad: "Presque : suis bien les pointillés.", dot: "Touche maintenant les points.", next: "Trace le trait suivant.", notebook: "Prends ton cahier ou ton ardoise et reproduis la lettre plusieurs fois.", words: "Des mots pour t’exercer", close: "Fermer", btn: "Écrire les lettres" },
+        en: { title: "Writing", pick: "Choose the letter", forms: ["Isolated", "Start", "Middle", "End"], how: "Trace the letter with your finger, following the dotted line and the arrow. Start at the orange dot.", ok: "✓ Well written!", again: "Start again", bad: "Almost: follow the dotted line.", dot: "Now tap the dot.", next: "Draw the next stroke.", notebook: "Take your notebook or slate and copy the letter several times.", words: "Words to practise", close: "Close", btn: "Write the letters" },
+        ru: { title: "Письмо", pick: "Выбери букву", forms: ["Отдельно", "В начале", "В середине", "В конце"], how: "Обведи букву пальцем по пунктиру и стрелке. Начни с оранжевой точки.", ok: "✓ Хорошо написано!", again: "Заново", bad: "Почти: следуй пунктиру.", dot: "Теперь коснись точки.", next: "Проведи следующую линию.", notebook: "Возьми тетрадь или грифельную доску и повтори букву несколько раз.", words: "Слова для тренировки", close: "Закрыть", btn: "Писать буквы" },
+        de: { title: "Schreiben", pick: "Wähle den Buchstaben", forms: ["Einzeln", "Anfang", "Mitte", "Ende"], how: "Fahre den Buchstaben mit dem Finger nach, entlang der gepunkteten Linie und des Pfeils. Beginne beim orangen Punkt.", ok: "✓ Gut geschrieben!", again: "Nochmal", bad: "Fast: folge der gepunkteten Linie.", dot: "Tippe jetzt auf den Punkt.", next: "Zeichne den nächsten Strich.", notebook: "Nimm dein Heft oder deine Tafel und schreibe den Buchstaben mehrmals ab.", words: "Wörter zum Üben", close: "Schließen", btn: "Buchstaben schreiben" },
+        ar: { title: "الكتابة", pick: "اختر الحرف", forms: ["منفصل", "أول الكلمة", "وسط الكلمة", "آخر الكلمة"], how: "ارسم الحرف بإصبعك متبعًا الخط المنقّط والسهم. ابدأ من النقطة البرتقالية.", ok: "✓ أحسنت!", again: "من جديد", bad: "اقتربت: اتبع الخط المنقّط.", dot: "المس النقطة الآن.", next: "ارسم الخط التالي.", notebook: "خذ دفترك أو لوحتك وأعد كتابة الحرف عدة مرات.", words: "كلمات للتمرين", close: "إغلاق", btn: "كتابة الحروف" }
       };
       var WT = isGerman ? WRITE_TXT.de : isArabic ? WRITE_TXT.ar : isRussian ? WRITE_TXT.ru : isEnglish ? WRITE_TXT.en : WRITE_TXT.fr;
       var WRITE_LETTER_FORM_TEXT = function (ch, form) {
@@ -2765,9 +2768,13 @@
         }
 
         // ---- Planche de trace ----
+        // Plus d'etapes : l'eleve trace la lettre comme il veut (dans l'ordre et
+        // le sens qu'il veut, en un ou plusieurs gestes). Des que l'ensemble de
+        // son trace recouvre bien le modele (et qu'il a touche les points),
+        // la lettre est validee.
         var layers = {};
         function reset() {
-          state.step = 0; state.done = false; state.drawing = null;
+          state.done = false; state.drawing = null; state.user = []; state.inkPaths = [];
           board.textContent = "";
           var form = current();
           layers.guide = svgEl("g", {});
@@ -2777,57 +2784,32 @@
             var dense = writeDense(st);
             st._dense = dense;
             var d = "M" + dense.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" L");
-            var wide = svgEl("path", { d: d, class: "write-body", "data-i": i });
-            var dotted = svgEl("path", { d: d, class: "write-dotted", "data-i": i });
-            layers.guide.appendChild(wide);
-            layers.guide.appendChild(dotted);
+            layers.guide.appendChild(svgEl("path", { d: d, class: "write-body", "data-i": i }));
+            layers.guide.appendChild(svgEl("path", { d: d, class: "write-dotted", "data-i": i }));
             // fleches le long du trait
             var len = writePathLen(dense), acc = 0, nextAt = 40;
             for (var k = 1; k < dense.length; k++) {
               acc += Math.hypot(dense[k][0] - dense[k - 1][0], dense[k][1] - dense[k - 1][1]);
               if (acc >= nextAt && acc < len - 18) {
                 var ang = Math.atan2(dense[k][1] - dense[k - 1][1], dense[k][0] - dense[k - 1][0]) * 180 / Math.PI;
-                var arrow = svgEl("path", { d: "M-6 -5 L6 0 L-6 5 Z", class: "write-arrow", transform: "translate(" + dense[k][0].toFixed(1) + " " + dense[k][1].toFixed(1) + ") rotate(" + ang.toFixed(1) + ")" });
-                layers.guide.appendChild(arrow);
+                layers.guide.appendChild(svgEl("path", { d: "M-6 -5 L6 0 L-6 5 Z", class: "write-arrow", transform: "translate(" + dense[k][0].toFixed(1) + " " + dense[k][1].toFixed(1) + ") rotate(" + ang.toFixed(1) + ")" }));
                 nextAt += 55;
               }
             }
           });
-          form.strokes.forEach(function (st, i) {
-            var p = st._dense[0];
-            var g = svgEl("g", { class: "write-start", "data-i": i, transform: "translate(" + p[0].toFixed(1) + " " + p[1].toFixed(1) + ")" });
-            g.appendChild(svgEl("circle", { r: 11 }));
-            var t = svgEl("text", { y: 4, "text-anchor": "middle" });
-            t.textContent = String(i + 1);
-            g.appendChild(t);
-            layers.guide.appendChild(g);
-          });
+          // un seul point de depart (sans numero) : debut du premier trait
+          var p0 = form.strokes[0]._dense[0];
+          var startG = svgEl("g", { class: "write-start is-active", transform: "translate(" + p0[0].toFixed(1) + " " + p0[1].toFixed(1) + ")" });
+          startG.appendChild(svgEl("circle", { r: 9 }));
+          layers.guide.appendChild(startG);
           form.dots.forEach(function (p, i) {
-            layers.guide.appendChild(svgEl("circle", { cx: p[0], cy: p[1], r: 12, class: "write-dot", "data-d": i }));
+            layers.guide.appendChild(svgEl("circle", { cx: p[0], cy: p[1], r: 12, class: "write-dot is-active", "data-d": i }));
           });
           board.appendChild(layers.guide);
           board.appendChild(layers.ink);
           status.textContent = "";
           status.className = "write-status";
-          again.hidden = true;
-          highlight();
-        }
-        function totalSteps() { var f = current(); return f.strokes.length + f.dots.length; }
-        function highlight() {
-          var f = current();
-          Array.prototype.forEach.call(board.querySelectorAll(".write-start"), function (g) {
-            var i = Number(g.getAttribute("data-i"));
-            g.classList.toggle("is-active", !state.done && state.step === i);
-            g.classList.toggle("is-hidden", i < state.step || (state.step >= f.strokes.length));
-          });
-          Array.prototype.forEach.call(board.querySelectorAll(".write-dot"), function (c) {
-            var i = Number(c.getAttribute("data-d"));
-            c.classList.toggle("is-active", !state.done && state.step === f.strokes.length + i);
-            c.classList.toggle("is-done", state.step > f.strokes.length + i);
-          });
-          Array.prototype.forEach.call(board.querySelectorAll(".write-body, .write-dotted"), function (p) {
-            p.classList.toggle("is-done", Number(p.getAttribute("data-i")) < state.step);
-          });
+          again.hidden = false;
         }
         function toBoard(e) {
           var pt = board.createSVGPoint();
@@ -2836,33 +2818,78 @@
           var q = pt.matrixTransform(m.inverse());
           return [q.x, q.y];
         }
-        function finishStep(ok) {
-          layers.ink.textContent = "";
-          if (ok) {
-            state.step++;
-            if (state.step >= totalSteps()) {
-              state.done = true;
-              status.textContent = WT.ok;
-              status.className = "write-status is-ok";
-              again.hidden = false;
-            } else {
-              status.textContent = state.step < current().strokes.length ? WT.next : WT.dot;
-              status.className = "write-status";
-            }
-            highlight();
-          } else {
-            status.textContent = WT.bad;
-            status.className = "write-status is-bad";
+        // Points regulierement espaces le long d'un trace
+        function spaced(pts, step) {
+          var len = writePathLen(pts);
+          if (!len) return [pts[0]];
+          return writeResample(pts, Math.max(2, Math.round(len / step) + 1));
+        }
+        function nearAny(p, list, r) {
+          for (var i = 0; i < list.length; i++) {
+            if (Math.hypot(p[0] - list[i][0], p[1] - list[i][1]) <= r) return true;
           }
+          return false;
+        }
+        function isTap(pts) { return writePathLen(pts) < 70; }
+        function dotsHit() {
+          var f = current(), hit = [];
+          f.dots.forEach(function (d) {
+            var ok = state.user.some(function (u) {
+              if (!isTap(u)) return false;
+              var cx = 0, cy = 0;
+              u.forEach(function (p) { cx += p[0]; cy += p[1]; });
+              return Math.hypot(cx / u.length - d[0], cy / u.length - d[1]) < 32;
+            });
+            hit.push(ok);
+          });
+          return hit;
+        }
+        // Evalue l'ensemble du trace : couverture du modele, precision, points.
+        function evaluate() {
+          var f = current();
+          var ref = [];
+          f.strokes.forEach(function (st) { ref = ref.concat(spaced(st._dense, 5)); });
+          var hit = dotsHit();
+          var ink = [];
+          state.user.forEach(function (u) {
+            if (isTap(u) && f.dots.some(function (d, i) {
+              var cx = 0, cy = 0;
+              u.forEach(function (p) { cx += p[0]; cy += p[1]; });
+              return Math.hypot(cx / u.length - d[0], cy / u.length - d[1]) < 32;
+            })) return;
+            ink = ink.concat(spaced(u, 4));
+          });
+          var covered = 0, precise = 0;
+          ref.forEach(function (r) { if (nearAny(r, ink, 24)) covered++; });
+          ink.forEach(function (q) { if (nearAny(q, ref, 28)) precise++; });
+          return {
+            coverage: ref.length ? covered / ref.length : 0,
+            precision: ink.length ? precise / ink.length : 1,
+            hasInk: ink.length > 0,
+            dotsOk: hit.every(Boolean),
+            hit: hit
+          };
+        }
+        function refreshDots(hit) {
+          Array.prototype.forEach.call(board.querySelectorAll(".write-dot"), function (c) {
+            c.classList.toggle("is-done", !!hit[Number(c.getAttribute("data-d"))]);
+          });
+        }
+        function markDone() {
+          state.done = true;
+          Array.prototype.forEach.call(board.querySelectorAll(".write-body, .write-dotted"), function (el) { el.classList.add("is-done"); });
+          status.textContent = WT.ok;
+          status.className = "write-status is-ok";
         }
         board.addEventListener("pointerdown", function (e) {
           if (state.done) return;
           e.preventDefault();
           try { board.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
           state.drawing = [toBoard(e)];
-          layers.ink.textContent = "";
           state.ink = svgEl("path", { class: "write-ink", d: "" });
           layers.ink.appendChild(state.ink);
+          var st0 = board.querySelector(".write-start");
+          if (st0) st0.classList.add("is-hidden");
         });
         board.addEventListener("pointermove", function (e) {
           if (!state.drawing) return;
@@ -2870,20 +2897,41 @@
           state.drawing.push(toBoard(e));
           state.ink.setAttribute("d", "M" + state.drawing.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" L"));
         });
-        function endDraw(e) {
+        function endDraw() {
           if (!state.drawing) return;
-          var pts = state.drawing;
+          var pts = state.drawing, path = state.ink;
           state.drawing = null;
-          var f = current();
-          if (state.step < f.strokes.length) {
-            finishStep(writeMatches(pts, f.strokes[state.step]._dense));
+          state.user.push(pts);
+          state.inkPaths.push(path);
+          if (isTap(pts)) {
+            // un appui : sert pour les points ; on n'affiche pas de trait
+            path.setAttribute("d", "");
+          }
+          var ev = evaluate();
+          refreshDots(ev.hit);
+          // un geste franchement hors du modele est retire
+          if (!isTap(pts)) {
+            var ref = [];
+            current().strokes.forEach(function (st) { ref = ref.concat(spaced(st._dense, 5)); });
+            var mine = spaced(pts, 4), good = 0;
+            mine.forEach(function (q) { if (nearAny(q, ref, 34)) good++; });
+            if (mine.length && good / mine.length < 0.5) {
+              state.user.pop();
+              state.inkPaths.pop();
+              if (path.parentNode) path.parentNode.removeChild(path);
+              status.textContent = WT.bad;
+              status.className = "write-status is-bad";
+              return;
+            }
+          }
+          if (ev.hasInk && ev.coverage >= 0.84 && ev.precision >= 0.75 && ev.dotsOk) {
+            markDone();
+          } else if (ev.hasInk && ev.coverage >= 0.84 && ev.precision >= 0.75 && !ev.dotsOk) {
+            status.textContent = WT.dot;
+            status.className = "write-status";
           } else {
-            // point : un simple appui (ou un tout petit trait) pres de la cible
-            var target = f.dots[state.step - f.strokes.length];
-            var cx = 0, cy = 0;
-            pts.forEach(function (p) { cx += p[0]; cy += p[1]; });
-            cx /= pts.length; cy /= pts.length;
-            finishStep(writePathLen(pts) < 40 && Math.hypot(cx - target[0], cy - target[1]) < 30);
+            status.textContent = "";
+            status.className = "write-status";
           }
         }
         board.addEventListener("pointerup", endDraw);
