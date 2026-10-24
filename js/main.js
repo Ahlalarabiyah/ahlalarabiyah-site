@@ -2290,14 +2290,15 @@
       var WRITE_DATA = (function () {
         function S(pts) { return { pts: pts, sharp: false }; }   // courbe lissee
         function P(pts) { return { pts: pts, sharp: true }; }    // trait droit / angle
-        // Toutes les lettres restent AU-DESSUS de la ligne d'ecriture (y = 145) :
-        // le bas du trait (epaisseur comprise) vient se poser sur la ligne.
-        var BOWL_ISO = S([[252, 90], [244, 116], [222, 131], [172, 134], [128, 131], [100, 116], [90, 90]]);
-        var TOOTH_INIT = S([[256, 92], [248, 116], [228, 130], [196, 134], [140, 134]]);
-        var TOOTH_MED = P([[278, 134], [246, 134], [226, 108], [206, 134], [150, 134]]);
-        // Forme "fin" : trait de liaison avec la lettre precedente (a droite, avec
-        // son petit crochet), cuvette posee sur la ligne, pointe recourbee a gauche.
-        var BOWL_FIN = S([[298, 108], [292, 115], [280, 118], [262, 121], [238, 128], [210, 133], [180, 134], [152, 130], [130, 119], [118, 102], [116, 88], [122, 78]]);
+        // Famille du baa (ب ت ث) : tracés dessinés par l'auteur du site ; la ligne
+        // d'ecriture est a y = 145 et les lettres reposent dessus.
+        var BAA_ISO = S([[270, 100], [267, 118], [257, 129], [218, 132], [166, 134], [125, 134], [105, 130], [100, 118], [100, 105], [105, 92], [117, 83], [130, 81]]);
+        var BAA_INIT = S([[255, 84], [257, 108], [252, 124], [240, 133], [200, 134], [133, 133]]);
+        var BAA_MED_LINE = S([[278, 130], [240, 130], [222, 131], [177, 133], [100, 134]]);
+        var BAA_MED_TOOTH = P([[234, 130], [232, 90]]);
+        var BAA_FIN_TAIL = S([[298, 110], [268, 112], [238, 114], [230, 110], [229, 94], [229, 78]]);
+        // meme fin que le baa isole : trait plat sur la ligne puis crochet a gauche
+        var BAA_FIN_BOWL = S([[233, 118], [218, 131], [180, 134], [148, 134], [125, 134], [105, 130], [100, 118], [100, 105], [105, 92], [117, 83], [130, 81]]);
         var alif = {
           isolated: { strokes: [P([[160, 24], [160, 134]])], dots: [] },
           initial: null, medial: null,
@@ -2307,17 +2308,17 @@
         alif.medial = alif.final;
         function family(dotsIso, dotsInit, dotsMed, dotsFin) {
           return {
-            isolated: { strokes: [BOWL_ISO], dots: dotsIso },
-            initial: { strokes: [TOOTH_INIT], dots: dotsInit },
-            medial: { strokes: [TOOTH_MED], dots: dotsMed },
-            final: { strokes: [BOWL_FIN], dots: dotsFin }
+            isolated: { strokes: [BAA_ISO], dots: dotsIso },
+            initial: { strokes: [BAA_INIT], dots: dotsInit },
+            medial: { strokes: [BAA_MED_LINE, BAA_MED_TOOTH], dots: dotsMed },
+            final: { strokes: [BAA_FIN_TAIL, BAA_FIN_BOWL], dots: dotsFin }
           };
         }
         return {
           alif: alif,
-          baa: family([[170, 172]], [[205, 170]], [[226, 170]], [[161, 166]]),
-          taa: family([[150, 106], [192, 106]], [[198, 102], [232, 102]], [[212, 84], [240, 84]], [[165, 98], [200, 102]]),
-          thaa: family([[150, 108], [192, 108], [171, 84]], [[198, 106], [232, 106], [215, 80]], [[212, 86], [240, 86], [226, 62]], [[160, 100], [200, 104], [180, 78]])
+          baa: family([[189, 160]], [[258, 168]], [[229, 158]], [[174, 158]]),
+          taa: family([[150, 108], [190, 108]], [[200, 112], [232, 112]], [[222, 68], [246, 68]], [[160, 100], [194, 104]]),
+          thaa: family([[150, 110], [190, 110], [170, 86]], [[200, 114], [232, 114], [216, 90]], [[222, 70], [246, 70], [234, 48]], [[150, 102], [190, 106], [170, 80]])
         };
       })();
 
