@@ -2290,8 +2290,16 @@
       var WRITE_DATA = (function () {
         function S(pts) { return { pts: pts, sharp: false }; }   // courbe lissee
         function P(pts) { return { pts: pts, sharp: true }; }    // trait droit / angle
-        // Famille du baa (ب ت ث) : tracés dessinés par l'auteur du site ; la ligne
-        // d'ecriture est a y = 145 et les lettres reposent dessus.
+        function F(strokes, dots) { return { strokes: strokes, dots: dots || [] }; }
+        var D = {};
+
+        // ---- Alif ----
+        D.alif = {
+          isolated: F([P([[160, 24], [160, 134]])]),
+          final: F([P([[262, 134], [166, 134], [166, 24]])])
+        };
+
+        // ---- Famille du baa (ب ت ث ن ي) : tracés dessinés par l'auteur du site ----
         var BAA_ISO = S([[270, 100], [267, 118], [257, 129], [218, 132], [166, 134], [125, 134], [105, 130], [100, 118], [100, 105], [105, 92], [117, 83], [130, 81]]);
         var BAA_INIT = S([[255, 84], [257, 108], [252, 124], [240, 133], [200, 134], [133, 133]]);
         var BAA_MED_LINE = S([[278, 130], [240, 130], [222, 131], [177, 133], [100, 134]]);
@@ -2299,27 +2307,150 @@
         var BAA_FIN_TAIL = S([[298, 110], [268, 112], [238, 114], [230, 110], [229, 94], [229, 78]]);
         // meme fin que le baa isole : trait plat sur la ligne puis crochet a gauche
         var BAA_FIN_BOWL = S([[233, 118], [218, 131], [180, 134], [148, 134], [125, 134], [105, 130], [100, 118], [100, 105], [105, 92], [117, 83], [130, 81]]);
-        var alif = {
-          isolated: { strokes: [P([[160, 24], [160, 134]])], dots: [] },
-          initial: null, medial: null,
-          final: { strokes: [P([[262, 134], [166, 134], [166, 24]])], dots: [] }
-        };
-        alif.initial = alif.isolated;
-        alif.medial = alif.final;
-        function family(dotsIso, dotsInit, dotsMed, dotsFin) {
+        function baaFamily(iso, init, med, fin) {
           return {
-            isolated: { strokes: [BAA_ISO], dots: dotsIso },
-            initial: { strokes: [BAA_INIT], dots: dotsInit },
-            medial: { strokes: [BAA_MED_LINE, BAA_MED_TOOTH], dots: dotsMed },
-            final: { strokes: [BAA_FIN_TAIL, BAA_FIN_BOWL], dots: dotsFin }
+            isolated: F([BAA_ISO], iso), initial: F([BAA_INIT], init),
+            medial: F([BAA_MED_LINE, BAA_MED_TOOTH], med), final: F([BAA_FIN_TAIL, BAA_FIN_BOWL], fin)
           };
         }
-        return {
-          alif: alif,
-          baa: family([[189, 160]], [[258, 168]], [[229, 158]], [[174, 158]]),
-          taa: family([[150, 108], [190, 108]], [[200, 112], [232, 112]], [[222, 68], [246, 68]], [[160, 100], [194, 104]]),
-          thaa: family([[150, 110], [190, 110], [170, 86]], [[200, 114], [232, 114], [216, 90]], [[222, 70], [246, 70], [234, 48]], [[150, 102], [190, 106], [170, 80]])
+        D.baa = baaFamily([[189, 160]], [[258, 168]], [[229, 158]], [[174, 158]]);
+        D.taa = baaFamily([[150, 108], [190, 108]], [[200, 112], [232, 112]], [[222, 68], [246, 68]], [[160, 100], [194, 104]]);
+        D.thaa = baaFamily([[150, 110], [190, 110], [170, 86]], [[200, 114], [232, 114], [216, 90]], [[222, 70], [246, 70], [234, 48]], [[150, 102], [190, 106], [170, 80]]);
+        D.noon = baaFamily([[196, 104]], [[222, 106]], [[232, 66]], [[170, 104]]);
+        D.yeh = baaFamily([[160, 166], [190, 166]], [[240, 170], [268, 170]], [[220, 160], [246, 160]], [[160, 166], [192, 166]]);
+
+        // ---- Famille du jim (ج ح خ) ----
+        var JIM_ISO = S([[240, 76], [205, 68], [170, 74], [150, 92], [158, 112], [188, 126], [228, 132], [258, 128]]);
+        var JIM_INIT = S([[252, 78], [212, 68], [174, 76], [196, 100], [218, 116], [206, 130], [168, 135], [133, 134]]);
+        var JIM_MED = S([[292, 86], [256, 78], [216, 68], [178, 76], [198, 100], [220, 116], [208, 130], [170, 135], [100, 134]]);
+        var JIM_FIN = S([[298, 86], [258, 78], [218, 68], [180, 76], [154, 94], [160, 114], [190, 127], [228, 133], [252, 128]]);
+        function jimFamily(dIso, dInit, dMed, dFin) {
+          return { isolated: F([JIM_ISO], dIso), initial: F([JIM_INIT], dInit), medial: F([JIM_MED], dMed), final: F([JIM_FIN], dFin) };
+        }
+        D.jim = jimFamily([[205, 104]], [[236, 100]], [[240, 102]], [[205, 104]]);
+        D.haa = jimFamily([], [], [], []);
+        D.khaa = jimFamily([[205, 44]], [[210, 46]], [[212, 46]], [[205, 44]]);
+
+        // ---- Dal / Thal ----
+        var DAL_ISO = S([[214, 90], [190, 94], [176, 110], [184, 128], [210, 134], [250, 134]]);
+        var DAL_FIN = S([[298, 134], [255, 134], [220, 131], [198, 114], [204, 94], [232, 88]]);
+        D.dal = { isolated: F([DAL_ISO]), final: F([DAL_FIN]) };
+        D.thal = { isolated: F([DAL_ISO], [[200, 60]]), final: F([DAL_FIN], [[222, 58]]) };
+
+        // ---- Reh / Zain ----
+        var REH_ISO = S([[236, 84], [238, 108], [224, 128], [196, 150], [170, 172]]);
+        var REH_FIN = S([[298, 128], [262, 130], [238, 134], [222, 152], [200, 174]]);
+        D.reh = { isolated: F([REH_ISO]), final: F([REH_FIN]) };
+        D.zain = { isolated: F([REH_ISO], [[236, 56]]), final: F([REH_FIN], [[240, 100]]) };
+
+        // ---- Seen / Sheen ----
+        function teeth(x0, n) { var pts = [], x = x0; for (var i = 0; i < n; i++) { pts.push([x, 112], [x - 16, 134]); x -= 30; } return pts; }
+        var SEEN_ISO = S([[272, 126]].concat(teeth(262, 3), [[150, 134], [124, 130], [108, 112], [108, 92]]));
+        var SEEN_INIT = S(teeth(268, 3).concat([[133, 134]]));
+        var SEEN_MED = S([[292, 134], [272, 134]].concat(teeth(262, 3), [[100, 134]]));
+        var SEEN_FIN = S([[298, 134], [276, 134]].concat(teeth(262, 3), [[150, 134], [124, 130], [108, 112], [108, 92]]));
+        function seenFamily(dots) {
+          return { isolated: F([SEEN_ISO], dots[0]), initial: F([SEEN_INIT], dots[1]), medial: F([SEEN_MED], dots[2]), final: F([SEEN_FIN], dots[3]) };
+        }
+        D.seen = seenFamily([[], [], [], []]);
+        D.sheen = seenFamily([[[240, 88], [212, 88], [226, 64]], [[240, 88], [212, 88], [226, 64]], [[236, 88], [208, 88], [222, 64]], [[236, 88], [208, 88], [222, 64]]]);
+
+        // ---- Sad / Dad ----
+        var SAD_LOOP = [[270, 118], [252, 98], [226, 96], [212, 112], [226, 128], [250, 130], [236, 134]];
+        var SAD_ISO = S(SAD_LOOP.concat([[190, 134], [140, 134], [116, 128], [104, 108], [106, 90]]));
+        var SAD_INIT = S(SAD_LOOP.concat([[190, 134], [133, 134]]));
+        var SAD_MED = S([[292, 134], [276, 126]].concat(SAD_LOOP.slice(1), [[150, 134], [100, 134]]));
+        var SAD_FIN = S([[298, 130], [276, 124]].concat(SAD_LOOP.slice(1), [[190, 134], [140, 134], [116, 128], [104, 108], [106, 90]]));
+        function sadFamily(dots) {
+          return { isolated: F([SAD_ISO], dots[0]), initial: F([SAD_INIT], dots[1]), medial: F([SAD_MED], dots[2]), final: F([SAD_FIN], dots[3]) };
+        }
+        D.sad = sadFamily([[], [], [], []]);
+        D.dad = sadFamily([[[238, 70]], [[238, 70]], [[238, 70]], [[238, 70]]]);
+
+        // ---- Tah / Zah ----
+        var TAH_LOOP = [[266, 114], [248, 102], [224, 104], [216, 120], [238, 130], [262, 126], [250, 134]];
+        var TAH_STEM = P([[230, 28], [230, 104]]);
+        D.tah = {
+          isolated: F([S(TAH_LOOP.concat([[200, 134], [150, 134], [118, 134]])), TAH_STEM]),
+          initial: F([S(TAH_LOOP.concat([[190, 134], [133, 134]])), TAH_STEM]),
+          medial: F([S([[292, 134], [276, 122]].concat(TAH_LOOP.slice(1), [[150, 134], [100, 134]])), TAH_STEM]),
+          final: F([S([[298, 130], [278, 122]].concat(TAH_LOOP.slice(1), [[200, 134], [150, 134], [118, 134]])), TAH_STEM])
         };
+        D.zah = {
+          isolated: F(D.tah.isolated.strokes, [[252, 40]]), initial: F(D.tah.initial.strokes, [[252, 40]]),
+          medial: F(D.tah.medial.strokes, [[252, 40]]), final: F(D.tah.final.strokes, [[252, 40]])
+        };
+
+        // ---- Ain / Ghain ----
+        var AIN_ISO = S([[246, 84], [214, 74], [190, 86], [206, 100], [236, 108], [200, 116], [160, 132], [150, 156], [176, 174], [222, 170], [250, 150]]);
+        var AIN_INIT = S([[250, 84], [218, 72], [194, 84], [214, 100], [236, 108], [205, 124], [180, 134], [133, 134]]);
+        var AIN_MED = S([[292, 90], [256, 84], [224, 72], [200, 84], [220, 100], [240, 108], [208, 124], [182, 134], [100, 134]]);
+        var AIN_FIN = S([[298, 92], [260, 84], [228, 74], [204, 86], [222, 102], [242, 108], [206, 116], [166, 132], [156, 156], [182, 172], [226, 168], [252, 150]]);
+        D.ain = { isolated: F([AIN_ISO]), initial: F([AIN_INIT]), medial: F([AIN_MED]), final: F([AIN_FIN]) };
+        D.ghain = { isolated: F([AIN_ISO], [[212, 52]]), initial: F([AIN_INIT], [[222, 52]]), medial: F([AIN_MED], [[230, 52]]), final: F([AIN_FIN], [[232, 54]]) };
+
+        // ---- Feh / Qaf ----
+        var FEH_LOOP = [[258, 116], [246, 98], [222, 98], [210, 114], [222, 130], [246, 128], [236, 134]];
+        D.feh = {
+          isolated: F([S(FEH_LOOP.concat([[190, 134], [150, 134], [124, 130], [112, 110]]))], [[232, 70]]),
+          initial: F([S(FEH_LOOP.concat([[190, 134], [133, 134]]))], [[232, 70]]),
+          medial: F([S([[292, 134], [272, 126]].concat(FEH_LOOP, [[150, 134], [100, 134]]))], [[232, 70]]),
+          final: F([S([[298, 130], [276, 124]].concat(FEH_LOOP, [[190, 134], [150, 134], [124, 130], [112, 110]]))], [[232, 70]])
+        };
+        D.qaf = {
+          isolated: F([S(FEH_LOOP.concat([[200, 152], [160, 152], [130, 138], [116, 116]]))], [[222, 70], [248, 70]]),
+          initial: D.feh.initial && F(D.feh.initial.strokes, [[222, 70], [248, 70]]),
+          medial: F(D.feh.medial.strokes, [[222, 70], [248, 70]]),
+          final: F([S([[298, 130], [276, 124]].concat(FEH_LOOP, [[200, 152], [160, 152], [130, 138], [116, 116]]))], [[222, 70], [248, 70]])
+        };
+
+        // ---- Kaf ----
+        var KAF_MARK = S([[222, 78], [198, 96], [216, 108]]);
+        D.kaf = {
+          isolated: F([S([[254, 34], [250, 100], [244, 128], [220, 134], [170, 134], [130, 134], [112, 116], [116, 96]]), KAF_MARK]),
+          initial: F([S([[254, 34], [250, 100], [244, 128], [220, 134], [133, 134]]), KAF_MARK]),
+          medial: F([P([[292, 134], [256, 134], [250, 100], [252, 40]]), S([[238, 100], [216, 124], [190, 134], [100, 134]]), KAF_MARK]),
+          final: F([P([[298, 134], [262, 134], [254, 100], [256, 36]]), S([[240, 100], [222, 124], [196, 134], [150, 134], [120, 130], [110, 110]]), KAF_MARK])
+        };
+
+        // ---- Lam ----
+        D.lam = {
+          isolated: F([S([[236, 28], [236, 100], [232, 124], [208, 134], [170, 134], [140, 130], [126, 114]])]),
+          initial: F([S([[236, 28], [236, 100], [232, 124], [208, 134], [133, 134]])]),
+          medial: F([P([[292, 134], [250, 134], [240, 100], [238, 28]]), S([[236, 100], [226, 126], [200, 134], [100, 134]])]),
+          final: F([P([[298, 134], [256, 134], [246, 100], [244, 28]]), S([[240, 100], [234, 124], [210, 134], [170, 134], [140, 130], [126, 114]])])
+        };
+
+        // ---- Meem ----
+        var MEEM_LOOP = [[250, 108], [232, 96], [208, 100], [200, 118], [214, 130], [234, 128], [236, 134]];
+        D.meem = {
+          isolated: F([S([[244, 106], [226, 96], [204, 102], [202, 122], [222, 132], [240, 126], [238, 150], [230, 176]])]),
+          initial: F([S(MEEM_LOOP.concat([[190, 134], [133, 134]]))]),
+          medial: F([S([[292, 128], [264, 122]].concat(MEEM_LOOP, [[190, 134], [100, 134]]))]),
+          final: F([S([[298, 128], [266, 122], [250, 108], [232, 96], [208, 100], [200, 118], [214, 130], [236, 128], [236, 150], [226, 178]])])
+        };
+
+        // ---- Heh ----
+        D.heh = {
+          isolated: F([S([[238, 112], [222, 98], [196, 98], [182, 114], [196, 130], [224, 128], [240, 116], [232, 104]])]),
+          initial: F([S([[240, 112], [222, 96], [198, 98], [190, 114], [206, 126], [228, 120], [232, 130], [212, 134], [133, 134]])]),
+          medial: F([S([[292, 130], [262, 128], [248, 106], [226, 92], [204, 98], [200, 116], [218, 126], [236, 120], [240, 134], [200, 134], [100, 134]])]),
+          final: F([S([[298, 128], [268, 124], [250, 108], [228, 94], [204, 100], [200, 118], [218, 128], [238, 120], [236, 104]])])
+        };
+
+        // ---- Waw ----
+        D.waw = {
+          isolated: F([S([[238, 96], [222, 84], [200, 90], [198, 108], [216, 118], [232, 114], [230, 134], [214, 160], [196, 180]])]),
+          final: F([S([[298, 128], [264, 124], [248, 110], [232, 92], [210, 88], [198, 104], [214, 118], [234, 112], [232, 134], [216, 160], [198, 180]])])
+        };
+
+        // Les lettres qui ne se lient pas a la suivante n'ont que 2 formes ; les autres
+        // formes reprennent isolee / fin.
+        ["alif", "dal", "thal", "reh", "zain", "waw"].forEach(function (id) {
+          D[id].initial = D[id].isolated;
+          D[id].medial = D[id].final;
+        });
+        return D;
       })();
 
       var WRITE_FORMS = ["isolated", "initial", "medial", "final"];
@@ -2334,7 +2465,12 @@
       var WRITE_LETTER_FORM_TEXT = function (ch, form) {
         return form === "isolated" ? ch : form === "initial" ? ch + "ـ" : form === "medial" ? "ـ" + ch + "ـ" : "ـ" + ch;
       };
-      var WRITE_BASE_CHAR = { alif: "ا", baa: "ب", taa: "ت", thaa: "ث" };
+      var WRITE_BASE_CHAR = {
+        alif: "ا", baa: "ب", taa: "ت", thaa: "ث", jim: "ج", haa: "ح", khaa: "خ", dal: "د", thal: "ذ", reh: "ر", zain: "ز",
+        seen: "س", sheen: "ش", sad: "ص", dad: "ض", tah: "ط", zah: "ظ", ain: "ع", ghain: "غ", feh: "ف", qaf: "ق", kaf: "ك",
+        lam: "ل", meem: "م", noon: "ن", heh: "ه", waw: "و", yeh: "ي"
+      };
+      var WRITE_NO_JOIN = { alif: true, dal: true, thal: true, reh: true, zain: true, waw: true };
 
       // Courbe de Catmull-Rom -> polyligne dense (les traits "sharp" restent droits).
       function writeDense(stroke) {
@@ -2476,6 +2612,7 @@
         function renderForms() {
           formsRow.textContent = "";
           WRITE_FORMS.forEach(function (f, i) {
+            if (WRITE_NO_JOIN[state.letter] && (f === "initial" || f === "medial")) return;
             var b = writeEl("button", "write-form" + (f === state.form ? " is-active" : ""));
             b.type = "button";
             var glyph = writeEl("span", "write-form-glyph", WRITE_LETTER_FORM_TEXT(WRITE_BASE_CHAR[state.letter] || "", f));
