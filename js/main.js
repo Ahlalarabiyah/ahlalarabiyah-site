@@ -2886,23 +2886,33 @@
           });
           return hit;
         }
-        // Evalue l'ensemble du trace : couverture du modele, precision, points.
+        // Evalue l'ensemble du trace : couverture du modele, precision, points,
+        // et longueur totale (un double trait ou des traits en trop sont refuses).
+        function smoothPts(pts) {
+          return pts.map(function (q, i) {
+            var a = pts[Math.max(0, i - 2)], b = pts[Math.min(pts.length - 1, i + 2)];
+            return [(a[0] + q[0] + b[0]) / 3, (a[1] + q[1] + b[1]) / 3];
+          });
+        }
         function evaluate() {
           var f = current();
-          var ref = [];
-          f.strokes.forEach(function (st) { ref = ref.concat(spaced(st._dense, 5)); });
-          var hit = dotsHit(), ink = [];
+          var ref = [], refLen = 0;
+          f.strokes.forEach(function (st) { ref = ref.concat(spaced(st._dense, 5)); refLen += writePathLen(st._dense); });
+          var hit = dotsHit(), ink = [], inkLen = 0;
           state.user.forEach(function (e) {
             if (e.tap && tapOnDot(e.pts)) return;
-            ink = ink.concat(spaced(e.pts, 4));
+            var sp = spaced(e.pts, 4);
+            ink = ink.concat(sp);
+            inkLen += writePathLen(smoothPts(sp));
           });
           var covered = 0, precise = 0;
-          ref.forEach(function (r) { if (nearAny(r, ink, 18)) covered++; });
-          ink.forEach(function (q) { if (nearAny(q, ref, 17)) precise++; });
+          ref.forEach(function (r) { if (nearAny(r, ink, 14)) covered++; });
+          ink.forEach(function (q) { if (nearAny(q, ref, 12)) precise++; });
           var onDot = f.dots.some(function (d) { return nearAny(d, ink, 11); });
           return {
             coverage: ref.length ? covered / ref.length : 0,
             precision: ink.length ? precise / ink.length : 1,
+            ratio: refLen ? inkLen / refLen : 1,
             onDot: onDot, hasInk: ink.length > 0, dotsOk: hit.every(Boolean)
           };
         }
@@ -2918,7 +2928,7 @@
           if (state.done) return;
           var ev = evaluate();
           try { board.setAttribute("data-eval", JSON.stringify(ev)); } catch (err) { /* ignore */ }
-          var shapeOk = ev.hasInk && ev.coverage >= 0.85 && ev.precision >= 0.85 && !ev.onDot;
+          var shapeOk = ev.hasInk && ev.coverage >= 0.85 && ev.precision >= 0.85 && ev.ratio <= 1.35 && !ev.onDot;
           if (shapeOk && ev.dotsOk) { markDone(); return; }
           status.className = "write-status is-bad";
           if (!ev.hasInk && !state.user.length) { status.textContent = WT.draw; status.className = "write-status"; }
@@ -2926,13 +2936,44 @@
           else if (shapeOk) { status.textContent = WT.dot; status.className = "write-status"; }
           else status.textContent = WT.bad;
         });
+        // Gomme : n'enleve que la partie touchee du trait (le reste est conserve)
+        var ERASE_R = 9;
+        function inkD(pts) {
+          return "M" + pts.map(function (q) { return q[0].toFixed(1) + " " + q[1].toFixed(1); }).join(" L");
+        }
         function eraseAt(p) {
-          var removed = false;
-          state.user = state.user.filter(function (e) {
-            var hit = e.pts.some(function (q) { return Math.hypot(p[0] - q[0], p[1] - q[1]) <= 13; });
-            if (hit) { if (e.el && e.el.parentNode) e.el.parentNode.removeChild(e.el); removed = true; }
-            return !hit;
+          var removed = false, next = [];
+          state.user.forEach(function (e) {
+            if (e.tap) {
+              var c = centroid(e.pts);
+              if (Math.hypot(p[0] - c[0], p[1] - c[1]) <= ERASE_R + 6) {
+                if (e.el && e.el.parentNode) e.el.parentNode.removeChild(e.el);
+                removed = true;
+              } else next.push(e);
+              return;
+            }
+            var dense = e.pts.length > 1 ? spaced(e.pts, 2) : e.pts;
+            var touched = dense.some(function (q) { return Math.hypot(p[0] - q[0], p[1] - q[1]) <= ERASE_R; });
+            if (!touched) { next.push(e); return; }
+            removed = true;
+            var pieces = [], cur = [];
+            dense.forEach(function (q) {
+              if (Math.hypot(p[0] - q[0], p[1] - q[1]) <= ERASE_R) {
+                if (cur.length) pieces.push(cur);
+                cur = [];
+              } else cur.push(q);
+            });
+            if (cur.length) pieces.push(cur);
+            var host = e.el && e.el.parentNode;
+            if (host) host.removeChild(e.el);
+            pieces.forEach(function (pc) {
+              if (pc.length < 3) return;
+              var el = svgEl("path", { class: "write-ink", d: inkD(pc) });
+              if (host) host.appendChild(el);
+              next.push({ pts: pc, tap: false, el: el });
+            });
           });
+          state.user = next;
           if (removed) { refreshDots(); status.textContent = ""; status.className = "write-status"; }
         }
         board.addEventListener("pointerdown", function (e) {
@@ -2940,7 +2981,7 @@
           e.preventDefault();
           try { board.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
           var pt = toBoard(e);
-          if (state.tool === "eraser") { state.erasing = true; eraseAt(pt); return; }
+          if (state.tool === "eraser") { state.erasing = true; state.lastErase = pt; eraseAt(pt); return; }
           state.drawing = [pt];
           state.ink = svgEl("path", { class: "write-ink", d: "" });
           layers.ink.appendChild(state.ink);
@@ -2948,7 +2989,13 @@
           if (st0) st0.classList.add("is-hidden");
         });
         board.addEventListener("pointermove", function (e) {
-          if (state.erasing) { e.preventDefault(); eraseAt(toBoard(e)); return; }
+          if (state.erasing) {
+            e.preventDefault();
+            var q = toBoard(e), a = state.lastErase || q, n = Math.max(1, Math.ceil(Math.hypot(q[0] - a[0], q[1] - a[1]) / 4));
+            for (var i = 1; i <= n; i++) eraseAt([a[0] + (q[0] - a[0]) * i / n, a[1] + (q[1] - a[1]) * i / n]);
+            state.lastErase = q;
+            return;
+          }
           if (!state.drawing) return;
           e.preventDefault();
           state.drawing.push(toBoard(e));
