@@ -2838,9 +2838,10 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .intro-text { margin: 0 0 10px; line-height: 1.65; color: var(--color-text-light); }
 .intro-alphabet { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin: 22px 0 18px; }
 .intro-letter {
-  display: flex; align-items: center; justify-content: center; height: clamp(52px, 11vw, 66px);
+  --tile: clamp(62px, 13vw, 84px);
+  display: block; height: var(--tile); line-height: calc(var(--tile) * .8); text-align: center; overflow: hidden;
   background: var(--color-bg); border: 1.5px solid var(--color-border); border-radius: 12px;
-  font-family: var(--font-arabic); font-size: clamp(1.7rem, 6.4vw, 2.3rem); line-height: 1; color: var(--color-navy);
+  font-family: var(--font-arabic); font-size: clamp(1.2rem, 5vw, 1.95rem); color: var(--color-navy);
 }
 .intro-letter.is-sun { color: var(--color-orange); border-color: rgba(238,154,69,0.45); background: rgba(238,154,69,0.08); }
 .intro-note { margin: 0; font-size: .95rem; font-style: italic; line-height: 1.6; color: var(--color-text-light); }
