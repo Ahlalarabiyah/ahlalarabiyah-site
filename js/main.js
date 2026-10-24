@@ -2744,16 +2744,40 @@
 
         function current() { return WRITE_DATA[state.letter][state.form]; }
 
+        // Centre l'encre reelle de la lettre dans sa case (les jambes descendantes ne la decalent plus)
+        var inkCanvas = document.createElement("canvas").getContext("2d");
+        function centerInk(el) {
+          if (!el || !inkCanvas || !el.isConnected) return;
+          var cs = window.getComputedStyle(el), size = parseFloat(cs.fontSize);
+          if (!size) return;
+          inkCanvas.font = cs.fontWeight + " " + size + "px " + cs.fontFamily;
+          inkCanvas.textAlign = "center";
+          inkCanvas.direction = "rtl";
+          var m = inkCanvas.measureText(el.textContent);
+          if (!m || m.actualBoundingBoxAscent === undefined) return;
+          var boxH = el.clientHeight || size, lineH = size;
+          var baseline = boxH / 2 - lineH / 2 + (lineH - (m.fontBoundingBoxAscent + m.fontBoundingBoxDescent)) / 2 + m.fontBoundingBoxAscent;
+          var inkCy = baseline - (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2;
+          var dy = boxH / 2 - inkCy, dx = -(m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2;
+          el.style.transform = "translate(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px)";
+        }
+        function centerAllInk() {
+          Array.prototype.forEach.call(tabs.querySelectorAll(".write-tab-glyph"), centerInk);
+          Array.prototype.forEach.call(formsRow.querySelectorAll(".write-form-glyph"), centerInk);
+        }
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { centerAllInk(); });
         function renderTabs() {
           tabs.textContent = "";
           ids.forEach(function (id) {
-            var b = writeEl("button", "write-tab" + (id === state.letter ? " is-active" : ""), ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id);
+            var b = writeEl("button", "write-tab" + (id === state.letter ? " is-active" : ""));
+            b.appendChild(writeEl("span", "write-tab-glyph", ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id));
             b.type = "button";
             b.lang = "ar";
             b.addEventListener("click", function () { state.letter = id; state.form = "isolated"; reset(); renderTabs(); renderForms(); renderWords(); });
             tabs.appendChild(b);
           });
           tabs.hidden = ids.length < 2;
+          centerAllInk();
         }
         function renderForms() {
           formsRow.textContent = "";
@@ -2769,6 +2793,7 @@
             b.addEventListener("click", function () { state.form = f; reset(); renderForms(); });
             formsRow.appendChild(b);
           });
+          centerAllInk();
         }
         function renderWords() {
           wordsBox.textContent = "";

@@ -2851,18 +2851,20 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .write-panel { max-width: min(520px, 94vw); text-align: center; }
 .write-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; }
 .write-tab {
-  width: 52px; height: 52px; border-radius: 14px; border: 1.5px solid var(--color-border); background: #fff;
-  font-family: var(--font-arabic); font-size: 1.9rem; line-height: 1; color: var(--color-navy); cursor: pointer;
+  width: 58px; height: 66px; padding: 0; border-radius: 14px; border: 1.5px solid var(--color-border); background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-arabic); font-size: 1.75rem; line-height: 1; color: var(--color-navy); cursor: pointer;
 }
+.write-tab-glyph { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; line-height: 1; }
 .write-tab.is-active { border-color: var(--color-teal); background: var(--color-teal-10); }
 .write-forms { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; }
 .write-form {
   flex: 1 1 0; max-width: 130px;
-  display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; border-radius: 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 6px 4px 8px; border-radius: 12px;
   border: 1.5px solid var(--color-border); background: #fff; cursor: pointer; font: inherit; color: var(--color-navy);
 }
 .write-form.is-active { border-color: var(--color-teal); background: var(--color-teal-10); }
-.write-form-glyph { font-family: var(--font-arabic); font-size: 1.7rem; line-height: 1.6; }
+.write-form-glyph { display: flex; align-items: center; justify-content: center; width: 100%; height: 3.6rem; font-family: var(--font-arabic); font-size: 1.6rem; line-height: 1; }
 .write-form-name { font-size: .72rem; color: var(--color-text-light); }
 .write-how { margin: 0 0 8px; font-size: .92rem; line-height: 1.5; color: var(--color-text-light); }
 .write-board {
