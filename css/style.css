@@ -2865,7 +2865,7 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .write-form-name { font-size: .72rem; color: var(--color-text-light); }
 .write-how { margin: 0 0 8px; font-size: .92rem; line-height: 1.5; color: var(--color-text-light); }
 .write-board {
-  display: block; width: 100%; max-width: 440px; margin: 0 auto; aspect-ratio: 260 / 200; touch-action: none; user-select: none; -webkit-user-select: none;
+  display: block; width: 100%; max-width: 440px; margin: 0 auto; aspect-ratio: 285 / 200; touch-action: none; user-select: none; -webkit-user-select: none;
   background: #fff; border: 1.5px solid var(--color-border); border-radius: 16px;
 }
 .write-line { stroke: #CFE0E2; stroke-width: 1.5; stroke-dasharray: 4 5; }

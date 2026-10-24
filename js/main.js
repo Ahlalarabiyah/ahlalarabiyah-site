@@ -2290,14 +2290,18 @@
       var WRITE_DATA = (function () {
         function S(pts) { return { pts: pts, sharp: false }; }   // courbe lissee
         function P(pts) { return { pts: pts, sharp: true }; }    // trait droit / angle
-        var BOWL_ISO = S([[252, 92], [244, 122], [220, 138], [172, 142], [126, 138], [98, 120], [88, 92]]);
-        var TOOTH_INIT = S([[256, 94], [248, 122], [228, 136], [196, 138], [140, 138]]);
-        var TOOTH_MED = P([[278, 138], [246, 138], [226, 112], [206, 138], [150, 138]]);
-        var BOWL_FIN = S([[278, 138], [228, 140], [182, 140], [142, 132], [120, 100]]);
+        // Toutes les lettres restent AU-DESSUS de la ligne d'ecriture (y = 145) :
+        // le bas du trait (epaisseur comprise) vient se poser sur la ligne.
+        var BOWL_ISO = S([[252, 90], [244, 116], [222, 131], [172, 134], [128, 131], [100, 116], [90, 90]]);
+        var TOOTH_INIT = S([[256, 92], [248, 116], [228, 130], [196, 134], [140, 134]]);
+        var TOOTH_MED = P([[278, 134], [246, 134], [226, 108], [206, 134], [150, 134]]);
+        // Forme "fin" : trait de liaison avec la lettre precedente (a droite, avec
+        // son petit crochet), cuvette posee sur la ligne, pointe recourbee a gauche.
+        var BOWL_FIN = S([[298, 108], [292, 115], [280, 118], [262, 121], [238, 128], [210, 133], [180, 134], [152, 130], [130, 119], [118, 102], [116, 88], [122, 78]]);
         var alif = {
-          isolated: { strokes: [P([[160, 24], [160, 136]])], dots: [] },
+          isolated: { strokes: [P([[160, 24], [160, 134]])], dots: [] },
           initial: null, medial: null,
-          final: { strokes: [P([[262, 136], [166, 136], [166, 24]])], dots: [] }
+          final: { strokes: [P([[262, 134], [166, 134], [166, 24]])], dots: [] }
         };
         alif.initial = alif.isolated;
         alif.medial = alif.final;
@@ -2311,9 +2315,9 @@
         }
         return {
           alif: alif,
-          baa: family([[170, 180]], [[208, 172]], [[226, 172]], [[170, 178]]),
-          taa: family([[150, 110], [192, 110]], [[198, 104], [232, 104]], [[212, 88], [240, 88]], [[160, 108], [200, 108]]),
-          thaa: family([[150, 112], [192, 112], [171, 86]], [[198, 108], [232, 108], [215, 82]], [[212, 90], [240, 90], [226, 66]], [[160, 110], [200, 110], [180, 84]])
+          baa: family([[170, 172]], [[205, 170]], [[226, 170]], [[161, 166]]),
+          taa: family([[150, 106], [192, 106]], [[198, 102], [232, 102]], [[212, 84], [240, 84]], [[165, 98], [200, 102]]),
+          thaa: family([[150, 108], [192, 108], [171, 84]], [[198, 106], [232, 106], [215, 80]], [[212, 86], [240, 86], [226, 62]], [[160, 100], [200, 104], [180, 78]])
         };
       })();
 
@@ -2432,7 +2436,7 @@
         var tabs = writeEl("div", "write-tabs");
         var formsRow = writeEl("div", "write-forms");
         var how = writeEl("p", "write-how", WT.how);
-        var board = svgEl("svg", { viewBox: "40 8 260 200", class: "write-board", role: "img" });
+        var board = svgEl("svg", { viewBox: "40 8 285 200", class: "write-board", role: "img" });
         var status = writeEl("p", "write-status");
         status.setAttribute("aria-live", "polite");
         var again = writeEl("button", "btn btn-outline btn-sm write-again", WT.again);
