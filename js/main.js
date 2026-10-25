@@ -19,7 +19,7 @@
     var FREE_MAX = 2;
     var ACCESS_KEY = "ahl_access_v1";
     var GATED = ".js-open-game, .js-open-module, .js-open-formlab, .js-open-shadda, .js-open-sunmoon, " +
-      ".js-open-sunmoon-game, .js-open-order-game, .js-open-sound-game, .js-open-puzzle-game, .js-open-write";
+      ".js-open-sunmoon-game, .js-open-order-game, .js-open-sound-game, .js-open-puzzle-game, .js-open-write, .js-open-conc";
 
     function readAccess() {
       try {
@@ -3153,6 +3153,189 @@
         b.addEventListener("click", function () { openWriteLab(n); });
         card.appendChild(b);
       });
+
+
+      // ---- Module "Concentration" : textes sans harakat + audios (page Modules) ----
+      // Donnees : js/concentration-data.js (window.AHL_CONC). Texte dans UN SEUL
+      // noeud par ligne (liaison arabe correcte sur iPhone) ; couleurs via la
+      // CSS Custom Highlight API, repli sur des <span> sinon.
+      var CONC_TXT = {
+        fr: { btn: "Concentration", title: "Concentration", letter: "La lettre", text: "Le texte", aLetter: "Audio de la lettre", aText: "Audio du texte", close: "Fermer" },
+        en: { btn: "Concentration", title: "Concentration", letter: "The letter", text: "The text", aLetter: "Letter audio", aText: "Text audio", close: "Close" },
+        ru: { btn: "Концентрация", title: "Концентрация", letter: "Буква", text: "Текст", aLetter: "Аудио буквы", aText: "Аудио текста", close: "Закрыть" },
+        de: { btn: "Konzentration", title: "Konzentration", letter: "Der Buchstabe", text: "Der Text", aLetter: "Audio des Buchstabens", aText: "Audio des Textes", close: "Schließen" },
+        ar: { btn: "التركيز", title: "التركيز", letter: "الحرف", text: "النص", aLetter: "صوت الحرف", aText: "صوت النص", close: "إغلاق" }
+      };
+      var CT = isGerman ? CONC_TXT.de : isArabic ? CONC_TXT.ar : isRussian ? CONC_TXT.ru : isEnglish ? CONC_TXT.en : CONC_TXT.fr;
+      var concLab = null;
+      var CONC_COLORS = { r: "conc-r", f: "conc-f" };
+
+      // "{r}أ{/}نا" -> un seul noeud texte + plages colorees.
+      function concRenderLine(container, markup) {
+        var plain = "", ranges = [], re = /\{(r|f)\}([\s\S]*?)\{\/\}/g, last = 0, m;
+        while ((m = re.exec(markup))) {
+          plain += markup.slice(last, m.index);
+          ranges.push({ from: plain.length, to: plain.length + m[2].length, kind: m[1] });
+          plain += m[2];
+          last = m.index + m[0].length;
+        }
+        plain += markup.slice(last);
+        container.textContent = "";
+        var node = document.createTextNode(plain);
+        container.appendChild(node);
+        if (!ranges.length) return;
+        var useHl = window.CSS && CSS.highlights && typeof Highlight !== "undefined";
+        if (useHl) {
+          ranges.forEach(function (r) {
+            var rg = document.createRange();
+            rg.setStart(node, r.from);
+            rg.setEnd(node, r.to);
+            var name = "conc-" + r.kind;
+            var h = CSS.highlights.get(name);
+            if (!h) { h = new Highlight(); CSS.highlights.set(name, h); }
+            h.add(rg);
+          });
+        } else {
+          container.textContent = "";
+          var pos = 0;
+          ranges.forEach(function (r) {
+            if (r.from > pos) container.appendChild(document.createTextNode(plain.slice(pos, r.from)));
+            container.appendChild(writeEl("span", "conc-c-" + r.kind, plain.slice(r.from, r.to)));
+            pos = r.to;
+          });
+          if (pos < plain.length) container.appendChild(document.createTextNode(plain.slice(pos)));
+        }
+      }
+      function concClearHighlights() {
+        if (window.CSS && CSS.highlights) { CSS.highlights.delete("conc-r"); CSS.highlights.delete("conc-f"); }
+      }
+      function concBlock(page, kind) {
+        var box = writeEl("div", "conc-block conc-block-" + kind);
+        if (page.t) {
+          var t = writeEl("h3", "conc-title conc-title-" + kind);
+          t.lang = "ar";
+          t.dir = "rtl";
+          concRenderLine(t, page.t);
+          box.appendChild(t);
+        }
+        page.p.forEach(function (para) {
+          var p = writeEl("p", "conc-para");
+          p.lang = "ar";
+          p.dir = "rtl";
+          para.forEach(function (line) {
+            var ln = writeEl("span", "conc-line");
+            concRenderLine(ln, line);
+            p.appendChild(ln);
+          });
+          box.appendChild(p);
+        });
+        return box;
+      }
+      function concAudio(file, label) {
+        var wrap = writeEl("div", "conc-audio");
+        wrap.appendChild(writeEl("span", "conc-audio-label", "🎧 " + label));
+        var a = document.createElement("audio");
+        a.controls = true;
+        a.preload = "none";
+        a.src = ROOT_BASE + "assets/audio/concentration/" + file;
+        a.setAttribute("aria-label", label);
+        wrap.appendChild(a);
+        return wrap;
+      }
+      function openConcLab(moduleNumber) {
+        var DATA = window.AHL_CONC;
+        var mod = MODULES.filter(function (m) { return String(m.number) === String(moduleNumber); })[0];
+        if (!mod || !DATA) return;
+        var ids = mod.letterIds.filter(function (id) { return DATA[id]; });
+        if (!ids.length) return;
+        var letter = ids[0];
+        if (!concLab) {
+          concLab = writeEl("div", "reader conc-lab");
+          concLab.setAttribute("role", "dialog");
+          concLab.setAttribute("aria-modal", "true");
+          document.body.appendChild(concLab);
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && concLab.classList.contains("is-open")) closeConcLab();
+          });
+        }
+        concLab.textContent = "";
+        var bar = writeEl("div", "reader-bar");
+        bar.appendChild(writeEl("span", "reader-title", CT.title + " — " + (isArabic ? "الوحدة " : isRussian ? "Модуль " : isGerman ? "Modul " : "Module ") + mod.number));
+        var x = writeEl("button", "reader-close", "×");
+        x.type = "button";
+        x.setAttribute("aria-label", CT.close);
+        x.addEventListener("click", closeConcLab);
+        bar.appendChild(x);
+        var body = writeEl("div", "reader-body");
+        var panel = writeEl("div", "formlab-panel conc-panel");
+        var tabs = writeEl("div", "write-tabs");
+        var content = writeEl("div", "conc-content");
+        panel.appendChild(tabs);
+        panel.appendChild(content);
+        body.appendChild(panel);
+        concLab.appendChild(bar);
+        concLab.appendChild(body);
+
+        function stopAudio() {
+          Array.prototype.forEach.call(concLab.querySelectorAll("audio"), function (a) { a.pause(); });
+        }
+        function renderTabs() {
+          tabs.textContent = "";
+          ids.forEach(function (id) {
+            var b = writeEl("button", "write-tab" + (id === letter ? " is-active" : ""));
+            b.appendChild(writeEl("span", "write-tab-glyph", ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id));
+            b.type = "button";
+            b.lang = "ar";
+            b.addEventListener("click", function () { stopAudio(); letter = id; renderTabs(); renderContent(); body.scrollTop = 0; });
+            tabs.appendChild(b);
+          });
+          tabs.hidden = ids.length < 2;
+        }
+        function renderContent() {
+          concClearHighlights();
+          content.textContent = "";
+          var d = DATA[letter], au = d.a || {};
+          var s1 = writeEl("section", "conc-section");
+          s1.appendChild(writeEl("p", "conc-section-title", CT.letter));
+          if (au.l) s1.appendChild(concAudio(au.l, CT.aLetter));
+          s1.appendChild(concBlock(d.l, "letter"));
+          content.appendChild(s1);
+          if (d.x && d.x.length) {
+            var s2 = writeEl("section", "conc-section");
+            s2.appendChild(writeEl("p", "conc-section-title", CT.text));
+            if (au.x) s2.appendChild(concAudio(au.x, CT.aText));
+            d.x.forEach(function (pg) { s2.appendChild(concBlock(pg, "story")); });
+            content.appendChild(s2);
+          }
+        }
+        renderTabs();
+        renderContent();
+        concLab.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        body.scrollTop = 0;
+      }
+      function closeConcLab() {
+        if (!concLab) return;
+        Array.prototype.forEach.call(concLab.querySelectorAll("audio"), function (a) { a.pause(); });
+        concLab.classList.remove("is-open");
+        document.body.style.overflow = "";
+      }
+      document.querySelectorAll(".module-card").forEach(function (card) {
+        var num = card.querySelector(".module-number");
+        var m = num && num.textContent.match(/\d+/);
+        if (!m || !card.querySelector(".js-open-module") || !window.AHL_CONC) return;
+        var n = Number(m[0]);
+        var mod = MODULES.filter(function (mm) { return mm.number === n; })[0];
+        if (!mod || !mod.letterIds.some(function (id) { return window.AHL_CONC[id]; })) return;
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn btn-outline btn-sm module-conc js-open-conc";
+        b.setAttribute("data-module", String(n));
+        b.textContent = "📖 " + CT.btn;
+        b.addEventListener("click", function () { openConcLab(n); });
+        card.appendChild(b);
+      });
+
 
 
       document.querySelectorAll(".js-open-sunmoon").forEach(function (btn) {
