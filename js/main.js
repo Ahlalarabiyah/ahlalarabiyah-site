@@ -480,11 +480,11 @@
     if (!grid || !document.querySelector(".js-open-module")) return;
     var LANG = (document.documentElement.lang || "fr").slice(0, 2);
     var TXT = {
-      fr: { name: "Lecture", sub: "Lettres qui se ressemblent", open: "Découvrir", close: "Fermer", s1: "Lettres qui se ressemblent", s2: "Mots à bien lire", legend: "✅ juste · ❌ faux", play: "Écouter" , s3: "Mots à lire", set: "Série" },
-      en: { name: "Reading", sub: "Letters that look alike", open: "Discover", close: "Close", s1: "Letters that look alike", s2: "Words to read carefully", legend: "✅ correct · ❌ wrong", play: "Listen" , s3: "Words to read", set: "Set" },
-      ru: { name: "Чтение", sub: "Похожие буквы", open: "Открыть", close: "Закрыть", s1: "Похожие буквы", s2: "Слова для внимательного чтения", legend: "✅ верно · ❌ неверно", play: "Слушать" , s3: "Слова для чтения", set: "Серия" },
-      de: { name: "Lesen", sub: "Ähnliche Buchstaben", open: "Entdecken", close: "Schließen", s1: "Ähnliche Buchstaben", s2: "Wörter zum genauen Lesen", legend: "✅ richtig · ❌ falsch", play: "Anhören" , s3: "Wörter zum Lesen", set: "Serie" },
-      ar: { name: "القراءة", sub: "الحروف المتشابهة", open: "اكتشف", close: "إغلاق", s1: "الحروف المتشابهة", s2: "كلمات للقراءة بعناية", legend: "✅ صحيح · ❌ خطأ", play: "استماع" , s3: "كلمات للقراءة", set: "المجموعة" }
+      fr: { name: "Lecture", sub: "Lettres qui se ressemblent", p1: "1. Mots des fascicules", p2: "2. Sons proches", p3: "3. Le livre", soon: "Bientôt disponible", open: "Découvrir", close: "Fermer", s1: "Lettres qui se ressemblent", s2: "Mots à bien lire", legend: "✅ juste · ❌ faux", play: "Écouter" },
+      en: { name: "Reading", sub: "Letters that look alike", p1: "1. Words from the booklets", p2: "2. Similar sounds", p3: "3. The book", soon: "Coming soon", open: "Discover", close: "Close", s1: "Letters that look alike", s2: "Words to read carefully", legend: "✅ correct · ❌ wrong", play: "Listen" },
+      ru: { name: "Чтение", sub: "Похожие буквы", p1: "1. Слова из брошюр", p2: "2. Близкие звуки", p3: "3. Книга", soon: "Скоро будет доступно", open: "Открыть", close: "Закрыть", s1: "Похожие буквы", s2: "Слова для внимательного чтения", legend: "✅ верно · ❌ неверно", play: "Слушать" },
+      de: { name: "Lesen", sub: "Ähnliche Buchstaben", p1: "1. Wörter aus den Heften", p2: "2. Ähnliche Laute", p3: "3. Das Buch", soon: "Demnächst verfügbar", open: "Entdecken", close: "Schließen", s1: "Ähnliche Buchstaben", s2: "Wörter zum genauen Lesen", legend: "✅ richtig · ❌ falsch", play: "Anhören" },
+      ar: { name: "القراءة", sub: "الحروف المتشابهة", p1: "١. كلمات الكراسات", p2: "٢. الأصوات المتقاربة", p3: "٣. الكتاب", soon: "قريبًا", open: "اكتشف", close: "إغلاق", s1: "الحروف المتشابهة", s2: "كلمات للقراءة بعناية", legend: "✅ صحيح · ❌ خطأ", play: "استماع" }
     };
     var T = TXT[LANG] || TXT.fr;
     var DIR = ROOT_BASE + "assets/audio/reading/";
@@ -503,15 +503,15 @@
     ];
     // [mot1, juste1, separateur, mot2, juste2, audio]
     var WORDS = [
-      ["تارِقًا", 0, "=", "طارِقًا", 1, "word-1-tariqa"],
-      ["ضَجَاج", 0, "=", "دَجاجٌ", 1, "word-2-dajaj"],
-      ["ثَـبْـرٌ", 0, "/", "صَـبْـرٌ", 1, "word-3-sabr"],
-      ["قَرِيمٌ", 0, "=", "كَرِيمٌ", 1, ""],
+      ["طارِقًا", 1, "=", "تارِقًا", 0, "word-1-tariqa"],
+      ["دَجاجٌ", 1, "=", "ضَجَاج", 0, "word-2-dajaj"],
+      ["صَـبْـرٌ", 1, "/", "ثَـبْـرٌ", 0, "word-3-sabr"],
+      ["كَرِيمٌ", 1, "=", "قَرِيمٌ", 0, ""],
       ["كَـلْـبٌ", 1, "/", "قَـلْـبٌ", 1, "word-4-kalb"],
       ["كُلْ", 1, "/", "قُلْ", 1, ""],
-      ["سَـبْـرٌ", 0, "/", "صَـبْـرٌ", 1, ""],
-      ["قَـلْـبٌ", 0, "=", "كَـلْـبٌ", 1, "word-4-kalb"],
-      ["ظَـهَـبٌ", 0, "/", "ذَهَبٌ", 1, "word-5-dhahab"],
+      ["صَـبْـرٌ", 1, "/", "سَـبْـرٌ", 0, ""],
+      ["كَـلْـبٌ", 1, "=", "قَـلْـبٌ", 0, "word-4-kalb"],
+      ["ذَهَبٌ", 1, "/", "ظَـهَـبٌ", 0, "word-5-dhahab"],
       ["فِـيـلٍ", 1, "/", "ثِـيـلٍ", 0, "word-6-feel"],
       ["قَـلِـيـلٌ", 1, "/", "كَـلِـيـلٌ", 1, ""],
       ["خُـبْـزًا", 1, "/", "غُـبْـزًا", 0, "word-7-khubza"],
@@ -522,24 +522,6 @@
       ["زَيْـتُـونٌ", 1, "/", "ذَيْـتُـونٌ", 0, "word-12-zaytun"],
       ["سَـبِـيـلِ اللَّهِ", 1, "/", "صَـبِـيـلِ اللهِ", 0, "word-13-sabil"]
     ];
-
-    var LISTS = [
-      { au: "list-1", words: ["حَرَمَ", "دِيكٌ", "شَعَرَ", "تاجِرٌ", "تَعِبَ", "صَادَ", "حَضَرَ", "مَلَكَ", "ذَكَرَ", "جِبالٍ", "طابَ"] },
-      { au: "list-2", words: ["سُبُوتٍ", "دارَ", "حُبُوبًا", "تَاجٌ", "طَرَدَ", "ضَرَبَ", "آبَ", "صَبَرَ", "جَابَ", "خَطَبَ"] },
-      { au: "list-3", words: ["تَـبِـيـعَ", "غَـدَرَ", "طَافَ", "فُـجُورًا", "عَبَدَ", "ضَفِيرًا"] },
-      { au: "list-4", words: ["بَـاءَ", "جَـاءَا", "ثَـبَـتَـا", "أُجِـيـبَ", "ثَـابَ", "تُـثَـابُ", "أَجِـيءُ"] },
-      { au: "list-5", words: ["حَـشِـيـشٌ", "أَسَـدًا", "آبَـتَـا", "خَـطَـبَ", "طَـارَ", "تَـاجِـرٍ", "حِـجَـابًـا"] },
-      { au: "list-6", words: ["أَبَـتِ", "زَادَ", "ضَـجِـرَ", "تَـابَ", "حَـبَـسَ", "ثَـبَـتَ", "خَـسِـرَ", "سُـبُوتٌ", "شَـطَـطًـا", "زَجـرَ", "أَزِيـدَ", "زَبـادِي"] },
-      { au: "list-7", words: ["ضُـرِبَ", "حَـسَـبَ", "دَأَبَ", "جَـسُـوسٌ", "شَـرِسًـا"] },
-      { au: "list-8", words: ["دَجَـاجًـا", "تَذُوبَ", "صَـادَ", "صَـاحَـبَ", "سَـحَـبَ", "أَزِيـدُ", "ظَـابَ", "شَـجَرَ", "أَذَابَ", "تُـذِيبُ"] },
-      { au: "list-9", title: { ar: "كلمات مع الشدة", fr: "Mots avec la shadda", en: "Words with the shadda", ru: "Слова с шаддой", de: "Wörter mit Schadda" },
-        words: ["جَـهَّـزَ", "قَـتَّـلَ", "رَبِّـي", "بَوَّابٌ", "بَـدَّلَـتْ", "كَـذَّبَ", "دَرَّسَ", "بَـطٌّ", "لَـفَّ", "مَـلَّـكَ"] },
-      { au: "list-10", words: ["عَـيَّـنَ", "مَـنَّ", "فَـكَّـتْ", "صَـبَّـرَهُ", "غَـفَّـارٌ", "جَـبَّـارٌ", "فُـسَّـاقٍ", "كَـلَّـتْ", "عَـدَّ", "ثَـيِّـبٌ", "قَـتَّـالٍ", "جَـزَّارٌ", "قَـصَّ", "نَوَّرَ", "مُدَرِّسٌ", "مُـعَـلِّـمٌ", "شَـطَّـبَ"] },
-      { au: "list-11", words: ["أَخْـرَجَ", "تُـدْخِـلُ", "أَبْـوَابٍ", "جِسْرٌ", "أَبْـشِـرْ", "بَلْ", "أَمْوَالٍ", "اِهْدِنَـا", "بِعْ", "أَنْـوَارٌ", "نَخْلَةً", "أَفْـكَـارًا", "لَـحْـمٍ", "غَـيْـرِ", "مُـصْـطَـفَـى", "أَجْـدَرُ", "نَـكْـتُـبُ", "يَـقْـلَـقُ", "أَوْلَادًا", "أَتْـبَـاعُ", "أَهْـلُ", "يَزْدَادَ", "تَـبْدُو", "بِـسْـمِ اللَّهِ", "أَذْكُـرُ", "تَـشْـبَـعُ", "خِـنْـزِيـرٌ"] },
-      { au: "list-12", words: ["غَرِيبٌ", "عَرَبَ", "خَرَجَ", "غَفُورٍ", "فَتَحَ", "غَادَرَ", "غَفَرَ", "فُـجُورًا", "بَاغٍ", "عَجِيبًا", "غَرَسَ", "عَتِيدٌ", "عَبَدَ", "عَبَدَ", "عَدِيدٍ", "تَعِبَ", "تَفِتَ", "صَعُبَ", "بَعَثَ", "ضَفِيرًا", "تَعِسَ", "عَبِيدًا"] }
-    ];
-    var AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
-    function arNum(n) { return String(n).replace(/\d/g, function (d) { return AR_DIGITS.charAt(Number(d)); }); }
 
     function el(tag, cls, text) {
       var e = document.createElement(tag);
@@ -611,7 +593,29 @@
       var body = el("div", "reader-body");
       var panel = el("div", "formlab-panel reading-panel");
 
-      panel.appendChild(el("h3", "reading-heading", T.s1));
+      var parts = el("div", "conc-parts");
+      var part1 = el("div", "reading-part");
+      var part2 = el("div", "reading-part");
+      var part3 = el("div", "reading-part");
+      var pbtns = [];
+      [T.p1, T.p2, T.p3].forEach(function (label, i) {
+        var pb = el("button", "conc-part-btn" + (i === 1 ? " is-active" : ""), label);
+        pb.type = "button";
+        pb.addEventListener("click", function () {
+          stopClip();
+          [part1, part2, part3].forEach(function (pt, j) { pt.hidden = j !== i; });
+          pbtns.forEach(function (bb, j) { bb.classList.toggle("is-active", j === i); });
+          body.scrollTop = 0;
+        });
+        pbtns.push(pb);
+        parts.appendChild(pb);
+      });
+      // Parties 1 et 3 : contenu a venir (mots des fascicules ; livre avec harakat)
+      part1.appendChild(el("p", "reading-soon", T.soon));
+      part3.appendChild(el("p", "reading-soon", T.soon));
+      part1.hidden = true;
+      part3.hidden = true;
+      part2.appendChild(el("h3", "reading-heading", T.s1));
       var pg = el("div", "reading-pairs");
       PAIRS.forEach(function (pr) {
         var c = el("div", "reading-pair");
@@ -619,10 +623,10 @@
         c.appendChild(playBtn(pr.au));
         pg.appendChild(c);
       });
-      panel.appendChild(pg);
+      part2.appendChild(pg);
 
-      panel.appendChild(el("h3", "reading-heading reading-heading-2", T.s2));
-      panel.appendChild(el("p", "reading-legend", T.legend));
+      part2.appendChild(el("h3", "reading-heading reading-heading-2", T.s2));
+      part2.appendChild(el("p", "reading-legend", T.legend));
       var list = el("div", "reading-words");
       WORDS.forEach(function (w) {
         var row = el("div", "reading-word-row");
@@ -638,40 +642,13 @@
         if (w[5]) row.appendChild(playBtn(w[5]));
         list.appendChild(row);
       });
-      panel.appendChild(list);
+      part2.appendChild(list);
 
-      panel.appendChild(el("h3", "reading-heading reading-heading-2", T.s3));
-      LISTS.forEach(function (ls, li) {
-        var box = el("div", "reading-set");
-        var head = el("div", "reading-set-head");
-        var ttl = el("span", "reading-set-title", T.set + " " + (li + 1));
-        if (ls.title) {
-          var sub = el("span", "reading-set-sub");
-          sub.appendChild(document.createTextNode(ls.title[LANG] || ls.title.fr));
-          if (LANG !== "ar") {
-            var arT = el("span", "reading-set-sub-ar", ls.title.ar);
-            arT.lang = "ar";
-            arT.dir = "rtl";
-            sub.appendChild(document.createTextNode(" · "));
-            sub.appendChild(arT);
-          }
-          ttl.appendChild(sub);
-        }
-        head.appendChild(ttl);
-        head.appendChild(playBtn(ls.au));
-        box.appendChild(head);
-        var ws = el("ol", "reading-set-words");
-        ws.lang = "ar";
-        ws.dir = "rtl";
-        ls.words.forEach(function (w, i) {
-          var item = el("li", "reading-set-item");
-          item.appendChild(el("span", "reading-set-num", arNum(i + 1) + "-"));
-          item.appendChild(el("span", "reading-set-word", w));
-          ws.appendChild(item);
-        });
-        box.appendChild(ws);
-        panel.appendChild(box);
-      });
+
+      panel.appendChild(parts);
+      panel.appendChild(part1);
+      panel.appendChild(part2);
+      panel.appendChild(part3);
 
       body.appendChild(panel);
       modal.appendChild(bar);
@@ -3432,12 +3409,13 @@
       // noeud par ligne (liaison arabe correcte sur iPhone) ; couleurs via la
       // CSS Custom Highlight API, repli sur des <span> sinon.
       var CONC_TXT = {
-        fr: { btn: "Concentration", title: "Concentration", letter: "La lettre", text: "Le texte", aLetter: "Audio de la lettre", aText: "Audio du texte", close: "Fermer" },
-        en: { btn: "Concentration", title: "Concentration", letter: "The letter", text: "The text", aLetter: "Letter audio", aText: "Text audio", close: "Close" },
-        ru: { btn: "Концентрация", title: "Концентрация", letter: "Буква", text: "Текст", aLetter: "Аудио буквы", aText: "Аудио текста", close: "Закрыть" },
-        de: { btn: "Konzentration", title: "Konzentration", letter: "Der Buchstabe", text: "Der Text", aLetter: "Audio des Buchstabens", aText: "Audio des Textes", close: "Schließen" },
-        ar: { btn: "التركيز", title: "التركيز", letter: "الحرف", text: "النص", aLetter: "صوت الحرف", aText: "صوت النص", close: "إغلاق" }
+        fr: { btn: "Concentration", title: "Concentration", open: "Découvrir", sub: "Mots et livre à recopier", part1: "1. Les mots", part2: "2. Le livre", set: "Série", listen: "Écoute", instr1: "Écoute chaque mot, puis écris-le avec toutes les harakat, la chadda et le soukoun.", instr2: "Recopie le texte sur ton cahier en ajoutant les harakat.", letter: "La lettre", text: "Le texte", aLetter: "Audio de la lettre", aText: "Audio du texte", close: "Fermer" },
+        en: { btn: "Concentration", title: "Concentration", open: "Discover", sub: "Words and book to copy", part1: "1. The words", part2: "2. The book", set: "Set", listen: "Listen", instr1: "Listen to each word, then write it with all the harakat, the shadda and the sukun.", instr2: "Copy the text into your notebook, adding the harakat.", letter: "The letter", text: "The text", aLetter: "Letter audio", aText: "Text audio", close: "Close" },
+        ru: { btn: "Концентрация", title: "Концентрация", open: "Открыть", sub: "Слова и книга для переписывания", part1: "1. Слова", part2: "2. Книга", set: "Серия", listen: "Слушать", instr1: "Слушай каждое слово, затем напиши его со всеми огласовками, шаддой и сукуном.", instr2: "Перепиши текст в тетрадь, добавив огласовки.", letter: "Буква", text: "Текст", aLetter: "Аудио буквы", aText: "Аудио текста", close: "Закрыть" },
+        de: { btn: "Konzentration", title: "Konzentration", open: "Entdecken", sub: "Wörter und Buch zum Abschreiben", part1: "1. Die Wörter", part2: "2. Das Buch", set: "Serie", listen: "Anhören", instr1: "Höre jedes Wort und schreibe es dann mit allen Harakat, der Schadda und dem Sukun.", instr2: "Schreibe den Text in dein Heft ab und setze die Harakat.", letter: "Der Buchstabe", text: "Der Text", aLetter: "Audio des Buchstabens", aText: "Audio des Textes", close: "Schließen" },
+        ar: { btn: "التركيز", title: "التركيز", open: "اكتشف", sub: "الكلمات والكتاب للنسخ", part1: "١. الكلمات", part2: "٢. الكتاب", set: "المجموعة", listen: "استماع", instr1: "استمع إلى كل كلمة ثم اكتبها بجميع الحركات والشدة والسكون.", instr2: "انسخ النص في دفترك مع إضافة الحركات.", letter: "الحرف", text: "النص", aLetter: "صوت الحرف", aText: "صوت النص", close: "إغلاق" }
       };
+      var CLANG = isGerman ? "de" : isArabic ? "ar" : isRussian ? "ru" : isEnglish ? "en" : "fr";
       var CT = isGerman ? CONC_TXT.de : isArabic ? CONC_TXT.ar : isRussian ? CONC_TXT.ru : isEnglish ? CONC_TXT.en : CONC_TXT.fr;
       var concLab = null;
       var CONC_COLORS = { r: "conc-r", f: "conc-f" };
@@ -3514,54 +3492,109 @@
         wrap.appendChild(a);
         return wrap;
       }
-      function openConcLab(moduleNumber) {
+      // Module "Concentration" : global, en 2 parties
+      //  1) les mots (series avec audio) : ecouter, puis ecrire avec harakat/chadda/soukoun
+      //  2) le livre (alphabet, de alif a yeh) : texte sans harakat a recopier
+        var CONC_WORDS = [
+        { au: "list-1", words: ["حَرَمَ", "دِيكٌ", "شَعَرَ", "تاجِرٌ", "تَعِبَ", "صَادَ", "حَضَرَ", "مَلَكَ", "ذَكَرَ", "جِبالٍ", "طابَ"] },
+        { au: "list-2", words: ["سُبُوتٍ", "دارَ", "حُبُوبًا", "تَاجٌ", "طَرَدَ", "ضَرَبَ", "آبَ", "صَبَرَ", "جَابَ", "خَطَبَ"] },
+        { au: "list-3", words: ["تَـبِـيـعَ", "غَـدَرَ", "طَافَ", "فُـجُورًا", "عَبَدَ", "ضَفِيرًا"] },
+        { au: "list-4", words: ["بَـاءَ", "جَـاءَا", "ثَـبَـتَـا", "أُجِـيـبَ", "ثَـابَ", "تُـثَـابُ", "أَجِـيءُ"] },
+        { au: "list-5", words: ["حَـشِـيـشٌ", "أَسَـدًا", "آبَـتَـا", "خَـطَـبَ", "طَـارَ", "تَـاجِـرٍ", "حِـجَـابًـا"] },
+        { au: "list-6", words: ["أَبَـتِ", "زَادَ", "ضَـجِـرَ", "تَـابَ", "حَـبَـسَ", "ثَـبَـتَ", "خَـسِـرَ", "سُـبُوتٌ", "شَـطَـطًـا", "زَجـرَ", "أَزِيـدَ", "زَبـادِي"] },
+        { au: "list-7", words: ["ضُـرِبَ", "حَـسَـبَ", "دَأَبَ", "جَـسُـوسٌ", "شَـرِسًـا"] },
+        { au: "list-8", words: ["دَجَـاجًـا", "تَذُوبَ", "صَـادَ", "صَـاحَـبَ", "سَـحَـبَ", "أَزِيـدُ", "ظَـابَ", "شَـجَرَ", "أَذَابَ", "تُـذِيبُ"] },
+        { au: "list-9", title: { ar: "كلمات مع الشدة", fr: "Mots avec la shadda", en: "Words with the shadda", ru: "Слова с шаддой", de: "Wörter mit Schadda" },
+          words: ["جَـهَّـزَ", "قَـتَّـلَ", "رَبِّـي", "بَوَّابٌ", "بَـدَّلَـتْ", "كَـذَّبَ", "دَرَّسَ", "بَـطٌّ", "لَـفَّ", "مَـلَّـكَ"] },
+        { au: "list-10", words: ["عَـيَّـنَ", "مَـنَّ", "فَـكَّـتْ", "صَـبَّـرَهُ", "غَـفَّـارٌ", "جَـبَّـارٌ", "فُـسَّـاقٍ", "كَـلَّـتْ", "عَـدَّ", "ثَـيِّـبٌ", "قَـتَّـالٍ", "جَـزَّارٌ", "قَـصَّ", "نَوَّرَ", "مُدَرِّسٌ", "مُـعَـلِّـمٌ", "شَـطَّـبَ"] },
+        { au: "list-11", words: ["أَخْـرَجَ", "تُـدْخِـلُ", "أَبْـوَابٍ", "جِسْرٌ", "أَبْـشِـرْ", "بَلْ", "أَمْوَالٍ", "اِهْدِنَـا", "بِعْ", "أَنْـوَارٌ", "نَخْلَةً", "أَفْـكَـارًا", "لَـحْـمٍ", "غَـيْـرِ", "مُـصْـطَـفَـى", "أَجْـدَرُ", "نَـكْـتُـبُ", "يَـقْـلَـقُ", "أَوْلَادًا", "أَتْـبَـاعُ", "أَهْـلُ", "يَزْدَادَ", "تَـبْدُو", "بِـسْـمِ اللَّهِ", "أَذْكُـرُ", "تَـشْـبَـعُ", "خِـنْـزِيـرٌ"] },
+        { au: "list-12", words: ["غَرِيبٌ", "عَرَبَ", "خَرَجَ", "غَفُورٍ", "فَتَحَ", "غَادَرَ", "غَفَرَ", "فُـجُورًا", "بَاغٍ", "عَجِيبًا", "غَرَسَ", "عَتِيدٌ", "عَبَدَ", "عَبَدَ", "عَدِيدٍ", "تَعِبَ", "تَفِتَ", "صَعُبَ", "بَعَثَ", "ضَفِيرًا", "تَعِسَ", "عَبِيدًا"] }
+      ];
+      var AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
+      function arNum(n) { return String(n).replace(/\d/g, function (d) { return AR_DIGITS.charAt(Number(d)); }); }
+
+
+      var concPlaying = null, concPlayingBtn = null;
+      function concStopClip() {
+        if (concPlaying) { concPlaying.pause(); concPlaying = null; }
+        if (concPlayingBtn) { concPlayingBtn.classList.remove("is-playing"); concPlayingBtn = null; }
+      }
+      function concPlayBtn(file) {
+        var b = writeEl("button", "reading-play", "🔊");
+        b.type = "button";
+        b.setAttribute("aria-label", CT.listen);
+        b.addEventListener("click", function () {
+          var same = concPlayingBtn === b;
+          concStopClip();
+          if (same) return;
+          var a = new Audio(ROOT_BASE + "assets/audio/reading/" + file + ".m4a");
+          concPlaying = a;
+          concPlayingBtn = b;
+          b.classList.add("is-playing");
+          a.addEventListener("ended", function () { if (concPlaying === a) concStopClip(); });
+          a.addEventListener("error", function () { if (concPlaying === a) concStopClip(); });
+          a.play().catch(function () { if (concPlaying === a) concStopClip(); });
+        });
+        return b;
+      }
+      function concWordsPart(container) {
+        container.appendChild(writeEl("p", "conc-instruction", CT.instr1));
+        CONC_WORDS.forEach(function (ls, li) {
+          var box = writeEl("div", "reading-set");
+          var head = writeEl("div", "reading-set-head");
+          var ttl = writeEl("span", "reading-set-title", CT.set + " " + (li + 1));
+          if (ls.title) {
+            var sub = writeEl("span", "reading-set-sub");
+            sub.appendChild(document.createTextNode(ls.title[CLANG] || ls.title.fr));
+            if (CLANG !== "ar") {
+              var arT = writeEl("span", "reading-set-sub-ar", ls.title.ar);
+              arT.lang = "ar";
+              arT.dir = "rtl";
+              sub.appendChild(document.createTextNode(" · "));
+              sub.appendChild(arT);
+            }
+            ttl.appendChild(sub);
+          }
+          head.appendChild(ttl);
+          head.appendChild(concPlayBtn(ls.au));
+          box.appendChild(head);
+          var ws = writeEl("ol", "reading-set-words");
+          ws.lang = "ar";
+          ws.dir = "rtl";
+          ls.words.forEach(function (w, i) {
+            var item = writeEl("li", "reading-set-item");
+            item.appendChild(writeEl("span", "reading-set-num", arNum(i + 1) + "-"));
+            item.appendChild(writeEl("span", "reading-set-word", w));
+            ws.appendChild(item);
+          });
+          box.appendChild(ws);
+          container.appendChild(box);
+        });
+      }
+      function concBookPart(container) {
         var DATA = window.AHL_CONC;
-        var mod = MODULES.filter(function (m) { return String(m.number) === String(moduleNumber); })[0];
-        if (!mod || !DATA) return;
-        var ids = mod.letterIds.filter(function (id) { return DATA[id]; });
+        var ids = [];
+        MODULES.forEach(function (m) { m.letterIds.forEach(function (id) { if (DATA && DATA[id]) ids.push(id); }); });
         if (!ids.length) return;
         var letter = ids[0];
-        if (!concLab) {
-          concLab = writeEl("div", "reader conc-lab");
-          concLab.setAttribute("role", "dialog");
-          concLab.setAttribute("aria-modal", "true");
-          document.body.appendChild(concLab);
-          document.addEventListener("keydown", function (e) {
-            if (e.key === "Escape" && concLab.classList.contains("is-open")) closeConcLab();
-          });
-        }
-        concLab.textContent = "";
-        var bar = writeEl("div", "reader-bar");
-        bar.appendChild(writeEl("span", "reader-title", CT.title + " — " + (isArabic ? "الوحدة " : isRussian ? "Модуль " : isGerman ? "Modul " : "Module ") + mod.number));
-        var x = writeEl("button", "reader-close", "×");
-        x.type = "button";
-        x.setAttribute("aria-label", CT.close);
-        x.addEventListener("click", closeConcLab);
-        bar.appendChild(x);
-        var body = writeEl("div", "reader-body");
-        var panel = writeEl("div", "formlab-panel conc-panel");
-        var tabs = writeEl("div", "write-tabs");
+        container.appendChild(writeEl("p", "conc-instruction", CT.instr2));
+        var tabs = writeEl("div", "write-tabs conc-tabs");
         var content = writeEl("div", "conc-content");
-        panel.appendChild(tabs);
-        panel.appendChild(content);
-        body.appendChild(panel);
-        concLab.appendChild(bar);
-        concLab.appendChild(body);
-
+        container.appendChild(tabs);
+        container.appendChild(content);
         function stopAudio() {
-          Array.prototype.forEach.call(concLab.querySelectorAll("audio"), function (a) { a.pause(); });
+          Array.prototype.forEach.call(container.querySelectorAll("audio"), function (a) { a.pause(); });
         }
         function renderTabs() {
           tabs.textContent = "";
           ids.forEach(function (id) {
-            var b = writeEl("button", "write-tab" + (id === letter ? " is-active" : ""));
+            var b = writeEl("button", "write-tab conc-tab" + (id === letter ? " is-active" : ""));
             b.appendChild(writeEl("span", "write-tab-glyph", ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id));
             b.type = "button";
             b.lang = "ar";
-            b.addEventListener("click", function () { stopAudio(); letter = id; renderTabs(); renderContent(); body.scrollTop = 0; });
+            b.addEventListener("click", function () { stopAudio(); letter = id; renderTabs(); renderContent(); });
             tabs.appendChild(b);
           });
-          tabs.hidden = ids.length < 2;
         }
         function renderContent() {
           concClearHighlights();
@@ -3582,31 +3615,87 @@
         }
         renderTabs();
         renderContent();
+      }
+      function openConcLab() {
+        if (!concLab) {
+          concLab = writeEl("div", "reader conc-lab");
+          concLab.setAttribute("role", "dialog");
+          concLab.setAttribute("aria-modal", "true");
+          document.body.appendChild(concLab);
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && concLab.classList.contains("is-open")) closeConcLab();
+          });
+        }
+        concLab.textContent = "";
+        concClearHighlights();
+        var bar = writeEl("div", "reader-bar");
+        bar.appendChild(writeEl("span", "reader-title", CT.title));
+        var x = writeEl("button", "reader-close", "×");
+        x.type = "button";
+        x.setAttribute("aria-label", CT.close);
+        x.addEventListener("click", closeConcLab);
+        bar.appendChild(x);
+        var body = writeEl("div", "reader-body");
+        var panel = writeEl("div", "formlab-panel conc-panel");
+        var parts = writeEl("div", "conc-parts");
+        var part1 = writeEl("div", "conc-part");
+        var part2 = writeEl("div", "conc-part");
+        var b1 = writeEl("button", "conc-part-btn is-active", CT.part1);
+        var b2 = writeEl("button", "conc-part-btn", CT.part2);
+        b1.type = "button";
+        b2.type = "button";
+        function show(n) {
+          concStopClip();
+          Array.prototype.forEach.call(concLab.querySelectorAll("audio"), function (a) { a.pause(); });
+          b1.classList.toggle("is-active", n === 1);
+          b2.classList.toggle("is-active", n === 2);
+          part1.hidden = n !== 1;
+          part2.hidden = n !== 2;
+          body.scrollTop = 0;
+        }
+        b1.addEventListener("click", function () { show(1); });
+        b2.addEventListener("click", function () { show(2); });
+        parts.appendChild(b1);
+        parts.appendChild(b2);
+        concWordsPart(part1);
+        concBookPart(part2);
+        part2.hidden = true;
+        panel.appendChild(parts);
+        panel.appendChild(part1);
+        panel.appendChild(part2);
+        body.appendChild(panel);
+        concLab.appendChild(bar);
+        concLab.appendChild(body);
         concLab.classList.add("is-open");
         document.body.style.overflow = "hidden";
         body.scrollTop = 0;
       }
       function closeConcLab() {
         if (!concLab) return;
+        concStopClip();
         Array.prototype.forEach.call(concLab.querySelectorAll("audio"), function (a) { a.pause(); });
         concLab.classList.remove("is-open");
         document.body.style.overflow = "";
       }
-      document.querySelectorAll(".module-card").forEach(function (card) {
-        var num = card.querySelector(".module-number");
-        var m = num && num.textContent.match(/\d+/);
-        if (!m || !card.querySelector(".js-open-module") || !window.AHL_CONC) return;
-        var n = Number(m[0]);
-        var mod = MODULES.filter(function (mm) { return mm.number === n; })[0];
-        if (!mod || !mod.letterIds.some(function (id) { return window.AHL_CONC[id]; })) return;
-        var b = document.createElement("button");
-        b.type = "button";
-        b.className = "btn btn-outline btn-sm module-conc js-open-conc";
-        b.setAttribute("data-module", String(n));
-        b.textContent = "📖 " + CT.btn;
-        b.addEventListener("click", function () { openConcLab(n); });
-        card.appendChild(b);
-      });
+      // Carte unique "Concentration" (avant la carte "Lecture")
+      (function () {
+        var grid = document.querySelector(".module-grid");
+        if (!grid || !document.querySelector(".js-open-module") || !window.AHL_CONC) return;
+        var card = document.createElement("article");
+        card.className = "module-card module-card-intro module-card-conc";
+        card.appendChild(writeEl("span", "module-number", CT.title));
+        var letters = writeEl("p", "module-letters", "أ … ي");
+        letters.lang = "ar";
+        letters.dir = "rtl";
+        card.appendChild(letters);
+        card.appendChild(writeEl("p", "module-progress", CT.sub));
+        var btn = writeEl("button", "btn btn-outline btn-sm module-listen js-open-conc-main", CT.open);
+        btn.type = "button";
+        btn.addEventListener("click", openConcLab);
+        card.appendChild(btn);
+        var reading = grid.querySelector(".module-card-reading");
+        grid.insertBefore(card, reading || null);
+      })();
 
 
 
