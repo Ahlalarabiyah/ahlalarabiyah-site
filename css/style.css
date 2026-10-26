@@ -2970,3 +2970,6 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .reading-set-item { display: flex; align-items: baseline; gap: 8px; padding: 2px 4px; }
 .reading-set-num { font-size: 1rem; color: var(--color-text-light); min-width: 2.2em; }
 .reading-set-word { font-family: "Noto Naskh Arabic", var(--font-arabic); font-size: 1.7rem; line-height: 1.8; color: var(--color-navy); }
+.reading-set-sub { display: block; margin-top: 2px; font-size: .95rem; font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--color-navy); }
+.reading-set-sub-ar { font-family: "Noto Naskh Arabic", var(--font-arabic); font-size: 1.1rem; }
+.reading-set-title { text-align: start; }
