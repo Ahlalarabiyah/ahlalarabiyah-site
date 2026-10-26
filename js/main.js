@@ -480,11 +480,11 @@
     if (!grid || !document.querySelector(".js-open-module")) return;
     var LANG = (document.documentElement.lang || "fr").slice(0, 2);
     var TXT = {
-      fr: { name: "Lecture", sub: "Lettres qui se ressemblent", open: "Découvrir", close: "Fermer", s1: "Lettres qui se ressemblent", s2: "Mots à bien lire", legend: "✅ juste · ❌ faux", play: "Écouter" },
-      en: { name: "Reading", sub: "Letters that look alike", open: "Discover", close: "Close", s1: "Letters that look alike", s2: "Words to read carefully", legend: "✅ correct · ❌ wrong", play: "Listen" },
-      ru: { name: "Чтение", sub: "Похожие буквы", open: "Открыть", close: "Закрыть", s1: "Похожие буквы", s2: "Слова для внимательного чтения", legend: "✅ верно · ❌ неверно", play: "Слушать" },
-      de: { name: "Lesen", sub: "Ähnliche Buchstaben", open: "Entdecken", close: "Schließen", s1: "Ähnliche Buchstaben", s2: "Wörter zum genauen Lesen", legend: "✅ richtig · ❌ falsch", play: "Anhören" },
-      ar: { name: "القراءة", sub: "الحروف المتشابهة", open: "اكتشف", close: "إغلاق", s1: "الحروف المتشابهة", s2: "كلمات للقراءة بعناية", legend: "✅ صحيح · ❌ خطأ", play: "استماع" }
+      fr: { name: "Lecture", sub: "Lettres qui se ressemblent", open: "Découvrir", close: "Fermer", s1: "Lettres qui se ressemblent", s2: "Mots à bien lire", legend: "✅ juste · ❌ faux", play: "Écouter" , s3: "Mots à lire", set: "Série" },
+      en: { name: "Reading", sub: "Letters that look alike", open: "Discover", close: "Close", s1: "Letters that look alike", s2: "Words to read carefully", legend: "✅ correct · ❌ wrong", play: "Listen" , s3: "Words to read", set: "Set" },
+      ru: { name: "Чтение", sub: "Похожие буквы", open: "Открыть", close: "Закрыть", s1: "Похожие буквы", s2: "Слова для внимательного чтения", legend: "✅ верно · ❌ неверно", play: "Слушать" , s3: "Слова для чтения", set: "Серия" },
+      de: { name: "Lesen", sub: "Ähnliche Buchstaben", open: "Entdecken", close: "Schließen", s1: "Ähnliche Buchstaben", s2: "Wörter zum genauen Lesen", legend: "✅ richtig · ❌ falsch", play: "Anhören" , s3: "Wörter zum Lesen", set: "Serie" },
+      ar: { name: "القراءة", sub: "الحروف المتشابهة", open: "اكتشف", close: "إغلاق", s1: "الحروف المتشابهة", s2: "كلمات للقراءة بعناية", legend: "✅ صحيح · ❌ خطأ", play: "استماع" , s3: "كلمات للقراءة", set: "المجموعة" }
     };
     var T = TXT[LANG] || TXT.fr;
     var DIR = ROOT_BASE + "assets/audio/reading/";
@@ -522,6 +522,14 @@
       ["زَيْـتُـونٌ", 1, "/", "ذَيْـتُـونٌ", 0, "word-12-zaytun"],
       ["سَـبِـيـلِ اللَّهِ", 1, "/", "صَـبِـيـلِ اللهِ", 0, "word-13-sabil"]
     ];
+
+    var LISTS = [
+      { au: "list-1", words: ["حَرَمَ", "دِيكٌ", "شَعَرَ", "تاجِرٌ", "تَعِبَ", "صَادَ", "حَضَرَ", "مَلَكَ", "ذَكَرَ", "جِبالٍ", "طابَ"] },
+      { au: "list-2", words: ["سُبُوتٍ", "دارَ", "حُبُوبًا", "تَاجٌ", "طَرَدَ", "ضَرَبَ", "آبَ", "صَبَرَ", "جَابَ", "خَطَبَ"] },
+      { au: "list-3", words: ["تَـبِـيـعَ", "غَـدَرَ", "طَافَ", "فُـجُورًا", "عَبَدَ", "ضَفِيرًا"] }
+    ];
+    var AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
+    function arNum(n) { return String(n).replace(/\d/g, function (d) { return AR_DIGITS.charAt(Number(d)); }); }
 
     function el(tag, cls, text) {
       var e = document.createElement(tag);
@@ -621,6 +629,26 @@
         list.appendChild(row);
       });
       panel.appendChild(list);
+
+      panel.appendChild(el("h3", "reading-heading reading-heading-2", T.s3));
+      LISTS.forEach(function (ls, li) {
+        var box = el("div", "reading-set");
+        var head = el("div", "reading-set-head");
+        head.appendChild(el("span", "reading-set-title", T.set + " " + (li + 1)));
+        head.appendChild(playBtn(ls.au));
+        box.appendChild(head);
+        var ws = el("ol", "reading-set-words");
+        ws.lang = "ar";
+        ws.dir = "rtl";
+        ls.words.forEach(function (w, i) {
+          var item = el("li", "reading-set-item");
+          item.appendChild(el("span", "reading-set-num", arNum(i + 1) + "-"));
+          item.appendChild(el("span", "reading-set-word", w));
+          ws.appendChild(item);
+        });
+        box.appendChild(ws);
+        panel.appendChild(box);
+      });
 
       body.appendChild(panel);
       modal.appendChild(bar);
