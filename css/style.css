@@ -2944,3 +2944,21 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .intro-six-form { color: #2E9B3F !important; border-inline-end: 2px solid var(--color-navy); font-size: 2.4rem !important; }
 .intro-green { color: #2E9B3F; }
 ::highlight(intro-green) { color: #2E9B3F; }
+
+/* Module "Lecture" : lettres qui se ressemblent */
+.reading-panel { max-width: min(680px, 94vw); text-align: center; }
+.reading-heading { margin: 0 0 14px; font-size: clamp(1.15rem, 3vw, 1.4rem); color: var(--color-navy); }
+.reading-heading-2 { margin-top: 30px; }
+.reading-pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(128px, 1fr)); gap: 10px; }
+.reading-pair { position: relative; padding: 12px 10px 14px; border: 1px solid var(--color-border); border-radius: 14px; background: #fff; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.reading-pair-row { font-family: "Noto Naskh Arabic", var(--font-arabic); font-size: 1.9rem; line-height: 1.8; color: var(--color-navy); white-space: nowrap; }
+.reading-play { margin-top: 6px; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--color-teal); background: var(--color-teal-10); font-size: 1.1rem; cursor: pointer; line-height: 1; }
+.reading-play.is-playing { background: var(--color-teal); }
+.reading-legend { margin: 0 0 12px; color: var(--color-text-light); font-size: .95rem; }
+.reading-words { display: flex; flex-direction: column; gap: 8px; }
+.reading-word-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 14px; border: 1px solid var(--color-border); border-radius: 14px; background: #fff; }
+.reading-word-pair { flex: 1; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 8px; }
+.reading-word { font-family: "Noto Naskh Arabic", var(--font-arabic); font-size: 1.8rem; line-height: 1.8; color: var(--color-navy); }
+.reading-sep { font-size: 1.3rem; color: var(--color-text-light); }
+.reading-mark { font-size: 1.15rem; }
+.reading-word-row .reading-play { margin: 0; flex: none; }

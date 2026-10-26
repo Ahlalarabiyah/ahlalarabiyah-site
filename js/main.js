@@ -472,6 +472,170 @@
     });
   })();
 
+  // ---- Module "Lecture" : les lettres qui se ressemblent (page Modules) ----
+  // Contenu fourni par l'auteur : paires de lettres avec voyelles, puis mots a
+  // bien lire (juste / faux), avec les audios correspondants.
+  (function () {
+    var grid = document.querySelector(".module-grid");
+    if (!grid || !document.querySelector(".js-open-module")) return;
+    var LANG = (document.documentElement.lang || "fr").slice(0, 2);
+    var TXT = {
+      fr: { name: "Lecture", sub: "Lettres qui se ressemblent", open: "Découvrir", close: "Fermer", s1: "Lettres qui se ressemblent", s2: "Mots à bien lire", legend: "✅ juste · ❌ faux", play: "Écouter" },
+      en: { name: "Reading", sub: "Letters that look alike", open: "Discover", close: "Close", s1: "Letters that look alike", s2: "Words to read carefully", legend: "✅ correct · ❌ wrong", play: "Listen" },
+      ru: { name: "Чтение", sub: "Похожие буквы", open: "Открыть", close: "Закрыть", s1: "Похожие буквы", s2: "Слова для внимательного чтения", legend: "✅ верно · ❌ неверно", play: "Слушать" },
+      de: { name: "Lesen", sub: "Ähnliche Buchstaben", open: "Entdecken", close: "Schließen", s1: "Ähnliche Buchstaben", s2: "Wörter zum genauen Lesen", legend: "✅ richtig · ❌ falsch", play: "Anhören" },
+      ar: { name: "القراءة", sub: "الحروف المتشابهة", open: "اكتشف", close: "إغلاق", s1: "الحروف المتشابهة", s2: "كلمات للقراءة بعناية", legend: "✅ صحيح · ❌ خطأ", play: "استماع" }
+    };
+    var T = TXT[LANG] || TXT.fr;
+    var DIR = ROOT_BASE + "assets/audio/reading/";
+    var PAIRS = [
+      { au: "pair-taa-tah", rows: ["تَ / طَ", "تُ / طُ", "تِ / طِ"] },
+      { au: "pair-dal-dad", rows: ["دَ / ضَ", "دُ / ضُ", "دِ / ضِ"] },
+      { au: "pair-seen-sad", rows: ["سَ / صَ", "سُ / صُ", "سِ / صِ"] },
+      { au: "pair-khaa-ghain", rows: ["خَ / غَ", "خُ / غُ", "خِ / غِ"] },
+      { au: "pair-qaf-kaf", rows: ["قَ / كَ", "قُ / كُ", "قِ / كِ"] },
+      { au: "pair-thal-zah", rows: ["ذَ / ظَ", "ذُ / ظُ", "ذِ / ظِ"] },
+      { au: "pair-zain-thal", rows: ["زَ / ذَ", "زُ / ذُ", "زِ / ذِ"] },
+      { au: "pair-thaa-seen", rows: ["ثَ / سَ", "ثُ / سُ", "ثِ / سِ"] },
+      { au: "pair-haa-heh", rows: ["حَ / هَ", "حُ / هُ", "حِ / هِ"] },
+      { au: "pair-reh-ghain", rows: ["رَ / غَ", "رُ / غُ", "رِ / غِ"] },
+      { au: "pair-feh-thaa", rows: ["فَ / ثَ", "فُ / ثُ", "فِ / ثِ"] }
+    ];
+    // [mot1, juste1, separateur, mot2, juste2, audio]
+    var WORDS = [
+      ["تارِقًا", 0, "=", "طارِقًا", 1, "word-1-tariqa"],
+      ["ضَجَاج", 0, "=", "دَجاجٌ", 1, "word-2-dajaj"],
+      ["ثَـبْـرٌ", 0, "/", "صَـبْـرٌ", 1, "word-3-sabr"],
+      ["قَرِيمٌ", 0, "=", "كَرِيمٌ", 1, ""],
+      ["كَـلْـبٌ", 1, "/", "قَـلْـبٌ", 1, "word-4-kalb"],
+      ["كُلْ", 1, "/", "قُلْ", 1, ""],
+      ["سَـبْـرٌ", 0, "/", "صَـبْـرٌ", 1, ""],
+      ["قَـلْـبٌ", 0, "=", "كَـلْـبٌ", 1, "word-4-kalb"],
+      ["ظَـهَـبٌ", 0, "/", "ذَهَبٌ", 1, "word-5-dhahab"],
+      ["فِـيـلٍ", 1, "/", "ثِـيـلٍ", 0, "word-6-feel"],
+      ["قَـلِـيـلٌ", 1, "/", "كَـلِـيـلٌ", 1, ""],
+      ["خُـبْـزًا", 1, "/", "غُـبْـزًا", 0, "word-7-khubza"],
+      ["رَبِّـي", 1, "/", "غَـبِّـي", 0, "word-8-rabbi"],
+      ["حَـلَالٌ", 1, "/", "هَـلَالٌ", 0, "word-9-halal"],
+      ["زَادَ", 1, "/", "ذَادَ", 0, "word-10-zad"],
+      ["سُـورَةٌ", 1, "/", "ثُـورَةٌ", 0, "word-11-surah"],
+      ["زَيْـتُـونٌ", 1, "/", "ذَيْـتُـونٌ", 0, "word-12-zaytun"],
+      ["سَـبِـيـلِ اللَّهِ", 1, "/", "صَـبِـيـلِ اللهِ", 0, "word-13-sabil"]
+    ];
+
+    function el(tag, cls, text) {
+      var e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text != null) e.textContent = text;
+      return e;
+    }
+    var playing = null, playingBtn = null;
+    function stopClip() {
+      if (playing) { playing.pause(); playing = null; }
+      if (playingBtn) { playingBtn.classList.remove("is-playing"); playingBtn = null; }
+    }
+    function playBtn(file) {
+      var b = el("button", "reading-play", "🔊");
+      b.type = "button";
+      b.setAttribute("aria-label", T.play);
+      b.addEventListener("click", function () {
+        var same = playingBtn === b;
+        stopClip();
+        if (same) return;
+        var a = new Audio(DIR + file + ".m4a");
+        playing = a;
+        playingBtn = b;
+        b.classList.add("is-playing");
+        a.addEventListener("ended", function () { if (playing === a) stopClip(); });
+        a.addEventListener("error", function () { if (playing === a) stopClip(); });
+        a.play().catch(function () { if (playing === a) stopClip(); });
+      });
+      return b;
+    }
+    function arText(cls, text) {
+      var e = el("span", cls, text);
+      e.lang = "ar";
+      e.dir = "rtl";
+      return e;
+    }
+
+    var card = el("article", "module-card module-card-intro module-card-reading");
+    card.appendChild(el("span", "module-number", T.name));
+    var lettersP = el("p", "module-letters", "تَ / طَ");
+    lettersP.setAttribute("lang", "ar");
+    lettersP.setAttribute("dir", "rtl");
+    card.appendChild(lettersP);
+    card.appendChild(el("p", "module-progress", T.sub));
+    var openBtn = el("button", "btn btn-outline btn-sm module-listen js-open-reading", T.open);
+    openBtn.type = "button";
+    card.appendChild(openBtn);
+    grid.appendChild(card);
+
+    var modal = null;
+    function close() {
+      if (!modal) return;
+      stopClip();
+      modal.classList.remove("is-open");
+      if (!document.querySelector(".reader.is-open, .game-modal.is-open")) document.body.style.overflow = "";
+    }
+    function build() {
+      modal = el("div", "reader");
+      modal.setAttribute("role", "dialog");
+      modal.setAttribute("aria-modal", "true");
+      modal.setAttribute("aria-label", T.name);
+      var bar = el("div", "reader-bar");
+      bar.appendChild(el("span", "reader-title", T.name));
+      var x = el("button", "reader-close", "×");
+      x.type = "button";
+      x.setAttribute("aria-label", T.close);
+      x.addEventListener("click", close);
+      bar.appendChild(x);
+      var body = el("div", "reader-body");
+      var panel = el("div", "formlab-panel reading-panel");
+
+      panel.appendChild(el("h3", "reading-heading", T.s1));
+      var pg = el("div", "reading-pairs");
+      PAIRS.forEach(function (pr) {
+        var c = el("div", "reading-pair");
+        pr.rows.forEach(function (r) { c.appendChild(arText("reading-pair-row", r)); });
+        c.appendChild(playBtn(pr.au));
+        pg.appendChild(c);
+      });
+      panel.appendChild(pg);
+
+      panel.appendChild(el("h3", "reading-heading reading-heading-2", T.s2));
+      panel.appendChild(el("p", "reading-legend", T.legend));
+      var list = el("div", "reading-words");
+      WORDS.forEach(function (w) {
+        var row = el("div", "reading-word-row");
+        var pair = el("div", "reading-word-pair");
+        pair.lang = "ar";
+        pair.dir = "rtl";
+        pair.appendChild(el("span", "reading-mark", w[1] ? "✅" : "❌"));
+        pair.appendChild(arText("reading-word", w[0]));
+        pair.appendChild(el("span", "reading-sep", w[2]));
+        pair.appendChild(arText("reading-word", w[3]));
+        pair.appendChild(el("span", "reading-mark", w[4] ? "✅" : "❌"));
+        row.appendChild(pair);
+        if (w[5]) row.appendChild(playBtn(w[5]));
+        list.appendChild(row);
+      });
+      panel.appendChild(list);
+
+      body.appendChild(panel);
+      modal.appendChild(bar);
+      modal.appendChild(body);
+      modal.addEventListener("click", function (e) { if (e.target === modal || e.target === body) close(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal.classList.contains("is-open")) close(); });
+      document.body.appendChild(modal);
+    }
+    openBtn.addEventListener("click", function () {
+      if (!modal) build();
+      modal.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+    });
+  })();
+
   // ---- Menu deroulant des langues : se ferme au clic ailleurs / Echap ----
   var langMenu = document.querySelector(".lang-menu");
   if (langMenu) {
