@@ -61,8 +61,8 @@
         sub: "Les modules 1 et 2 sont gratuits. Choisis une formule pour débloquer ce module.",
         single: "Ce module seul", singleDesc: "Module {n}, accès à vie",
         subscribe: "Abonnement", base: "Formule de base", baseDesc: "Accès aux modules",
-        all: "Tout inclus", allDesc: "Modules + parcours de dictées",
-        month: "/ mois", year: "/ an", lifetime: "Accès à vie", lifetimeDesc: "Achat unique, tout est débloqué, dictées comprises.",
+        all: "Tout inclus", allDesc: "Modules + dictées, lecture et concentration",
+        month: "/ mois", year: "/ an", lifetime: "Accès à vie", lifetimeDesc: "Achat unique, tout est débloqué : dictées, lecture et concentration comprises.",
         seeAll: "Voir toutes les formules", close: "Fermer"
       },
       en: {
@@ -71,8 +71,8 @@
         sub: "Modules 1 and 2 are free. Choose a plan to unlock this module.",
         single: "This module only", singleDesc: "Module {n}, lifetime access",
         subscribe: "Subscription", base: "Basic plan", baseDesc: "Access to the modules",
-        all: "All-inclusive", allDesc: "Modules + dictation course",
-        month: "/ month", year: "/ year", lifetime: "Lifetime access", lifetimeDesc: "One-time purchase, everything unlocked, dictations included.",
+        all: "All-inclusive", allDesc: "Modules + dictations, reading and concentration",
+        month: "/ month", year: "/ year", lifetime: "Lifetime access", lifetimeDesc: "One-time purchase, everything unlocked: dictations, reading and concentration included.",
         seeAll: "See all plans", close: "Close"
       },
       ru: {
@@ -81,8 +81,8 @@
         sub: "Модули 1 и 2 бесплатны. Выбери тариф, чтобы открыть этот модуль.",
         single: "Только этот модуль", singleDesc: "Модуль {n}, доступ навсегда",
         subscribe: "Подписка", base: "Базовый тариф", baseDesc: "Доступ к модулям",
-        all: "Всё включено", allDesc: "Модули + курс диктантов",
-        month: "/ мес.", year: "/ год", lifetime: "Доступ навсегда", lifetimeDesc: "Разовая покупка, всё открыто, включая диктанты.",
+        all: "Всё включено", allDesc: "Модули + диктанты, чтение и концентрация",
+        month: "/ мес.", year: "/ год", lifetime: "Доступ навсегда", lifetimeDesc: "Разовая покупка, всё открыто, включая диктанты, чтение и концентрацию.",
         seeAll: "Все тарифы", close: "Закрыть"
       },
       de: {
@@ -91,8 +91,8 @@
         sub: "Die Module 1 und 2 sind kostenlos. Wähle ein Angebot, um dieses Modul freizuschalten.",
         single: "Nur dieses Modul", singleDesc: "Modul {n}, lebenslanger Zugang",
         subscribe: "Abonnement", base: "Basis-Angebot", baseDesc: "Zugang zu den Modulen",
-        all: "Alles inklusive", allDesc: "Module + Diktat-Kurs",
-        month: "/ Monat", year: "/ Jahr", lifetime: "Lebenslanger Zugang", lifetimeDesc: "Einmaliger Kauf, alles freigeschaltet, Diktate inklusive.",
+        all: "Alles inklusive", allDesc: "Module + Diktate, Lesen und Konzentration",
+        month: "/ Monat", year: "/ Jahr", lifetime: "Lebenslanger Zugang", lifetimeDesc: "Einmaliger Kauf, alles freigeschaltet, einschließlich Diktaten, Lesen und Konzentration.",
         seeAll: "Alle Angebote ansehen", close: "Schließen"
       },
       ar: {
@@ -101,8 +101,8 @@
         sub: "الوحدتان 1 و2 مجانيتان. اختر باقة لفتح هذه الوحدة.",
         single: "هذه الوحدة فقط", singleDesc: "الوحدة {n}، وصول دائم",
         subscribe: "اشتراك", base: "الباقة الأساسية", baseDesc: "الوصول إلى الوحدات",
-        all: "كل شيء مشمول", allDesc: "الوحدات + مسار الإملاء",
-        month: "/ شهريًا", year: "/ سنويًا", lifetime: "وصول مدى الحياة", lifetimeDesc: "دفعة واحدة، كل شيء مفتوح بما في ذلك الإملاء.",
+        all: "كل شيء مشمول", allDesc: "الوحدات + الإملاء والقراءة والتركيز",
+        month: "/ شهريًا", year: "/ سنويًا", lifetime: "وصول مدى الحياة", lifetimeDesc: "دفعة واحدة، كل شيء مفتوح بما في ذلك الإملاء والقراءة والتركيز.",
         seeAll: "عرض كل الباقات", close: "إغلاق"
       }
     };
@@ -223,10 +223,10 @@
       }
       box.appendChild(el("p", "paywall-group", T.subscribe));
       var plans = el("div", "paywall-plans");
-      plans.appendChild(priceCard(T.base, T.baseDesc, "base-month", "base-year", "6,99 €", "39,99 €"));
-      plans.appendChild(priceCard(T.all, T.allDesc, "all-month", "all-year", "7,99 €", "45,99 €"));
+      plans.appendChild(priceCard(T.base, T.baseDesc, "base-month", "base-year", "7,99 €", "43,99 €"));
+      plans.appendChild(priceCard(T.all, T.allDesc, "all-month", "all-year", "8,99 €", "49,99 €"));
       box.appendChild(plans);
-      box.appendChild(option(checkoutHref("lifetime"), T.lifetime, T.lifetimeDesc, "64,99 €", "paywall-opt-dark"));
+      box.appendChild(option(checkoutHref("lifetime"), T.lifetime, T.lifetimeDesc, "79,99 €", "paywall-opt-dark"));
       var all = el("a", "paywall-all", T.seeAll + " →");
       all.href = ROOT_BASE + "formules.html";
       box.appendChild(all);
@@ -3639,8 +3639,12 @@
           if (d.x && d.x.length) {
             var s2 = writeEl("section", "conc-section");
             s2.appendChild(writeEl("p", "conc-section-title", CT.text));
-            if (au.x) s2.appendChild(concAudio(au.x, CT.aText));
-            d.x.forEach(function (pg) { s2.appendChild(concBlock(pg, "story")); });
+            // un audio par texte (liste) ou un seul audio pour le texte unique
+            var xs = Array.isArray(au.x) ? au.x : (au.x ? [au.x] : []);
+            d.x.forEach(function (pg, i) {
+              if (xs[i]) s2.appendChild(concAudio(xs[i], d.x.length > 1 ? CT.aText + " " + (i + 1) : CT.aText));
+              s2.appendChild(concBlock(pg, "story"));
+            });
             content.appendChild(s2);
           }
         }
