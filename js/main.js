@@ -2579,8 +2579,21 @@
             ], dots[3])
           };
         }
-        D.tah = tahFamily([[], [], [], []]);
-        D.zah = tahFamily([[[224, 48]], [[232, 38]], [[224, 40]], [[234, 38]]]);
+        // ط / ظ : d'abord le corps (ovale + queue), puis la tige verticale (de haut en bas).
+        // Isolee : le corps part du bout gauche de la queue, comme sur la fiche de reference.
+        function tahOrder(fam) {
+          var iso = fam.isolated.strokes;
+          fam.isolated.strokes = [{ pts: iso[1].pts.slice().reverse(), sharp: iso[1].sharp }, iso[0]];
+          var ini = fam.initial.strokes;
+          fam.initial.strokes = [ini[1], ini[0]];
+          ["medial", "final"].forEach(function (f) {
+            var st = fam[f].strokes;
+            fam[f].strokes = [st[0], st[2], st[1]];
+          });
+          return fam;
+        }
+        D.tah = tahOrder(tahFamily([[], [], [], []]));
+        D.zah = tahOrder(tahFamily([[[224, 48]], [[232, 38]], [[224, 40]], [[234, 38]]]));
 
         // ---- Ain / Ghain : tracés dessinés par l'auteur du site ----
         function ainFamily(dots) {
@@ -2716,6 +2729,30 @@
           D[id].initial = D[id].isolated;
           D[id].medial = D[id].final;
         });
+        // Lettres dont le "ventre" ou la queue descend SOUS la ligne d'ecriture (ل ن ي ق و) :
+        // on les descend pour que la ligne passe a la hauteur de la ligne de base,
+        // au lieu qu'elles soient posees dessus.
+        (function () {
+          var DEPTH = { lam: 20, noon: 22, yeh: 20, qaf: 24, waw: 22 };
+          var LINE = WRITE_BASE + 10;
+          var seen = [];
+          Object.keys(DEPTH).forEach(function (id) {
+            ["isolated", "final"].forEach(function (f) {
+              var fm = D[id][f];
+              if (!fm || seen.indexOf(fm) !== -1) return;
+              seen.push(fm);
+              var bottom = -1e9;
+              fm.strokes.forEach(function (st) { st.pts.forEach(function (p) { if (p[1] > bottom) bottom = p[1]; }); });
+              var dy = Math.round(LINE + DEPTH[id] - bottom);
+              if (dy <= 0) return;
+              fm.strokes = fm.strokes.map(function (st) {
+                return { pts: st.pts.map(function (p) { return [p[0], p[1] + dy]; }), sharp: st.sharp };
+              });
+              fm.dots = fm.dots.map(function (d) { return [d[0], d[1] + dy]; });
+            });
+          });
+          ["isolated", "final"].forEach(function () { /* formes partagees : deja traitees via seen */ });
+        })();
         // Points places AU-DESSUS : toujours bien au-dessus du haut du trait (le jim,
         // dont le point est sous la tete, et les points sous la lettre ne bougent pas).
         (function () {
@@ -2740,10 +2777,31 @@
               var top = allTop >= 55 ? allTop : localTop;
               var lowest = Math.max.apply(null, fm.dots.map(function (d) { return d[1]; }));
               var highest = Math.min.apply(null, fm.dots.map(function (d) { return d[1]; }));
-              var need = lowest - (top - 24);
+              var need = lowest - (top - 30);
               if (need > 0 && highest - need >= 22) {
                 fm.dots = fm.dots.map(function (d) { return [d[0], d[1] - need]; });
               }
+            });
+          });
+        })();
+        // Points SOUS la lettre (ب ي) : au moins 26 unites sous le bas du trait voisin.
+        (function () {
+          var seen = [];
+          ["baa", "yeh"].forEach(function (id) {
+            ["isolated", "initial", "medial", "final"].forEach(function (f) {
+              var fm = D[id][f];
+              if (!fm || !fm.dots.length || seen.indexOf(fm) !== -1) return;
+              seen.push(fm);
+              var minX = Math.min.apply(null, fm.dots.map(function (d) { return d[0]; })) - 28;
+              var maxX = Math.max.apply(null, fm.dots.map(function (d) { return d[0]; })) + 28;
+              var bottom = -1e9;
+              fm.strokes.forEach(function (st) {
+                writeDense(st).forEach(function (p) { if (p[0] >= minX && p[0] <= maxX && p[1] > bottom) bottom = p[1]; });
+              });
+              var top = Math.min.apply(null, fm.dots.map(function (d) { return d[1]; }));
+              var low = Math.max.apply(null, fm.dots.map(function (d) { return d[1]; }));
+              var need = Math.min((bottom + 26) - top, 198 - low);
+              if (need > 0) fm.dots = fm.dots.map(function (d) { return [d[0], d[1] + need]; });
             });
           });
         })();
@@ -2752,11 +2810,11 @@
 
       var WRITE_FORMS = ["isolated", "initial", "medial", "final"];
       var WRITE_TXT = {
-        fr: { extra: "Il y a un point en trop : enlève-le avec la gomme.", pen: "Crayon", eraser: "Gomme", clear: "Tout effacer", check: "Vérifier", nextBtn: "Suivant →", draw: "Trace d’abord la lettre avec ton doigt.", more: "Il manque encore une partie de la lettre.", finished: "🎉 Tu as écrit toutes les lettres de ce module !", title: "Écriture", pick: "Choisis la lettre", forms: ["Isolée", "Début", "Milieu", "Fin"], how: "Trace la lettre avec ton doigt en suivant les pointillés et la flèche. Commence au point orange.", ok: "✓ Bien écrit !", again: "Recommencer", bad: "Presque : suis bien les pointillés.", dot: "Touche maintenant les points.", next: "Trace le trait suivant.", notebook: "Prends ton cahier ou ton ardoise pour reproduire plusieurs fois.", words: "Des mots pour t’exercer", close: "Fermer", btn: "Écrire les lettres" },
-        en: { extra: "There is an extra dot: remove it with the eraser.", pen: "Pencil", eraser: "Eraser", clear: "Clear all", check: "Check", nextBtn: "Next →", draw: "First trace the letter with your finger.", more: "Part of the letter is still missing.", finished: "🎉 You have written all the letters of this module!", title: "Writing", pick: "Choose the letter", forms: ["Isolated", "Start", "Middle", "End"], how: "Trace the letter with your finger, following the dotted line and the arrow. Start at the orange dot.", ok: "✓ Well written!", again: "Start again", bad: "Almost: follow the dotted line.", dot: "Now tap the dot.", next: "Draw the next stroke.", notebook: "Take your notebook or slate to copy it several times.", words: "Words to practise", close: "Close", btn: "Write the letters" },
-        ru: { extra: "Лишняя точка: сотри её ластиком.", pen: "Карандаш", eraser: "Ластик", clear: "Стереть всё", check: "Проверить", nextBtn: "Дальше →", draw: "Сначала обведи букву пальцем.", more: "Ещё не хватает части буквы.", finished: "🎉 Ты написал(а) все буквы этого модуля!", title: "Письмо", pick: "Выбери букву", forms: ["Отдельно", "В начале", "В середине", "В конце"], how: "Обведи букву пальцем по пунктиру и стрелке. Начни с оранжевой точки.", ok: "✓ Хорошо написано!", again: "Заново", bad: "Почти: следуй пунктиру.", dot: "Теперь коснись точки.", next: "Проведи следующую линию.", notebook: "Возьми тетрадь или грифельную доску и повтори несколько раз.", words: "Слова для тренировки", close: "Закрыть", btn: "Писать буквы" },
-        de: { extra: "Ein Punkt zu viel: entferne ihn mit dem Radierer.", pen: "Stift", eraser: "Radierer", clear: "Alles löschen", check: "Prüfen", nextBtn: "Weiter →", draw: "Fahre zuerst den Buchstaben mit dem Finger nach.", more: "Ein Teil des Buchstabens fehlt noch.", finished: "🎉 Du hast alle Buchstaben dieses Moduls geschrieben!", title: "Schreiben", pick: "Wähle den Buchstaben", forms: ["Einzeln", "Anfang", "Mitte", "Ende"], how: "Fahre den Buchstaben mit dem Finger nach, entlang der gepunkteten Linie und des Pfeils. Beginne beim orangen Punkt.", ok: "✓ Gut geschrieben!", again: "Nochmal", bad: "Fast: folge der gepunkteten Linie.", dot: "Tippe jetzt auf den Punkt.", next: "Zeichne den nächsten Strich.", notebook: "Nimm dein Heft oder deine Tafel und schreibe es mehrmals ab.", words: "Wörter zum Üben", close: "Schließen", btn: "Buchstaben schreiben" },
-        ar: { extra: "هناك نقطة زائدة: امسحها بالممحاة.", pen: "قلم", eraser: "ممحاة", clear: "مسح الكل", check: "تحقق", nextBtn: "← التالي", draw: "ارسم الحرف أولًا بإصبعك.", more: "ما زال جزء من الحرف ناقصًا.", finished: "🎉 لقد كتبت كل حروف هذه الوحدة!", title: "الكتابة", pick: "اختر الحرف", forms: ["منفصل", "أول الكلمة", "وسط الكلمة", "آخر الكلمة"], how: "ارسم الحرف بإصبعك متبعًا الخط المنقّط والسهم. ابدأ من النقطة البرتقالية.", ok: "✓ أحسنت!", again: "من جديد", bad: "اقتربت: اتبع الخط المنقّط.", dot: "المس النقطة الآن.", next: "ارسم الخط التالي.", notebook: "خذ دفترك أو لوحتك وأعد الكتابة عدة مرات.", words: "كلمات للتمرين", close: "إغلاق", btn: "كتابة الحروف" }
+        fr: { extra: "Il y a un point en trop : enlève-le avec la gomme.", wordTitle: "Écris le mot", watch: "Regarde comment le mot s’écrit, puis écris-le à ton tour.", replay: "Revoir", yourTurn: "À toi : suis les pointillés avec ton doigt.", pen: "Crayon", eraser: "Gomme", clear: "Tout effacer", check: "Vérifier", nextBtn: "Suivant →", draw: "Trace d’abord la lettre avec ton doigt.", more: "Il manque encore une partie de la lettre.", finished: "🎉 Tu as écrit toutes les lettres de ce module !", title: "Écriture", pick: "Choisis la lettre", forms: ["Isolée", "Début", "Milieu", "Fin"], how: "Trace la lettre avec ton doigt en suivant les pointillés et la flèche. Commence au point orange.", ok: "✓ Bien écrit !", again: "Recommencer", bad: "Presque : suis bien les pointillés.", dot: "Touche maintenant les points.", next: "Trace le trait suivant.", notebook: "Prends ton cahier ou ton ardoise pour reproduire plusieurs fois.", words: "Des mots pour t’exercer", close: "Fermer", btn: "Écrire les lettres" },
+        en: { extra: "There is an extra dot: remove it with the eraser.", wordTitle: "Write the word", watch: "Watch how the word is written, then write it yourself.", replay: "Replay", yourTurn: "Your turn: follow the dots with your finger.", pen: "Pencil", eraser: "Eraser", clear: "Clear all", check: "Check", nextBtn: "Next →", draw: "First trace the letter with your finger.", more: "Part of the letter is still missing.", finished: "🎉 You have written all the letters of this module!", title: "Writing", pick: "Choose the letter", forms: ["Isolated", "Start", "Middle", "End"], how: "Trace the letter with your finger, following the dotted line and the arrow. Start at the orange dot.", ok: "✓ Well written!", again: "Start again", bad: "Almost: follow the dotted line.", dot: "Now tap the dot.", next: "Draw the next stroke.", notebook: "Take your notebook or slate to copy it several times.", words: "Words to practise", close: "Close", btn: "Write the letters" },
+        ru: { extra: "Лишняя точка: сотри её ластиком.", wordTitle: "Напиши слово", watch: "Посмотри, как пишется слово, затем напиши его сам.", replay: "Ещё раз", yourTurn: "Теперь ты: веди пальцем по пунктиру.", pen: "Карандаш", eraser: "Ластик", clear: "Стереть всё", check: "Проверить", nextBtn: "Дальше →", draw: "Сначала обведи букву пальцем.", more: "Ещё не хватает части буквы.", finished: "🎉 Ты написал(а) все буквы этого модуля!", title: "Письмо", pick: "Выбери букву", forms: ["Отдельно", "В начале", "В середине", "В конце"], how: "Обведи букву пальцем по пунктиру и стрелке. Начни с оранжевой точки.", ok: "✓ Хорошо написано!", again: "Заново", bad: "Почти: следуй пунктиру.", dot: "Теперь коснись точки.", next: "Проведи следующую линию.", notebook: "Возьми тетрадь или грифельную доску и повтори несколько раз.", words: "Слова для тренировки", close: "Закрыть", btn: "Писать буквы" },
+        de: { extra: "Ein Punkt zu viel: entferne ihn mit dem Radierer.", wordTitle: "Schreibe das Wort", watch: "Sieh zu, wie das Wort geschrieben wird, und schreibe es dann selbst.", replay: "Nochmal", yourTurn: "Du bist dran: Fahre die Punkte mit dem Finger nach.", pen: "Stift", eraser: "Radierer", clear: "Alles löschen", check: "Prüfen", nextBtn: "Weiter →", draw: "Fahre zuerst den Buchstaben mit dem Finger nach.", more: "Ein Teil des Buchstabens fehlt noch.", finished: "🎉 Du hast alle Buchstaben dieses Moduls geschrieben!", title: "Schreiben", pick: "Wähle den Buchstaben", forms: ["Einzeln", "Anfang", "Mitte", "Ende"], how: "Fahre den Buchstaben mit dem Finger nach, entlang der gepunkteten Linie und des Pfeils. Beginne beim orangen Punkt.", ok: "✓ Gut geschrieben!", again: "Nochmal", bad: "Fast: folge der gepunkteten Linie.", dot: "Tippe jetzt auf den Punkt.", next: "Zeichne den nächsten Strich.", notebook: "Nimm dein Heft oder deine Tafel und schreibe es mehrmals ab.", words: "Wörter zum Üben", close: "Schließen", btn: "Buchstaben schreiben" },
+        ar: { extra: "هناك نقطة زائدة: امسحها بالممحاة.", wordTitle: "اكتب الكلمة", watch: "شاهد كيف تُكتب الكلمة ثم اكتبها بنفسك.", replay: "إعادة", yourTurn: "دورك: اتبع النقاط بإصبعك.", pen: "قلم", eraser: "ممحاة", clear: "مسح الكل", check: "تحقق", nextBtn: "← التالي", draw: "ارسم الحرف أولًا بإصبعك.", more: "ما زال جزء من الحرف ناقصًا.", finished: "🎉 لقد كتبت كل حروف هذه الوحدة!", title: "الكتابة", pick: "اختر الحرف", forms: ["منفصل", "أول الكلمة", "وسط الكلمة", "آخر الكلمة"], how: "ارسم الحرف بإصبعك متبعًا الخط المنقّط والسهم. ابدأ من النقطة البرتقالية.", ok: "✓ أحسنت!", again: "من جديد", bad: "اقتربت: اتبع الخط المنقّط.", dot: "المس النقطة الآن.", next: "ارسم الخط التالي.", notebook: "خذ دفترك أو لوحتك وأعد الكتابة عدة مرات.", words: "كلمات للتمرين", close: "إغلاق", btn: "كتابة الحروف" }
       };
       var WT = isGerman ? WRITE_TXT.de : isArabic ? WRITE_TXT.ar : isRussian ? WRITE_TXT.ru : isEnglish ? WRITE_TXT.en : WRITE_TXT.fr;
       var WRITE_LETTER_FORM_TEXT = function (ch, form) {
@@ -2929,24 +2987,51 @@
         actions.appendChild(clearBtn);
         actions.appendChild(checkBtn);
         actions.appendChild(nextBtn);
+        // ---- Le mot : on regarde comment il s'ecrit, puis on l'ecrit sur les pointillés ----
         var wordCard = writeEl("div", "write-wordcard");
-        var wordEx = writeEl("div", "write-wordcard-word");
-        wordEx.lang = "ar";
-        wordEx.dir = "rtl";
+        wordCard.appendChild(writeEl("p", "write-words-title", WT.wordTitle));
+        wordCard.appendChild(writeEl("p", "write-ww-hint", WT.watch));
+        var watch = writeEl("div", "write-wordwatch");
+        var watchInner = writeEl("span", "write-ww-inner");
+        var watchText = writeEl("span", "write-ww-text");
+        watchText.lang = "ar";
+        watchText.dir = "rtl";
+        var watchPen = writeEl("span", "write-ww-pen");
+        watchInner.appendChild(watchText);
+        watchInner.appendChild(watchPen);
+        watch.appendChild(watchInner);
+        var replayBtn = writeEl("button", "btn btn-outline btn-sm write-ww-replay", "↻ " + WT.replay);
+        replayBtn.type = "button";
+        var pad = svgEl("svg", { viewBox: "0 0 300 130", class: "write-wordpad", role: "img" });
+        var padLine = svgEl("line", { x1: 8, y1: 92, x2: 292, y2: 92, class: "write-line" });
+        var padText = svgEl("text", { x: 150, y: 92, "text-anchor": "middle", class: "write-wp-text" });
+        padText.setAttribute("direction", "rtl");
+        var padInk = svgEl("g", {});
+        pad.appendChild(padLine);
+        pad.appendChild(padText);
+        pad.appendChild(padInk);
+        var padClear = writeEl("button", "btn btn-outline btn-sm write-wp-clear", WT.clear);
+        padClear.type = "button";
         var notebook = writeEl("p", "write-notebook");
         notebook.appendChild(writeEl("span", "write-notebook-ico", "📒"));
         notebook.appendChild(document.createTextNode(" " + WT.notebook));
-        wordCard.appendChild(wordEx);
+        wordCard.appendChild(watch);
+        wordCard.appendChild(replayBtn);
+        wordCard.appendChild(writeEl("p", "write-ww-hint", WT.yourTurn));
+        wordCard.appendChild(pad);
+        var padActions = writeEl("div", "write-actions");
+        padActions.appendChild(padClear);
+        wordCard.appendChild(padActions);
         wordCard.appendChild(notebook);
         var wordsBox = writeEl("div", "write-words");
         panel.appendChild(tabs);
         panel.appendChild(formsRow);
-        panel.appendChild(wordCard);
         panel.appendChild(how);
         panel.appendChild(board);
         panel.appendChild(tools);
         panel.appendChild(status);
         panel.appendChild(actions);
+        panel.appendChild(wordCard);
         panel.appendChild(wordsBox);
         body.appendChild(panel);
         writeLab.appendChild(bar);
@@ -3007,10 +3092,90 @@
           });
           centerAllInk();
         }
+        // Mot : animation d'ecriture (revele de droite a gauche, lettre travaillee en rouge)
+        function setWord(word, baseChar) {
+          watchText.textContent = word;
+          var node = watchText.firstChild;
+          if (window.CSS && CSS.highlights && typeof Highlight !== "undefined") {
+            CSS.highlights.delete("wr-letter");
+            var h = new Highlight();
+            var targets = baseChar === "ا" ? ["ا", "أ", "إ", "آ"] : [baseChar];
+            for (var i = 0; i < word.length; i++) {
+              if (targets.indexOf(word.charAt(i)) !== -1) {
+                var rg = document.createRange();
+                rg.setStart(node, i);
+                rg.setEnd(node, i + 1);
+                h.add(rg);
+              }
+            }
+            CSS.highlights.set("wr-letter", h);
+          }
+          padText.textContent = word;
+          fitPad();
+          playWatch(word);
+        }
+        function fitPad() {
+          padText.style.fontSize = "74px";
+          try {
+            var w = padText.getBBox().width;
+            if (w > 270) padText.style.fontSize = Math.floor(74 * 270 / w) + "px";
+          } catch (e) { /* non affiche */ }
+        }
+        var watchTimer = null;
+        function playWatch(word) {
+          var w = word || watchText.textContent;
+          var dur = Math.min(6, Math.max(2.4, w.replace(/[\u064B-\u0652\u0640 ]/g, "").length * 0.55));
+          watchText.style.transition = "none";
+          watchText.style.clipPath = "inset(0 0 0 100%)";
+          watchPen.style.transition = "none";
+          watchPen.style.left = "100%";
+          watchPen.style.opacity = "1";
+          void watchText.offsetWidth;
+          if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            watchText.style.clipPath = "inset(0 0 0 0)";
+            watchPen.style.opacity = "0";
+            return;
+          }
+          watchText.style.transition = "clip-path " + dur + "s linear";
+          watchText.style.clipPath = "inset(0 0 0 0)";
+          watchPen.style.transition = "left " + dur + "s linear, opacity .3s ease " + dur + "s";
+          watchPen.style.left = "0%";
+          watchPen.style.opacity = "0";
+        }
+        replayBtn.addEventListener("click", function () { playWatch(); });
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitPad);
+        // Tracé libre sur le mot en pointillés
+        var padDrawing = null;
+        function padPoint(e) {
+          var pt = pad.createSVGPoint();
+          pt.x = e.clientX;
+          pt.y = e.clientY;
+          var m = pad.getScreenCTM();
+          var q = m ? pt.matrixTransform(m.inverse()) : { x: 0, y: 0 };
+          return [q.x, q.y];
+        }
+        pad.addEventListener("pointerdown", function (e) {
+          e.preventDefault();
+          try { pad.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+          var p = padPoint(e);
+          padDrawing = { pts: [p], el: svgEl("path", { class: "write-wp-ink", d: "M" + p[0].toFixed(1) + " " + p[1].toFixed(1) }) };
+          padInk.appendChild(padDrawing.el);
+        });
+        pad.addEventListener("pointermove", function (e) {
+          if (!padDrawing) return;
+          e.preventDefault();
+          padDrawing.pts.push(padPoint(e));
+          padDrawing.el.setAttribute("d", "M" + padDrawing.pts.map(function (q) { return q[0].toFixed(1) + " " + q[1].toFixed(1); }).join(" L"));
+        });
+        function padEnd() { padDrawing = null; }
+        pad.addEventListener("pointerup", padEnd);
+        pad.addEventListener("pointercancel", padEnd);
+        padClear.addEventListener("click", function () { padInk.textContent = ""; });
+
         function renderWords() {
           var ex = WRITE_WORD_EX[WRITE_BASE_CHAR[state.letter]];
           wordCard.hidden = !ex;
-          wordEx.textContent = ex || "";
+          if (ex) setWord(ex, WRITE_BASE_CHAR[state.letter]);
           wordsBox.textContent = "";
           var base = WRITE_BASE_CHAR[state.letter];
           var list = WORDS.filter(function (w) {

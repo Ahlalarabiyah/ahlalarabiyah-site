@@ -3036,3 +3036,16 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 }
 .conc-block-vowel .conc-line, .conc-block-story.conc-block-vowel .conc-line { display: block; }
 .intro-six-top { margin-top: 0; padding-top: 0; border-top: 0; }
+
+/* Ecriture : le mot (regarder puis ecrire) */
+.write-wordcard { margin: 18px 0 8px; padding-top: 16px; border-top: 1px solid var(--color-border); }
+.write-ww-hint { margin: 0 0 8px; font-size: .92rem; color: var(--color-text-light); }
+.write-wordwatch { text-align: center; margin: 0 0 6px; }
+.write-ww-inner { position: relative; display: inline-block; }
+.write-ww-text { display: block; font-family: "Amiri", var(--font-arabic); font-size: 3rem; line-height: 1.9; color: var(--color-navy); clip-path: inset(0 0 0 0); }
+.write-ww-pen { position: absolute; top: 50%; left: 100%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--color-orange); box-shadow: 0 0 0 4px rgba(238,154,69,.25); pointer-events: none; }
+.write-ww-replay { margin: 4px auto 12px; }
+.write-wordpad { display: block; width: 100%; max-width: 440px; margin: 6px auto; aspect-ratio: 300 / 130; touch-action: none; user-select: none; -webkit-user-select: none; background: #fff; border: 1.5px solid var(--color-border); border-radius: 16px; }
+.write-wp-text { font-family: "Amiri", var(--font-arabic); font-size: 74px; font-weight: 400; fill: #EEF4F5; stroke: #5E7A84; stroke-width: .9; stroke-dasharray: .6 3.2; stroke-linecap: round; }
+.write-wp-ink { fill: none; stroke: var(--color-teal); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
+::highlight(wr-letter) { color: #C00000; }
