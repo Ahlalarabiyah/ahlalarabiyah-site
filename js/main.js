@@ -308,7 +308,8 @@
         p1: "Dans ce module, vous allez découvrir les 28 lettres de l’alphabet arabe, présentées dans leur ordre habituel.",
         p2: "L’objectif ici est simplement de connaître l’ordre des lettres.",
         p3: "Dans les 12 modules suivants, nous étudierons ces lettres progressivement, groupe par groupe.",
-        note: "Voici le premier des quatre ordres les plus connus pour classer les lettres de l’alphabet arabe. C’est l’ordre le plus utilisé et le plus simple."
+        note: "Voici le premier des quatre ordres les plus connus pour classer les lettres de l’alphabet arabe. C’est l’ordre le plus utilisé et le plus simple.",
+        six: "Les 6 lettres qui ne s’attachent pas (à gauche)"
       },
       en: {
         name: "Introduction", sub: "The order of the alphabet", open: "Discover", close: "Close",
@@ -316,7 +317,8 @@
         p1: "In this module, you will discover the 28 letters of the Arabic alphabet, presented in their usual order.",
         p2: "The goal here is simply to know the order of the letters.",
         p3: "In the 12 following modules, we will study these letters progressively, group by group.",
-        note: "This is the first of the four best-known orders for arranging the letters of the Arabic alphabet. It is the most widely used and the simplest order."
+        note: "This is the first of the four best-known orders for arranging the letters of the Arabic alphabet. It is the most widely used and the simplest order.",
+        six: "The 6 letters that do not connect (to the left)"
       },
       ru: {
         name: "Введение", sub: "Порядок алфавита", open: "Открыть", close: "Закрыть",
@@ -324,7 +326,8 @@
         p1: "В этом модуле вы познакомитесь с 28 буквами арабского алфавита, представленными в их привычном порядке.",
         p2: "Цель здесь проста — узнать порядок букв.",
         p3: "В следующих 12 модулях мы будем изучать эти буквы постепенно, группа за группой.",
-        note: "Это первый из четырёх самых известных порядков расположения букв арабского алфавита. Это самый распространённый и самый простой порядок."
+        note: "Это первый из четырёх самых известных порядков расположения букв арабского алфавита. Это самый распространённый и самый простой порядок.",
+        six: "6 букв, которые не соединяются (слева)"
       },
       de: {
         name: "Einführung", sub: "Die Reihenfolge des Alphabets", open: "Entdecken", close: "Schließen",
@@ -332,7 +335,8 @@
         p1: "In diesem Modul entdecken Sie die 28 Buchstaben des arabischen Alphabets in ihrer gewohnten Reihenfolge.",
         p2: "Das Ziel ist hier einfach, die Reihenfolge der Buchstaben zu kennen.",
         p3: "In den 12 folgenden Modulen lernen wir diese Buchstaben schrittweise, Gruppe für Gruppe.",
-        note: "Dies ist die erste der vier bekanntesten Reihenfolgen, um die Buchstaben des arabischen Alphabets zu ordnen. Es ist die am häufigsten verwendete und einfachste Reihenfolge."
+        note: "Dies ist die erste der vier bekanntesten Reihenfolgen, um die Buchstaben des arabischen Alphabets zu ordnen. Es ist die am häufigsten verwendete und einfachste Reihenfolge.",
+        six: "Die 6 Buchstaben, die sich nicht (nach links) verbinden"
       },
       ar: {
         name: "المقدمة", sub: "ترتيب الحروف", open: "اكتشف", close: "إغلاق",
@@ -340,7 +344,8 @@
         p1: "في هذه الوحدة ستتعرفون على الحروف الثمانية والعشرين للأبجدية العربية، مرتبةً بترتيبها المعتاد.",
         p2: "الهدف هنا ببساطة هو معرفة ترتيب الحروف.",
         p3: "في الوحدات الاثنتي عشرة التالية سندرس هذه الحروف تدريجيًا، مجموعةً بعد مجموعة.",
-        note: "هذا هو أول أشهر أربعة ترتيبات لحروف الهجاء العربية، وهو الأكثر استعمالًا والأبسط."
+        note: "هذا هو أول أشهر أربعة ترتيبات لحروف الهجاء العربية، وهو الأكثر استعمالًا والأبسط.",
+        six: ""
       }
     };
     var T = TXT[LANG] || TXT.fr;
@@ -352,6 +357,40 @@
       if (cls) e.className = cls;
       if (text != null) e.textContent = text;
       return e;
+    }
+
+    // Les 6 lettres qui ne se lient pas a gauche (d'apres la fiche de l'auteur).
+    // {x} = lettre en vert. Un seul noeud texte par mot (liaison correcte sur
+    // iPhone) ; couleur via la CSS Custom Highlight API, repli sur des <span>.
+    var SIX_HEAD = "الْحُرُوفُ السِّتَّةُ الَّتِي لَا تَتَّصِلُ بِشَيْءٍ بَعْدَهَا:";
+    var SIX = [
+      ["ـد", "يَـ{دُ}ه"],
+      ["ـذ", "بَـ{ذْ}رُ"],
+      ["ـر", "صَـ{رَ}فَ"],
+      ["ـز", "يَـ{زَ}نُ"],
+      ["ـو", "يَـ{وْ}مُ"],
+      ["ـأ", "سَـ{أَ}لَ"]
+    ];
+    function greenWord(container, markup) {
+      var m = markup.match(/^(.*)\{(.*)\}(.*)$/);
+      container.textContent = "";
+      if (!m) { container.textContent = markup; return; }
+      var plain = m[1] + m[2] + m[3];
+      var node = document.createTextNode(plain);
+      container.appendChild(node);
+      if (window.CSS && CSS.highlights && typeof Highlight !== "undefined") {
+        var rg = document.createRange();
+        rg.setStart(node, m[1].length);
+        rg.setEnd(node, m[1].length + m[2].length);
+        var h = CSS.highlights.get("intro-green");
+        if (!h) { h = new Highlight(); CSS.highlights.set("intro-green", h); }
+        h.add(rg);
+      } else {
+        container.textContent = "";
+        container.appendChild(document.createTextNode(m[1]));
+        container.appendChild(el("span", "intro-green", m[2]));
+        container.appendChild(document.createTextNode(m[3]));
+      }
     }
 
     // ---- Carte ----
@@ -401,6 +440,24 @@
       });
       panel.appendChild(alpha);
       panel.appendChild(el("p", "intro-note", T.note));
+      // Les 6 lettres qui ne s'attachent pas a gauche
+      var six = el("section", "intro-six");
+      var sixHead = el("h4", "intro-six-ar", SIX_HEAD);
+      sixHead.lang = "ar";
+      sixHead.dir = "rtl";
+      six.appendChild(sixHead);
+      if (T.six) six.appendChild(el("p", "intro-six-tr", T.six));
+      var sixTable = el("div", "intro-six-table");
+      sixTable.lang = "ar";
+      sixTable.dir = "rtl";
+      SIX.forEach(function (row) {
+        sixTable.appendChild(el("span", "intro-six-form", row[0]));
+        var w = el("span", "intro-six-word");
+        greenWord(w, row[1]);
+        sixTable.appendChild(w);
+      });
+      six.appendChild(sixTable);
+      panel.appendChild(six);
       body.appendChild(panel);
       modal.appendChild(bar);
       modal.appendChild(body);

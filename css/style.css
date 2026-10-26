@@ -2933,3 +2933,14 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 ::highlight(conc-f) { color: #ff0000; }
 .conc-c-r { color: #c00000; }
 .conc-c-f { color: #ff0000; }
+
+/* Introduction : les 6 lettres qui ne s'attachent pas (a gauche) */
+.intro-six { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--color-border); }
+.intro-six-ar { margin: 0 0 6px; font-family: var(--font-arabic); font-size: 1.5rem; line-height: 1.8; font-weight: 700; color: var(--color-teal-dark); }
+.intro-six-tr { margin: 0 0 16px; font-weight: 600; color: var(--color-navy); }
+.intro-six-table { display: grid; grid-template-columns: 1fr 1.6fr; border: 2px solid var(--color-navy); border-radius: 6px; overflow: hidden; background: #fff; }
+.intro-six-table > span { display: flex; align-items: center; justify-content: center; padding: 6px 10px; border-bottom: 1px solid var(--color-border); font-family: var(--font-arabic); font-size: 2.1rem; line-height: 1.7; color: var(--color-navy); }
+.intro-six-table > span:nth-last-child(-n+2) { border-bottom: 0; }
+.intro-six-form { color: #2E9B3F !important; border-inline-end: 2px solid var(--color-navy); font-size: 2.4rem !important; }
+.intro-green { color: #2E9B3F; }
+::highlight(intro-green) { color: #2E9B3F; }
