@@ -37,11 +37,21 @@
       var a = readAccess();
       return !!a.all || (Array.isArray(a.modules) && a.modules.indexOf(n) !== -1);
     }
+    // Groupes de l'Espace entrainement : cle "defi-N" ou "lecture-N" (N = numero du groupe,
+    // comme les modules). Le groupe 1 (alif) est gratuit.
+    function hasGroupAccess(key) {
+      var m = String(key).match(/(\d+)$/);
+      if (m && Number(m[1]) <= 1) return true;
+      var a = readAccess();
+      return !!a.all || (Array.isArray(a.groups) && a.groups.indexOf(String(key)) !== -1);
+    }
     window.ahlAccess = {
       grantAll: function () { writeAccess({ all: true }); },
       grantModules: function (list) { writeAccess({ modules: (list || []).map(Number) }); },
+      grantGroups: function (list) { var a = readAccess(); a.groups = (list || []).map(String); writeAccess(a); },
       reset: function () { writeAccess({}); },
-      has: hasModuleAccess
+      has: hasModuleAccess,
+      hasGroup: hasGroupAccess
     };
 
     // Numero de module d'un bouton : lu sur sa carte ("Module 7", "Модуль 7"...).
@@ -57,6 +67,7 @@
     var TXT = {
       fr: {
         codeLink: "J’ai un code d’accès", codePlaceholder: "Code d’accès", codeSubmit: "Valider", codeWrong: "Code incorrect.",
+        groupTitle: "{name} : accès payant", groupSub: "Le premier groupe (alif) est gratuit. Choisis une formule pour débloquer ce groupe.",
         badge: "🔒 Payant", title: "Module {n} : accès payant",
         sub: "Les modules 1 et 2 sont gratuits. Choisis une formule pour débloquer ce module.",
         single: "Ce module seul", singleDesc: "Module {n}, accès à vie",
@@ -67,6 +78,7 @@
       },
       en: {
         codeLink: "I have an access code", codePlaceholder: "Access code", codeSubmit: "Unlock", codeWrong: "Incorrect code.",
+        groupTitle: "{name}: paid access", groupSub: "The first group (alif) is free. Choose a plan to unlock this group.",
         badge: "🔒 Premium", title: "Module {n}: paid access",
         sub: "Modules 1 and 2 are free. Choose a plan to unlock this module.",
         single: "This module only", singleDesc: "Module {n}, lifetime access",
@@ -77,6 +89,7 @@
       },
       ru: {
         codeLink: "У меня есть код доступа", codePlaceholder: "Код доступа", codeSubmit: "Открыть", codeWrong: "Неверный код.",
+        groupTitle: "{name}: платный доступ", groupSub: "Первая группа (алиф) бесплатна. Выбери тариф, чтобы открыть эту группу.",
         badge: "🔒 Платно", title: "Модуль {n}: платный доступ",
         sub: "Модули 1 и 2 бесплатны. Выбери тариф, чтобы открыть этот модуль.",
         single: "Только этот модуль", singleDesc: "Модуль {n}, доступ навсегда",
@@ -87,6 +100,7 @@
       },
       de: {
         codeLink: "Ich habe einen Zugangscode", codePlaceholder: "Zugangscode", codeSubmit: "Freischalten", codeWrong: "Falscher Code.",
+        groupTitle: "{name}: kostenpflichtiger Zugang", groupSub: "Die erste Gruppe (Alif) ist kostenlos. Wähle ein Angebot, um diese Gruppe freizuschalten.",
         badge: "🔒 Kostenpflichtig", title: "Modul {n}: kostenpflichtiger Zugang",
         sub: "Die Module 1 und 2 sind kostenlos. Wähle ein Angebot, um dieses Modul freizuschalten.",
         single: "Nur dieses Modul", singleDesc: "Modul {n}, lebenslanger Zugang",
@@ -97,6 +111,7 @@
       },
       ar: {
         codeLink: "لدي رمز وصول", codePlaceholder: "رمز الوصول", codeSubmit: "فتح", codeWrong: "الرمز غير صحيح.",
+        groupTitle: "{name}: وصول مدفوع", groupSub: "المجموعة الأولى (الألف) مجانية. اختر باقة لفتح هذه المجموعة.",
         badge: "🔒 مدفوع", title: "الوحدة {n}: وصول مدفوع",
         sub: "الوحدتان 1 و2 مجانيتان. اختر باقة لفتح هذه الوحدة.",
         single: "هذه الوحدة فقط", singleDesc: "الوحدة {n}، وصول دائم",
@@ -190,7 +205,8 @@
       if (paywallPrevFocus && paywallPrevFocus.focus) paywallPrevFocus.focus();
     }
 
-    function openPaywall(n, trigger) {
+    function openPaywall(n, trigger, opts) {
+      opts = opts || {};
       paywallTrigger = trigger || null;
       if (!paywallEl) {
         paywallEl = el("div", "paywall");
@@ -210,15 +226,15 @@
       close.setAttribute("aria-label", T.close);
       close.addEventListener("click", closePaywall);
       box.appendChild(close);
-      var title = el("h2", "paywall-title", T.title.replace("{n}", n));
+      var title = el("h2", "paywall-title", opts.name ? T.groupTitle.replace("{name}", opts.name) : T.title.replace("{n}", n));
       title.id = "paywallTitle";
       paywallEl.setAttribute("aria-labelledby", "paywallTitle");
       box.appendChild(title);
-      box.appendChild(el("p", "paywall-sub", T.sub));
+      box.appendChild(el("p", "paywall-sub", opts.name ? T.groupSub : T.sub));
 
       // Achat du module seul : possible pour les modules 3 a 12 (les jeux
       // bonus 13 a 16 se debloquent avec un abonnement ou l'acces a vie).
-      if (n >= 3 && n <= 12) {
+      if (!opts.name && n >= 3 && n <= 12) {
         box.appendChild(option(checkoutHref("module-1", "modules-" + n), T.single, T.singleDesc.replace("{n}", n), "3,99 €"));
       }
       box.appendChild(el("p", "paywall-group", T.subscribe));
@@ -291,6 +307,9 @@
       openPaywall(n, btn);
     }, true);
 
+    // Ouvre la fenetre de paiement pour un groupe de l'Espace entrainement.
+    window.ahlOpenPaywall = function (name, trigger) { openPaywall(0, trigger || null, { name: name }); };
+
     refreshLocks();
   })();
 
@@ -308,8 +327,7 @@
         p1: "Dans ce module, vous allez découvrir les 28 lettres de l’alphabet arabe, présentées dans leur ordre habituel.",
         p2: "L’objectif ici est simplement de connaître l’ordre des lettres.",
         p3: "Dans les 12 modules suivants, nous étudierons ces lettres progressivement, groupe par groupe.",
-        note: "Voici le premier des quatre ordres les plus connus pour classer les lettres de l’alphabet arabe. C’est l’ordre le plus utilisé et le plus simple.",
-        six: "Les 6 lettres qui ne s’attachent pas (à gauche)"
+        note: "Voici le premier des quatre ordres les plus connus pour classer les lettres de l’alphabet arabe. C’est l’ordre le plus utilisé et le plus simple."
       },
       en: {
         name: "Introduction", sub: "The order of the alphabet", open: "Discover", close: "Close",
@@ -317,8 +335,7 @@
         p1: "In this module, you will discover the 28 letters of the Arabic alphabet, presented in their usual order.",
         p2: "The goal here is simply to know the order of the letters.",
         p3: "In the 12 following modules, we will study these letters progressively, group by group.",
-        note: "This is the first of the four best-known orders for arranging the letters of the Arabic alphabet. It is the most widely used and the simplest order.",
-        six: "The 6 letters that do not connect (to the left)"
+        note: "This is the first of the four best-known orders for arranging the letters of the Arabic alphabet. It is the most widely used and the simplest order."
       },
       ru: {
         name: "Введение", sub: "Порядок алфавита", open: "Открыть", close: "Закрыть",
@@ -326,8 +343,7 @@
         p1: "В этом модуле вы познакомитесь с 28 буквами арабского алфавита, представленными в их привычном порядке.",
         p2: "Цель здесь проста — узнать порядок букв.",
         p3: "В следующих 12 модулях мы будем изучать эти буквы постепенно, группа за группой.",
-        note: "Это первый из четырёх самых известных порядков расположения букв арабского алфавита. Это самый распространённый и самый простой порядок.",
-        six: "6 букв, которые не соединяются (слева)"
+        note: "Это первый из четырёх самых известных порядков расположения букв арабского алфавита. Это самый распространённый и самый простой порядок."
       },
       de: {
         name: "Einführung", sub: "Die Reihenfolge des Alphabets", open: "Entdecken", close: "Schließen",
@@ -335,8 +351,7 @@
         p1: "In diesem Modul entdecken Sie die 28 Buchstaben des arabischen Alphabets in ihrer gewohnten Reihenfolge.",
         p2: "Das Ziel ist hier einfach, die Reihenfolge der Buchstaben zu kennen.",
         p3: "In den 12 folgenden Modulen lernen wir diese Buchstaben schrittweise, Gruppe für Gruppe.",
-        note: "Dies ist die erste der vier bekanntesten Reihenfolgen, um die Buchstaben des arabischen Alphabets zu ordnen. Es ist die am häufigsten verwendete und einfachste Reihenfolge.",
-        six: "Die 6 Buchstaben, die sich nicht (nach links) verbinden"
+        note: "Dies ist die erste der vier bekanntesten Reihenfolgen, um die Buchstaben des arabischen Alphabets zu ordnen. Es ist die am häufigsten verwendete und einfachste Reihenfolge."
       },
       ar: {
         name: "المقدمة", sub: "ترتيب الحروف", open: "اكتشف", close: "إغلاق",
@@ -344,8 +359,7 @@
         p1: "في هذه الوحدة ستتعرفون على الحروف الثمانية والعشرين للأبجدية العربية، مرتبةً بترتيبها المعتاد.",
         p2: "الهدف هنا ببساطة هو معرفة ترتيب الحروف.",
         p3: "في الوحدات الاثنتي عشرة التالية سندرس هذه الحروف تدريجيًا، مجموعةً بعد مجموعة.",
-        note: "هذا هو أول أشهر أربعة ترتيبات لحروف الهجاء العربية، وهو الأكثر استعمالًا والأبسط.",
-        six: ""
+        note: "هذا هو أول أشهر أربعة ترتيبات لحروف الهجاء العربية، وهو الأكثر استعمالًا والأبسط."
       }
     };
     var T = TXT[LANG] || TXT.fr;
@@ -357,40 +371,6 @@
       if (cls) e.className = cls;
       if (text != null) e.textContent = text;
       return e;
-    }
-
-    // Les 6 lettres qui ne se lient pas a gauche (d'apres la fiche de l'auteur).
-    // {x} = lettre en vert. Un seul noeud texte par mot (liaison correcte sur
-    // iPhone) ; couleur via la CSS Custom Highlight API, repli sur des <span>.
-    var SIX_HEAD = "الْحُرُوفُ السِّتَّةُ الَّتِي لَا تَتَّصِلُ بِشَيْءٍ بَعْدَهَا:";
-    var SIX = [
-      ["ـد", "يَـ{دُ}ه"],
-      ["ـذ", "بَـ{ذْ}رُ"],
-      ["ـر", "صَـ{رَ}فَ"],
-      ["ـز", "يَـ{زَ}نُ"],
-      ["ـو", "يَـ{وْ}مُ"],
-      ["ـأ", "سَـ{أَ}لَ"]
-    ];
-    function greenWord(container, markup) {
-      var m = markup.match(/^(.*)\{(.*)\}(.*)$/);
-      container.textContent = "";
-      if (!m) { container.textContent = markup; return; }
-      var plain = m[1] + m[2] + m[3];
-      var node = document.createTextNode(plain);
-      container.appendChild(node);
-      if (window.CSS && CSS.highlights && typeof Highlight !== "undefined") {
-        var rg = document.createRange();
-        rg.setStart(node, m[1].length);
-        rg.setEnd(node, m[1].length + m[2].length);
-        var h = CSS.highlights.get("intro-green");
-        if (!h) { h = new Highlight(); CSS.highlights.set("intro-green", h); }
-        h.add(rg);
-      } else {
-        container.textContent = "";
-        container.appendChild(document.createTextNode(m[1]));
-        container.appendChild(el("span", "intro-green", m[2]));
-        container.appendChild(document.createTextNode(m[3]));
-      }
     }
 
     // ---- Carte ----
@@ -440,24 +420,6 @@
       });
       panel.appendChild(alpha);
       panel.appendChild(el("p", "intro-note", T.note));
-      // Les 6 lettres qui ne s'attachent pas a gauche
-      var six = el("section", "intro-six");
-      var sixHead = el("h4", "intro-six-ar", SIX_HEAD);
-      sixHead.lang = "ar";
-      sixHead.dir = "rtl";
-      six.appendChild(sixHead);
-      if (T.six) six.appendChild(el("p", "intro-six-tr", T.six));
-      var sixTable = el("div", "intro-six-table");
-      sixTable.lang = "ar";
-      sixTable.dir = "rtl";
-      SIX.forEach(function (row) {
-        sixTable.appendChild(el("span", "intro-six-form", row[0]));
-        var w = el("span", "intro-six-word");
-        greenWord(w, row[1]);
-        sixTable.appendChild(w);
-      });
-      six.appendChild(sixTable);
-      panel.appendChild(six);
       body.appendChild(panel);
       modal.appendChild(bar);
       modal.appendChild(body);
@@ -472,109 +434,84 @@
     });
   })();
 
-  // ---- Module "Lecture" : les lettres qui se ressemblent (page Modules) ----
-  // Contenu fourni par l'auteur : paires de lettres avec voyelles, puis mots a
-  // bien lire (juste / faux), avec les audios correspondants.
+  // ---- Carte "Attention" : les 6 lettres qui ne s'attachent pas (a gauche) ----
+  // Placee apres le module 5, sans numero (comme l'Introduction), gratuite.
   (function () {
     var grid = document.querySelector(".module-grid");
     if (!grid || !document.querySelector(".js-open-module")) return;
     var LANG = (document.documentElement.lang || "fr").slice(0, 2);
     var TXT = {
-      fr: { name: "Lecture", sub: "Lettres qui se ressemblent", p1: "1. Mots des fascicules", p2: "2. Sons proches", p3: "3. Le livre", soon: "Bientôt disponible", open: "Découvrir", close: "Fermer", s1: "Lettres qui se ressemblent", s2: "Mots à bien lire", legend: "✅ juste · ❌ faux", play: "Écouter" },
-      en: { name: "Reading", sub: "Letters that look alike", p1: "1. Words from the booklets", p2: "2. Similar sounds", p3: "3. The book", soon: "Coming soon", open: "Discover", close: "Close", s1: "Letters that look alike", s2: "Words to read carefully", legend: "✅ correct · ❌ wrong", play: "Listen" },
-      ru: { name: "Чтение", sub: "Похожие буквы", p1: "1. Слова из брошюр", p2: "2. Близкие звуки", p3: "3. Книга", soon: "Скоро будет доступно", open: "Открыть", close: "Закрыть", s1: "Похожие буквы", s2: "Слова для внимательного чтения", legend: "✅ верно · ❌ неверно", play: "Слушать" },
-      de: { name: "Lesen", sub: "Ähnliche Buchstaben", p1: "1. Wörter aus den Heften", p2: "2. Ähnliche Laute", p3: "3. Das Buch", soon: "Demnächst verfügbar", open: "Entdecken", close: "Schließen", s1: "Ähnliche Buchstaben", s2: "Wörter zum genauen Lesen", legend: "✅ richtig · ❌ falsch", play: "Anhören" },
-      ar: { name: "القراءة", sub: "الحروف المتشابهة", p1: "١. كلمات الكراسات", p2: "٢. الأصوات المتقاربة", p3: "٣. الكتاب", soon: "قريبًا", open: "اكتشف", close: "إغلاق", s1: "الحروف المتشابهة", s2: "كلمات للقراءة بعناية", legend: "✅ صحيح · ❌ خطأ", play: "استماع" }
+      fr: { name: "Attention", sub: "Les 6 lettres qui ne s’attachent pas", open: "Découvrir", close: "Fermer", six: "Les 6 lettres qui ne s’attachent pas (à gauche)" },
+      en: { name: "Attention", sub: "The 6 letters that do not connect", open: "Discover", close: "Close", six: "The 6 letters that do not connect (to the left)" },
+      ru: { name: "Внимание", sub: "6 букв, которые не соединяются", open: "Открыть", close: "Закрыть", six: "6 букв, которые не соединяются (слева)" },
+      de: { name: "Achtung", sub: "Die 6 Buchstaben, die sich nicht verbinden", open: "Entdecken", close: "Schließen", six: "Die 6 Buchstaben, die sich nicht (nach links) verbinden" },
+      ar: { name: "انتبه", sub: "الحروف الستة التي لا تتصل", open: "اكتشف", close: "إغلاق", six: "" }
     };
     var T = TXT[LANG] || TXT.fr;
-    var DIR = ROOT_BASE + "assets/audio/reading/";
-    var PAIRS = [
-      { au: "pair-taa-tah", rows: ["تَ / طَ", "تُ / طُ", "تِ / طِ"] },
-      { au: "pair-dal-dad", rows: ["دَ / ضَ", "دُ / ضُ", "دِ / ضِ"] },
-      { au: "pair-seen-sad", rows: ["سَ / صَ", "سُ / صُ", "سِ / صِ"] },
-      { au: "pair-khaa-ghain", rows: ["خَ / غَ", "خُ / غُ", "خِ / غِ"] },
-      { au: "pair-qaf-kaf", rows: ["قَ / كَ", "قُ / كُ", "قِ / كِ"] },
-      { au: "pair-thal-zah", rows: ["ذَ / ظَ", "ذُ / ظُ", "ذِ / ظِ"] },
-      { au: "pair-zain-thal", rows: ["زَ / ذَ", "زُ / ذُ", "زِ / ذِ"] },
-      { au: "pair-thaa-seen", rows: ["ثَ / سَ", "ثُ / سُ", "ثِ / سِ"] },
-      { au: "pair-haa-heh", rows: ["حَ / هَ", "حُ / هُ", "حِ / هِ"] },
-      { au: "pair-reh-ghain", rows: ["رَ / غَ", "رُ / غُ", "رِ / غِ"] },
-      { au: "pair-feh-thaa", rows: ["فَ / ثَ", "فُ / ثُ", "فِ / ثِ"] }
-    ];
-    // [mot1, juste1, separateur, mot2, juste2, audio]
-    var WORDS = [
-      ["طارِقًا", 1, "=", "تارِقًا", 0, "word-1-tariqa"],
-      ["دَجاجٌ", 1, "=", "ضَجَاج", 0, "word-2-dajaj"],
-      ["صَـبْـرٌ", 1, "/", "ثَـبْـرٌ", 0, "word-3-sabr"],
-      ["كَرِيمٌ", 1, "=", "قَرِيمٌ", 0, ""],
-      ["كَـلْـبٌ", 1, "/", "قَـلْـبٌ", 1, "word-4-kalb"],
-      ["كُلْ", 1, "/", "قُلْ", 1, ""],
-      ["صَـبْـرٌ", 1, "/", "سَـبْـرٌ", 0, ""],
-      ["كَـلْـبٌ", 1, "=", "قَـلْـبٌ", 0, "word-4-kalb"],
-      ["ذَهَبٌ", 1, "/", "ظَـهَـبٌ", 0, "word-5-dhahab"],
-      ["فِـيـلٍ", 1, "/", "ثِـيـلٍ", 0, "word-6-feel"],
-      ["قَـلِـيـلٌ", 1, "/", "كَـلِـيـلٌ", 1, ""],
-      ["خُـبْـزًا", 1, "/", "غُـبْـزًا", 0, "word-7-khubza"],
-      ["رَبِّـي", 1, "/", "غَـبِّـي", 0, "word-8-rabbi"],
-      ["حَـلَالٌ", 1, "/", "هَـلَالٌ", 0, "word-9-halal"],
-      ["زَادَ", 1, "/", "ذَادَ", 0, "word-10-zad"],
-      ["سُـورَةٌ", 1, "/", "ثُـورَةٌ", 0, "word-11-surah"],
-      ["زَيْـتُـونٌ", 1, "/", "ذَيْـتُـونٌ", 0, "word-12-zaytun"],
-      ["سَـبِـيـلِ اللَّهِ", 1, "/", "صَـبِـيـلِ اللهِ", 0, "word-13-sabil"]
-    ];
-
     function el(tag, cls, text) {
       var e = document.createElement(tag);
       if (cls) e.className = cls;
       if (text != null) e.textContent = text;
       return e;
     }
-    var playing = null, playingBtn = null;
-    function stopClip() {
-      if (playing) { playing.pause(); playing = null; }
-      if (playingBtn) { playingBtn.classList.remove("is-playing"); playingBtn = null; }
-    }
-    function playBtn(file) {
-      var b = el("button", "reading-play", "🔊");
-      b.type = "button";
-      b.setAttribute("aria-label", T.play);
-      b.addEventListener("click", function () {
-        var same = playingBtn === b;
-        stopClip();
-        if (same) return;
-        var a = new Audio(DIR + file + ".m4a");
-        playing = a;
-        playingBtn = b;
-        b.classList.add("is-playing");
-        a.addEventListener("ended", function () { if (playing === a) stopClip(); });
-        a.addEventListener("error", function () { if (playing === a) stopClip(); });
-        a.play().catch(function () { if (playing === a) stopClip(); });
-      });
-      return b;
-    }
-    function arText(cls, text) {
-      var e = el("span", cls, text);
-      e.lang = "ar";
-      e.dir = "rtl";
-      return e;
+    // Les 6 lettres qui ne se lient pas a gauche (d'apres la fiche de l'auteur).
+    // {x} = lettre en vert. Un seul noeud texte par mot (liaison correcte sur
+    // iPhone) ; couleur via la CSS Custom Highlight API, repli sur des <span>.
+    var SIX_HEAD = "الْحُرُوفُ السِّتَّةُ الَّتِي لَا تَتَّصِلُ بِشَيْءٍ بَعْدَهَا:";
+    var SIX = [
+      ["ـد", "يَـ{دُ}ه"],
+      ["ـذ", "بَـ{ذْ}رُ"],
+      ["ـر", "صَـ{رَ}فَ"],
+      ["ـز", "يَـ{زَ}نُ"],
+      ["ـو", "يَـ{وْ}مُ"],
+      ["ـأ", "سَـ{أَ}لَ"]
+    ];
+    function greenWord(container, markup) {
+      var m = markup.match(/^(.*)\{(.*)\}(.*)$/);
+      container.textContent = "";
+      if (!m) { container.textContent = markup; return; }
+      var plain = m[1] + m[2] + m[3];
+      var node = document.createTextNode(plain);
+      container.appendChild(node);
+      if (window.CSS && CSS.highlights && typeof Highlight !== "undefined") {
+        var rg = document.createRange();
+        rg.setStart(node, m[1].length);
+        rg.setEnd(node, m[1].length + m[2].length);
+        var h = CSS.highlights.get("intro-green");
+        if (!h) { h = new Highlight(); CSS.highlights.set("intro-green", h); }
+        h.add(rg);
+      } else {
+        container.textContent = "";
+        container.appendChild(document.createTextNode(m[1]));
+        container.appendChild(el("span", "intro-green", m[2]));
+        container.appendChild(document.createTextNode(m[3]));
+      }
     }
 
-    var card = el("article", "module-card module-card-intro module-card-reading");
+
+    // ---- Carte (apres le Module 5) ----
+    var card = el("article", "module-card module-card-intro module-card-attention");
     card.appendChild(el("span", "module-number", T.name));
-    var lettersP = el("p", "module-letters", "تَ / طَ");
+    var lettersP = el("p", "module-letters", "د ذ ر ز و أ");
     lettersP.setAttribute("lang", "ar");
     lettersP.setAttribute("dir", "rtl");
     card.appendChild(lettersP);
     card.appendChild(el("p", "module-progress", T.sub));
-    var openBtn = el("button", "btn btn-outline btn-sm module-listen js-open-reading", T.open);
+    var openBtn = el("button", "btn btn-outline btn-sm module-listen js-open-attention", T.open);
     openBtn.type = "button";
     card.appendChild(openBtn);
-    grid.appendChild(card);
+    var after = null;
+    Array.prototype.forEach.call(grid.querySelectorAll(".module-card"), function (c) {
+      var num = c.querySelector(".module-number");
+      var m = num && num.textContent.match(/\d+/);
+      if (m && Number(m[0]) === 5) after = c;
+    });
+    if (after) grid.insertBefore(card, after.nextSibling); else grid.appendChild(card);
 
+    // ---- Fenetre ----
     var modal = null;
     function close() {
       if (!modal) return;
-      stopClip();
       modal.classList.remove("is-open");
       if (!document.querySelector(".reader.is-open, .game-modal.is-open")) document.body.style.overflow = "";
     }
@@ -591,65 +528,24 @@
       x.addEventListener("click", close);
       bar.appendChild(x);
       var body = el("div", "reader-body");
-      var panel = el("div", "formlab-panel reading-panel");
-
-      var parts = el("div", "conc-parts");
-      var part1 = el("div", "reading-part");
-      var part2 = el("div", "reading-part");
-      var part3 = el("div", "reading-part");
-      var pbtns = [];
-      [T.p1, T.p2, T.p3].forEach(function (label, i) {
-        var pb = el("button", "conc-part-btn" + (i === 1 ? " is-active" : ""), label);
-        pb.type = "button";
-        pb.addEventListener("click", function () {
-          stopClip();
-          [part1, part2, part3].forEach(function (pt, j) { pt.hidden = j !== i; });
-          pbtns.forEach(function (bb, j) { bb.classList.toggle("is-active", j === i); });
-          body.scrollTop = 0;
-        });
-        pbtns.push(pb);
-        parts.appendChild(pb);
+      var panel = el("div", "formlab-panel intro-panel");
+      var six = el("section", "intro-six intro-six-top");
+      var sixHead = el("h4", "intro-six-ar", SIX_HEAD);
+      sixHead.lang = "ar";
+      sixHead.dir = "rtl";
+      six.appendChild(sixHead);
+      if (T.six) six.appendChild(el("p", "intro-six-tr", T.six));
+      var sixTable = el("div", "intro-six-table");
+      sixTable.lang = "ar";
+      sixTable.dir = "rtl";
+      SIX.forEach(function (row) {
+        sixTable.appendChild(el("span", "intro-six-form", row[0]));
+        var w = el("span", "intro-six-word");
+        greenWord(w, row[1]);
+        sixTable.appendChild(w);
       });
-      // Parties 1 et 3 : contenu a venir (mots des fascicules ; livre avec harakat)
-      part1.appendChild(el("p", "reading-soon", T.soon));
-      part3.appendChild(el("p", "reading-soon", T.soon));
-      part1.hidden = true;
-      part3.hidden = true;
-      part2.appendChild(el("h3", "reading-heading", T.s1));
-      var pg = el("div", "reading-pairs");
-      PAIRS.forEach(function (pr) {
-        var c = el("div", "reading-pair");
-        pr.rows.forEach(function (r) { c.appendChild(arText("reading-pair-row", r)); });
-        c.appendChild(playBtn(pr.au));
-        pg.appendChild(c);
-      });
-      part2.appendChild(pg);
-
-      part2.appendChild(el("h3", "reading-heading reading-heading-2", T.s2));
-      part2.appendChild(el("p", "reading-legend", T.legend));
-      var list = el("div", "reading-words");
-      WORDS.forEach(function (w) {
-        var row = el("div", "reading-word-row");
-        var pair = el("div", "reading-word-pair");
-        pair.lang = "ar";
-        pair.dir = "rtl";
-        pair.appendChild(el("span", "reading-mark", w[1] ? "✅" : "❌"));
-        pair.appendChild(arText("reading-word", w[0]));
-        pair.appendChild(el("span", "reading-sep", w[2]));
-        pair.appendChild(arText("reading-word", w[3]));
-        pair.appendChild(el("span", "reading-mark", w[4] ? "✅" : "❌"));
-        row.appendChild(pair);
-        if (w[5]) row.appendChild(playBtn(w[5]));
-        list.appendChild(row);
-      });
-      part2.appendChild(list);
-
-
-      panel.appendChild(parts);
-      panel.appendChild(part1);
-      panel.appendChild(part2);
-      panel.appendChild(part3);
-
+      six.appendChild(sixTable);
+      panel.appendChild(six);
       body.appendChild(panel);
       modal.appendChild(bar);
       modal.appendChild(body);
@@ -3433,305 +3329,6 @@
         b.addEventListener("click", function () { openWriteLab(n); });
         card.appendChild(b);
       });
-
-
-      // ---- Module "Concentration" : textes sans harakat + audios (page Modules) ----
-      // Donnees : js/concentration-data.js (window.AHL_CONC). Texte dans UN SEUL
-      // noeud par ligne (liaison arabe correcte sur iPhone) ; couleurs via la
-      // CSS Custom Highlight API, repli sur des <span> sinon.
-      var CONC_TXT = {
-        fr: { btn: "Concentration", title: "Concentration", open: "Découvrir", sub: "Mots et livre à recopier", part1: "1. Les mots", part2: "2. Le livre", set: "Série", listen: "Écoute", instr1: "Écoute chaque mot, puis écris-le avec toutes les harakat, la chadda et le soukoun.", instr2: "Recopie le texte sur ton cahier en ajoutant les harakat.", letter: "La lettre", text: "Le texte", aLetter: "Audio de la lettre", aText: "Audio du texte", close: "Fermer" },
-        en: { btn: "Concentration", title: "Concentration", open: "Discover", sub: "Words and book to copy", part1: "1. The words", part2: "2. The book", set: "Set", listen: "Listen", instr1: "Listen to each word, then write it with all the harakat, the shadda and the sukun.", instr2: "Copy the text into your notebook, adding the harakat.", letter: "The letter", text: "The text", aLetter: "Letter audio", aText: "Text audio", close: "Close" },
-        ru: { btn: "Концентрация", title: "Концентрация", open: "Открыть", sub: "Слова и книга для переписывания", part1: "1. Слова", part2: "2. Книга", set: "Серия", listen: "Слушать", instr1: "Слушай каждое слово, затем напиши его со всеми огласовками, шаддой и сукуном.", instr2: "Перепиши текст в тетрадь, добавив огласовки.", letter: "Буква", text: "Текст", aLetter: "Аудио буквы", aText: "Аудио текста", close: "Закрыть" },
-        de: { btn: "Konzentration", title: "Konzentration", open: "Entdecken", sub: "Wörter und Buch zum Abschreiben", part1: "1. Die Wörter", part2: "2. Das Buch", set: "Serie", listen: "Anhören", instr1: "Höre jedes Wort und schreibe es dann mit allen Harakat, der Schadda und dem Sukun.", instr2: "Schreibe den Text in dein Heft ab und setze die Harakat.", letter: "Der Buchstabe", text: "Der Text", aLetter: "Audio des Buchstabens", aText: "Audio des Textes", close: "Schließen" },
-        ar: { btn: "التركيز", title: "التركيز", open: "اكتشف", sub: "الكلمات والكتاب للنسخ", part1: "١. الكلمات", part2: "٢. الكتاب", set: "المجموعة", listen: "استماع", instr1: "استمع إلى كل كلمة ثم اكتبها بجميع الحركات والشدة والسكون.", instr2: "انسخ النص في دفترك مع إضافة الحركات.", letter: "الحرف", text: "النص", aLetter: "صوت الحرف", aText: "صوت النص", close: "إغلاق" }
-      };
-      var CLANG = isGerman ? "de" : isArabic ? "ar" : isRussian ? "ru" : isEnglish ? "en" : "fr";
-      var CT = isGerman ? CONC_TXT.de : isArabic ? CONC_TXT.ar : isRussian ? CONC_TXT.ru : isEnglish ? CONC_TXT.en : CONC_TXT.fr;
-      var concLab = null;
-      var CONC_COLORS = { r: "conc-r", f: "conc-f" };
-
-      // "{r}أ{/}نا" -> un seul noeud texte + plages colorees.
-      function concRenderLine(container, markup) {
-        var plain = "", ranges = [], re = /\{(r|f)\}([\s\S]*?)\{\/\}/g, last = 0, m;
-        while ((m = re.exec(markup))) {
-          plain += markup.slice(last, m.index);
-          ranges.push({ from: plain.length, to: plain.length + m[2].length, kind: m[1] });
-          plain += m[2];
-          last = m.index + m[0].length;
-        }
-        plain += markup.slice(last);
-        container.textContent = "";
-        var node = document.createTextNode(plain);
-        container.appendChild(node);
-        if (!ranges.length) return;
-        var useHl = window.CSS && CSS.highlights && typeof Highlight !== "undefined";
-        if (useHl) {
-          ranges.forEach(function (r) {
-            var rg = document.createRange();
-            rg.setStart(node, r.from);
-            rg.setEnd(node, r.to);
-            var name = "conc-" + r.kind;
-            var h = CSS.highlights.get(name);
-            if (!h) { h = new Highlight(); CSS.highlights.set(name, h); }
-            h.add(rg);
-          });
-        } else {
-          container.textContent = "";
-          var pos = 0;
-          ranges.forEach(function (r) {
-            if (r.from > pos) container.appendChild(document.createTextNode(plain.slice(pos, r.from)));
-            container.appendChild(writeEl("span", "conc-c-" + r.kind, plain.slice(r.from, r.to)));
-            pos = r.to;
-          });
-          if (pos < plain.length) container.appendChild(document.createTextNode(plain.slice(pos)));
-        }
-      }
-      function concClearHighlights() {
-        if (window.CSS && CSS.highlights) { CSS.highlights.delete("conc-r"); CSS.highlights.delete("conc-f"); }
-      }
-      function concBlock(page, kind) {
-        var box = writeEl("div", "conc-block conc-block-" + kind);
-        if (page.t) {
-          var t = writeEl("h3", "conc-title conc-title-" + kind);
-          t.lang = "ar";
-          t.dir = "rtl";
-          concRenderLine(t, page.t);
-          box.appendChild(t);
-        }
-        page.p.forEach(function (para) {
-          var p = writeEl("p", "conc-para");
-          p.lang = "ar";
-          p.dir = "rtl";
-          para.forEach(function (line) {
-            var ln = writeEl("span", "conc-line");
-            concRenderLine(ln, line);
-            p.appendChild(ln);
-          });
-          box.appendChild(p);
-        });
-        return box;
-      }
-      function concAudio(file, label) {
-        var wrap = writeEl("div", "conc-audio");
-        wrap.appendChild(writeEl("span", "conc-audio-label", "🎧 " + label));
-        var a = document.createElement("audio");
-        a.controls = true;
-        a.preload = "none";
-        a.src = ROOT_BASE + "assets/audio/concentration/" + file;
-        a.setAttribute("aria-label", label);
-        wrap.appendChild(a);
-        return wrap;
-      }
-      // Module "Concentration" : global, en 2 parties
-      //  1) les mots (series avec audio) : ecouter, puis ecrire avec harakat/chadda/soukoun
-      //  2) le livre (alphabet, de alif a yeh) : texte sans harakat a recopier
-        var CONC_WORDS = [
-        { au: "list-1", words: ["حَرَمَ", "دِيكٌ", "شَعَرَ", "تاجِرٌ", "تَعِبَ", "صَادَ", "حَضَرَ", "مَلَكَ", "ذَكَرَ", "جِبالٍ", "طابَ"] },
-        { au: "list-2", words: ["سُبُوتٍ", "دارَ", "حُبُوبًا", "تَاجٌ", "طَرَدَ", "ضَرَبَ", "آبَ", "صَبَرَ", "جَابَ", "خَطَبَ"] },
-        { au: "list-3", words: ["تَـبِـيـعَ", "غَـدَرَ", "طَافَ", "فُـجُورًا", "عَبَدَ", "ضَفِيرًا"] },
-        { au: "list-4", words: ["بَـاءَ", "جَـاءَا", "ثَـبَـتَـا", "أُجِـيـبَ", "ثَـابَ", "تُـثَـابُ", "أَجِـيءُ"] },
-        { au: "list-5", words: ["حَـشِـيـشٌ", "أَسَـدًا", "آبَـتَـا", "خَـطَـبَ", "طَـارَ", "تَـاجِـرٍ", "حِـجَـابًـا"] },
-        { au: "list-6", words: ["أَبَـتِ", "زَادَ", "ضَـجِـرَ", "تَـابَ", "حَـبَـسَ", "ثَـبَـتَ", "خَـسِـرَ", "سُـبُوتٌ", "شَـطَـطًـا", "زَجـرَ", "أَزِيـدَ", "زَبـادِي"] },
-        { au: "list-7", words: ["ضُـرِبَ", "حَـسَـبَ", "دَأَبَ", "جَـسُـوسٌ", "شَـرِسًـا"] },
-        { au: "list-8", words: ["دَجَـاجًـا", "تَذُوبَ", "صَـادَ", "صَـاحَـبَ", "سَـحَـبَ", "أَزِيـدُ", "ظَـابَ", "شَـجَرَ", "أَذَابَ", "تُـذِيبُ"] },
-        { au: "list-9", title: { ar: "كلمات مع الشدة", fr: "Mots avec la shadda", en: "Words with the shadda", ru: "Слова с шаддой", de: "Wörter mit Schadda" },
-          words: ["جَـهَّـزَ", "قَـتَّـلَ", "رَبِّـي", "بَوَّابٌ", "بَـدَّلَـتْ", "كَـذَّبَ", "دَرَّسَ", "بَـطٌّ", "لَـفَّ", "مَـلَّـكَ"] },
-        { au: "list-10", words: ["عَـيَّـنَ", "مَـنَّ", "فَـكَّـتْ", "صَـبَّـرَهُ", "غَـفَّـارٌ", "جَـبَّـارٌ", "فُـسَّـاقٍ", "كَـلَّـتْ", "عَـدَّ", "ثَـيِّـبٌ", "قَـتَّـالٍ", "جَـزَّارٌ", "قَـصَّ", "نَوَّرَ", "مُدَرِّسٌ", "مُـعَـلِّـمٌ", "شَـطَّـبَ"] },
-        { au: "list-11", words: ["أَخْـرَجَ", "تُـدْخِـلُ", "أَبْـوَابٍ", "جِسْرٌ", "أَبْـشِـرْ", "بَلْ", "أَمْوَالٍ", "اِهْدِنَـا", "بِعْ", "أَنْـوَارٌ", "نَخْلَةً", "أَفْـكَـارًا", "لَـحْـمٍ", "غَـيْـرِ", "مُـصْـطَـفَـى", "أَجْـدَرُ", "نَـكْـتُـبُ", "يَـقْـلَـقُ", "أَوْلَادًا", "أَتْـبَـاعُ", "أَهْـلُ", "يَزْدَادَ", "تَـبْدُو", "بِـسْـمِ اللَّهِ", "أَذْكُـرُ", "تَـشْـبَـعُ", "خِـنْـزِيـرٌ"] },
-        { au: "list-12", words: ["غَرِيبٌ", "عَرَبَ", "خَرَجَ", "غَفُورٍ", "فَتَحَ", "غَادَرَ", "غَفَرَ", "فُـجُورًا", "بَاغٍ", "عَجِيبًا", "غَرَسَ", "عَتِيدٌ", "عَبَدَ", "عَبَدَ", "عَدِيدٍ", "تَعِبَ", "تَفِتَ", "صَعُبَ", "بَعَثَ", "ضَفِيرًا", "تَعِسَ", "عَبِيدًا"] }
-      ];
-      var AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
-      function arNum(n) { return String(n).replace(/\d/g, function (d) { return AR_DIGITS.charAt(Number(d)); }); }
-
-
-      var concPlaying = null, concPlayingBtn = null;
-      function concStopClip() {
-        if (concPlaying) { concPlaying.pause(); concPlaying = null; }
-        if (concPlayingBtn) { concPlayingBtn.classList.remove("is-playing"); concPlayingBtn = null; }
-      }
-      function concPlayBtn(file) {
-        var b = writeEl("button", "reading-play", "🔊");
-        b.type = "button";
-        b.setAttribute("aria-label", CT.listen);
-        b.addEventListener("click", function () {
-          var same = concPlayingBtn === b;
-          concStopClip();
-          if (same) return;
-          var a = new Audio(ROOT_BASE + "assets/audio/reading/" + file + ".m4a");
-          concPlaying = a;
-          concPlayingBtn = b;
-          b.classList.add("is-playing");
-          a.addEventListener("ended", function () { if (concPlaying === a) concStopClip(); });
-          a.addEventListener("error", function () { if (concPlaying === a) concStopClip(); });
-          a.play().catch(function () { if (concPlaying === a) concStopClip(); });
-        });
-        return b;
-      }
-      function concWordsPart(container) {
-        container.appendChild(writeEl("p", "conc-instruction", CT.instr1));
-        CONC_WORDS.forEach(function (ls, li) {
-          var box = writeEl("div", "reading-set");
-          var head = writeEl("div", "reading-set-head");
-          var ttl = writeEl("span", "reading-set-title", CT.set + " " + (li + 1));
-          if (ls.title) {
-            var sub = writeEl("span", "reading-set-sub");
-            sub.appendChild(document.createTextNode(ls.title[CLANG] || ls.title.fr));
-            if (CLANG !== "ar") {
-              var arT = writeEl("span", "reading-set-sub-ar", ls.title.ar);
-              arT.lang = "ar";
-              arT.dir = "rtl";
-              sub.appendChild(document.createTextNode(" · "));
-              sub.appendChild(arT);
-            }
-            ttl.appendChild(sub);
-          }
-          head.appendChild(ttl);
-          head.appendChild(concPlayBtn(ls.au));
-          box.appendChild(head);
-          var ws = writeEl("ol", "reading-set-words");
-          ws.lang = "ar";
-          ws.dir = "rtl";
-          ls.words.forEach(function (w, i) {
-            var item = writeEl("li", "reading-set-item");
-            item.appendChild(writeEl("span", "reading-set-num", arNum(i + 1) + "-"));
-            item.appendChild(writeEl("span", "reading-set-word", w));
-            ws.appendChild(item);
-          });
-          box.appendChild(ws);
-          container.appendChild(box);
-        });
-      }
-      function concBookPart(container) {
-        var DATA = window.AHL_CONC;
-        var ids = [];
-        MODULES.forEach(function (m) { m.letterIds.forEach(function (id) { if (DATA && DATA[id]) ids.push(id); }); });
-        if (!ids.length) return;
-        var letter = ids[0];
-        container.appendChild(writeEl("p", "conc-instruction", CT.instr2));
-        var tabs = writeEl("div", "write-tabs conc-tabs");
-        var content = writeEl("div", "conc-content");
-        container.appendChild(tabs);
-        container.appendChild(content);
-        function stopAudio() {
-          Array.prototype.forEach.call(container.querySelectorAll("audio"), function (a) { a.pause(); });
-        }
-        function renderTabs() {
-          tabs.textContent = "";
-          ids.forEach(function (id) {
-            var b = writeEl("button", "write-tab conc-tab" + (id === letter ? " is-active" : ""));
-            b.appendChild(writeEl("span", "write-tab-glyph", ALL_LETTERS_BY_ID[id] ? ALL_LETTERS_BY_ID[id].char : id));
-            b.type = "button";
-            b.lang = "ar";
-            b.addEventListener("click", function () { stopAudio(); letter = id; renderTabs(); renderContent(); });
-            tabs.appendChild(b);
-          });
-        }
-        function renderContent() {
-          concClearHighlights();
-          content.textContent = "";
-          var d = DATA[letter], au = d.a || {};
-          var s1 = writeEl("section", "conc-section");
-          s1.appendChild(writeEl("p", "conc-section-title", CT.letter));
-          if (au.l) s1.appendChild(concAudio(au.l, CT.aLetter));
-          s1.appendChild(concBlock(d.l, "letter"));
-          content.appendChild(s1);
-          if (d.x && d.x.length) {
-            var s2 = writeEl("section", "conc-section");
-            s2.appendChild(writeEl("p", "conc-section-title", CT.text));
-            // un audio par texte (liste) ou un seul audio pour le texte unique
-            var xs = Array.isArray(au.x) ? au.x : (au.x ? [au.x] : []);
-            d.x.forEach(function (pg, i) {
-              if (xs[i]) s2.appendChild(concAudio(xs[i], d.x.length > 1 ? CT.aText + " " + (i + 1) : CT.aText));
-              s2.appendChild(concBlock(pg, "story"));
-            });
-            content.appendChild(s2);
-          }
-        }
-        renderTabs();
-        renderContent();
-      }
-      function openConcLab() {
-        if (!concLab) {
-          concLab = writeEl("div", "reader conc-lab");
-          concLab.setAttribute("role", "dialog");
-          concLab.setAttribute("aria-modal", "true");
-          document.body.appendChild(concLab);
-          document.addEventListener("keydown", function (e) {
-            if (e.key === "Escape" && concLab.classList.contains("is-open")) closeConcLab();
-          });
-        }
-        concLab.textContent = "";
-        concClearHighlights();
-        var bar = writeEl("div", "reader-bar");
-        bar.appendChild(writeEl("span", "reader-title", CT.title));
-        var x = writeEl("button", "reader-close", "×");
-        x.type = "button";
-        x.setAttribute("aria-label", CT.close);
-        x.addEventListener("click", closeConcLab);
-        bar.appendChild(x);
-        var body = writeEl("div", "reader-body");
-        var panel = writeEl("div", "formlab-panel conc-panel");
-        var parts = writeEl("div", "conc-parts");
-        var part1 = writeEl("div", "conc-part");
-        var part2 = writeEl("div", "conc-part");
-        var b1 = writeEl("button", "conc-part-btn is-active", CT.part1);
-        var b2 = writeEl("button", "conc-part-btn", CT.part2);
-        b1.type = "button";
-        b2.type = "button";
-        function show(n) {
-          concStopClip();
-          Array.prototype.forEach.call(concLab.querySelectorAll("audio"), function (a) { a.pause(); });
-          b1.classList.toggle("is-active", n === 1);
-          b2.classList.toggle("is-active", n === 2);
-          part1.hidden = n !== 1;
-          part2.hidden = n !== 2;
-          body.scrollTop = 0;
-        }
-        b1.addEventListener("click", function () { show(1); });
-        b2.addEventListener("click", function () { show(2); });
-        parts.appendChild(b1);
-        parts.appendChild(b2);
-        concWordsPart(part1);
-        concBookPart(part2);
-        part2.hidden = true;
-        panel.appendChild(parts);
-        panel.appendChild(part1);
-        panel.appendChild(part2);
-        body.appendChild(panel);
-        concLab.appendChild(bar);
-        concLab.appendChild(body);
-        concLab.classList.add("is-open");
-        document.body.style.overflow = "hidden";
-        body.scrollTop = 0;
-      }
-      function closeConcLab() {
-        if (!concLab) return;
-        concStopClip();
-        Array.prototype.forEach.call(concLab.querySelectorAll("audio"), function (a) { a.pause(); });
-        concLab.classList.remove("is-open");
-        document.body.style.overflow = "";
-      }
-      // Carte unique "Concentration" (avant la carte "Lecture")
-      (function () {
-        var grid = document.querySelector(".module-grid");
-        if (!grid || !document.querySelector(".js-open-module") || !window.AHL_CONC) return;
-        var card = document.createElement("article");
-        card.className = "module-card module-card-intro module-card-conc";
-        card.appendChild(writeEl("span", "module-number", CT.title));
-        var letters = writeEl("p", "module-letters", "أ … ي");
-        letters.lang = "ar";
-        letters.dir = "rtl";
-        card.appendChild(letters);
-        card.appendChild(writeEl("p", "module-progress", CT.sub));
-        var btn = writeEl("button", "btn btn-outline btn-sm module-listen js-open-conc-main", CT.open);
-        btn.type = "button";
-        btn.addEventListener("click", openConcLab);
-        card.appendChild(btn);
-        var reading = grid.querySelector(".module-card-reading");
-        grid.insertBefore(card, reading || null);
-      })();
-
 
 
       document.querySelectorAll(".js-open-sunmoon").forEach(function (btn) {

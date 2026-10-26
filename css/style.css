@@ -2982,3 +2982,57 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .conc-tab { width: 46px; height: 54px; }
 .reading-part[hidden] { display: none; }
 .reading-soon { margin: 30px 0; text-align: center; color: var(--color-text-light); font-style: italic; }
+
+/* ===== Espace entrainement ===== */
+.tr-cards { grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.tr-card .module-letters { font-size: 2.4rem; }
+.reader-back { flex: none; width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255,255,255,.14); color: #fff; font-size: 1.8rem; line-height: 1; cursor: pointer; padding: 0 0 4px; }
+.reader-back:hover { background: rgba(255,255,255,.24); }
+.tr-lab .reader-title { flex: 1; text-align: center; }
+.reader-back[hidden] { display: none; }
+.tr-panel { max-width: min(680px, 94vw); }
+.tr-groups { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.tr-group { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 8px; border-radius: 14px; border: 1.5px solid var(--color-border); background: #fff; font: inherit; color: var(--color-navy); cursor: pointer; }
+.tr-group:hover { border-color: var(--color-teal); }
+.tr-group.is-locked { background: var(--color-bg); }
+.tr-group-num { font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--color-teal-dark); }
+.tr-group-letters { font-family: "Noto Naskh Arabic", var(--font-arabic); font-size: 1.8rem; line-height: 1.5; }
+.tr-group-state { font-size: .8rem; color: var(--color-text-light); min-height: 1.1em; }
+.tr-menu { display: flex; flex-direction: column; gap: 10px; }
+.tr-menu-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 18px; border-radius: 14px; border: 1.5px solid var(--color-border); background: #fff; font: inherit; font-weight: 700; color: var(--color-navy); cursor: pointer; text-align: start; }
+.tr-menu-item.is-soon { opacity: .7; cursor: default; }
+.tr-menu-soon { font-size: .8rem; font-weight: 600; color: var(--color-text-light); font-style: italic; }
+.tr-sets { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.tr-set { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 12px 8px; border: 1px solid var(--color-border); border-radius: 14px; background: #fff; text-align: center; }
+.tr-set-name { font-weight: 700; color: var(--color-navy); }
+.tr-set-sub { font-size: .85rem; color: var(--color-text-light); }
+.tr-corr { margin: 4px 0 18px; text-align: center; }
+.tr-corr-out { margin-top: 10px; text-align: start; }
+.tr-corr-out[hidden] { display: none; }
+.tr-letter-holder .conc-tabs { margin-top: 4px; }
+/* texte avec harakat : couche A (tout en rouge) + couche B (lettres seules, par-dessus) */
+.vt { position: relative; display: block; }
+.conc-title .vt { display: inline-block; }
+.vt-a { color: #ff0000; }
+.vt-b { position: absolute; left: 0; right: 0; top: 0; pointer-events: none; color: #000; -webkit-text-stroke: .4px currentColor; }
+.conc-block-vowel .conc-para { font-size: 1.7rem; line-height: 2.5; }
+.conc-block-vowel .conc-title-letter { font-size: 2.2rem; }
+.book-page .book-row { display: flex; direction: ltr; align-items: center; gap: 12px; margin-bottom: 8px; }
+.book-imgs { flex: none; display: flex; gap: 6px; align-items: center; width: 28%; justify-content: center; }
+.book-img { width: calc(var(--w, 80) * .9px); max-width: 100%; height: auto; border-radius: 8px; }
+.book-imgs .book-img:not(:only-child) { max-width: 48%; }
+.book-txt { flex: 1; min-width: 0; direction: rtl; text-align: right; margin: 0; }
+.book-lead { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 12px; }
+.book-lead .book-img { max-width: 24%; }
+.tr-c-r, .tr-c-vr { color: #c00000; }
+.tr-c-f, .tr-c-vf { color: #ff0000; }
+::highlight(tr-r) { color: #c00000; }
+::highlight(tr-f) { color: #ff0000; }
+::highlight(tr-vr) { color: #c00000; -webkit-text-stroke-color: #c00000; }
+::highlight(tr-vf) { color: #ff0000; -webkit-text-stroke-color: #ff0000; }
+@media (max-width: 520px) {
+  .book-imgs { width: 22%; }
+  .conc-block-vowel .conc-para { font-size: 1.45rem; }
+}
+.conc-block-vowel .conc-line, .conc-block-story.conc-block-vowel .conc-line { display: block; }
+.intro-six-top { margin-top: 0; padding-top: 0; border-top: 0; }

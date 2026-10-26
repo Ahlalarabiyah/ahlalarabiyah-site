@@ -235,4 +235,59 @@
     <priority>0.6</priority>
     <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/conseils.html"/>
   </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/entrainement.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/entrainement.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/entrainement.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/entrainement.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/entrainement.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/entrainement.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/entrainement.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/entrainement.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/entrainement.html</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/en/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ru/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/de/entrainement.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.github.io/ahlalarabiyah-site/ar/entrainement.html"/>
+  </url>
 </urlset>
