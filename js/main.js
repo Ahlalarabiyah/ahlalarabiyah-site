@@ -2820,6 +2820,37 @@
           D[id].initial = D[id].isolated;
           D[id].medial = D[id].final;
         });
+        // Points places AU-DESSUS : toujours bien au-dessus du haut du trait (le jim,
+        // dont le point est sous la tete, et les points sous la lettre ne bougent pas).
+        (function () {
+          var seen = [];
+          Object.keys(D).forEach(function (id) {
+            if (id === "jim") return;
+            ["isolated", "initial", "medial", "final"].forEach(function (f) {
+              var fm = D[id][f];
+              if (!fm || !fm.dots.length || seen.indexOf(fm) !== -1) return;
+              seen.push(fm);
+              if (!fm.dots.every(function (d) { return d[1] < 140; })) return;
+              var minX = Math.min.apply(null, fm.dots.map(function (d) { return d[0]; })) - 28;
+              var maxX = Math.max.apply(null, fm.dots.map(function (d) { return d[0]; })) + 28;
+              var allTop = 1e9, localTop = 1e9;
+              fm.strokes.forEach(function (st) {
+                writeDense(st).forEach(function (p) {
+                  if (p[1] < allTop) allTop = p[1];
+                  if (p[0] >= minX && p[0] <= maxX && p[1] < localTop) localTop = p[1];
+                });
+              });
+              // lettres basses : au-dessus du point le plus haut de la lettre ; lettres a hampe : au-dessus du trait voisin
+              var top = allTop >= 55 ? allTop : localTop;
+              var lowest = Math.max.apply(null, fm.dots.map(function (d) { return d[1]; }));
+              var highest = Math.min.apply(null, fm.dots.map(function (d) { return d[1]; }));
+              var need = lowest - (top - 24);
+              if (need > 0 && highest - need >= 22) {
+                fm.dots = fm.dots.map(function (d) { return [d[0], d[1] - need]; });
+              }
+            });
+          });
+        })();
         return D;
       })();
 
