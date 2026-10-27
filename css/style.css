@@ -3052,3 +3052,6 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .tr-motto { margin: 0 0 14px; text-align: center; font-size: 1.05rem; font-weight: 700; line-height: 1.5; color: var(--color-teal-dark); }
 .tr-tip { margin: 0 0 16px; text-align: center; font-size: .92rem; font-style: italic; line-height: 1.5; color: var(--color-text-light); }
 .tr-motto-bottom { margin: 18px 0 4px; font-weight: 600; font-size: .98rem; }
+.tr-ctl { display: flex; gap: 8px; }
+.tr-ctl .reading-play { margin: 0; }
+.tr-ctl-stop:disabled { opacity: .4; cursor: default; }

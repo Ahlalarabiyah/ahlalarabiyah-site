@@ -11,7 +11,7 @@
 
   var TXT = {
     fr: {
-      stop: "Arrêter",
+      stop: "Arrêter", pause: "Pause", resume: "Reprendre",
       atelierMotto: "Affûte ton écoute et distingue (avec les audios) les lettres ressemblantes puis les prononciations correctes (✅) des prononciations incorrectes (❌).", lectureTop: "Des harakat pour t’aider, un audio pour te guider : lis avec confiance.", lectureBottom: "Lis, écoute, répète : chaque lecture te rapproche d’une prononciation plus juste.",
       defiMotto: "Relève le défi : rends au texte ses harakat grâce à ton écoute affûtée !", defiTip: "Commence par le petit texte, puis passe au grand texte lorsque tu te sens prêt.",
       eyebrow: "Espace entraînement", h2: "Ton espace d’entraînement",
@@ -30,7 +30,7 @@
       bookHint: "Lis chaque texte en suivant les harakāt, puis écoute l’audio."
     },
     en: {
-      stop: "Stop",
+      stop: "Stop", pause: "Pause", resume: "Resume",
       atelierMotto: "Sharpen your listening and tell similar letters apart (with the audios), then correct pronunciations (✅) from incorrect ones (❌).", lectureTop: "Harakat to help you, audio to guide you: read with confidence.", lectureBottom: "Read, listen, repeat: every reading brings you closer to a more accurate pronunciation.",
       defiMotto: "Take up the challenge: give the text its harakat back with your sharp listening!", defiTip: "Start with the short text, then move on to the long text when you feel ready.",
       eyebrow: "Training space", h2: "Your training space",
@@ -49,7 +49,7 @@
       bookHint: "Read each text following the harakāt, then listen to the audio."
     },
     ru: {
-      stop: "Остановить",
+      stop: "Остановить", pause: "Пауза", resume: "Продолжить",
       atelierMotto: "Заостри слух и различай (с помощью аудио) похожие буквы, а затем правильные произношения (✅) и неправильные (❌).", lectureTop: "Огласовки помогают, аудио ведёт: читай уверенно.", lectureBottom: "Читай, слушай, повторяй: каждое чтение приближает тебя к более точному произношению.",
       defiMotto: "Прими вызов: верни тексту огласовки, внимательно слушая!", defiTip: "Начни с короткого текста, а затем переходи к длинному, когда почувствуешь себя готовым.",
       eyebrow: "Тренировочный зал", h2: "Твой тренировочный зал",
@@ -68,7 +68,7 @@
       bookHint: "Читай каждый текст по огласовкам, затем послушай аудио."
     },
     de: {
-      stop: "Stoppen",
+      stop: "Stoppen", pause: "Pause", resume: "Fortsetzen",
       atelierMotto: "Schärfe dein Gehör und unterscheide (mit den Audios) ähnliche Buchstaben, dann richtige (✅) von falschen (❌) Aussprachen.", lectureTop: "Harakat zur Hilfe, Audio zur Führung: Lies mit Zuversicht.", lectureBottom: "Lies, höre, wiederhole: Jedes Lesen bringt dich einer genaueren Aussprache näher.",
       defiMotto: "Nimm die Herausforderung an: Gib dem Text mit deinem scharfen Gehör seine Harakat zurück!", defiTip: "Beginne mit dem kurzen Text und gehe zum langen Text über, wenn du dich bereit fühlst.",
       eyebrow: "Trainingsbereich", h2: "Dein Trainingsbereich",
@@ -87,7 +87,7 @@
       bookHint: "Lies jeden Text anhand der Harakāt und höre dann das Audio."
     },
     ar: {
-      stop: "إيقاف",
+      stop: "إيقاف", pause: "إيقاف مؤقت", resume: "متابعة",
       atelierMotto: "درّب أذنك وميّز (بالصوتيات) الحروف المتشابهة ثم النطق الصحيح (✅) من النطق الخاطئ (❌).", lectureTop: "حركات تعينك وصوت يرشدك: اقرأ بثقة.", lectureBottom: "اقرأ واستمع وكرّر: كل قراءة تقرّبك من نطق أدق.",
       defiMotto: "اقبل التحدي: أعد للنص حركاته بفضل استماعك المتقن!", defiTip: "ابدأ بالنص القصير ثم انتقل إلى النص الطويل عندما تشعر أنك مستعد.",
       eyebrow: "فضاء التدريب", h2: "فضاء التدريب الخاص بك",
@@ -194,7 +194,9 @@
 
   // ---- Audio : un seul son a la fois ----
   var playing = null, playingBtn = null;
+  var seriesCtl = null;
   function stopClip() {
+    if (seriesCtl) { var c = seriesCtl; seriesCtl = null; c.reset(); }
     if (playing) { playing.pause(); playing = null; }
     if (playingBtn) {
       playingBtn.classList.remove("is-playing");
@@ -229,6 +231,49 @@
       a.play().catch(function () { if (playing === a) stopClip(); });
     });
     return b;
+  }
+  // Lecture des series a lire : lecture / pause / reprise (un seul bouton) + arret (retour au debut).
+  function seriesControls(url) {
+    var wrap = el("div", "tr-ctl");
+    var play = el("button", "reading-play", "▶");
+    play.type = "button";
+    play.setAttribute("aria-label", T.listen);
+    var stop = el("button", "reading-play tr-ctl-stop", "⏹");
+    stop.type = "button";
+    stop.setAttribute("aria-label", T.stop);
+    stop.disabled = true;
+    var audio = null, state = "idle";
+    function ui() {
+      play.textContent = state === "playing" ? "⏸" : "▶";
+      play.setAttribute("aria-label", state === "playing" ? T.pause : (state === "paused" ? T.resume : T.listen));
+      play.classList.toggle("is-playing", state === "playing");
+      stop.disabled = state === "idle";
+    }
+    var ctl = {
+      reset: function () {
+        if (audio) { audio.pause(); try { audio.currentTime = 0; } catch (e) { /* ignore */ } }
+        state = "idle";
+        ui();
+      }
+    };
+    play.addEventListener("click", function () {
+      if (state === "playing") { audio.pause(); state = "paused"; ui(); return; }
+      if (state === "paused") { audio.play().catch(function () { ctl.reset(); }); state = "playing"; ui(); return; }
+      stopClip();
+      if (!audio) {
+        audio = new Audio(url);
+        audio.addEventListener("ended", function () { if (seriesCtl === ctl) seriesCtl = null; ctl.reset(); });
+        audio.addEventListener("error", function () { if (seriesCtl === ctl) seriesCtl = null; ctl.reset(); });
+      }
+      seriesCtl = ctl;
+      state = "playing";
+      ui();
+      audio.play().catch(function () { if (seriesCtl === ctl) seriesCtl = null; ctl.reset(); });
+    });
+    stop.addEventListener("click", function () { if (seriesCtl === ctl) seriesCtl = null; ctl.reset(); });
+    wrap.appendChild(play);
+    wrap.appendChild(stop);
+    return wrap;
   }
   function audioPlayer(file, label) {
     var wrap = el("div", "conc-audio");
@@ -556,7 +601,7 @@
         ttl.appendChild(sub);
       }
       head.appendChild(ttl);
-      head.appendChild(playBtn(AUDIO_READ + ls.au + ".m4a", true));
+      head.appendChild(seriesControls(AUDIO_READ + ls.au + ".m4a"));
       box.appendChild(head);
       var ws = el("ol", "reading-set-words");
       ws.lang = "ar";
