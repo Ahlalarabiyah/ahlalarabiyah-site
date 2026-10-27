@@ -17,7 +17,7 @@
       eyebrow: "Espace entraînement", h2: "Ton espace d’entraînement",
       lead: "Dictées, écoute, concentration et lecture : tout pour t’entraîner à ton rythme.",
       dict: "Dictées", dictSub: "Les 5 niveaux", dictBtn: "Ouvrir",
-      atelier: "Atelier de concentration", atelierSub: "Écouter : lettres et mots proches, les différents mots", atelierBtn: "Entrer",
+      atelier: "Atelier de concentration", atelierSub: "Écouter : lettres et mots proches", atelierBtn: "Entrer",
       defi: "Défis de concentration", defiSub: "Écoute et ajoute les harakāt", defiBtn: "Entrer",
       lecture: "Lecture", lectureSub: "Mots des fascicules, livre, mots à lire", lectureBtn: "Entrer",
       back: "Retour", close: "Fermer", group: "Groupe", free: "Gratuit", locked: "🔒 Payant",
@@ -36,7 +36,7 @@
       eyebrow: "Training space", h2: "Your training space",
       lead: "Dictations, listening, concentration and reading: everything to practise at your own pace.",
       dict: "Dictations", dictSub: "The 5 levels", dictBtn: "Open",
-      atelier: "Concentration workshop", atelierSub: "Listen: similar letters and words, the different words", atelierBtn: "Enter",
+      atelier: "Concentration workshop", atelierSub: "Listen: similar letters and words", atelierBtn: "Enter",
       defi: "Concentration challenges", defiSub: "Listen and add the harakāt", defiBtn: "Enter",
       lecture: "Reading", lectureSub: "Booklet words, book, words to read", lectureBtn: "Enter",
       back: "Back", close: "Close", group: "Group", free: "Free", locked: "🔒 Premium",
@@ -55,7 +55,7 @@
       eyebrow: "Тренировочный зал", h2: "Твой тренировочный зал",
       lead: "Диктанты, аудирование, концентрация и чтение: всё, чтобы тренироваться в своём темпе.",
       dict: "Диктанты", dictSub: "5 уровней", dictBtn: "Открыть",
-      atelier: "Мастерская концентрации", atelierSub: "Слушать: похожие буквы и слова, разные слова", atelierBtn: "Войти",
+      atelier: "Мастерская концентрации", atelierSub: "Слушать: похожие буквы и слова", atelierBtn: "Войти",
       defi: "Задания на концентрацию", defiSub: "Слушай и добавляй огласовки", defiBtn: "Войти",
       lecture: "Чтение", lectureSub: "Слова из брошюр, книга, слова для чтения", lectureBtn: "Войти",
       back: "Назад", close: "Закрыть", group: "Группа", free: "Бесплатно", locked: "🔒 Платно",
@@ -74,7 +74,7 @@
       eyebrow: "Trainingsbereich", h2: "Dein Trainingsbereich",
       lead: "Diktate, Hören, Konzentration und Lesen: alles, um in deinem Tempo zu üben.",
       dict: "Diktate", dictSub: "Die 5 Stufen", dictBtn: "Öffnen",
-      atelier: "Konzentrationswerkstatt", atelierSub: "Hören: ähnliche Buchstaben und Wörter, verschiedene Wörter", atelierBtn: "Eintreten",
+      atelier: "Konzentrationswerkstatt", atelierSub: "Hören: ähnliche Buchstaben und Wörter", atelierBtn: "Eintreten",
       defi: "Konzentrationsaufgaben", defiSub: "Hören und die Harakāt ergänzen", defiBtn: "Eintreten",
       lecture: "Lesen", lectureSub: "Wörter der Hefte, Buch, Wörter zum Lesen", lectureBtn: "Eintreten",
       back: "Zurück", close: "Schließen", group: "Gruppe", free: "Kostenlos", locked: "🔒 Premium",
@@ -93,7 +93,7 @@
       eyebrow: "فضاء التدريب", h2: "فضاء التدريب الخاص بك",
       lead: "الإملاء والاستماع والتركيز والقراءة: كل ما تحتاجه للتدرب بوتيرتك.",
       dict: "الإملاء", dictSub: "المستويات الخمسة", dictBtn: "افتح",
-      atelier: "ورشة التركيز", atelierSub: "استماع: حروف وكلمات متقاربة، كلمات مختلفة", atelierBtn: "ادخل",
+      atelier: "ورشة التركيز", atelierSub: "استماع: حروف وكلمات متقاربة", atelierBtn: "ادخل",
       defi: "تحديات التركيز", defiSub: "استمع وأضف الحركات", defiBtn: "ادخل",
       lecture: "القراءة", lectureSub: "كلمات الكراسات، الكتاب، كلمات للقراءة", lectureBtn: "ادخل",
       back: "رجوع", close: "إغلاق", group: "المجموعة", free: "مجاني", locked: "🔒 مدفوع",
@@ -562,22 +562,6 @@
         });
         panel.appendChild(list);
 
-        // Les differents mots : a ECOUTER seulement (les mots ne sont pas affiches)
-        panel.appendChild(el("h3", "reading-heading reading-heading-2", T.seriesAudio));
-        panel.appendChild(el("p", "reading-legend", T.listenHint));
-        var sets = el("div", "tr-sets");
-        SERIES.forEach(function (ls, i) {
-          var c = el("div", "tr-set");
-          c.appendChild(el("span", "tr-set-name", T.set + " " + (i + 1)));
-          if (ls.title) {
-            var sub = el("span", "tr-set-sub");
-            sub.textContent = ls.title[LANG] || ls.title.fr;
-            c.appendChild(sub);
-          }
-          c.appendChild(playBtn(AUDIO_READ + ls.au + ".m4a"));
-          sets.appendChild(c);
-        });
-        panel.appendChild(sets);
       }
     };
   }
