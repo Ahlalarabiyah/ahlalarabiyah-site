@@ -11,6 +11,7 @@
 
   var TXT = {
     fr: {
+      stop: "Arrêter",
       atelierMotto: "Affûte ton écoute et distingue (avec les audios) les lettres ressemblantes puis les prononciations correctes (✅) des prononciations incorrectes (❌).", lectureTop: "Des harakat pour t’aider, un audio pour te guider : lis avec confiance.", lectureBottom: "Lis, écoute, répète : chaque lecture te rapproche d’une prononciation plus juste.",
       defiMotto: "Relève le défi : rends au texte ses harakat grâce à ton écoute affûtée !", defiTip: "Commence par le petit texte, puis passe au grand texte lorsque tu te sens prêt.",
       eyebrow: "Espace entraînement", h2: "Ton espace d’entraînement",
@@ -29,6 +30,7 @@
       bookHint: "Lis chaque texte en suivant les harakāt, puis écoute l’audio."
     },
     en: {
+      stop: "Stop",
       atelierMotto: "Sharpen your listening and tell similar letters apart (with the audios), then correct pronunciations (✅) from incorrect ones (❌).", lectureTop: "Harakat to help you, audio to guide you: read with confidence.", lectureBottom: "Read, listen, repeat: every reading brings you closer to a more accurate pronunciation.",
       defiMotto: "Take up the challenge: give the text its harakat back with your sharp listening!", defiTip: "Start with the short text, then move on to the long text when you feel ready.",
       eyebrow: "Training space", h2: "Your training space",
@@ -47,6 +49,7 @@
       bookHint: "Read each text following the harakāt, then listen to the audio."
     },
     ru: {
+      stop: "Остановить",
       atelierMotto: "Заостри слух и различай (с помощью аудио) похожие буквы, а затем правильные произношения (✅) и неправильные (❌).", lectureTop: "Огласовки помогают, аудио ведёт: читай уверенно.", lectureBottom: "Читай, слушай, повторяй: каждое чтение приближает тебя к более точному произношению.",
       defiMotto: "Прими вызов: верни тексту огласовки, внимательно слушая!", defiTip: "Начни с короткого текста, а затем переходи к длинному, когда почувствуешь себя готовым.",
       eyebrow: "Тренировочный зал", h2: "Твой тренировочный зал",
@@ -65,6 +68,7 @@
       bookHint: "Читай каждый текст по огласовкам, затем послушай аудио."
     },
     de: {
+      stop: "Stoppen",
       atelierMotto: "Schärfe dein Gehör und unterscheide (mit den Audios) ähnliche Buchstaben, dann richtige (✅) von falschen (❌) Aussprachen.", lectureTop: "Harakat zur Hilfe, Audio zur Führung: Lies mit Zuversicht.", lectureBottom: "Lies, höre, wiederhole: Jedes Lesen bringt dich einer genaueren Aussprache näher.",
       defiMotto: "Nimm die Herausforderung an: Gib dem Text mit deinem scharfen Gehör seine Harakat zurück!", defiTip: "Beginne mit dem kurzen Text und gehe zum langen Text über, wenn du dich bereit fühlst.",
       eyebrow: "Trainingsbereich", h2: "Dein Trainingsbereich",
@@ -83,6 +87,7 @@
       bookHint: "Lies jeden Text anhand der Harakāt und höre dann das Audio."
     },
     ar: {
+      stop: "إيقاف",
       atelierMotto: "درّب أذنك وميّز (بالصوتيات) الحروف المتشابهة ثم النطق الصحيح (✅) من النطق الخاطئ (❌).", lectureTop: "حركات تعينك وصوت يرشدك: اقرأ بثقة.", lectureBottom: "اقرأ واستمع وكرّر: كل قراءة تقرّبك من نطق أدق.",
       defiMotto: "اقبل التحدي: أعد للنص حركاته بفضل استماعك المتقن!", defiTip: "ابدأ بالنص القصير ثم انتقل إلى النص الطويل عندما تشعر أنك مستعد.",
       eyebrow: "فضاء التدريب", h2: "فضاء التدريب الخاص بك",
@@ -139,14 +144,14 @@
       ["طارِقًا", 1, "=", "تارِقًا", 0, "word-1-tariqa"],
       ["دَجاجٌ", 1, "=", "ضَجَاج", 0, "word-2-dajaj"],
       ["صَـبْـرٌ", 1, "/", "ثَـبْـرٌ", 0, "word-3-sabr"],
-      ["كَرِيمٌ", 1, "=", "قَرِيمٌ", 0, ""],
+      ["كَرِيمٌ", 1, "=", "قَرِيمٌ", 0, "word-14-karim"],
       ["كَـلْـبٌ", 1, "/", "قَـلْـبٌ", 1, "word-4-kalb"],
-      ["كُلْ", 1, "/", "قُلْ", 1, ""],
-      ["صَـبْـرٌ", 1, "/", "سَـبْـرٌ", 0, ""],
+      ["كُلْ", 1, "/", "قُلْ", 1, "word-15-kul"],
+      ["صَـبْـرٌ", 1, "/", "سَـبْـرٌ", 0, "word-17-sabr-sabr"],
       ["كَـلْـبٌ", 1, "=", "قَـلْـبٌ", 0, "word-4-kalb"],
       ["ذَهَبٌ", 1, "/", "ظَـهَـبٌ", 0, "word-5-dhahab"],
       ["فِـيـلٍ", 1, "/", "ثِـيـلٍ", 0, "word-6-feel"],
-      ["قَـلِـيـلٌ", 1, "/", "كَـلِـيـلٌ", 1, ""],
+      ["قَـلِـيـلٌ", 1, "/", "كَـلِـيـلٌ", 1, "word-16-qalil"],
       ["خُـبْـزًا", 1, "/", "غُـبْـزًا", 0, "word-7-khubza"],
       ["رَبِّـي", 1, "/", "غَـبِّـي", 0, "word-8-rabbi"],
       ["حَـلَالٌ", 1, "/", "هَـلَالٌ", 0, "word-9-halal"],
@@ -191,12 +196,22 @@
   var playing = null, playingBtn = null;
   function stopClip() {
     if (playing) { playing.pause(); playing = null; }
-    if (playingBtn) { playingBtn.classList.remove("is-playing"); playingBtn = null; }
+    if (playingBtn) {
+      playingBtn.classList.remove("is-playing");
+      // bouton avec sigle d'arret (Lecture) : on remet l'icone d'ecoute
+      if (playingBtn.getAttribute("data-stop")) {
+        playingBtn.textContent = "🔊";
+        playingBtn.setAttribute("aria-label", T.listen);
+      }
+      playingBtn = null;
+    }
   }
-  function playBtn(url) {
+  // withStop : pendant la lecture, le bouton devient un sigle "stop" (⏹) pour arreter l'audio.
+  function playBtn(url, withStop) {
     var b = el("button", "reading-play", "🔊");
     b.type = "button";
     b.setAttribute("aria-label", T.listen);
+    if (withStop) b.setAttribute("data-stop", "1");
     b.addEventListener("click", function () {
       var same = playingBtn === b;
       stopClip();
@@ -205,6 +220,10 @@
       playing = a;
       playingBtn = b;
       b.classList.add("is-playing");
+      if (withStop) {
+        b.textContent = "⏹";
+        b.setAttribute("aria-label", T.stop);
+      }
       a.addEventListener("ended", function () { if (playing === a) stopClip(); });
       a.addEventListener("error", function () { if (playing === a) stopClip(); });
       a.play().catch(function () { if (playing === a) stopClip(); });
@@ -537,7 +556,7 @@
         ttl.appendChild(sub);
       }
       head.appendChild(ttl);
-      head.appendChild(playBtn(AUDIO_READ + ls.au + ".m4a"));
+      head.appendChild(playBtn(AUDIO_READ + ls.au + ".m4a", true));
       box.appendChild(head);
       var ws = el("ol", "reading-set-words");
       ws.lang = "ar";
