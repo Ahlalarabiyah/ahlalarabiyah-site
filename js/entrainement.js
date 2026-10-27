@@ -11,6 +11,8 @@
 
   var TXT = {
     fr: {
+      atelierMotto: "Affûte ton écoute et distingue (avec les audios) les lettres ressemblantes puis les prononciations correctes (✅) des prononciations incorrectes (❌).", lectureTop: "Des harakat pour t’aider, un audio pour te guider : lis avec confiance.", lectureBottom: "Lis, écoute, répète : chaque lecture te rapproche d’une prononciation plus juste.",
+      defiMotto: "Relève le défi : rends au texte ses harakat grâce à ton écoute affûtée !", defiTip: "Commence par le petit texte, puis passe au grand texte lorsque tu te sens prêt.",
       eyebrow: "Espace entraînement", h2: "Ton espace d’entraînement",
       lead: "Dictées, écoute, concentration et lecture : tout pour t’entraîner à ton rythme.",
       dict: "Dictées", dictSub: "Les 5 niveaux", dictBtn: "Ouvrir",
@@ -27,6 +29,8 @@
       bookHint: "Lis chaque texte en suivant les harakāt, puis écoute l’audio."
     },
     en: {
+      atelierMotto: "Sharpen your listening and tell similar letters apart (with the audios), then correct pronunciations (✅) from incorrect ones (❌).", lectureTop: "Harakat to help you, audio to guide you: read with confidence.", lectureBottom: "Read, listen, repeat: every reading brings you closer to a more accurate pronunciation.",
+      defiMotto: "Take up the challenge: give the text its harakat back with your sharp listening!", defiTip: "Start with the short text, then move on to the long text when you feel ready.",
       eyebrow: "Training space", h2: "Your training space",
       lead: "Dictations, listening, concentration and reading: everything to practise at your own pace.",
       dict: "Dictations", dictSub: "The 5 levels", dictBtn: "Open",
@@ -43,6 +47,8 @@
       bookHint: "Read each text following the harakāt, then listen to the audio."
     },
     ru: {
+      atelierMotto: "Заостри слух и различай (с помощью аудио) похожие буквы, а затем правильные произношения (✅) и неправильные (❌).", lectureTop: "Огласовки помогают, аудио ведёт: читай уверенно.", lectureBottom: "Читай, слушай, повторяй: каждое чтение приближает тебя к более точному произношению.",
+      defiMotto: "Прими вызов: верни тексту огласовки, внимательно слушая!", defiTip: "Начни с короткого текста, а затем переходи к длинному, когда почувствуешь себя готовым.",
       eyebrow: "Тренировочный зал", h2: "Твой тренировочный зал",
       lead: "Диктанты, аудирование, концентрация и чтение: всё, чтобы тренироваться в своём темпе.",
       dict: "Диктанты", dictSub: "5 уровней", dictBtn: "Открыть",
@@ -59,6 +65,8 @@
       bookHint: "Читай каждый текст по огласовкам, затем послушай аудио."
     },
     de: {
+      atelierMotto: "Schärfe dein Gehör und unterscheide (mit den Audios) ähnliche Buchstaben, dann richtige (✅) von falschen (❌) Aussprachen.", lectureTop: "Harakat zur Hilfe, Audio zur Führung: Lies mit Zuversicht.", lectureBottom: "Lies, höre, wiederhole: Jedes Lesen bringt dich einer genaueren Aussprache näher.",
+      defiMotto: "Nimm die Herausforderung an: Gib dem Text mit deinem scharfen Gehör seine Harakat zurück!", defiTip: "Beginne mit dem kurzen Text und gehe zum langen Text über, wenn du dich bereit fühlst.",
       eyebrow: "Trainingsbereich", h2: "Dein Trainingsbereich",
       lead: "Diktate, Hören, Konzentration und Lesen: alles, um in deinem Tempo zu üben.",
       dict: "Diktate", dictSub: "Die 5 Stufen", dictBtn: "Öffnen",
@@ -75,6 +83,8 @@
       bookHint: "Lies jeden Text anhand der Harakāt und höre dann das Audio."
     },
     ar: {
+      atelierMotto: "درّب أذنك وميّز (بالصوتيات) الحروف المتشابهة ثم النطق الصحيح (✅) من النطق الخاطئ (❌).", lectureTop: "حركات تعينك وصوت يرشدك: اقرأ بثقة.", lectureBottom: "اقرأ واستمع وكرّر: كل قراءة تقرّبك من نطق أدق.",
+      defiMotto: "اقبل التحدي: أعد للنص حركاته بفضل استماعك المتقن!", defiTip: "ابدأ بالنص القصير ثم انتقل إلى النص الطويل عندما تشعر أنك مستعد.",
       eyebrow: "فضاء التدريب", h2: "فضاء التدريب الخاص بك",
       lead: "الإملاء والاستماع والتركيز والقراءة: كل ما تحتاجه للتدرب بوتيرتك.",
       dict: "الإملاء", dictSub: "المستويات الخمسة", dictBtn: "افتح",
@@ -458,6 +468,7 @@
     return {
       title: T.atelier,
       render: function (panel) {
+        panel.appendChild(el("p", "tr-motto", T.atelierMotto));
         panel.appendChild(el("h3", "reading-heading", T.pairs));
         var pg = el("div", "reading-pairs");
         PAIRS.forEach(function (pr) {
@@ -550,7 +561,9 @@
         var DATA = window.AHL_CONC || {}, BOOK = window.AHL_BOOK || {};
         var ids = g.ids.filter(function (id) { return DATA[id]; });
         var letter = ids[0];
+        panel.appendChild(el("p", "tr-motto", T.defiMotto));
         panel.appendChild(el("p", "conc-instruction", T.defiIntro));
+        panel.appendChild(el("p", "tr-tip", "💡 " + T.defiTip));
         var holder = el("div", "tr-letter-holder");
         panel.appendChild(holder);
         function correction(box, page) {
@@ -603,6 +616,7 @@
     return {
       title: T.defi,
       render: function (panel) {
+        panel.appendChild(el("p", "tr-motto", T.defiMotto));
         groupList(panel, "defi", function (g) { pushView(viewDefiGroup(g)); });
       }
     };
@@ -613,6 +627,7 @@
     return {
       title: groupName("lecture", g),
       render: function (panel) {
+        panel.appendChild(el("p", "tr-motto", T.lectureTop));
         var BOOK = window.AHL_BOOK || {}, DATA = window.AHL_CONC || {};
         var ids = g.ids.filter(function (id) { return BOOK[id]; });
         var letter = ids[0];
@@ -642,6 +657,7 @@
           }
         }
         renderLetter();
+        panel.appendChild(el("p", "tr-motto tr-motto-bottom", T.lectureBottom));
       }
     };
   }
@@ -649,7 +665,9 @@
     return {
       title: T.book,
       render: function (panel) {
+        panel.appendChild(el("p", "tr-motto", T.lectureTop));
         groupList(panel, "lecture", function (g) { pushView(viewBookGroup(g)); });
+        panel.appendChild(el("p", "tr-motto tr-motto-bottom", T.lectureBottom));
       }
     };
   }
@@ -657,6 +675,7 @@
     return {
       title: T.lecture,
       render: function (panel) {
+        panel.appendChild(el("p", "tr-motto", T.lectureTop));
         var menu = el("div", "tr-menu");
         function item(label, onClick, soon) {
           var b = el("button", "tr-menu-item" + (soon ? " is-soon" : ""));
@@ -669,9 +688,14 @@
         item("1. " + T.fasc, function () { /* contenu a venir */ }, true);
         item("2. " + T.book, function () { pushView(viewBook()); });
         item("3. " + T.wordsRead, function () {
-          pushView({ title: T.wordsRead, render: function (p) { renderSeriesRead(p); } });
+          pushView({ title: T.wordsRead, render: function (p) {
+            p.appendChild(el("p", "tr-motto", T.lectureTop));
+            renderSeriesRead(p);
+            p.appendChild(el("p", "tr-motto tr-motto-bottom", T.lectureBottom));
+          } });
         });
         panel.appendChild(menu);
+        panel.appendChild(el("p", "tr-motto tr-motto-bottom", T.lectureBottom));
       }
     };
   }

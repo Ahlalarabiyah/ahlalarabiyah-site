@@ -3049,3 +3049,6 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .write-wp-text { font-family: "Amiri", var(--font-arabic); font-size: 74px; font-weight: 400; fill: #EEF4F5; stroke: #5E7A84; stroke-width: .9; stroke-dasharray: .6 3.2; stroke-linecap: round; }
 .write-wp-ink { fill: none; stroke: var(--color-teal); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; opacity: .9; }
 ::highlight(wr-letter) { color: #C00000; }
+.tr-motto { margin: 0 0 14px; text-align: center; font-size: 1.05rem; font-weight: 700; line-height: 1.5; color: var(--color-teal-dark); }
+.tr-tip { margin: 0 0 16px; text-align: center; font-size: .92rem; font-style: italic; line-height: 1.5; color: var(--color-text-light); }
+.tr-motto-bottom { margin: 18px 0 4px; font-weight: 600; font-size: .98rem; }
