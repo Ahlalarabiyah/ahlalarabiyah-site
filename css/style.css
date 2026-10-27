@@ -1583,6 +1583,7 @@ section[id] { scroll-margin-top: 88px; }
   color: var(--color-teal);
   margin-bottom: 10px;
 }
+.footer-slogan { font-weight: 600; font-size: 0.95rem; color: #fff; margin: 0 0 10px; max-width: 320px; }
 .footer-desc { font-size: 0.92rem; max-width: 320px; }
 .footer-col h4 {
   color: #fff;
