@@ -160,6 +160,13 @@ section[id] { scroll-margin-top: 88px; }
   font-family: var(--font-arabic);
   font-size: 0.8rem;
   color: var(--color-teal-dark);
+  white-space: nowrap;
+}
+.brand-sub {
+  font-family: var(--font-body, inherit);
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--color-text-light);
 }
 
 .main-nav ul { display: flex; gap: 30px; }

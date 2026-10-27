@@ -2440,9 +2440,14 @@
         var D = {};
 
         // ---- Alif ----
+        // Alif porteur d'une hamza (أ) : la hampe est un peu raccourcie pour laisser la place
+        // a la hamza, tracee en dernier au-dessus de la hampe.
+        function hamza(cx, cy) {
+          return S([[cx + 16, cy - 14], [cx + 4, cy - 16], [cx - 9, cy - 12], [cx - 12, cy - 4], [cx - 3, cy], [cx + 10, cy + 3], [cx + 15, cy + 9], [cx + 7, cy + 14], [cx - 6, cy + 15], [cx - 15, cy + 12]]);
+        }
         D.alif = {
-          isolated: F([P([[160, 24], [160, 134]])]),
-          final: F([P([[262, 134], [166, 134], [166, 24]])])
+          isolated: F([P([[160, 76], [160, 134]]), hamza(160, 37)]),
+          final: F([P([[262, 134], [166, 134], [166, 76]]), hamza(166, 37)])
         };
 
         // ---- Famille du baa (ب ت ث ن ي) : tracés dessinés par l'auteur du site ----
@@ -2605,11 +2610,11 @@
             ], dots[0]),
             initial: F([
               S([[249, 99], [241, 90], [231, 87], [219, 89], [210, 97], [207, 109], [210, 119], [219, 124]]),
-              S([[262, 105], [253, 114], [238, 121], [223, 129], [205, 132], [189, 135], [179, 133], [175, 129]])
+              S([[262, 105], [253, 114], [238, 121], [223, 129], [205, 132], [189, 134], [168, 134], [148, 134]])
             ], dots[1]),
             medial: F([
               S([[298, 133], [281, 134], [264, 134], [254, 133], [249, 127], [245, 122]]),
-              S([[216, 113], [222, 110], [233, 103], [243, 97], [254, 96], [260, 100], [261, 109], [254, 117], [245, 122], [236, 126], [222, 129], [206, 131], [191, 133], [182, 136]])
+              S([[216, 113], [222, 110], [233, 103], [243, 97], [254, 96], [260, 100], [261, 109], [254, 117], [245, 122], [236, 126], [222, 129], [206, 131], [191, 133], [172, 134], [152, 134]])
             ], dots[2]),
             final: F([
               S([[288, 86], [277, 88], [262, 89], [248, 88], [239, 84], [234, 81]]),
@@ -2747,6 +2752,23 @@
           D[id].initial = D[id].isolated;
           D[id].medial = D[id].final;
         });
+        // Lettres posees sur la ligne : la partie "corps" (dents du س ش, boucle du ص ض, liaison)
+        // repose sur la ligne d'ecriture et seul le ventre descend dessous, comme sur le modele ;
+        // sinon l'eleve ecrirait la lettre trop haut ou trop loin de la ligne.
+        (function () {
+          function mapForm(fm, fn) {
+            fm.strokes = fm.strokes.map(function (st) { return { pts: st.pts.map(fn), sharp: st.sharp }; });
+            fm.dots = fm.dots.map(fn);
+          }
+          function down(id, f, dy) { mapForm(D[id][f], function (q) { return [q[0], q[1] + dy]; }); }
+          ["seen", "sheen"].forEach(function (id) { down(id, "isolated", 40); down(id, "final", 22); });
+          ["sad", "dad"].forEach(function (id) { down(id, "isolated", 38); down(id, "final", 36); });
+          ["ain", "ghain"].forEach(function (id) {
+            down(id, "isolated", 12);
+            // fin : la liaison part de la ligne (et non de tres haut) ; le ventre est resserre
+            mapForm(D[id].final, function (q) { return [q[0], 126 + (q[1] - 86) * 0.8]; });
+          });
+        })();
         // Lettres dont le "ventre" ou la queue descend SOUS la ligne d'ecriture (ل ن ي ق و) :
         // on les descend pour que la ligne passe a la hauteur de la ligne de base,
         // au lieu qu'elles soient posees dessus.
@@ -2839,7 +2861,7 @@
         return form === "isolated" ? ch : form === "initial" ? ch + "ـ" : form === "medial" ? "ـ" + ch + "ـ" : "ـ" + ch;
       };
       var WRITE_BASE_CHAR = {
-        alif: "ا", baa: "ب", taa: "ت", thaa: "ث", jim: "ج", haa: "ح", khaa: "خ", dal: "د", thal: "ذ", reh: "ر", zain: "ز",
+        alif: "أ", baa: "ب", taa: "ت", thaa: "ث", jim: "ج", haa: "ح", khaa: "خ", dal: "د", thal: "ذ", reh: "ر", zain: "ز",
         seen: "س", sheen: "ش", sad: "ص", dad: "ض", tah: "ط", zah: "ظ", ain: "ع", ghain: "غ", feh: "ف", qaf: "ق", kaf: "ك",
         lam: "ل", meem: "م", noon: "ن", heh: "ه", waw: "و", yeh: "ي"
       };
