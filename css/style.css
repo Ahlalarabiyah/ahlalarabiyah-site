@@ -1620,7 +1620,7 @@ section[id] { scroll-margin-top: 88px; }
   .footer-brand { grid-column: 1 / -1; }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1360px) {
   .main-nav { display: none; }
   .nav-toggle { display: flex; }
 
@@ -1642,6 +1642,35 @@ section[id] { scroll-margin-top: 88px; }
   }
   .site-header.nav-open .main-nav ul { flex-direction: column; gap: 4px; }
   .site-header.nav-open .main-nav .nav-link { display: block; padding: 12px 4px; }
+}
+
+/* Francais : libelles plus longs -> menu burger un peu plus tot, et menu plus compact au-dessus */
+@media (min-width: 1501px) {
+  html[lang="fr"] .main-nav ul { gap: 9px; }
+  html[lang="fr"] .nav-link { font-size: 0.82rem; }
+}
+@media (min-width: 1361px) and (max-width: 1500px) {
+  html[lang="fr"] .main-nav { display: none; }
+  html[lang="fr"] .nav-toggle { display: flex; }
+
+  html[lang="fr"] .site-header.nav-open .main-nav {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-bottom: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    padding: 10px 24px 24px;
+    max-height: calc(100vh - 100%);
+    max-height: calc(100svh - 100%);
+    max-height: calc(100dvh - 100%);
+    overflow-y: auto;
+  }
+  html[lang="fr"] .site-header.nav-open .main-nav ul { flex-direction: column; gap: 4px; }
+  html[lang="fr"] .site-header.nav-open .main-nav .nav-link { display: block; padding: 12px 4px; }
 }
 
 @media (max-width: 680px) {
@@ -2641,7 +2670,7 @@ a.price-pack:hover { background: var(--color-orange-10); box-shadow: var(--shado
 .tips-nav-link { display: inline-flex; align-items: center; gap: 6px; }
 
 /* Menu a 8 onglets : resserre l'espacement avant le passage en menu burger */
-@media (min-width: 1201px) {
+@media (min-width: 1361px) {
   .main-nav ul { gap: 16px; }
   .nav-link { font-size: 0.88rem; white-space: nowrap; }
 }
