@@ -7665,7 +7665,8 @@
   }
 })();
 
-// Bandeau de temoignages (accueil) : boucle infinie dans les deux sens (clones), defilement auto, fleches, glisser au doigt/souris.
+// Bandeau de temoignages (accueil) : boucle infinie dans les deux sens, defilement auto, fleches, glisser au doigt/souris.
+// Entre le dernier avis et le retour du premier, le bandeau reste vide ~GAP_SECONDS secondes.
 (function () {
   var band = document.querySelector(".tband");
   if (!band) return;
@@ -7677,26 +7678,29 @@
   var nextBtn = band.querySelector(".tband-next");
   var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   var SPEED = 40; // px par seconde
-  var pos = 0, w = 0, step = 0, last = 0, raf = 0;
+  var GAP_SECONDS = 1.5;
+  var pos = 0, w = 0, period = 0, step = 0, last = 0, raf = 0;
   var userPaused = false, hovering = false, dragging = false, glide = null;
 
   function render() {
-    if (!w) return;
-    var x = ((pos % w) + w) % w;
+    if (!period) return;
+    var x = ((pos % period) + period) % period;
     track.style.transform = "translate3d(" + (-x) + "px,0,0)";
   }
   function build() {
     Array.prototype.slice.call(track.querySelectorAll(".tband-set[aria-hidden]")).forEach(function (c) { track.removeChild(c); });
+    set.style.marginRight = "";
     w = set.offsetWidth;
     if (!w) return;
     var cards = set.children;
     step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : w;
-    var copies = Math.max(1, Math.ceil(viewport.clientWidth / w));
-    for (var i = 0; i < copies; i++) {
-      var c = set.cloneNode(true);
-      c.setAttribute("aria-hidden", "true");
-      track.appendChild(c);
-    }
+    // vide apres le dernier avis : largeur de l'ecran + GAP_SECONDS de defilement
+    var gap = viewport.clientWidth + Math.round(SPEED * GAP_SECONDS);
+    set.style.marginRight = gap + "px";
+    period = w + gap;
+    var c = set.cloneNode(true);
+    c.setAttribute("aria-hidden", "true");
+    track.appendChild(c);
     band.classList.add("is-marquee");
     render();
   }
@@ -7715,14 +7719,26 @@
   }
   function start() { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } }
   function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+  // Prochain avis (dir > 0) ou precedent (dir < 0) : on saute le vide de fin de boucle.
+  function snap(from, dir) {
+    var n = set.children.length, best = null, m0 = Math.floor(from / period);
+    for (var m = m0 - 1; m <= m0 + 1; m++) {
+      for (var i = 0; i < n; i++) {
+        var s = m * period + i * step;
+        if (dir > 0 && s > from + step * 0.25 && (best === null || s < best)) best = s;
+        if (dir < 0 && s < from - step * 0.25 && (best === null || s > best)) best = s;
+      }
+    }
+    return best;
+  }
   function go(dir) {
-    var base = glide ? glide.to : pos;
-    var to = dir > 0 ? (Math.floor(base / step + 0.25) + 1) * step : (Math.ceil(base / step - 0.25) - 1) * step;
-    glide = { from: pos, to: to, start: performance.now(), dur: 450 };
+    var to = snap(glide ? glide.to : pos, dir);
+    if (to === null) return;
+    glide = { from: pos, to: to, start: performance.now(), dur: Math.min(900, Math.max(450, Math.abs(to - pos) * 0.6)) };
   }
 
   build();
-  if (!w) return;
+  if (!period) return;
   var rt;
   window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { build(); }, 200); });
 
