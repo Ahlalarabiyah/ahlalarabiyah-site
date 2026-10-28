@@ -29,7 +29,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=239">
+<link rel="stylesheet" href="../css/style.css?v=241">
 </head>
 <body>
 
@@ -429,7 +429,11 @@
       </div>
     </div>
     <div class="container tband-actions">
-      <button type="button" class="tband-pause" data-pause="Pause scrolling" data-play="Resume scrolling" aria-label="Pause scrolling" aria-pressed="false" hidden></button>
+      <div class="tband-controls" dir="ltr">
+        <button type="button" class="tband-arrow tband-prev" aria-label="Previous review" hidden></button>
+        <button type="button" class="tband-pause" data-pause="Pause scrolling" data-play="Resume scrolling" aria-label="Pause scrolling" aria-pressed="false" hidden></button>
+        <button type="button" class="tband-arrow tband-next" aria-label="Next review" hidden></button>
+      </div>
       <a href="apropos.html#temoignages" class="btn btn-outline btn-sm">Read all testimonials</a>
     </div>
   </section>
@@ -545,6 +549,6 @@
 </div>
 
 <script src="../js/checkout-links.js?v=1"></script>
-<script src="../js/main.js?v=268"></script>
+<script src="../js/main.js?v=270"></script>
 </body>
 </html>

@@ -7665,39 +7665,95 @@
   }
 })();
 
-// Bandeau defilant de temoignages (accueil) : clones du jeu de cartes, pause au survol et via le bouton.
+// Bandeau de temoignages (accueil) : boucle infinie dans les deux sens (clones), defilement auto, fleches, glisser au doigt/souris.
 (function () {
   var band = document.querySelector(".tband");
   if (!band) return;
+  var viewport = band.querySelector(".tband-viewport");
   var track = band.querySelector(".tband-track");
   var set = track.querySelector(".tband-set");
-  var btn = band.querySelector(".tband-pause");
-  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
-  if (reduce && reduce.matches) return;
+  var pauseBtn = band.querySelector(".tband-pause");
+  var prevBtn = band.querySelector(".tband-prev");
+  var nextBtn = band.querySelector(".tband-next");
+  var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   var SPEED = 40; // px par seconde
+  var pos = 0, w = 0, step = 0, last = 0, raf = 0;
+  var userPaused = false, hovering = false, dragging = false, glide = null;
+
+  function render() {
+    if (!w) return;
+    var x = ((pos % w) + w) % w;
+    track.style.transform = "translate3d(" + (-x) + "px,0,0)";
+  }
   function build() {
     Array.prototype.slice.call(track.querySelectorAll(".tband-set[aria-hidden]")).forEach(function (c) { track.removeChild(c); });
-    var w = set.offsetWidth;
+    w = set.offsetWidth;
     if (!w) return;
-    var copies = Math.max(1, Math.ceil(window.innerWidth / w));
+    var cards = set.children;
+    step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : w;
+    var copies = Math.max(1, Math.ceil(viewport.clientWidth / w));
     for (var i = 0; i < copies; i++) {
       var c = set.cloneNode(true);
       c.setAttribute("aria-hidden", "true");
       track.appendChild(c);
     }
-    track.style.setProperty("--tband-shift", w + "px");
-    track.style.setProperty("--tband-dur", Math.round(w / SPEED) + "s");
     band.classList.add("is-marquee");
+    render();
   }
+  function tick(t) {
+    var dt = last ? Math.min((t - last) / 1000, 0.1) : 0;
+    last = t;
+    if (glide) {
+      var p = Math.min((t - glide.start) / glide.dur, 1);
+      pos = glide.from + (glide.to - glide.from) * (1 - Math.pow(1 - p, 3));
+      if (p >= 1) glide = null;
+    } else if (!dragging && !reduce && !userPaused && !hovering) {
+      pos += SPEED * dt;
+    }
+    render();
+    raf = requestAnimationFrame(tick);
+  }
+  function start() { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } }
+  function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+  function go(dir) {
+    var base = glide ? glide.to : pos;
+    var to = dir > 0 ? (Math.floor(base / step + 0.25) + 1) * step : (Math.ceil(base / step - 0.25) - 1) * step;
+    glide = { from: pos, to: to, start: performance.now(), dur: 450 };
+  }
+
   build();
-  var t;
-  window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(build, 200); });
-  if (btn) {
-    btn.hidden = false;
-    btn.addEventListener("click", function () {
-      var paused = band.classList.toggle("is-paused");
-      btn.setAttribute("aria-pressed", paused ? "true" : "false");
-      btn.setAttribute("aria-label", btn.getAttribute(paused ? "data-play" : "data-pause"));
+  if (!w) return;
+  var rt;
+  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { build(); }, 200); });
+
+  var sx = 0, sp = 0;
+  viewport.addEventListener("pointerdown", function (e) {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    dragging = true; glide = null; sx = e.clientX; sp = pos;
+    viewport.classList.add("is-dragging");
+    try { viewport.setPointerCapture(e.pointerId); } catch (err) {}
+  });
+  viewport.addEventListener("pointermove", function (e) { if (dragging) pos = sp - (e.clientX - sx); });
+  function endDrag() { dragging = false; viewport.classList.remove("is-dragging"); }
+  viewport.addEventListener("pointerup", endDrag);
+  viewport.addEventListener("pointercancel", endDrag);
+  viewport.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") hovering = true; });
+  viewport.addEventListener("pointerleave", function () { hovering = false; });
+
+  if (prevBtn) { prevBtn.hidden = false; prevBtn.addEventListener("click", function () { go(-1); }); }
+  if (nextBtn) { nextBtn.hidden = false; nextBtn.addEventListener("click", function () { go(1); }); }
+  if (pauseBtn && !reduce) {
+    pauseBtn.hidden = false;
+    pauseBtn.addEventListener("click", function () {
+      userPaused = !userPaused;
+      pauseBtn.setAttribute("aria-pressed", userPaused ? "true" : "false");
+      pauseBtn.setAttribute("aria-label", pauseBtn.getAttribute(userPaused ? "data-play" : "data-pause"));
     });
+  }
+
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (entries) { entries[0].isIntersecting ? start() : stop(); }).observe(band);
+  } else {
+    start();
   }
 })();

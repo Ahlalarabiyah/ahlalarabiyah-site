@@ -3116,19 +3116,15 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 
 /* ---------- Bandeau defilant de temoignages (accueil) ---------- */
 .tband { padding-bottom: 64px; }
-.tband-viewport { direction: ltr; overflow-x: auto; scrollbar-width: none; padding: 6px 0 14px; }
+.tband-viewport { direction: ltr; overflow-x: auto; scrollbar-width: none; padding: 6px 0 14px; touch-action: pan-y; }
 .tband-viewport::-webkit-scrollbar { display: none; }
 .tband.is-marquee .tband-viewport {
   overflow: hidden;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
   mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
-.tband-track { display: flex; width: max-content; direction: ltr; }
+.tband-track { display: flex; width: max-content; direction: ltr; will-change: transform; }
 .tband-set { display: flex; flex: none; gap: 20px; padding: 0 10px; }
-.tband.is-marquee .tband-track { animation: tbandScroll var(--tband-dur, 60s) linear infinite; will-change: transform; }
-@keyframes tbandScroll { to { transform: translate3d(calc(-1 * var(--tband-shift, 0px)), 0, 0); } }
-.tband.is-paused .tband-track { animation-play-state: paused; }
-@media (hover: hover) { .tband.is-marquee .tband-viewport:hover .tband-track { animation-play-state: paused; } }
 .tcard {
   flex: 0 0 320px; margin: 0; padding: 22px 22px 18px; text-align: left; direction: ltr;
   background: #fff; border: 1.5px solid var(--color-border); border-radius: 18px; box-shadow: 0 10px 28px rgba(16,60,70,0.06);
@@ -3137,16 +3133,22 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .tcard blockquote { margin: 0; }
 .tcard blockquote p { margin: 0; color: var(--color-text); font-size: .96rem; line-height: 1.65; }
 .tcard figcaption { display: flex; flex-direction: column; gap: 2px; padding-top: 12px; border-top: 1px solid var(--color-border); }
-.tband-actions { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; }
-.tband-pause {
+.tband-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; margin-top: 18px; }
+.tband-controls { display: inline-flex; align-items: center; gap: 8px; direction: ltr; }
+.tband.is-marquee .tband-viewport { cursor: grab; user-select: none; -webkit-user-select: none; }
+.tband.is-marquee .tband-viewport.is-dragging { cursor: grabbing; }
+.tband-pause,
+.tband-arrow {
   width: 40px; height: 40px; padding: 0; border-radius: 50%; border: 1.5px solid var(--color-border); background: #fff;
   color: var(--color-navy); font-size: .8rem; line-height: 1; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
 }
-.tband-pause[hidden] { display: none; }
+.tband-pause[hidden], .tband-arrow[hidden] { display: none; }
+.tband-arrow { font-size: 1.5rem; }
+.tband-prev::before { content: "\2039"; }
+.tband-next::before { content: "\203A"; }
 .tband-pause::before { content: "\275A\275A"; letter-spacing: -2px; }
 .tband-pause[aria-pressed="true"]::before { content: "\25B6"; letter-spacing: 0; }
-.tband-pause:hover { border-color: var(--color-teal); }
+.tband-pause:hover, .tband-arrow:hover { border-color: var(--color-teal); }
 @media (max-width: 560px) { .tcard { flex-basis: 270px; padding: 18px 18px 14px; } }
-@media (prefers-reduced-motion: reduce) { .tband.is-marquee .tband-track { animation: none; } }
 html[dir="rtl"] .testimonial, html[dir="rtl"] .tcard { direction: rtl; text-align: right; }
 html[dir="rtl"] .testimonial::before { left: auto; right: 20px; }
