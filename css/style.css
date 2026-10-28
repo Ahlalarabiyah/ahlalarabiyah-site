@@ -1694,6 +1694,7 @@ section[id] { scroll-margin-top: 88px; }
   .module-formlab { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .module-shadda { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .module-sunmoon { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
+  .module-write { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .audience-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr 1fr; }
   .hero-stats { gap: 22px; }
@@ -2884,7 +2885,7 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .intro-note { margin: 0; font-size: .95rem; font-style: italic; line-height: 1.6; color: var(--color-text-light); }
 
 /* ---------- Ecriture des lettres (trace au doigt) ---------- */
-.module-write { margin-top: 8px; }
+.module-write { width: 100%; white-space: normal; margin-top: 8px; }
 .write-panel { max-width: min(520px, 94vw); text-align: center; }
 .write-tabs { display: flex; justify-content: center; gap: 8px; margin-bottom: 12px; }
 .write-tab {
