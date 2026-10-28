@@ -3148,3 +3148,5 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .tband-pause:hover { border-color: var(--color-teal); }
 @media (max-width: 560px) { .tcard { flex-basis: 270px; padding: 18px 18px 14px; } }
 @media (prefers-reduced-motion: reduce) { .tband.is-marquee .tband-track { animation: none; } }
+html[dir="rtl"] .testimonial, html[dir="rtl"] .tcard { direction: rtl; text-align: right; }
+html[dir="rtl"] .testimonial::before { left: auto; right: 20px; }
