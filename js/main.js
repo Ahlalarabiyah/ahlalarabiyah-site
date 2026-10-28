@@ -7664,3 +7664,40 @@
     }
   }
 })();
+
+// Bandeau defilant de temoignages (accueil) : clones du jeu de cartes, pause au survol et via le bouton.
+(function () {
+  var band = document.querySelector(".tband");
+  if (!band) return;
+  var track = band.querySelector(".tband-track");
+  var set = track.querySelector(".tband-set");
+  var btn = band.querySelector(".tband-pause");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (reduce && reduce.matches) return;
+  var SPEED = 40; // px par seconde
+  function build() {
+    Array.prototype.slice.call(track.querySelectorAll(".tband-set[aria-hidden]")).forEach(function (c) { track.removeChild(c); });
+    var w = set.offsetWidth;
+    if (!w) return;
+    var copies = Math.max(1, Math.ceil(window.innerWidth / w));
+    for (var i = 0; i < copies; i++) {
+      var c = set.cloneNode(true);
+      c.setAttribute("aria-hidden", "true");
+      track.appendChild(c);
+    }
+    track.style.setProperty("--tband-shift", w + "px");
+    track.style.setProperty("--tband-dur", Math.round(w / SPEED) + "s");
+    band.classList.add("is-marquee");
+  }
+  build();
+  var t;
+  window.addEventListener("resize", function () { clearTimeout(t); t = setTimeout(build, 200); });
+  if (btn) {
+    btn.hidden = false;
+    btn.addEventListener("click", function () {
+      var paused = band.classList.toggle("is-paused");
+      btn.setAttribute("aria-pressed", paused ? "true" : "false");
+      btn.setAttribute("aria-label", btn.getAttribute(paused ? "data-play" : "data-pause"));
+    });
+  }
+})();
