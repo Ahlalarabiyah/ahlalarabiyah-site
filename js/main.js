@@ -7666,7 +7666,8 @@
 })();
 
 // Bandeau de temoignages (accueil) : boucle infinie dans les deux sens, defilement auto, fleches, glisser au doigt/souris.
-// Entre le dernier avis et le retour du premier, le bandeau reste vide ~GAP_SECONDS secondes.
+// Entre le dernier avis et le retour du premier, le bandeau reste vide ~GAP_SECONDS secondes
+// (mesure entre les zones de fondu des bords, cf. mask-image dans .tband-viewport).
 (function () {
   var band = document.querySelector(".tband");
   if (!band) return;
@@ -7678,7 +7679,8 @@
   var nextBtn = band.querySelector(".tband-next");
   var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   var SPEED = 40; // px par seconde
-  var GAP_SECONDS = 1.5;
+  var GAP_SECONDS = 0.8;
+  var FADE = 0.06; // part de la largeur occupee par le fondu de chaque bord
   var pos = 0, w = 0, period = 0, step = 0, last = 0, raf = 0;
   var userPaused = false, hovering = false, dragging = false, glide = null;
 
@@ -7694,8 +7696,9 @@
     if (!w) return;
     var cards = set.children;
     step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : w;
-    // vide apres le dernier avis : largeur de l'ecran + GAP_SECONDS de defilement
-    var gap = viewport.clientWidth + Math.round(SPEED * GAP_SECONDS);
+    // vide apres le dernier avis : ecran moins les deux fondus + GAP_SECONDS de defilement, moins les marges internes (2 x 10px)
+    var vw = viewport.clientWidth;
+    var gap = Math.max(0, Math.round(vw * (1 - 2 * FADE) + SPEED * GAP_SECONDS - 20));
     set.style.marginRight = gap + "px";
     period = w + gap;
     var c = set.cloneNode(true);
