@@ -7666,6 +7666,7 @@
 })();
 
 // Bandeau de temoignages (accueil) : boucle infinie dans les deux sens, defilement auto, fleches, glisser au doigt/souris.
+// Chaque carte est placee individuellement (translate) modulo la longueur de la boucle : pas de clones ni de piste geante.
 // Entre le dernier avis et le retour du premier, le bandeau reste vide ~GAP_SECONDS secondes
 // (mesure entre les zones de fondu des bords, cf. mask-image dans .tband-viewport).
 (function () {
@@ -7674,37 +7675,42 @@
   var viewport = band.querySelector(".tband-viewport");
   var track = band.querySelector(".tband-track");
   var set = track.querySelector(".tband-set");
+  var cards = Array.prototype.slice.call(set.children);
   var pauseBtn = band.querySelector(".tband-pause");
   var prevBtn = band.querySelector(".tband-prev");
   var nextBtn = band.querySelector(".tband-next");
+  if (!cards.length || !(window.CSS && CSS.supports && CSS.supports("translate", "1px 0"))) return;
   var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   var SPEED = 40; // px par seconde
   var GAP_SECONDS = 0.8;
   var FADE = 0.06; // part de la largeur occupee par le fondu de chaque bord
-  var pos = 0, w = 0, period = 0, step = 0, last = 0, raf = 0;
-  var userPaused = false, hovering = false, dragging = false, glide = null;
+  var LEFT = 12; // marge gauche de la premiere carte
+  var pos = 0, period = 0, step = 0, cardW = 0, last = 0, raf = 0;
+  var userPaused = false, dragging = false, glide = null, ready = false;
 
   function render() {
-    if (!period) return;
-    var x = ((pos % period) + period) % period;
-    track.style.transform = "translate3d(" + (-x) + "px,0,0)";
+    if (!ready) return;
+    for (var i = 0; i < cards.length; i++) {
+      var r = (((LEFT + i * step - pos) % period) + period) % period;
+      var x = r > period - cardW - 24 ? r - period : r;
+      cards[i].style.translate = x + "px 0";
+    }
   }
   function build() {
-    Array.prototype.slice.call(track.querySelectorAll(".tband-set[aria-hidden]")).forEach(function (c) { track.removeChild(c); });
-    set.style.marginRight = "";
-    w = set.offsetWidth;
-    if (!w) return;
-    var cards = set.children;
-    step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : w;
-    // vide apres le dernier avis : ecran moins les deux fondus + GAP_SECONDS de defilement, moins les marges internes (2 x 10px)
+    band.classList.remove("is-marquee");
+    track.style.height = "";
+    cards.forEach(function (c) { c.style.width = ""; c.style.height = ""; c.style.translate = ""; });
     var vw = viewport.clientWidth;
-    var gap = Math.max(0, Math.round(vw * (1 - 2 * FADE) + SPEED * GAP_SECONDS - 20));
-    set.style.marginRight = gap + "px";
-    period = w + gap;
-    var c = set.cloneNode(true);
-    c.setAttribute("aria-hidden", "true");
-    track.appendChild(c);
+    cardW = cards[0].offsetWidth;
+    var cardH = set.offsetHeight;
+    if (!vw || !cardW || !cardH) { ready = false; return; }
+    step = cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cardW + 22;
+    // longueur de la boucle : les cartes, puis un vide (ecran moins les deux fondus + GAP_SECONDS de defilement)
+    period = (cards.length - 1) * step + cardW + Math.round(vw * (1 - 2 * FADE) + SPEED * GAP_SECONDS);
+    cards.forEach(function (c) { c.style.width = cardW + "px"; c.style.height = cardH + "px"; });
+    track.style.height = cardH + "px";
     band.classList.add("is-marquee");
+    ready = true;
     render();
   }
   function tick(t) {
@@ -7714,7 +7720,7 @@
       var p = Math.min((t - glide.start) / glide.dur, 1);
       pos = glide.from + (glide.to - glide.from) * (1 - Math.pow(1 - p, 3));
       if (p >= 1) glide = null;
-    } else if (!dragging && !reduce && !userPaused && !hovering) {
+    } else if (!dragging && !reduce && !userPaused) {
       pos += SPEED * dt;
     }
     render();
@@ -7724,9 +7730,9 @@
   function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
   // Prochain avis (dir > 0) ou precedent (dir < 0) : on saute le vide de fin de boucle.
   function snap(from, dir) {
-    var n = set.children.length, best = null, m0 = Math.floor(from / period);
+    var best = null, m0 = Math.floor(from / period);
     for (var m = m0 - 1; m <= m0 + 1; m++) {
-      for (var i = 0; i < n; i++) {
+      for (var i = 0; i < cards.length; i++) {
         var s = m * period + i * step;
         if (dir > 0 && s > from + step * 0.25 && (best === null || s < best)) best = s;
         if (dir < 0 && s < from - step * 0.25 && (best === null || s > best)) best = s;
@@ -7735,29 +7741,34 @@
     return best;
   }
   function go(dir) {
+    if (!ready) return;
     var to = snap(glide ? glide.to : pos, dir);
     if (to === null) return;
     glide = { from: pos, to: to, start: performance.now(), dur: Math.min(900, Math.max(450, Math.abs(to - pos) * 0.6)) };
   }
 
   build();
-  if (!period) return;
   var rt;
-  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { build(); }, 200); });
+  function rebuildSoon() { clearTimeout(rt); rt = setTimeout(build, 150); }
+  window.addEventListener("resize", rebuildSoon);
+  window.addEventListener("load", rebuildSoon);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(rebuildSoon);
+  if (window.ResizeObserver) new ResizeObserver(rebuildSoon).observe(viewport);
 
   var sx = 0, sp = 0;
+  function endDrag() { dragging = false; viewport.classList.remove("is-dragging"); }
   viewport.addEventListener("pointerdown", function (e) {
-    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (!ready || (e.pointerType === "mouse" && e.button !== 0)) return;
     dragging = true; glide = null; sx = e.clientX; sp = pos;
     viewport.classList.add("is-dragging");
     try { viewport.setPointerCapture(e.pointerId); } catch (err) {}
   });
   viewport.addEventListener("pointermove", function (e) { if (dragging) pos = sp - (e.clientX - sx); });
-  function endDrag() { dragging = false; viewport.classList.remove("is-dragging"); }
   viewport.addEventListener("pointerup", endDrag);
   viewport.addEventListener("pointercancel", endDrag);
-  viewport.addEventListener("pointerenter", function (e) { if (e.pointerType === "mouse") hovering = true; });
-  viewport.addEventListener("pointerleave", function () { hovering = false; });
+  viewport.addEventListener("lostpointercapture", endDrag);
+  window.addEventListener("blur", endDrag);
+  document.addEventListener("visibilitychange", endDrag);
 
   if (prevBtn) { prevBtn.hidden = false; prevBtn.addEventListener("click", function () { go(-1); }); }
   if (nextBtn) { nextBtn.hidden = false; nextBtn.addEventListener("click", function () { go(1); }); }
@@ -7771,7 +7782,7 @@
   }
 
   if ("IntersectionObserver" in window) {
-    new IntersectionObserver(function (entries) { entries[0].isIntersecting ? start() : stop(); }).observe(band);
+    new IntersectionObserver(function (entries) { entries[entries.length - 1].isIntersecting ? start() : stop(); }).observe(band);
   } else {
     start();
   }
