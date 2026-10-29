@@ -4,6 +4,52 @@
   // Liens de paiement Stripe : voir js/checkout-links.js (a renseigner la-bas).
   var CHECKOUT_LINKS = window.AHL_CHECKOUT_LINKS || {};
 
+  // Textes affiches par le script, dans la langue de la page (fr par defaut).
+  var LANG = (document.documentElement.lang || "fr").slice(0, 2);
+  var TXT = {
+    fr: {
+      choose: "Choisis ta formule", allIn: "tous inclus", payAll: "Payer {p} \u00b7 tous les modules",
+      chooseMore: "Choisis encore {n}", pay: "Payer {p} \u00b7 modules {m}",
+      already: "Tu as d\u00e9j\u00e0 choisi {n} : retires-en un pour en changer.",
+      shareText: "Rejoins-moi sur Ahl Al Arabiyah ! Avec mon code {c}, tu as 10% de r\u00e9duction sur ton premier achat.",
+      copied: "Message copi\u00e9 : colle-le pour inviter ton ami.",
+      mod: function (n) { return n + " " + (n > 1 ? "modules" : "module"); }
+    },
+    en: {
+      choose: "Choose your plan", allIn: "all included", payAll: "Pay {p} \u00b7 all modules",
+      chooseMore: "Choose {n} more", pay: "Pay {p} \u00b7 modules {m}",
+      already: "You have already chosen {n}: remove one to change.",
+      shareText: "Join me on Ahl Al Arabiyah! With my code {c}, you get 10% off your first purchase.",
+      copied: "Message copied: paste it to invite your friend.",
+      mod: function (n) { return n + " " + (n > 1 ? "modules" : "module"); }
+    },
+    ru: {
+      choose: "Выбери тариф", allIn: "всё включено", payAll: "Оплатить {p} \u00b7 все модули",
+      chooseMore: "Выбери ещё {n}", pay: "Оплатить {p} \u00b7 модули {m}",
+      already: "Уже выбрано: {n}. Убери один, чтобы изменить выбор.",
+      shareText: "Присоединяйся ко мне в Ahl Al Arabiyah! С моим кодом {c} ты получишь скидку 10% на первую покупку.",
+      copied: "Сообщение скопировано: вставь его, чтобы пригласить друга.",
+      mod: function (n) { var m10 = n % 10, m100 = n % 100; return n + " " + (m10 === 1 && m100 !== 11 ? "модуль" : (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "модуля" : "модулей")); }
+    },
+    de: {
+      choose: "W\u00e4hle deinen Tarif", allIn: "alles inklusive", payAll: "{p} bezahlen \u00b7 alle Module",
+      chooseMore: "W\u00e4hle noch {n}", pay: "{p} bezahlen \u00b7 Module {m}",
+      already: "Du hast schon {n} gew\u00e4hlt: Entferne eines, um zu wechseln.",
+      shareText: "Komm zu Ahl Al Arabiyah! Mit meinem Code {c} bekommst du 10 % Rabatt auf deinen ersten Kauf.",
+      copied: "Nachricht kopiert: F\u00fcge sie ein, um deinen Freund einzuladen.",
+      mod: function (n) { return n + " " + (n > 1 ? "Module" : "Modul"); }
+    },
+    ar: {
+      choose: "اختر باقتك", allIn: "كل شيء مشمول", payAll: "ادفع {p} \u00b7 كل الوحدات",
+      chooseMore: "اختر {n} أخرى", pay: "ادفع {p} \u00b7 الوحدات {m}",
+      already: "لقد اخترت بالفعل {n}: أزل واحدة لتغيّر اختيارك.",
+      shareText: "انضمّ إليّ في Ahl Al Arabiyah! برمزي {c} تحصل على خصم 10٪ على أول عملية شراء.",
+      copied: "تم نسخ الرسالة: الصقها لدعوة صديقك.",
+      mod: function (n) { return n === 1 ? "وحدة واحدة" : n === 2 ? "وحدتان" : n <= 10 ? n + " وحدات" : n + " وحدة"; }
+    }
+  };
+  var T = TXT[LANG] || TXT.fr;
+
   // ---- Paiement par module : formule (1 / 3 / 6 / tous) puis choix des modules ----
   // La personne choisit d'abord sa formule, puis coche exactement ce nombre
   // de modules (modules 1 et 2 gratuits : on choisit parmi les modules 3 a 12).
@@ -25,7 +71,9 @@
     var payEl = document.getElementById("modulePay");
     var state = { plan: null, picked: [] };
 
-    function plural(n, one, many) { return n + " " + (n > 1 ? many : one); }
+    function fmt(str, vars) {
+      return str.replace(/\{(\w+)\}/g, function (_, k) { return vars[k]; });
+    }
 
     function payHref(plan, picked) {
       var base = CHECKOUT_LINKS[plan.key];
@@ -56,20 +104,20 @@
       if (!plan) {
         counterEl.textContent = "";
         hintEl.textContent = "";
-        setPay(false, "Choisis ta formule", "");
+        setPay(false, T.choose, "");
         return;
       }
       if (all) {
-        counterEl.textContent = "\u2014 tous inclus";
-        setPay(true, "Payer " + plan.price + " \u00b7 tous les modules", payHref(plan, []));
+        counterEl.textContent = "\u2014 " + T.allIn;
+        setPay(true, fmt(T.payAll, { p: plan.price }), payHref(plan, []));
         return;
       }
       counterEl.textContent = "\u2014 " + picked.length + " / " + plan.count;
       if (picked.length < plan.count) {
         var left = plan.count - picked.length;
-        setPay(false, "Choisis encore " + plural(left, "module", "modules"), "");
+        setPay(false, fmt(T.chooseMore, { n: T.mod(left) }), "");
       } else {
-        setPay(true, "Payer " + plan.price + " \u00b7 modules " + picked.join(", "), payHref(plan, picked));
+        setPay(true, fmt(T.pay, { p: plan.price, m: picked.join(", ") }), payHref(plan, picked));
       }
     }
 
@@ -115,7 +163,7 @@
         } else if (plan.count === 1) {
           state.picked = [n];
         } else if (state.picked.length >= plan.count) {
-          hintEl.textContent = "Tu as d\u00e9j\u00e0 choisi " + plural(plan.count, "module", "modules") + " : retires-en un pour en changer.";
+          hintEl.textContent = fmt(T.already, { n: T.mod(plan.count) });
         } else {
           state.picked.push(n);
         }
@@ -154,14 +202,13 @@
       shareBtn.addEventListener("click", function (e) { e.preventDefault(); });
     } else {
       shareBtn.addEventListener("click", function () {
-        var text = "Rejoins-moi sur Ahl Al Arabiyah ! Avec mon code " + REFERRAL_CODE +
-          ", tu as 10% de réduction sur ton premier achat.";
+        var text = fmt(T.shareText, { c: REFERRAL_CODE });
         var url = "https://ahlalarabiyah.com/";
         function done(msg) { if (shareStatus) { shareStatus.textContent = msg; } }
         if (navigator.share) {
           navigator.share({ title: "Ahl Al Arabiyah", text: text, url: url }).catch(function () {});
         } else if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text + " " + url).then(function () { done("Message copié : colle-le pour inviter ton ami."); }, function () { done(text + " " + url); });
+          navigator.clipboard.writeText(text + " " + url).then(function () { done(T.copied); }, function () { done(text + " " + url); });
         } else {
           done(text + " " + url);
         }

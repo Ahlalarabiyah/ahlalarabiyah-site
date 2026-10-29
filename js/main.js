@@ -122,6 +122,8 @@
       }
     };
     var T = TXT[LANG] || TXT.fr;
+    // Page "Nos formules" dans la langue de la page (fr a la racine, les autres dans /en/ /ru/ /de/ /ar/).
+    var FORMULES_URL = ROOT_BASE + (TXT[LANG] && LANG !== "fr" ? LANG + "/" : "") + "formules.html";
 
     // ---- Cadenas sur les cartes ----
     function refreshLocks() {
@@ -168,7 +170,7 @@
           return u.toString();
         } catch (e) { /* lien invalide : repli ci-dessous */ }
       }
-      return ROOT_BASE + "formules.html#formules";
+      return FORMULES_URL + "#formules";
     }
 
     function el(tag, cls, text) {
@@ -244,7 +246,7 @@
       box.appendChild(plans);
       box.appendChild(option(checkoutHref("lifetime"), T.lifetime, T.lifetimeDesc, "79,99 €", "paywall-opt-dark"));
       var all = el("a", "paywall-all", T.seeAll + " →");
-      all.href = ROOT_BASE + "formules.html";
+      all.href = FORMULES_URL;
       box.appendChild(all);
 
       // Code d'acces : champ replie derriere un lien discret.

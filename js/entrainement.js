@@ -751,7 +751,7 @@
   // ---- Page : quatre cartes ----
   var intro = el("div", "section-head");
   intro.appendChild(el("p", "eyebrow eyebrow-center", T.eyebrow));
-  intro.appendChild(el("h2", "", T.h2));
+  intro.appendChild(el("h1", "", T.h2));
   intro.appendChild(el("p", "section-lead", T.lead));
   root.appendChild(intro);
   var grid = el("div", "module-grid tr-cards");
