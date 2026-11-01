@@ -3248,3 +3248,9 @@ html[dir="rtl"] .tier-arrow { display: inline-block; transform: scaleX(-1); }
 /* Cadre "Ecris le mot" : un appui = un petit point, gomme active */
 .write-wp-tap { fill: var(--color-teal); opacity: .9; }
 .write-wordpad.is-erasing { cursor: cell; }
+
+/* Mots pour s'exercer : boutons (un clic change le mot du cadre "Ecris le mot") */
+button.write-word { color: var(--color-navy); cursor: pointer; font-size: 1.9rem; -webkit-appearance: none; appearance: none; transition: border-color .15s, background-color .15s, transform .1s; }
+button.write-word:hover { border-color: var(--color-teal); }
+button.write-word:active { transform: scale(0.97); }
+button.write-word.is-active { border-color: var(--color-teal); background: var(--color-teal-10); }

@@ -3173,6 +3173,7 @@
             CSS.highlights.set("wr-letter", h);
           }
           padText.textContent = word;
+          padInk.textContent = ""; padStrokes = [];   // nouveau mot : on repart d'une zone vide
           fitPad();
           playWatch(word);
         }
@@ -3335,10 +3336,21 @@
           wordsBox.appendChild(writeEl("p", "write-words-title", WT.words));
           var row = writeEl("div", "write-words-row");
           list.forEach(function (w) {
-            var s = writeEl("span", "write-word");
+            // Un clic sur un mot de la liste : c'est ce mot qui s'affiche dans "Ecris le mot" (animation + pointilles).
+            var s = writeEl("button", "write-word");
+            s.type = "button";
             s.lang = "ar";
             s.dir = "rtl";
-            renderArabicText(s, stretchArabic(w.arabic));
+            s.setAttribute("aria-pressed", "false");
+            var full = stretchArabic(w.arabic);
+            renderArabicText(s, full);
+            s.addEventListener("click", function () {
+              Array.prototype.forEach.call(row.children, function (b) { b.classList.remove("is-active"); b.setAttribute("aria-pressed", "false"); });
+              s.classList.add("is-active");
+              s.setAttribute("aria-pressed", "true");
+              setWord(full, base);
+              if (wordCard.scrollIntoView) wordCard.scrollIntoView({ behavior: "smooth", block: "start" });
+            });
             row.appendChild(s);
           });
           wordsBox.appendChild(row);
@@ -3481,14 +3493,16 @@
           matchTaps().strays.forEach(function (st) {
             if (st.nearDot || st.entry.pts.some(function (q) { return !nearAny(q, ref, 12); })) extra++;
           });
-          var covered = 0, precise = 0;
+          var covered = 0, precise = 0, far = 0;
           ref.forEach(function (r) { if (nearAny(r, ink, 14)) covered++; });
-          ink.forEach(function (q) { if (nearAny(q, ref, 12)) precise++; });
+          // far : points du trace tres loin du modele (trait qui deborde). Un depassement court reste tolere,
+          // mais une ligne qui deborde de la lettre ne doit pas etre validee meme si le reste est juste.
+          ink.forEach(function (q) { if (nearAny(q, ref, 12)) precise++; if (!nearAny(q, ref, 18)) far++; });
           var onDot = f.dots.some(function (d) { return nearAny(d, ink, 11); });
           return {
             coverage: ref.length ? covered / ref.length : 0,
             precision: ink.length ? precise / ink.length : 1,
-            ratio: refLen ? inkLen / refLen : 1, extra: extra,
+            ratio: refLen ? inkLen / refLen : 1, extra: extra, far: far,
             onDot: onDot, hasInk: ink.length > 0, dotsOk: hit.every(Boolean)
           };
         }
@@ -3504,7 +3518,7 @@
           if (state.done) return;
           var ev = evaluate();
           try { board.setAttribute("data-eval", JSON.stringify(ev)); } catch (err) { /* ignore */ }
-          var shapeOk = ev.hasInk && ev.coverage >= 0.85 && ev.precision >= 0.85 && ev.ratio <= 1.35 && !ev.onDot && !ev.extra;
+          var shapeOk = ev.hasInk && ev.coverage >= 0.85 && ev.precision >= 0.85 && ev.ratio <= 1.35 && ev.far <= 2 && !ev.onDot && !ev.extra;
           if (shapeOk && ev.dotsOk) { markDone(); return; }
           status.className = "write-status is-bad";
           if (!ev.hasInk && !state.user.length) { status.textContent = WT.draw; status.className = "write-status"; }
