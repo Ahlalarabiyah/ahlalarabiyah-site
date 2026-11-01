@@ -3288,3 +3288,24 @@ button.write-word.is-active { border-color: var(--color-teal); background: var(-
 @media (min-width: 681px) { .price-pack.is-soon .soon-badge { flex-basis: 100%; width: auto; text-align: center; margin-top: 0; } }
 .lifetime-buy.is-soon { display: inline-flex; flex-direction: column; align-items: center; }
 .picker-pay[aria-disabled="true"] { cursor: default; }
+
+/* FAQ */
+.faq { max-width: 780px; margin: 0 auto; text-align: start; }
+.faq-group { font-size: 1.15rem; margin: 30px 0 10px; color: var(--color-teal-dark); }
+.faq-item { background: #fff; border: 1.5px solid var(--color-border); border-radius: 14px; margin: 0 0 10px; }
+.faq-item[open] { border-color: var(--color-teal); background: var(--color-teal-10); }
+.faq-item summary {
+  list-style: none; cursor: pointer; padding: 14px 44px 14px 18px; font-family: var(--font-heading); font-weight: 600;
+  color: var(--color-navy); position: relative; line-height: 1.4;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+"; position: absolute; inset-inline-end: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 1.4rem; line-height: 1; color: var(--color-teal-dark); font-weight: 500;
+}
+html[dir="rtl"] .faq-item summary { padding: 14px 18px 14px 44px; }
+.faq-item[open] summary::after { content: "–"; }
+.faq-item summary:focus-visible { outline: 3px solid var(--color-teal); outline-offset: 2px; border-radius: 14px; }
+.faq-a { padding: 0 18px 14px; line-height: 1.7; }
+.faq-a p { margin: 0; }
+.faq-a a { color: var(--color-teal-dark); text-decoration: underline; }
