@@ -3325,7 +3325,13 @@
           u.forEach(function (p) { cx += p[0]; cy += p[1]; });
           return [cx / u.length, cy / u.length];
         }
-        function isTap(pts) { return writePathLen(pts) < 70; }
+        // Un "appui" (point de la lettre) = un geste quasi immobile, ou un tout petit trait pose sur un point
+        // du modele. Un trait court ailleurs (ex. la hamza) reste un vrai trait : avant, tout geste de moins
+        // de 70 unites devenait un point et comptait comme "point en trop".
+        function isTap(pts) {
+          var len = writePathLen(pts);
+          return len < 16 || (len < 40 && tapOnDot(pts));
+        }
         function tapOnDot(u) {
           var c = centroid(u);
           return current().dots.some(function (d) { return Math.hypot(c[0] - d[0], c[1] - d[1]) < 32; });

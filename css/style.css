@@ -2923,7 +2923,7 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .write-dot { fill: none; stroke: var(--color-orange); stroke-width: 2; stroke-dasharray: 3 4; }
 .write-dot.is-active { fill: rgba(238,154,69,0.25); }
 .write-dot.is-done { fill: #2FA87A; stroke: #2FA87A; stroke-dasharray: none; }
-.write-ink { fill: none; stroke: var(--color-teal); stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
+.write-ink { fill: none; stroke: var(--color-teal); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
 .write-status { min-height: 1.6em; margin: 10px 0 4px; font-weight: 700; color: var(--color-text-light); }
 .write-status.is-ok { color: #1F9D6B; }
 .write-status.is-bad { color: #E4534B; }
