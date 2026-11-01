@@ -3272,3 +3272,19 @@ button.write-word.is-active { border-color: var(--color-teal); background: var(-
   .write-status { min-height: 1.3em; margin: 6px 0 2px; font-size: .9rem; }
   .write-actions { margin: 4px 0 2px; }
 }
+
+/* Achats pas encore ouverts : l'offre reste visible, le bouton annonce "Bientot disponible" */
+.price-buy.is-soon { cursor: default; }
+.price-buy.is-soon:hover { transform: none; box-shadow: none; }
+.soon-badge {
+  display: block; width: fit-content; margin: 8px auto 0; padding: 3px 11px; border-radius: 999px;
+  background: var(--color-navy); color: #fff; font-family: var(--font-heading); font-weight: 600;
+  font-size: .7rem; letter-spacing: .02em; line-height: 1.4; white-space: nowrap;
+}
+.price-rows .price-buy.is-soon { flex-wrap: wrap; row-gap: 2px; }
+.price-rows .price-buy.is-soon .soon-badge { flex: 0 0 100%; margin: 4px 0 0; width: auto; text-align: center; border-radius: 8px; }
+.level-card.is-soon .soon-badge { white-space: normal; text-align: center; font-size: .62rem; padding: 2px 8px; }
+.price-pack.is-soon .soon-badge { flex: 0 0 auto; margin: 0 auto; }
+@media (min-width: 681px) { .price-pack.is-soon .soon-badge { flex-basis: 100%; width: auto; text-align: center; margin-top: 0; } }
+.lifetime-buy.is-soon { display: inline-flex; flex-direction: column; align-items: center; }
+.picker-pay[aria-disabled="true"] { cursor: default; }

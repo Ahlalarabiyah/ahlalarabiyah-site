@@ -8,7 +8,7 @@
   var LANG = (document.documentElement.lang || "fr").slice(0, 2);
   var TXT = {
     fr: {
-      choose: "Choisis ta formule", allIn: "tous inclus", payAll: "Payer {p} \u00b7 tous les modules",
+      soon: "Bientôt disponible", choose: "Choisis ta formule", allIn: "tous inclus", payAll: "Payer {p} \u00b7 tous les modules",
       chooseMore: "Choisis encore {n}", pay: "Payer {p} \u00b7 modules {m}",
       already: "Tu as d\u00e9j\u00e0 choisi {n} : retires-en un pour en changer.",
       shareText: "Rejoins-moi sur Ahl Al Arabiyah ! Avec mon code {c}, tu as 10% de r\u00e9duction sur ton premier achat.",
@@ -16,7 +16,7 @@
       mod: function (n) { return n + " " + (n > 1 ? "modules" : "module"); }
     },
     en: {
-      choose: "Choose your plan", allIn: "all included", payAll: "Pay {p} \u00b7 all modules",
+      soon: "Coming soon", choose: "Choose your plan", allIn: "all included", payAll: "Pay {p} \u00b7 all modules",
       chooseMore: "Choose {n} more", pay: "Pay {p} \u00b7 modules {m}",
       already: "You have already chosen {n}: remove one to change.",
       shareText: "Join me on Ahl Al Arabiyah! With my code {c}, you get 10% off your first purchase.",
@@ -24,7 +24,7 @@
       mod: function (n) { return n + " " + (n > 1 ? "modules" : "module"); }
     },
     ru: {
-      choose: "Выбери тариф", allIn: "всё включено", payAll: "Оплатить {p} \u00b7 все модули",
+      soon: "Скоро", choose: "Выбери тариф", allIn: "всё включено", payAll: "Оплатить {p} \u00b7 все модули",
       chooseMore: "Выбери ещё {n}", pay: "Оплатить {p} \u00b7 модули {m}",
       already: "Уже выбрано: {n}. Убери один, чтобы изменить выбор.",
       shareText: "Присоединяйся ко мне в Ahl Al Arabiyah! С моим кодом {c} ты получишь скидку 10% на первую покупку.",
@@ -32,7 +32,7 @@
       mod: function (n) { var m10 = n % 10, m100 = n % 100; return n + " " + (m10 === 1 && m100 !== 11 ? "модуль" : (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? "модуля" : "модулей")); }
     },
     de: {
-      choose: "W\u00e4hle deinen Tarif", allIn: "alles inklusive", payAll: "{p} bezahlen \u00b7 alle Module",
+      soon: "Demnächst verfügbar", choose: "W\u00e4hle deinen Tarif", allIn: "alles inklusive", payAll: "{p} bezahlen \u00b7 alle Module",
       chooseMore: "W\u00e4hle noch {n}", pay: "{p} bezahlen \u00b7 Module {m}",
       already: "Du hast schon {n} gew\u00e4hlt: Entferne eines, um zu wechseln.",
       shareText: "Komm zu Ahl Al Arabiyah! Mit meinem Code {c} bekommst du 10 % Rabatt auf deinen ersten Kauf.",
@@ -40,7 +40,7 @@
       mod: function (n) { return n + " " + (n > 1 ? "Module" : "Modul"); }
     },
     ar: {
-      choose: "اختر باقتك", allIn: "كل شيء مشمول", payAll: "ادفع {p} \u00b7 كل الوحدات",
+      soon: "قريبًا", choose: "اختر باقتك", allIn: "كل شيء مشمول", payAll: "ادفع {p} \u00b7 كل الوحدات",
       chooseMore: "اختر {n} أخرى", pay: "ادفع {p} \u00b7 الوحدات {m}",
       already: "لقد اخترت بالفعل {n}: أزل واحدة لتغيّر اختيارك.",
       shareText: "انضمّ إليّ في Ahl Al Arabiyah! برمزي {c} تحصل على خصم 10٪ على أول عملية شراء.",
@@ -122,6 +122,8 @@
     }
 
     function setPay(ready, label, href) {
+      // Choix complet mais aucun lien de paiement configure : on l'annonce au lieu d'un bouton "Payer" qui ne repond pas.
+      if (ready && !href) { label = T.soon; ready = false; }
       payEl.textContent = label;
       payEl.classList.toggle("is-ready", ready);
       if (ready && href) {
@@ -183,6 +185,11 @@
     } else {
       el.setAttribute("role", "button");
       el.setAttribute("aria-disabled", "true");
+      el.classList.add("is-soon");
+      var badge = document.createElement("span");
+      badge.className = "soon-badge";
+      badge.textContent = T.soon;
+      el.appendChild(badge);
       el.addEventListener("click", function (e) { e.preventDefault(); });
     }
   });
