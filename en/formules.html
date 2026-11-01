@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=248">
+<link rel="stylesheet" href="../css/style.css?v=249">
 </head>
 <body>
 
@@ -195,11 +195,17 @@
     <div class="container">
       <div class="referral-card">
         <span class="referral-icon" aria-hidden="true">🎁</span>
-        <h2>Refer a friend, earn rewards</h2>
-        <p class="referral-sub">Share your code, and when your friend subscribes, you get a dictation unlocked.</p>
-        <button type="button" class="btn btn-primary referral-share" id="referralShare">Share my code</button>
+        <h2>Refer a friend, level up</h2>
+        <p class="referral-sub">Share your code. Each tier you reach unlocks a new reward.</p>
+        <ul class="referral-tiers" aria-label="Tiers">
+          <li><span class="tier-goal">1 successful referral</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 dictation unlocked ☺️</span></li>
+          <li><span class="tier-goal">3 successful referrals</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 letter module free 😉</span></li>
+          <li><span class="tier-goal">5 successful referrals</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 month of subscription free 😀</span></li>
+          <li><span class="tier-goal">10 successful referrals</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">Lifetime access to all dictations 😁</span></li>
+        </ul>
+        <p class="referral-line">Your friend also gets 10% off their first purchase. 💪🏼</p>
+        <button type="button" class="btn btn-primary referral-share" id="referralShare">Share my code 🫱🏻‍🫲🏼</button>
         <p class="referral-status" id="referralStatus" aria-live="polite"></p>
-        <p class="referral-line">Your friend also gets 10% off their first purchase.</p>
         <p class="referral-note">Referral is reserved for app users.</p>
       </div>
     </div>

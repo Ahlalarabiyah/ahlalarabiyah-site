@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=248">
+<link rel="stylesheet" href="../css/style.css?v=249">
 </head>
 <body>
 
@@ -195,11 +195,17 @@
     <div class="container">
       <div class="referral-card">
         <span class="referral-icon" aria-hidden="true">🎁</span>
-        <h2>Пригласи друга и получай награды</h2>
-        <p class="referral-sub">Поделись своим кодом, и когда твой друг оформит подписку, ты получишь открытый диктант.</p>
-        <button type="button" class="btn btn-primary referral-share" id="referralShare">Поделиться моим кодом</button>
+        <h2>Пригласи друга и поднимись на новый уровень</h2>
+        <p class="referral-sub">Поделись своим кодом. За каждую достигнутую ступень ты получаешь новую награду.</p>
+        <ul class="referral-tiers" aria-label="Ступени">
+          <li><span class="tier-goal">1 успешное приглашение</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 диктант открыт ☺️</span></li>
+          <li><span class="tier-goal">3 успешных приглашения</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 модуль с буквами в подарок 😉</span></li>
+          <li><span class="tier-goal">5 успешных приглашений</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 месяц подписки в подарок 😀</span></li>
+          <li><span class="tier-goal">10 успешных приглашений</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">Пожизненный доступ ко всем диктантам 😁</span></li>
+        </ul>
+        <p class="referral-line">Твой друг тоже получит скидку 10% на первую покупку. 💪🏼</p>
+        <button type="button" class="btn btn-primary referral-share" id="referralShare">Поделиться моим кодом 🫱🏻‍🫲🏼</button>
         <p class="referral-status" id="referralStatus" aria-live="polite"></p>
-        <p class="referral-line">Твой друг тоже получит скидку 10% на первую покупку.</p>
         <p class="referral-note">Реферальная программа доступна только пользователям приложения.</p>
       </div>
     </div>

@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=248">
+<link rel="stylesheet" href="../css/style.css?v=249">
 </head>
 <body>
 
@@ -195,11 +195,17 @@
     <div class="container">
       <div class="referral-card">
         <span class="referral-icon" aria-hidden="true">🎁</span>
-        <h2>Wirb einen Freund und sammle Belohnungen</h2>
-        <p class="referral-sub">Teile deinen Code, und wenn dein Freund ein Abo abschließt, erhältst du ein freigeschaltetes Diktat.</p>
-        <button type="button" class="btn btn-primary referral-share" id="referralShare">Meinen Code teilen</button>
+        <h2>Wirb einen Freund und steige auf</h2>
+        <p class="referral-sub">Teile deinen Code. Mit jeder erreichten Stufe schaltest du eine neue Belohnung frei.</p>
+        <ul class="referral-tiers" aria-label="Stufen">
+          <li><span class="tier-goal">1 erfolgreiche Empfehlung</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 Diktat freigeschaltet ☺️</span></li>
+          <li><span class="tier-goal">3 erfolgreiche Empfehlungen</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 Buchstabenmodul geschenkt 😉</span></li>
+          <li><span class="tier-goal">5 erfolgreiche Empfehlungen</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 Monat Abo geschenkt 😀</span></li>
+          <li><span class="tier-goal">10 erfolgreiche Empfehlungen</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">Lebenslanger Zugang zu allen Diktaten 😁</span></li>
+        </ul>
+        <p class="referral-line">Dein Freund erhält außerdem 10 % Rabatt auf seinen ersten Kauf. 💪🏼</p>
+        <button type="button" class="btn btn-primary referral-share" id="referralShare">Meinen Code teilen 🫱🏻‍🫲🏼</button>
         <p class="referral-status" id="referralStatus" aria-live="polite"></p>
-        <p class="referral-line">Dein Freund erhält außerdem 10 % Rabatt auf seinen ersten Kauf.</p>
         <p class="referral-note">Das Empfehlungsprogramm ist Nutzern der App vorbehalten.</p>
       </div>
     </div>

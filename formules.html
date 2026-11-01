@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/style.css?v=248">
+<link rel="stylesheet" href="css/style.css?v=249">
 </head>
 <body>
 
@@ -196,11 +196,17 @@
     <div class="container">
       <div class="referral-card">
         <span class="referral-icon" aria-hidden="true">🎁</span>
-        <h2>Parraine un ami, gagne des récompenses</h2>
-        <p class="referral-sub">Partage ton code, et quand ton ami s’abonne, tu reçois une dictée débloquée.</p>
-        <button type="button" class="btn btn-primary referral-share" id="referralShare">Partager mon code</button>
+        <h2>Parraine un ami, monte de niveau</h2>
+        <p class="referral-sub">Partage ton code. À chaque palier atteint, tu débloques une nouvelle récompense.</p>
+        <ul class="referral-tiers" aria-label="Paliers">
+          <li><span class="tier-goal">1 parrainage réussi</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 dictée débloquée ☺️</span></li>
+          <li><span class="tier-goal">3 parrainages réussis</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 module lettres offert 😉</span></li>
+          <li><span class="tier-goal">5 parrainages réussis</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">1 mois d’abonnement offert 😀</span></li>
+          <li><span class="tier-goal">10 parrainages réussis</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">Accès à vie à toutes les dictées 😁</span></li>
+        </ul>
+        <p class="referral-line">Ton ami reçoit aussi 10% de réduction sur son premier achat. 💪🏼</p>
+        <button type="button" class="btn btn-primary referral-share" id="referralShare">Partager mon code 🫱🏻‍🫲🏼</button>
         <p class="referral-status" id="referralStatus" aria-live="polite"></p>
-        <p class="referral-line">Ton ami reçoit aussi 10% de réduction sur son premier achat.</p>
         <p class="referral-note">Parrainage réservé aux utilisateurs de l’application.</p>
       </div>
     </div>

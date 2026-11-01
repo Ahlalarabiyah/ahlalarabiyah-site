@@ -3227,3 +3227,20 @@ html[dir="rtl"] .testimonial::after, html[dir="rtl"] .tcard::after { right: auto
 /* Prix : toujours lisibles de gauche a droite, meme dans la page arabe. */
 html[dir="rtl"] .price-amount, html[dir="rtl"] .price-big, html[dir="rtl"] .pack-price,
 html[dir="rtl"] .lifetime-buy, html[dir="rtl"] .pack-was s { direction: ltr; unicode-bidi: isolate; }
+
+/* Parrainage : paliers de recompenses */
+.referral-tiers { list-style: none; margin: 0 auto 18px; padding: 0; max-width: 540px; display: grid; gap: 8px; text-align: start; }
+.referral-tiers li {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  background: #fff; border: 1.5px solid rgba(22, 160, 160, 0.28); border-radius: 14px;
+}
+.tier-goal { flex: 0 0 auto; font-family: var(--font-heading); font-weight: 700; font-size: 0.92rem; color: var(--color-navy); }
+.tier-arrow { flex: 0 0 auto; color: var(--color-teal-dark); font-weight: 700; }
+.tier-reward { flex: 1 1 auto; color: var(--color-text); font-size: 0.95rem; }
+html[dir="rtl"] .tier-arrow { display: inline-block; transform: scaleX(-1); }
+.referral-share { margin-top: 4px; }
+@media (max-width: 520px) {
+  .referral-tiers li { flex-wrap: wrap; row-gap: 2px; }
+  .tier-arrow { display: none; }
+  .tier-goal, .tier-reward { flex: 1 1 100%; }
+}

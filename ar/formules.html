@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=248">
+<link rel="stylesheet" href="../css/style.css?v=249">
 </head>
 <body>
 
@@ -195,11 +195,17 @@
     <div class="container">
       <div class="referral-card">
         <span class="referral-icon" aria-hidden="true">🎁</span>
-        <h2>ادعُ صديقًا واربح مكافآت</h2>
-        <p class="referral-sub">شارك رمزك، وعندما يشترك صديقك تحصل على إملاء مفتوح.</p>
-        <button type="button" class="btn btn-primary referral-share" id="referralShare">شارك رمزي</button>
+        <h2>ادعُ صديقًا وارتقِ إلى مستوى أعلى</h2>
+        <p class="referral-sub">شارك رمزك. عند بلوغ كل مرحلة تفتح مكافأة جديدة.</p>
+        <ul class="referral-tiers" aria-label="المراحل">
+          <li><span class="tier-goal">دعوة ناجحة واحدة</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">إملاء واحد مفتوح ☺️</span></li>
+          <li><span class="tier-goal">3 دعوات ناجحة</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">وحدة حروف واحدة هدية 😉</span></li>
+          <li><span class="tier-goal">5 دعوات ناجحة</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">شهر اشتراك هدية 😀</span></li>
+          <li><span class="tier-goal">10 دعوات ناجحة</span><span class="tier-arrow" aria-hidden="true">→</span><span class="tier-reward">وصول مدى الحياة إلى كل الإملاءات 😁</span></li>
+        </ul>
+        <p class="referral-line">ويحصل صديقك أيضًا على خصم 10٪ على أول عملية شراء. 💪🏼</p>
+        <button type="button" class="btn btn-primary referral-share" id="referralShare">شارك رمزي 🫱🏻‍🫲🏼</button>
         <p class="referral-status" id="referralStatus" aria-live="polite"></p>
-        <p class="referral-line">ويحصل صديقك أيضًا على خصم 10٪ على أول عملية شراء.</p>
         <p class="referral-note">الدعوة متاحة لمستخدمي التطبيق فقط.</p>
       </div>
     </div>
