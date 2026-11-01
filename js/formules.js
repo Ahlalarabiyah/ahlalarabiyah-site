@@ -206,6 +206,11 @@
     if (!/^[A-Za-z0-9_-]{3,32}$/.test(REFERRAL_CODE)) {
       shareBtn.setAttribute("aria-disabled", "true");
       shareBtn.classList.add("is-inactive");
+      // Meme etat que les boutons d'achat : le parrainage n'est pas encore ouvert.
+      var soonBadge = document.createElement("span");
+      soonBadge.className = "soon-badge";
+      soonBadge.textContent = T.soon;
+      shareBtn.insertAdjacentElement("afterend", soonBadge);
       shareBtn.addEventListener("click", function (e) { e.preventDefault(); });
     } else {
       shareBtn.addEventListener("click", function () {
