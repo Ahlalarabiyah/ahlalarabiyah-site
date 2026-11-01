@@ -3325,12 +3325,12 @@
           u.forEach(function (p) { cx += p[0]; cy += p[1]; });
           return [cx / u.length, cy / u.length];
         }
-        // Un "appui" (point de la lettre) = un geste quasi immobile, ou un tout petit trait pose sur un point
+        // Un "appui" (point de la lettre) = un geste presque immobile (moins de 7 unites, ~8 px), ou un tout petit trait pose sur un point
         // du modele. Un trait court ailleurs (ex. la hamza) reste un vrai trait : avant, tout geste de moins
         // de 70 unites devenait un point et comptait comme "point en trop".
         function isTap(pts) {
           var len = writePathLen(pts);
-          return len < 16 || (len < 40 && tapOnDot(pts));
+          return len < 7 || (len < 40 && tapOnDot(pts));
         }
         function tapOnDot(u) {
           var c = centroid(u);
@@ -3492,7 +3492,7 @@
             // un appui : une petite marque ronde (un point)
             path.parentNode && path.parentNode.removeChild(path);
             var c = centroid(pts);
-            entry.el = svgEl("circle", { cx: c[0].toFixed(1), cy: c[1].toFixed(1), r: 6, class: "write-tapmark" });
+            entry.el = svgEl("circle", { cx: c[0].toFixed(1), cy: c[1].toFixed(1), r: 2.5, class: "write-tapmark" });
             layers.ink.appendChild(entry.el);
           }
           state.user.push(entry);
