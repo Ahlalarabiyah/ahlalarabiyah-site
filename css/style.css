@@ -3244,3 +3244,7 @@ html[dir="rtl"] .tier-arrow { display: inline-block; transform: scaleX(-1); }
   .tier-arrow { display: none; }
   .tier-goal, .tier-reward { flex: 1 1 100%; }
 }
+
+/* Cadre "Ecris le mot" : un appui = un petit point, gomme active */
+.write-wp-tap { fill: var(--color-teal); opacity: .9; }
+.write-wordpad.is-erasing { cursor: cell; }

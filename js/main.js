@@ -3069,6 +3069,18 @@
         wordCard.appendChild(replayBtn);
         wordCard.appendChild(writeEl("p", "write-ww-hint", WT.yourTurn));
         wordCard.appendChild(pad);
+        var padTools = writeEl("div", "write-tools");
+        var padPen = writeEl("button", "write-tool is-active");
+        padPen.type = "button";
+        padPen.innerHTML = WICON.pen + '<span>' + WT.pen + '</span>';
+        padPen.setAttribute("aria-label", WT.pen);
+        var padEraser = writeEl("button", "write-tool");
+        padEraser.type = "button";
+        padEraser.innerHTML = WICON.eraser + '<span>' + WT.eraser + '</span>';
+        padEraser.setAttribute("aria-label", WT.eraser);
+        padTools.appendChild(padPen);
+        padTools.appendChild(padEraser);
+        wordCard.appendChild(padTools);
         var padActions = writeEl("div", "write-actions");
         padActions.appendChild(padClear);
         wordCard.appendChild(padActions);
@@ -3194,8 +3206,18 @@
         }
         replayBtn.addEventListener("click", function () { playWatch(); });
         if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitPad);
-        // Tracé libre sur le mot en pointillés
-        var padDrawing = null;
+        // Tracé libre sur le mot en pointillés : crayon + gomme, et un simple appui = un petit point
+        // (avant, un appui ne dessinait rien : impossible de poser le point sous le baa).
+        var padDrawing = null, padTool = "pen", padErasing = false, padLast = null, padStrokes = [];
+        var PAD_ERASE_R = 7, PAD_TAP_LEN = 1;
+        function setPadTool(t) {
+          padTool = t;
+          padPen.classList.toggle("is-active", t === "pen");
+          padEraser.classList.toggle("is-active", t === "eraser");
+          pad.classList.toggle("is-erasing", t === "eraser");
+        }
+        padPen.addEventListener("click", function () { setPadTool("pen"); });
+        padEraser.addEventListener("click", function () { setPadTool("eraser"); });
         function padPoint(e) {
           var pt = pad.createSVGPoint();
           pt.x = e.clientX;
@@ -3204,23 +3226,98 @@
           var q = m ? pt.matrixTransform(m.inverse()) : { x: 0, y: 0 };
           return [q.x, q.y];
         }
+        function padLen(pts) {
+          var l = 0;
+          for (var k = 1; k < pts.length; k++) l += Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]);
+          return l;
+        }
+        function padD(pts) { return "M" + pts.map(function (q) { return q[0].toFixed(1) + " " + q[1].toFixed(1); }).join(" L"); }
+        function padCenter(pts) {
+          var cx = 0, cy = 0;
+          pts.forEach(function (q) { cx += q[0]; cy += q[1]; });
+          return [cx / pts.length, cy / pts.length];
+        }
+        function padResample(pts, step) {
+          var out = [pts[0]];
+          for (var k = 1; k < pts.length; k++) {
+            var a = pts[k - 1], b = pts[k], n = Math.max(1, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / step));
+            for (var t = 1; t <= n; t++) out.push([a[0] + (b[0] - a[0]) * t / n, a[1] + (b[1] - a[1]) * t / n]);
+          }
+          return out;
+        }
+        // Gomme : n'enleve que la partie touchee du trait (comme sur la grande zone d'ecriture)
+        function padEraseAt(p) {
+          var next = [];
+          padStrokes.forEach(function (e) {
+            if (e.tap) {
+              var c = padCenter(e.pts);
+              if (Math.hypot(p[0] - c[0], p[1] - c[1]) <= PAD_ERASE_R + 3) { if (e.el.parentNode) e.el.parentNode.removeChild(e.el); }
+              else next.push(e);
+              return;
+            }
+            var dense = padResample(e.pts, 1.5);
+            var touched = dense.some(function (q) { return Math.hypot(p[0] - q[0], p[1] - q[1]) <= PAD_ERASE_R; });
+            if (!touched) { next.push(e); return; }
+            var pieces = [], cur = [];
+            dense.forEach(function (q) {
+              if (Math.hypot(p[0] - q[0], p[1] - q[1]) <= PAD_ERASE_R) { if (cur.length) pieces.push(cur); cur = []; }
+              else cur.push(q);
+            });
+            if (cur.length) pieces.push(cur);
+            if (e.el.parentNode) e.el.parentNode.removeChild(e.el);
+            pieces.forEach(function (pc) {
+              if (pc.length < 2) return;
+              var el = svgEl("path", { class: "write-wp-ink", d: padD(pc) });
+              padInk.appendChild(el);
+              next.push({ pts: pc, tap: false, el: el });
+            });
+          });
+          padStrokes = next;
+        }
         pad.addEventListener("pointerdown", function (e) {
           e.preventDefault();
           try { pad.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
           var p = padPoint(e);
+          if (padTool === "eraser") { padErasing = true; padLast = p; padEraseAt(p); return; }
           padDrawing = { pts: [p], el: svgEl("path", { class: "write-wp-ink", d: "M" + p[0].toFixed(1) + " " + p[1].toFixed(1) }) };
           padInk.appendChild(padDrawing.el);
         });
         pad.addEventListener("pointermove", function (e) {
+          if (padErasing) {
+            e.preventDefault();
+            var q = padPoint(e), a = padLast || q, n = Math.max(1, Math.ceil(Math.hypot(q[0] - a[0], q[1] - a[1]) / 3));
+            for (var k = 1; k <= n; k++) padEraseAt([a[0] + (q[0] - a[0]) * k / n, a[1] + (q[1] - a[1]) * k / n]);
+            padLast = q;
+            return;
+          }
           if (!padDrawing) return;
           e.preventDefault();
-          padDrawing.pts.push(padPoint(e));
-          padDrawing.el.setAttribute("d", "M" + padDrawing.pts.map(function (q) { return q[0].toFixed(1) + " " + q[1].toFixed(1); }).join(" L"));
+          var evs = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+          if (evs && evs.length) { evs.forEach(function (ce) { padDrawing.pts.push(padPoint(ce)); }); }
+          else padDrawing.pts.push(padPoint(e));
+          padDrawing.el.setAttribute("d", padD(padDrawing.pts));
         });
-        function padEnd() { padDrawing = null; }
+        function padEnd(e) {
+          padErasing = false;
+          if (!padDrawing) return;
+          var d = padDrawing;
+          padDrawing = null;
+          if (e && e.type === "pointerup" && e.clientX !== undefined) d.pts.push(padPoint(e));
+          if (padLen(d.pts) < PAD_TAP_LEN) {
+            // simple appui : un petit point rond
+            var c = padCenter(d.pts);
+            if (d.el.parentNode) d.el.parentNode.removeChild(d.el);
+            var dot = svgEl("circle", { cx: c[0].toFixed(1), cy: c[1].toFixed(1), r: 2.2, class: "write-wp-tap" });
+            padInk.appendChild(dot);
+            padStrokes.push({ pts: d.pts, tap: true, el: dot });
+          } else {
+            d.el.setAttribute("d", padD(d.pts));
+            padStrokes.push({ pts: d.pts, tap: false, el: d.el });
+          }
+        }
         pad.addEventListener("pointerup", padEnd);
         pad.addEventListener("pointercancel", padEnd);
-        padClear.addEventListener("click", function () { padInk.textContent = ""; });
+        padClear.addEventListener("click", function () { padInk.textContent = ""; padStrokes = []; });
 
         function renderWords() {
           var ex = WRITE_WORD_EX[WRITE_BASE_CHAR[state.letter]];
@@ -3325,12 +3422,12 @@
           u.forEach(function (p) { cx += p[0]; cy += p[1]; });
           return [cx / u.length, cy / u.length];
         }
-        // Un "appui" (point de la lettre) = un geste presque immobile (moins de 2,5 unites, ~3 px), ou un minuscule trait pose sur un point
+        // Un "appui" (point de la lettre) = un geste immobile (moins d'1 unite, ~1 px : un deplacement de 2 unites reste un trait), ou un minuscule trait pose sur un point
         // du modele. Un trait court ailleurs (ex. la hamza) reste un vrai trait : avant, tout geste de moins
         // de 70 unites devenait un point et comptait comme "point en trop".
         function isTap(pts) {
           var len = writePathLen(pts);
-          return len < 2.5 || (len < 12 && tapOnDot(pts));
+          return len < 1 || (len < 12 && tapOnDot(pts));
         }
         function tapOnDot(u) {
           var c = centroid(u);
