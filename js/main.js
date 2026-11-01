@@ -2443,13 +2443,21 @@
 
         // ---- Alif ----
         // Alif porteur d'une hamza (أ) : la hampe est un peu raccourcie pour laisser la place
-        // a la hamza, tracee en dernier au-dessus de la hampe.
-        function hamza(cx, cy) {
-          return S([[cx + 16, cy - 14], [cx + 4, cy - 16], [cx - 9, cy - 12], [cx - 12, cy - 4], [cx - 3, cy], [cx + 10, cy + 3], [cx + 15, cy + 9], [cx + 7, cy + 14], [cx - 6, cy + 15], [cx - 15, cy + 12]]);
+        // a la hamza, tracee en dernier au-dessus de la hampe. Trace dessine par l'auteur du site
+        // (points releves pixel par pixel sur son dessin rouge, sans retouche) : d'abord la boucle
+        // ouverte a droite (du crochet en haut a droite, vers la gauche et jusqu'a la ligne), puis le
+        // trait de base qui monte legerement de gauche a droite. cx = axe de la hampe.
+        function hamza(cx) {
+          var dx = cx - 160;
+          function mv(pts) { return pts.map(function (p) { return [p[0] + dx, p[1]]; }); }
+          return [
+            S(mv([[167.6, 42.0], [167.3, 40.4], [166.5, 38.1], [164.9, 36.6], [162.7, 36.1], [160.4, 36.1], [157.6, 36.7], [154.7, 38.1], [151.8, 40.4], [150.4, 42.4], [149.8, 44.7], [149.7, 47.6], [149.8, 50.5], [150.4, 52.7], [152.1, 54.5], [154.7, 56.8], [157.0, 58.1], [159.3, 58.8], [160.7, 59.0]])),
+            S(mv([[144.0, 63.7], [150.6, 62.1], [156.4, 60.6], [162.2, 59.1], [167.9, 57.4], [172.5, 55.7], [177.1, 54.9]]))
+          ];
         }
         D.alif = {
-          isolated: F([P([[160, 76], [160, 134]]), hamza(160, 37)]),
-          final: F([P([[262, 134], [166, 134], [166, 76]]), hamza(166, 37)])
+          isolated: F([P([[160, 76], [160, 134]])].concat(hamza(160))),
+          final: F([P([[262, 134], [166, 134], [166, 76]])].concat(hamza(166)))
         };
 
         // ---- Famille du baa (ب ت ث ن ي) : tracés dessinés par l'auteur du site ----
@@ -3251,22 +3259,27 @@
           layers.guide = svgEl("g", {});
           layers.ink = svgEl("g", {});
           board.appendChild(svgEl("line", { x1: 10, y1: WRITE_BASE + 10, x2: 310, y2: WRITE_BASE + 10, class: "write-line" }));
+          // Les bandes claires de tous les traits d'abord, puis les pointilles et les fleches
+          // par-dessus : sinon la bande d'un trait posterieur recouvre les points du trait
+          // precedent quand deux traits se chevauchent (ex. boucle et base de la hamza).
+          var over = svgEl("g", {});
           form.strokes.forEach(function (st, i) {
             var dense = writeDense(st);
             st._dense = dense;
             var d = "M" + dense.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" L");
             layers.guide.appendChild(svgEl("path", { d: d, class: "write-body", "data-i": i }));
-            layers.guide.appendChild(svgEl("path", { d: d, class: "write-dotted", "data-i": i }));
+            over.appendChild(svgEl("path", { d: d, class: "write-dotted", "data-i": i }));
             var len = writePathLen(dense), acc = 0, nextAt = 40;
             for (var k = 1; k < dense.length; k++) {
               acc += Math.hypot(dense[k][0] - dense[k - 1][0], dense[k][1] - dense[k - 1][1]);
               if (acc >= nextAt && acc < len - 18) {
                 var ang = Math.atan2(dense[k][1] - dense[k - 1][1], dense[k][0] - dense[k - 1][0]) * 180 / Math.PI;
-                layers.guide.appendChild(svgEl("path", { d: "M-6 -5 L6 0 L-6 5 Z", class: "write-arrow", transform: "translate(" + dense[k][0].toFixed(1) + " " + dense[k][1].toFixed(1) + ") rotate(" + ang.toFixed(1) + ")" }));
+                over.appendChild(svgEl("path", { d: "M-6 -5 L6 0 L-6 5 Z", class: "write-arrow", transform: "translate(" + dense[k][0].toFixed(1) + " " + dense[k][1].toFixed(1) + ") rotate(" + ang.toFixed(1) + ")" }));
                 nextAt += 55;
               }
             }
           });
+          layers.guide.appendChild(over);
           var p0 = form.strokes[0]._dense[0];
           var startG = svgEl("g", { class: "write-start is-active", transform: "translate(" + p0[0].toFixed(1) + " " + p0[1].toFixed(1) + ")" });
           startG.appendChild(svgEl("circle", { r: 9 }));
