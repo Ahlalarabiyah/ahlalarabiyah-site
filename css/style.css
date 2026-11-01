@@ -3254,3 +3254,21 @@ button.write-word { color: var(--color-navy); cursor: pointer; font-size: 1.9rem
 button.write-word:hover { border-color: var(--color-teal); }
 button.write-word:active { transform: scale(0.97); }
 button.write-word.is-active { border-color: var(--color-teal); background: var(--color-teal-10); }
+
+/* Atelier d'ecriture sur ecran peu haut (telephone) : la lettre, les outils et "Verifier" tiennent
+   sans defiler. Le cadre de trace se reduit avec la hauteur de l'ecran (rapport 285 / 200 conserve). */
+@media (max-height: 820px) {
+  .write-panel { padding: 14px 18px 12px; }
+  .write-tabs { margin-bottom: 8px; }
+  .write-tab { width: 48px; height: 48px; font-size: 1.5rem; border-radius: 12px; }
+  .write-forms { margin-bottom: 8px; gap: 6px; }
+  .write-form { padding: 4px 4px 5px; gap: 2px; }
+  .write-form-glyph { height: 2.3rem; font-size: 1.35rem; }
+  .write-form-name { font-size: .68rem; }
+  .write-how { margin: 0 0 6px; font-size: .84rem; line-height: 1.4; }
+  .write-board { width: min(100%, 440px, max(180px, calc((100dvh - 440px) * 1.425))); }
+  .write-tools { margin-top: 8px; }
+  .write-tool { padding: 7px 14px; }
+  .write-status { min-height: 1.3em; margin: 6px 0 2px; font-size: .9rem; }
+  .write-actions { margin: 4px 0 2px; }
+}
