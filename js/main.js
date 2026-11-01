@@ -3325,12 +3325,12 @@
           u.forEach(function (p) { cx += p[0]; cy += p[1]; });
           return [cx / u.length, cy / u.length];
         }
-        // Un "appui" (point de la lettre) = un geste presque immobile (moins de 7 unites, ~8 px), ou un tout petit trait pose sur un point
+        // Un "appui" (point de la lettre) = un geste presque immobile (moins de 2,5 unites, ~3 px), ou un minuscule trait pose sur un point
         // du modele. Un trait court ailleurs (ex. la hamza) reste un vrai trait : avant, tout geste de moins
         // de 70 unites devenait un point et comptait comme "point en trop".
         function isTap(pts) {
           var len = writePathLen(pts);
-          return len < 7 || (len < 40 && tapOnDot(pts));
+          return len < 2.5 || (len < 12 && tapOnDot(pts));
         }
         function tapOnDot(u) {
           var c = centroid(u);
@@ -3478,12 +3478,23 @@
           }
           if (!state.drawing) return;
           e.preventDefault();
-          state.drawing.push(toBoard(e));
+          // tous les points du geste (meme ceux regroupes par le navigateur) : un trait court et rapide garde sa longueur
+          var evs = e.getCoalescedEvents ? e.getCoalescedEvents() : null;
+          if (evs && evs.length) { evs.forEach(function (ce) { state.drawing.push(toBoard(ce)); }); }
+          else state.drawing.push(toBoard(e));
           state.ink.setAttribute("d", "M" + state.drawing.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" L"));
         });
-        function endDraw() {
+        function endDraw(e) {
           state.erasing = false;
           if (!state.drawing) return;
+          // dernier point : la levee du doigt compte (un trait court n'avait parfois qu'un point de depart)
+          if (e && e.type === "pointerup" && e.clientX !== undefined) {
+            var lastPt = toBoard(e), prevPt = state.drawing[state.drawing.length - 1];
+            if (!prevPt || prevPt[0] !== lastPt[0] || prevPt[1] !== lastPt[1]) {
+              state.drawing.push(lastPt);
+              state.ink.setAttribute("d", "M" + state.drawing.map(function (p) { return p[0].toFixed(1) + " " + p[1].toFixed(1); }).join(" L"));
+            }
+          }
           var pts = state.drawing, path = state.ink;
           state.drawing = null;
           var tap = isTap(pts);
