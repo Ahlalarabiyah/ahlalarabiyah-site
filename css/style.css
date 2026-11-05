@@ -3339,3 +3339,17 @@ html[dir="rtl"] .faq-item summary { padding: 14px 18px 14px 44px; }
 .book-mode-btn.is-active { background: var(--color-teal); color: #fff; }
 .book-no-img .book-imgs, .book-no-img .book-lead { display: none; }
 .book-lead .book-img:only-child { max-width: 100%; }
+
+/* Pages legales (mentions legales, politique de confidentialite) */
+.legal { max-width: 760px; margin: 0 auto; text-align: start; line-height: 1.7; }
+.legal h2 { font-size: 1.25rem; margin: 28px 0 8px; }
+.legal h3 { font-size: 1.05rem; margin: 18px 0 6px; color: var(--color-teal-dark); }
+.legal p { margin: 0 0 12px; }
+.legal ul { list-style: disc; padding-inline-start: 22px; margin: 0 0 14px; }
+.legal li { margin: 0 0 6px; }
+.legal a { color: var(--color-teal-dark); text-decoration: underline; }
+.legal blockquote { margin: 12px 0 14px; padding: 12px 16px; border-inline-start: 4px solid var(--color-teal); background: var(--color-teal-10); border-radius: 8px; font-weight: 600; line-height: 1.6; }
+/* Pied de page : liens legaux */
+.footer-legal { margin: 8px 0 0; font-size: .82rem; }
+.footer-legal a { color: inherit; opacity: .85; text-decoration: underline; text-underline-offset: 2px; }
+.footer-legal a:hover { opacity: 1; }
