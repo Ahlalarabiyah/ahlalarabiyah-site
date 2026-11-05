@@ -1148,15 +1148,17 @@
       { id: "sad", items: ["صُبِرَ", "صُجِرَ", "صَبُحَ"] },
       // Ordre confirme par l'utilisateur : 3 mots combines.
       { id: "dad", items: ["ضَاجَ", "ضُرِبَ", "ضَجِرَ"] },
-      // Ordre confirme par l'utilisateur : 5 mots combines ("بَطَحَا"
-      // corrige apres une 1ere lecture "بَطَا", "طُوبَا" avec alif normal
-      // (pas alif maqsura) confirme explicitement, "حُطِبَ" avec ha
-      // confirme explicitement, "طَبَخَ" clarifie apres une 1ere
-      // transcription erronee "babakha").
-      { id: "tah", items: ["بَطَحَا", "طُوبَا", "بَطِرَ", "حُطِبَ", "طَبَخَ"] },
-      // Ordre confirme par l'utilisateur : 3 mots combines ("بَظِرَ"
-      // corrige apres une 1ere lecture "razhira").
-      { id: "zah", items: ["بَظَرَ", "أَظَرُ", "بَظِرَ"] },
+      // L'audio tah.m4a ne contient que 3 mots (batira, houtiba, tabakha,
+      // confirmes a l'ecoute par l'utilisateur) : la liste est alignee sur
+      // l'audio. Mots prevus a l'origine mais absents de l'enregistrement :
+      // "بَطَحَا" et "طُوبَا" (a reintegrer en tete si l'audio est complete).
+      { id: "tah", items: ["بَطِرَ", "حُطِبَ", "طَبَخَ"] },
+      // L'audio zah.m4a ne contient que 2 mots (azarou, bazira, confirmes a
+      // l'ecoute par l'utilisateur) : la liste est alignee sur l'audio. Mot
+      // prevu a l'origine mais absent de l'enregistrement : "بَظَرَ" (a
+      // reintegrer en tete si l'audio est complete). "بَظِرَ" corrige apres
+      // une 1ere lecture "razhira".
+      { id: "zah", items: ["أَظَرُ", "بَظِرَ"] },
       // Ordre confirme par l'utilisateur : 3 mots combines.
       { id: "ain", items: ["عَجِبَ", "عَسُرَ", "عُبِدَ"] },
       // Ordre confirme par l'utilisateur : 2 mots combines (meme racine,
