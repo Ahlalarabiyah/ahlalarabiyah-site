@@ -24,7 +24,7 @@
       pairs: "Lettres proches", words: "Mots proches", legend: "✅ juste · ❌ faux", seriesAudio: "Les différents mots (à écouter)", seriesRead: "Les différents mots (à lire)",
       set: "Série", listen: "Écouter", listenHint: "Écoute chaque série.",
       defiIntro: "Écris d’abord le texte sur ton cahier, puis écoute-le, et ajoute enfin les harakāt. Vérifie ensuite avec la correction.",
-      prevGroup: "Groupe précédent", nextGroup: "Groupe suivant", chooseGroup: "Choisis un groupe de lettres", showCorr: "Voir la correction", hideCorr: "Cacher la correction",
+      drawWith: "Avec dessins", drawWithout: "Sans dessins", drawLabel: "Choisis ta lecture", prevGroup: "Groupe précédent", nextGroup: "Groupe suivant", chooseGroup: "Choisis un groupe de lettres", showCorr: "Voir la correction", hideCorr: "Cacher la correction",
       letter: "La lettre", text: "Le texte", aLetter: "Audio de la lettre", aText: "Audio du texte",
       fasc: "Mots après chaque fascicule", book: "Le livre de l’alphabet (avec harakāt)", wordsRead: "Les différents mots (à lire)", soon: "Bientôt disponible",
       bookHint: "Lis chaque texte en suivant les harakāt, puis écoute l’audio."
@@ -43,7 +43,7 @@
       pairs: "Similar letters", words: "Similar words", legend: "✅ correct · ❌ wrong", seriesAudio: "The different words (to listen to)", seriesRead: "The different words (to read)",
       set: "Set", listen: "Listen", listenHint: "Listen to each set.",
       defiIntro: "First write the text in your notebook, then listen to it, and finally add the harakāt. Then check with the correction.",
-      prevGroup: "Previous group", nextGroup: "Next group", chooseGroup: "Choose a group of letters", showCorr: "Show the correction", hideCorr: "Hide the correction",
+      drawWith: "With drawings", drawWithout: "Without drawings", drawLabel: "Choose your reading", prevGroup: "Previous group", nextGroup: "Next group", chooseGroup: "Choose a group of letters", showCorr: "Show the correction", hideCorr: "Hide the correction",
       letter: "The letter", text: "The text", aLetter: "Letter audio", aText: "Text audio",
       fasc: "Words after each booklet", book: "The alphabet book (with harakāt)", wordsRead: "The different words (to read)", soon: "Coming soon",
       bookHint: "Read each text following the harakāt, then listen to the audio."
@@ -62,7 +62,7 @@
       pairs: "Похожие буквы", words: "Похожие слова", legend: "✅ верно · ❌ неверно", seriesAudio: "Разные слова (для прослушивания)", seriesRead: "Разные слова (для чтения)",
       set: "Серия", listen: "Слушать", listenHint: "Слушай каждую серию.",
       defiIntro: "Сначала напиши текст в тетради, потом послушай его и в конце добавь огласовки. Затем сверься с исправленным вариантом.",
-      prevGroup: "Предыдущая группа", nextGroup: "Следующая группа", chooseGroup: "Выбери группу букв", showCorr: "Показать исправленный вариант", hideCorr: "Скрыть исправленный вариант",
+      drawWith: "С рисунками", drawWithout: "Без рисунков", drawLabel: "Выбери вариант чтения", prevGroup: "Предыдущая группа", nextGroup: "Следующая группа", chooseGroup: "Выбери группу букв", showCorr: "Показать исправленный вариант", hideCorr: "Скрыть исправленный вариант",
       letter: "Буква", text: "Текст", aLetter: "Аудио буквы", aText: "Аудио текста",
       fasc: "Слова после каждой брошюры", book: "Книга алфавита (с огласовками)", wordsRead: "Разные слова (для чтения)", soon: "Скоро будет доступно",
       bookHint: "Читай каждый текст по огласовкам, затем послушай аудио."
@@ -81,7 +81,7 @@
       pairs: "Ähnliche Buchstaben", words: "Ähnliche Wörter", legend: "✅ richtig · ❌ falsch", seriesAudio: "Die verschiedenen Wörter (zum Hören)", seriesRead: "Die verschiedenen Wörter (zum Lesen)",
       set: "Serie", listen: "Anhören", listenHint: "Höre jede Serie.",
       defiIntro: "Schreibe zuerst den Text in dein Heft, höre ihn dir dann an und ergänze zum Schluss die Harakāt. Prüfe danach mit der Korrektur.",
-      prevGroup: "Vorherige Gruppe", nextGroup: "Nächste Gruppe", chooseGroup: "Wähle eine Buchstabengruppe", showCorr: "Korrektur anzeigen", hideCorr: "Korrektur ausblenden",
+      drawWith: "Mit Zeichnungen", drawWithout: "Ohne Zeichnungen", drawLabel: "Wähle deine Lektüre", prevGroup: "Vorherige Gruppe", nextGroup: "Nächste Gruppe", chooseGroup: "Wähle eine Buchstabengruppe", showCorr: "Korrektur anzeigen", hideCorr: "Korrektur ausblenden",
       letter: "Der Buchstabe", text: "Der Text", aLetter: "Audio des Buchstabens", aText: "Audio des Textes",
       fasc: "Wörter nach jedem Heft", book: "Das Alphabet-Buch (mit Harakāt)", wordsRead: "Die verschiedenen Wörter (zum Lesen)", soon: "Demnächst verfügbar",
       bookHint: "Lies jeden Text anhand der Harakāt und höre dann das Audio."
@@ -100,7 +100,7 @@
       pairs: "حروف متقاربة", words: "كلمات متقاربة", legend: "✅ صحيح · ❌ خطأ", seriesAudio: "الكلمات المختلفة (للاستماع)", seriesRead: "الكلمات المختلفة (للقراءة)",
       set: "المجموعة", listen: "استماع", listenHint: "استمع إلى كل مجموعة.",
       defiIntro: "اكتب النص أولًا في دفترك، ثم استمع إليه، ثم أضف الحركات في النهاية، ثم تحقق بالتصحيح.",
-      prevGroup: "المجموعة السابقة", nextGroup: "المجموعة التالية", chooseGroup: "اختر مجموعة حروف", showCorr: "عرض التصحيح", hideCorr: "إخفاء التصحيح",
+      drawWith: "مع الرسومات", drawWithout: "بدون رسومات", drawLabel: "اختر طريقة القراءة", prevGroup: "المجموعة السابقة", nextGroup: "المجموعة التالية", chooseGroup: "اختر مجموعة حروف", showCorr: "عرض التصحيح", hideCorr: "إخفاء التصحيح",
       letter: "الحرف", text: "النص", aLetter: "صوت الحرف", aText: "صوت النص",
       fasc: "كلمات بعد كل كراسة", book: "كتاب الحروف (بالحركات)", wordsRead: "الكلمات المختلفة (للقراءة)", soon: "قريبًا",
       bookHint: "اقرأ كل نص متتبعًا الحركات ثم استمع إلى الصوت."
@@ -743,6 +743,36 @@
   }
 
   // ---- Lecture ----
+  // Choix de lecture : avec ou sans dessins (memorise sur l'appareil).
+  function drawingsOn() {
+    try { return window.localStorage.getItem("ahl-book-drawings") !== "0"; } catch (e) { return true; }
+  }
+  function drawingsSwitch(holder) {
+    var wrap = el("div", "book-mode");
+    wrap.setAttribute("role", "radiogroup");
+    wrap.setAttribute("aria-label", T.drawLabel);
+    var btns = [];
+    function apply(on, save) {
+      holder.classList.toggle("book-no-img", !on);
+      btns.forEach(function (b) {
+        var active = (b.getAttribute("data-draw") === "1") === on;
+        b.classList.toggle("is-active", active);
+        b.setAttribute("aria-checked", active ? "true" : "false");
+      });
+      if (save) { try { window.localStorage.setItem("ahl-book-drawings", on ? "1" : "0"); } catch (e) {} }
+    }
+    [["1", T.drawWith], ["0", T.drawWithout]].forEach(function (o) {
+      var b = el("button", "book-mode-btn", o[1]);
+      b.type = "button";
+      b.setAttribute("role", "radio");
+      b.setAttribute("data-draw", o[0]);
+      b.addEventListener("click", function () { apply(o[0] === "1", true); });
+      wrap.appendChild(b);
+      btns.push(b);
+    });
+    apply(drawingsOn(), false);
+    return wrap;
+  }
   function viewBookGroup(g) {
     return {
       title: groupName("lecture", g),
@@ -753,6 +783,7 @@
         var letter = ids[0];
         panel.appendChild(el("p", "conc-instruction", T.bookHint));
         var holder = el("div", "tr-letter-holder");
+        panel.appendChild(drawingsSwitch(holder));
         panel.appendChild(holder);
         function renderLetter() {
           pauseAll(holder);

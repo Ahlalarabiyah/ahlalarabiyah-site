@@ -3331,3 +3331,11 @@ html[dir="rtl"] .faq-item summary { padding: 14px 18px 14px 44px; }
 .tr-group-nav-sub { font-size: .8rem; opacity: .8; }
 .tr-group-nav-letters { font-size: 1rem; }
 @media (max-width: 520px) { .tr-group-nav-btn { padding: 8px 10px; gap: 6px; } .tr-group-nav-label { font-size: .85rem; } }
+
+/* Livre de l'alphabet : avec / sans dessins */
+.book-mode { display: flex; justify-content: center; gap: 0; margin: 4px auto 14px; max-width: 420px; border: 1.5px solid var(--color-teal); border-radius: 999px; overflow: hidden; background: #fff; }
+.book-mode-btn { flex: 1 1 0; padding: 9px 14px; border: 0; background: transparent; color: var(--color-teal-dark, var(--color-navy)); font: inherit; font-weight: 600; font-size: .92rem; cursor: pointer; }
+.book-mode-btn + .book-mode-btn { border-inline-start: 1.5px solid var(--color-teal); }
+.book-mode-btn.is-active { background: var(--color-teal); color: #fff; }
+.book-no-img .book-imgs, .book-no-img .book-lead { display: none; }
+.book-lead .book-img:only-child { max-width: 100%; }
