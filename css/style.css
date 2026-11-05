@@ -2960,7 +2960,7 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .conc-audio-label { font-size: .85rem; color: var(--color-text-light); }
 .conc-audio audio { width: min(100%, 360px); }
 .conc-block { padding: 18px 16px 12px; border: 1px solid var(--color-border); border-radius: 16px; background: #fff; margin: 0 0 14px; font-family: "Noto Naskh Arabic", var(--font-arabic); }
-.conc-title { margin: 0 0 14px; text-align: center; font-weight: 600; line-height: 1.7; }
+.conc-title { margin: 0 0 14px; text-align: center; font-weight: 600; line-height: 1.7; font-family: "Noto Naskh Arabic", var(--font-arabic); }
 .conc-title-letter { font-size: 2.1rem; font-weight: 500; }
 .conc-title-story { font-size: 1.9rem; font-weight: 700; }
 .conc-para { margin: 0 0 14px; font-size: 1.55rem; font-weight: 600; line-height: 2.2; text-align: right; }
@@ -3319,3 +3319,15 @@ html[dir="rtl"] .faq-item summary { padding: 14px 18px 14px 44px; }
 @media (min-width: 900px) {
   .train-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px 28px; align-items: start; }
 }
+
+/* Defis : passer au groupe precedent / suivant */
+.tr-group-nav { display: flex; justify-content: space-between; align-items: stretch; gap: 10px; margin: 6px 0 14px; }
+.tr-group-nav-gap { flex: 1 1 0; }
+.tr-group-nav-btn { flex: 1 1 0; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 8px 14px; text-align: start; }
+.tr-group-nav-btn:last-child { justify-content: center; }
+.tr-group-nav-arrow { font-size: 1.6rem; line-height: 1; }
+.tr-group-nav-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.25; }
+.tr-group-nav-label { font-weight: 600; }
+.tr-group-nav-sub { font-size: .8rem; opacity: .8; }
+.tr-group-nav-letters { font-size: 1rem; }
+@media (max-width: 520px) { .tr-group-nav-btn { padding: 8px 10px; gap: 6px; } .tr-group-nav-label { font-size: .85rem; } }

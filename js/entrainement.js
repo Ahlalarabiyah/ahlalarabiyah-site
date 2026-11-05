@@ -24,7 +24,7 @@
       pairs: "Lettres proches", words: "Mots proches", legend: "✅ juste · ❌ faux", seriesAudio: "Les différents mots (à écouter)", seriesRead: "Les différents mots (à lire)",
       set: "Série", listen: "Écouter", listenHint: "Écoute chaque série.",
       defiIntro: "Écris d’abord le texte sur ton cahier, puis écoute-le, et ajoute enfin les harakāt. Vérifie ensuite avec la correction.",
-      chooseGroup: "Choisis un groupe de lettres", showCorr: "Voir la correction", hideCorr: "Cacher la correction",
+      prevGroup: "Groupe précédent", nextGroup: "Groupe suivant", chooseGroup: "Choisis un groupe de lettres", showCorr: "Voir la correction", hideCorr: "Cacher la correction",
       letter: "La lettre", text: "Le texte", aLetter: "Audio de la lettre", aText: "Audio du texte",
       fasc: "Mots après chaque fascicule", book: "Le livre de l’alphabet (avec harakāt)", wordsRead: "Les différents mots (à lire)", soon: "Bientôt disponible",
       bookHint: "Lis chaque texte en suivant les harakāt, puis écoute l’audio."
@@ -43,7 +43,7 @@
       pairs: "Similar letters", words: "Similar words", legend: "✅ correct · ❌ wrong", seriesAudio: "The different words (to listen to)", seriesRead: "The different words (to read)",
       set: "Set", listen: "Listen", listenHint: "Listen to each set.",
       defiIntro: "First write the text in your notebook, then listen to it, and finally add the harakāt. Then check with the correction.",
-      chooseGroup: "Choose a group of letters", showCorr: "Show the correction", hideCorr: "Hide the correction",
+      prevGroup: "Previous group", nextGroup: "Next group", chooseGroup: "Choose a group of letters", showCorr: "Show the correction", hideCorr: "Hide the correction",
       letter: "The letter", text: "The text", aLetter: "Letter audio", aText: "Text audio",
       fasc: "Words after each booklet", book: "The alphabet book (with harakāt)", wordsRead: "The different words (to read)", soon: "Coming soon",
       bookHint: "Read each text following the harakāt, then listen to the audio."
@@ -62,7 +62,7 @@
       pairs: "Похожие буквы", words: "Похожие слова", legend: "✅ верно · ❌ неверно", seriesAudio: "Разные слова (для прослушивания)", seriesRead: "Разные слова (для чтения)",
       set: "Серия", listen: "Слушать", listenHint: "Слушай каждую серию.",
       defiIntro: "Сначала напиши текст в тетради, потом послушай его и в конце добавь огласовки. Затем сверься с исправленным вариантом.",
-      chooseGroup: "Выбери группу букв", showCorr: "Показать исправленный вариант", hideCorr: "Скрыть исправленный вариант",
+      prevGroup: "Предыдущая группа", nextGroup: "Следующая группа", chooseGroup: "Выбери группу букв", showCorr: "Показать исправленный вариант", hideCorr: "Скрыть исправленный вариант",
       letter: "Буква", text: "Текст", aLetter: "Аудио буквы", aText: "Аудио текста",
       fasc: "Слова после каждой брошюры", book: "Книга алфавита (с огласовками)", wordsRead: "Разные слова (для чтения)", soon: "Скоро будет доступно",
       bookHint: "Читай каждый текст по огласовкам, затем послушай аудио."
@@ -81,7 +81,7 @@
       pairs: "Ähnliche Buchstaben", words: "Ähnliche Wörter", legend: "✅ richtig · ❌ falsch", seriesAudio: "Die verschiedenen Wörter (zum Hören)", seriesRead: "Die verschiedenen Wörter (zum Lesen)",
       set: "Serie", listen: "Anhören", listenHint: "Höre jede Serie.",
       defiIntro: "Schreibe zuerst den Text in dein Heft, höre ihn dir dann an und ergänze zum Schluss die Harakāt. Prüfe danach mit der Korrektur.",
-      chooseGroup: "Wähle eine Buchstabengruppe", showCorr: "Korrektur anzeigen", hideCorr: "Korrektur ausblenden",
+      prevGroup: "Vorherige Gruppe", nextGroup: "Nächste Gruppe", chooseGroup: "Wähle eine Buchstabengruppe", showCorr: "Korrektur anzeigen", hideCorr: "Korrektur ausblenden",
       letter: "Der Buchstabe", text: "Der Text", aLetter: "Audio des Buchstabens", aText: "Audio des Textes",
       fasc: "Wörter nach jedem Heft", book: "Das Alphabet-Buch (mit Harakāt)", wordsRead: "Die verschiedenen Wörter (zum Lesen)", soon: "Demnächst verfügbar",
       bookHint: "Lies jeden Text anhand der Harakāt und höre dann das Audio."
@@ -100,7 +100,7 @@
       pairs: "حروف متقاربة", words: "كلمات متقاربة", legend: "✅ صحيح · ❌ خطأ", seriesAudio: "الكلمات المختلفة (للاستماع)", seriesRead: "الكلمات المختلفة (للقراءة)",
       set: "المجموعة", listen: "استماع", listenHint: "استمع إلى كل مجموعة.",
       defiIntro: "اكتب النص أولًا في دفترك، ثم استمع إليه، ثم أضف الحركات في النهاية، ثم تحقق بالتصحيح.",
-      chooseGroup: "اختر مجموعة حروف", showCorr: "عرض التصحيح", hideCorr: "إخفاء التصحيح",
+      prevGroup: "المجموعة السابقة", nextGroup: "المجموعة التالية", chooseGroup: "اختر مجموعة حروف", showCorr: "عرض التصحيح", hideCorr: "إخفاء التصحيح",
       letter: "الحرف", text: "النص", aLetter: "صوت الحرف", aText: "صوت النص",
       fasc: "كلمات بعد كل كراسة", book: "كتاب الحروف (بالحركات)", wordsRead: "الكلمات المختلفة (للقراءة)", soon: "قريبًا",
       bookHint: "اقرأ كل نص متتبعًا الحركات ثم استمع إلى الصوت."
@@ -545,6 +545,29 @@
     });
     tabs.hidden = ids.length < 2;
     container.appendChild(tabs);
+    centerTabInk(tabs);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { centerTabInk(tabs); });
+  }
+  // Centre l'encre reelle de chaque lettre dans sa case (meme methode que l'atelier d'ecriture) :
+  // les lettres a jambe descendante (ج ح خ ...) ne sont plus decalees vers le bas.
+  var inkCanvas = document.createElement("canvas").getContext("2d");
+  function centerInk(node) {
+    if (!node || !inkCanvas || !node.isConnected) return;
+    var cs = window.getComputedStyle(node), size = parseFloat(cs.fontSize);
+    if (!size) return;
+    inkCanvas.font = cs.fontWeight + " " + size + "px " + cs.fontFamily;
+    inkCanvas.textAlign = "center";
+    inkCanvas.direction = "rtl";
+    var m = inkCanvas.measureText(node.textContent);
+    if (!m || m.actualBoundingBoxAscent === undefined) return;
+    var boxH = node.clientHeight || size, lineH = size;
+    var baseline = boxH / 2 - lineH / 2 + (lineH - (m.fontBoundingBoxAscent + m.fontBoundingBoxDescent)) / 2 + m.fontBoundingBoxAscent;
+    var inkCy = baseline - (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent) / 2;
+    var dy = boxH / 2 - inkCy, dx = -(m.actualBoundingBoxRight - m.actualBoundingBoxLeft) / 2;
+    node.style.transform = "translate(" + dx.toFixed(1) + "px," + dy.toFixed(1) + "px)";
+  }
+  function centerTabInk(tabs) {
+    Array.prototype.forEach.call(tabs.querySelectorAll(".write-tab-glyph"), centerInk);
   }
 
   // ---- Atelier de concentration (ecoute) ----
@@ -622,6 +645,33 @@
   }
 
   // ---- Defis de concentration : textes sans harakat + correction ----
+  // Boutons "groupe precedent / groupe suivant" : on change de groupe sans repasser par la liste.
+  // Un groupe payant non debloque ouvre la fenetre de deblocage, comme dans la liste.
+  function groupNav(kind, g, makeView) {
+    var nav = el("div", "tr-group-nav");
+    var RTL = LANG === "ar";
+    function btn(target, label, arrow) {
+      if (!target) { nav.appendChild(el("span", "tr-group-nav-gap")); return; }
+      var b = el("button", "btn btn-outline btn-sm tr-group-nav-btn");
+      b.type = "button";
+      b.appendChild(el("span", "tr-group-nav-arrow", arrow));
+      var txt = el("span", "tr-group-nav-text");
+      txt.appendChild(el("span", "tr-group-nav-label", label));
+      var sub = el("span", "tr-group-nav-sub", T.group + " " + target.n + " · ");
+      sub.appendChild(arText("tr-group-nav-letters", groupLetters(target)));
+      txt.appendChild(sub);
+      b.appendChild(txt);
+      b.addEventListener("click", function () {
+        if (isOpen(kind, target)) { stack.pop(); stack.push(makeView(target)); showTop(); }
+        else if (window.ahlOpenPaywall) window.ahlOpenPaywall(groupName(kind, target), b);
+      });
+      nav.appendChild(b);
+    }
+    var prev = GROUPS[g.n - 2] || null, next = GROUPS[g.n] || null;
+    btn(prev, T.prevGroup, RTL ? "›" : "‹");
+    btn(next, T.nextGroup, RTL ? "‹" : "›");
+    return nav;
+  }
   function viewDefiGroup(g) {
     return {
       title: groupName("defi", g),
@@ -629,6 +679,7 @@
         var DATA = window.AHL_CONC || {}, BOOK = window.AHL_BOOK || {};
         var ids = g.ids.filter(function (id) { return DATA[id]; });
         var letter = ids[0];
+        panel.appendChild(groupNav("defi", g, viewDefiGroup));
         panel.appendChild(el("p", "tr-motto", T.defiMotto));
         panel.appendChild(el("p", "conc-instruction", T.defiIntro));
         panel.appendChild(el("p", "tr-tip", "💡 " + T.defiTip));
@@ -677,6 +728,7 @@
           }
         }
         renderLetter();
+        panel.appendChild(groupNav("defi", g, viewDefiGroup));
       }
     };
   }
