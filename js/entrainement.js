@@ -340,8 +340,28 @@
 
   // ---- Texte AVEC harakat : couche A = tout en rouge, couche B = lettres seules par-dessus ----
   var MARKS = /[ً-ْٰ]/g;
+  // Securite : une harakat qui ne suit aucune lettre (apres un espace, en debut de texte...)
+  // est ignoree. Sinon elle decale la couche rouge par rapport aux lettres noires et fait
+  // apparaitre des lignes rouges en double dans la correction. (Voir aussi
+  // tools/verifier-textes-harakat.py, a lancer avant de publier.)
+  function dropLoneMarks(p) {
+    var out = "", map = [], prevLetter = false;
+    for (var i = 0; i < p.plain.length; i++) {
+      var ch = p.plain.charAt(i);
+      var isMark = /[\u064b-\u0652\u0670]/.test(ch);
+      map.push(out.length);
+      if (isMark && !prevLetter) continue;
+      out += ch;
+      prevLetter = isMark ? true : /[\u0621-\u064a\u0671-\u06d3\u0640]/.test(ch);
+    }
+    map.push(out.length);
+    return {
+      plain: out,
+      ranges: p.ranges.map(function (r) { return { from: map[r.from], to: map[r.to], kind: r.kind }; })
+    };
+  }
   function renderVowel(container, markup) {
-    var p = parseMarkup(markup);
+    var p = dropLoneMarks(parseMarkup(markup));
     // couleurs : les plages portent sur le texte SANS harakat
     var base = "", map = [];
     for (var i = 0; i < p.plain.length; i++) {
