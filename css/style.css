@@ -3309,3 +3309,13 @@ html[dir="rtl"] .faq-item summary { padding: 14px 18px 14px 44px; }
 .faq-a { padding: 0 18px 14px; line-height: 1.7; }
 .faq-a p { margin: 0; }
 .faq-a a { color: var(--color-teal-dark); text-decoration: underline; }
+
+/* Espace entrainement : prix */
+.train-list { display: flex; flex-direction: column; gap: 28px; margin-top: 22px; }
+.train-block h4 { font-size: 1.05rem; margin: 0 0 6px; color: var(--color-navy); }
+.train-block .price-pack { margin-top: 24px; }
+.train-free { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; }
+.pricing-grid #entrainement { grid-column: 1 / -1; }
+@media (min-width: 900px) {
+  .train-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px 28px; align-items: start; }
+}
