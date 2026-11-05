@@ -71,8 +71,8 @@
         badge: "🔒 Payant", title: "Module {n} : accès payant",
         sub: "Les modules 1 et 2 sont gratuits. Choisis une formule pour débloquer ce module.",
         single: "Ce module seul", singleDesc: "Module {n}, accès à vie",
-        subscribe: "Abonnement", base: "Formule de base", baseDesc: "Accès aux modules",
-        all: "Tout inclus", allDesc: "Modules + dictées, lecture et concentration",
+        subscribe: "Abonnement", base: "Formule Basic", baseDesc: "Accès aux modules",
+        all: "Formule All Inclusive", allDesc: "Modules + dictées, lecture et concentration",
         month: "/ mois", year: "/ an", lifetime: "Accès à vie", lifetimeDesc: "Achat unique, tout est débloqué : dictées, lecture et concentration comprises.",
         seeAll: "Voir toutes les formules", close: "Fermer"
       },
@@ -83,7 +83,7 @@
         sub: "Modules 1 and 2 are free. Choose a plan to unlock this module.",
         single: "This module only", singleDesc: "Module {n}, lifetime access",
         subscribe: "Subscription", base: "Basic plan", baseDesc: "Access to the modules",
-        all: "All-inclusive", allDesc: "Modules + dictations, reading and concentration",
+        all: "All Inclusive plan", allDesc: "Modules + dictations, reading and concentration",
         month: "/ month", year: "/ year", lifetime: "Lifetime access", lifetimeDesc: "One-time purchase, everything unlocked: dictations, reading and concentration included.",
         seeAll: "See all plans", close: "Close"
       },
@@ -93,8 +93,8 @@
         badge: "🔒 Платно", title: "Модуль {n}: платный доступ",
         sub: "Модули 1 и 2 бесплатны. Выбери тариф, чтобы открыть этот модуль.",
         single: "Только этот модуль", singleDesc: "Модуль {n}, доступ навсегда",
-        subscribe: "Подписка", base: "Базовый тариф", baseDesc: "Доступ к модулям",
-        all: "Всё включено", allDesc: "Модули + диктанты, чтение и концентрация",
+        subscribe: "Подписка", base: "Тариф Basic", baseDesc: "Доступ к модулям",
+        all: "Тариф All Inclusive", allDesc: "Модули + диктанты, чтение и концентрация",
         month: "/ мес.", year: "/ год", lifetime: "Доступ навсегда", lifetimeDesc: "Разовая покупка, всё открыто, включая диктанты, чтение и концентрацию.",
         seeAll: "Все тарифы", close: "Закрыть"
       },
@@ -104,8 +104,8 @@
         badge: "🔒 Kostenpflichtig", title: "Modul {n}: kostenpflichtiger Zugang",
         sub: "Die Module 1 und 2 sind kostenlos. Wähle ein Angebot, um dieses Modul freizuschalten.",
         single: "Nur dieses Modul", singleDesc: "Modul {n}, lebenslanger Zugang",
-        subscribe: "Abonnement", base: "Basis-Angebot", baseDesc: "Zugang zu den Modulen",
-        all: "Alles inklusive", allDesc: "Module + Diktate, Lesen und Konzentration",
+        subscribe: "Abonnement", base: "Basic-Tarif", baseDesc: "Zugang zu den Modulen",
+        all: "All-Inclusive-Tarif", allDesc: "Module + Diktate, Lesen und Konzentration",
         month: "/ Monat", year: "/ Jahr", lifetime: "Lebenslanger Zugang", lifetimeDesc: "Einmaliger Kauf, alles freigeschaltet, einschließlich Diktaten, Lesen und Konzentration.",
         seeAll: "Alle Angebote ansehen", close: "Schließen"
       },
@@ -115,8 +115,8 @@
         badge: "🔒 مدفوع", title: "الوحدة {n}: وصول مدفوع",
         sub: "الوحدتان 1 و2 مجانيتان. اختر باقة لفتح هذه الوحدة.",
         single: "هذه الوحدة فقط", singleDesc: "الوحدة {n}، وصول دائم",
-        subscribe: "اشتراك", base: "الباقة الأساسية", baseDesc: "الوصول إلى الوحدات",
-        all: "كل شيء مشمول", allDesc: "الوحدات + الإملاء والقراءة والتركيز",
+        subscribe: "اشتراك", base: "باقة Basic", baseDesc: "الوصول إلى الوحدات",
+        all: "باقة All Inclusive", allDesc: "الوحدات + الإملاء والقراءة والتركيز",
         month: "/ شهريًا", year: "/ سنويًا", lifetime: "وصول مدى الحياة", lifetimeDesc: "دفعة واحدة، كل شيء مفتوح بما في ذلك الإملاء والقراءة والتركيز.",
         seeAll: "عرض كل الباقات", close: "إغلاق"
       }

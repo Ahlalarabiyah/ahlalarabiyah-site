@@ -2960,7 +2960,7 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .conc-audio-label { font-size: .85rem; color: var(--color-text-light); }
 .conc-audio audio { width: min(100%, 360px); }
 .conc-block { padding: 18px 16px 12px; border: 1px solid var(--color-border); border-radius: 16px; background: #fff; margin: 0 0 14px; font-family: "Noto Naskh Arabic", var(--font-arabic); }
-.conc-title { margin: 0 0 14px; text-align: center; font-weight: 600; line-height: 1.7; }
+.conc-title { margin: 0 0 14px; text-align: center; font-weight: 600; line-height: 1.7; font-family: "Noto Naskh Arabic", var(--font-arabic); }
 .conc-title-letter { font-size: 2.1rem; font-weight: 500; }
 .conc-title-story { font-size: 1.9rem; font-weight: 700; }
 .conc-para { margin: 0 0 14px; font-size: 1.55rem; font-weight: 600; line-height: 2.2; text-align: right; }
@@ -3272,6 +3272,73 @@ button.write-word.is-active { border-color: var(--color-teal); background: var(-
   .write-status { min-height: 1.3em; margin: 6px 0 2px; font-size: .9rem; }
   .write-actions { margin: 4px 0 2px; }
 }
+
+/* Achats pas encore ouverts : l'offre reste visible, le bouton annonce "Bientot disponible" */
+.price-buy.is-soon { cursor: default; }
+.price-buy.is-soon:hover { transform: none; box-shadow: none; }
+.soon-badge {
+  display: block; width: fit-content; margin: 8px auto 0; padding: 3px 11px; border-radius: 999px;
+  background: var(--color-navy); color: #fff; font-family: var(--font-heading); font-weight: 600;
+  font-size: .7rem; letter-spacing: .02em; line-height: 1.4; white-space: nowrap;
+}
+.price-rows .price-buy.is-soon { flex-wrap: wrap; row-gap: 2px; }
+.price-rows .price-buy.is-soon .soon-badge { flex: 0 0 100%; margin: 4px 0 0; width: auto; text-align: center; border-radius: 8px; }
+.level-card.is-soon .soon-badge { white-space: normal; text-align: center; font-size: .62rem; padding: 2px 8px; }
+.price-pack.is-soon .soon-badge { flex: 0 0 auto; margin: 0 auto; }
+@media (min-width: 681px) { .price-pack.is-soon .soon-badge { flex-basis: 100%; width: auto; text-align: center; margin-top: 0; } }
+.lifetime-buy.is-soon { display: inline-flex; flex-direction: column; align-items: center; }
+.picker-pay[aria-disabled="true"] { cursor: default; }
+
+/* FAQ */
+.faq { max-width: 780px; margin: 0 auto; text-align: start; }
+.faq-group { font-size: 1.15rem; margin: 30px 0 10px; color: var(--color-teal-dark); }
+.faq-item { background: #fff; border: 1.5px solid var(--color-border); border-radius: 14px; margin: 0 0 10px; }
+.faq-item[open] { border-color: var(--color-teal); background: var(--color-teal-10); }
+.faq-item summary {
+  list-style: none; cursor: pointer; padding: 14px 44px 14px 18px; font-family: var(--font-heading); font-weight: 600;
+  color: var(--color-navy); position: relative; line-height: 1.4;
+}
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after {
+  content: "+"; position: absolute; inset-inline-end: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 1.4rem; line-height: 1; color: var(--color-teal-dark); font-weight: 500;
+}
+html[dir="rtl"] .faq-item summary { padding: 14px 18px 14px 44px; }
+.faq-item[open] summary::after { content: "–"; }
+.faq-item summary:focus-visible { outline: 3px solid var(--color-teal); outline-offset: 2px; border-radius: 14px; }
+.faq-a { padding: 0 18px 14px; line-height: 1.7; }
+.faq-a p { margin: 0; }
+.faq-a a { color: var(--color-teal-dark); text-decoration: underline; }
+
+/* Espace entrainement : prix */
+.train-list { display: flex; flex-direction: column; gap: 28px; margin-top: 22px; }
+.train-block h4 { font-size: 1.05rem; margin: 0 0 6px; color: var(--color-navy); }
+.train-block .price-pack { margin-top: 24px; }
+.train-free { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 0; }
+.pricing-grid #entrainement { grid-column: 1 / -1; }
+@media (min-width: 900px) {
+  .train-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 36px 28px; align-items: start; }
+}
+
+/* Defis : passer au groupe precedent / suivant */
+.tr-group-nav { display: flex; justify-content: space-between; align-items: stretch; gap: 10px; margin: 6px 0 14px; }
+.tr-group-nav-gap { flex: 1 1 0; }
+.tr-group-nav-btn { flex: 1 1 0; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; padding: 8px 14px; text-align: start; }
+.tr-group-nav-btn:last-child { justify-content: center; }
+.tr-group-nav-arrow { font-size: 1.6rem; line-height: 1; }
+.tr-group-nav-text { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.25; }
+.tr-group-nav-label { font-weight: 600; }
+.tr-group-nav-sub { font-size: .8rem; opacity: .8; }
+.tr-group-nav-letters { font-size: 1rem; }
+@media (max-width: 520px) { .tr-group-nav-btn { padding: 8px 10px; gap: 6px; } .tr-group-nav-label { font-size: .85rem; } }
+
+/* Livre de l'alphabet : avec / sans dessins */
+.book-mode { display: flex; justify-content: center; gap: 0; margin: 4px auto 14px; max-width: 420px; border: 1.5px solid var(--color-teal); border-radius: 999px; overflow: hidden; background: #fff; }
+.book-mode-btn { flex: 1 1 0; padding: 9px 14px; border: 0; background: transparent; color: var(--color-teal-dark, var(--color-navy)); font: inherit; font-weight: 600; font-size: .92rem; cursor: pointer; }
+.book-mode-btn + .book-mode-btn { border-inline-start: 1.5px solid var(--color-teal); }
+.book-mode-btn.is-active { background: var(--color-teal); color: #fff; }
+.book-no-img .book-imgs, .book-no-img .book-lead { display: none; }
+.book-lead .book-img:only-child { max-width: 100%; }
 
 /* Pages legales (brouillons) */
 .legal { max-width: 760px; margin: 0 auto; text-align: start; line-height: 1.7; }

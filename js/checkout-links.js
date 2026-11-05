@@ -19,5 +19,12 @@ window.AHL_CHECKOUT_LINKS = {
   "dictee-4": "",
   "dictee-5": "",
   "dictee-pack": "",
+  "atelier": "",
+  "defis-group": "",
+  "defis-pack": "",
+  "livre-module": "",
+  "livre-pack": "",
+  "mots-serie": "",
+  "mots-pack": "",
   "lifetime": ""
 };

@@ -481,4 +481,64 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.com/ar/formules.html"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://ahlalarabiyah.com/formules.html"/>
   </url>
+  <url>
+    <loc>https://ahlalarabiyah.com/faq.html</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.com/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.com/en/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.com/ru/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.com/de/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.com/ar/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ahlalarabiyah.com/faq.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.com/en/faq.html</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.com/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.com/en/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.com/ru/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.com/de/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.com/ar/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ahlalarabiyah.com/faq.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.com/ru/faq.html</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.com/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.com/en/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.com/ru/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.com/de/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.com/ar/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ahlalarabiyah.com/faq.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.com/de/faq.html</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.com/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.com/en/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.com/ru/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.com/de/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.com/ar/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ahlalarabiyah.com/faq.html"/>
+  </url>
+  <url>
+    <loc>https://ahlalarabiyah.com/ar/faq.html</loc>
+    <lastmod>2026-11-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://ahlalarabiyah.com/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ahlalarabiyah.com/en/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://ahlalarabiyah.com/ru/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://ahlalarabiyah.com/de/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://ahlalarabiyah.com/ar/faq.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ahlalarabiyah.com/faq.html"/>
+  </url>
 </urlset>
