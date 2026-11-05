@@ -124,6 +124,7 @@
 
   var AUDIO_CONC = ROOT_BASE + "assets/audio/concentration/";
   var AUDIO_READ = ROOT_BASE + "assets/audio/reading/";
+  var AUDIO_FASC = ROOT_BASE + "assets/audio/fascicule-mots/";
   var IMG_BOOK = ROOT_BASE + "assets/img/livre/";
 
   // ---- Donnees (paires proches, mots proches, series de mots) ----
@@ -840,6 +841,7 @@
           var box = el("div", "reading-set");
           var head = el("div", "reading-set-head");
           head.appendChild(el("span", "reading-set-title", T.fascN + " " + (fi + 1)));
+          head.appendChild(seriesControls(AUDIO_FASC + "fascicule-" + (fi + 1) + ".m4a"));
           box.appendChild(head);
           var ws = el("ol", "reading-set-words");
           ws.lang = "ar";
