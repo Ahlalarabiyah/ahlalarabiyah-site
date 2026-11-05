@@ -26,5 +26,7 @@ window.AHL_CHECKOUT_LINKS = {
   "livre-pack": "",
   "mots-serie": "",
   "mots-pack": "",
+  "fasc-mots": "",
+  "fasc-pack": "",
   "lifetime": ""
 };

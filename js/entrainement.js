@@ -26,7 +26,7 @@
       defiIntro: "Écris d’abord le texte sur ton cahier, puis écoute-le, et ajoute enfin les harakāt. Vérifie ensuite avec la correction.",
       drawWith: "Avec dessins", drawWithout: "Sans dessins", drawLabel: "Choisis ta lecture", prevGroup: "Groupe précédent", nextGroup: "Groupe suivant", chooseGroup: "Choisis un groupe de lettres", showCorr: "Voir la correction", hideCorr: "Cacher la correction",
       letter: "La lettre", text: "Le texte", aLetter: "Audio de la lettre", aText: "Audio du texte",
-      fasc: "Mots après chaque fascicule", book: "Le livre de l’alphabet (avec harakāt)", wordsRead: "Les différents mots (à lire)", soon: "Bientôt disponible",
+      fasc: "Mots après chaque fascicule", fascN: "Fascicule", taaNote: "ة = ت (ة = tāʼ marbūṭa) : dans ces mots, elle se lit comme ت.", book: "Le livre de l’alphabet (avec harakāt)", wordsRead: "Les différents mots (à lire)", soon: "Bientôt disponible",
       bookHint: "Lis chaque texte en suivant les harakāt, puis écoute l’audio."
     },
     en: {
@@ -45,7 +45,7 @@
       defiIntro: "First write the text in your notebook, then listen to it, and finally add the harakāt. Then check with the correction.",
       drawWith: "With drawings", drawWithout: "Without drawings", drawLabel: "Choose your reading", prevGroup: "Previous group", nextGroup: "Next group", chooseGroup: "Choose a group of letters", showCorr: "Show the correction", hideCorr: "Hide the correction",
       letter: "The letter", text: "The text", aLetter: "Letter audio", aText: "Text audio",
-      fasc: "Words after each booklet", book: "The alphabet book (with harakāt)", wordsRead: "The different words (to read)", soon: "Coming soon",
+      fasc: "Words after each booklet", fascN: "Booklet", taaNote: "ة = ت (ة = tāʼ marbūṭa): in these words, it is read like ت.", book: "The alphabet book (with harakāt)", wordsRead: "The different words (to read)", soon: "Coming soon",
       bookHint: "Read each text following the harakāt, then listen to the audio."
     },
     ru: {
@@ -64,7 +64,7 @@
       defiIntro: "Сначала напиши текст в тетради, потом послушай его и в конце добавь огласовки. Затем сверься с исправленным вариантом.",
       drawWith: "С рисунками", drawWithout: "Без рисунков", drawLabel: "Выбери вариант чтения", prevGroup: "Предыдущая группа", nextGroup: "Следующая группа", chooseGroup: "Выбери группу букв", showCorr: "Показать исправленный вариант", hideCorr: "Скрыть исправленный вариант",
       letter: "Буква", text: "Текст", aLetter: "Аудио буквы", aText: "Аудио текста",
-      fasc: "Слова после каждой брошюры", book: "Книга алфавита (с огласовками)", wordsRead: "Разные слова (для чтения)", soon: "Скоро будет доступно",
+      fasc: "Слова после каждой брошюры", fascN: "Брошюра", taaNote: "ة = ت (ة = та марбута): в этих словах она читается как ت.", book: "Книга алфавита (с огласовками)", wordsRead: "Разные слова (для чтения)", soon: "Скоро будет доступно",
       bookHint: "Читай каждый текст по огласовкам, затем послушай аудио."
     },
     de: {
@@ -83,7 +83,7 @@
       defiIntro: "Schreibe zuerst den Text in dein Heft, höre ihn dir dann an und ergänze zum Schluss die Harakāt. Prüfe danach mit der Korrektur.",
       drawWith: "Mit Zeichnungen", drawWithout: "Ohne Zeichnungen", drawLabel: "Wähle deine Lektüre", prevGroup: "Vorherige Gruppe", nextGroup: "Nächste Gruppe", chooseGroup: "Wähle eine Buchstabengruppe", showCorr: "Korrektur anzeigen", hideCorr: "Korrektur ausblenden",
       letter: "Der Buchstabe", text: "Der Text", aLetter: "Audio des Buchstabens", aText: "Audio des Textes",
-      fasc: "Wörter nach jedem Heft", book: "Das Alphabet-Buch (mit Harakāt)", wordsRead: "Die verschiedenen Wörter (zum Lesen)", soon: "Demnächst verfügbar",
+      fasc: "Wörter nach jedem Heft", fascN: "Heft", taaNote: "ة = ت (ة = Tāʼ marbūṭa): In diesen Wörtern wird es wie ت gelesen.", book: "Das Alphabet-Buch (mit Harakāt)", wordsRead: "Die verschiedenen Wörter (zum Lesen)", soon: "Demnächst verfügbar",
       bookHint: "Lies jeden Text anhand der Harakāt und höre dann das Audio."
     },
     ar: {
@@ -102,7 +102,7 @@
       defiIntro: "اكتب النص أولًا في دفترك، ثم استمع إليه، ثم أضف الحركات في النهاية، ثم تحقق بالتصحيح.",
       drawWith: "مع الرسومات", drawWithout: "بدون رسومات", drawLabel: "اختر طريقة القراءة", prevGroup: "المجموعة السابقة", nextGroup: "المجموعة التالية", chooseGroup: "اختر مجموعة حروف", showCorr: "عرض التصحيح", hideCorr: "إخفاء التصحيح",
       letter: "الحرف", text: "النص", aLetter: "صوت الحرف", aText: "صوت النص",
-      fasc: "كلمات بعد كل كراسة", book: "كتاب الحروف (بالحركات)", wordsRead: "الكلمات المختلفة (للقراءة)", soon: "قريبًا",
+      fasc: "كلمات بعد كل كراسة", fascN: "كراسة", taaNote: "ة = ت (ة = تَاءُ المَرْبُوطَةِ)", book: "كتاب الحروف (بالحركات)", wordsRead: "الكلمات المختلفة (للقراءة)", soon: "قريبًا",
       bookHint: "اقرأ كل نص متتبعًا الحركات ثم استمع إلى الصوت."
     }
   };
@@ -175,6 +175,15 @@
         { au: "list-11", words: ["أَخْـرَجَ", "تُـدْخِـلُ", "أَبْـوَابٍ", "جِسْرٌ", "أَبْـشِـرْ", "بَلْ", "أَمْوَالٍ", "اِهْدِنَـا", "بِعْ", "أَنْـوَارٌ", "نَخْلَةً", "أَفْـكَـارًا", "لَـحْـمٍ", "غَـيْـرِ", "مُـصْـطَـفَـى", "أَجْـدَرُ", "نَـكْـتُـبُ", "يَـقْـلَـقُ", "أَوْلَادًا", "أَتْـبَـاعُ", "أَهْـلُ", "يَزْدَادَ", "تَـبْدُو", "بِـسْـمِ اللَّهِ", "أَذْكُـرُ", "تَـشْـبَـعُ", "خِـنْـزِيـرٌ"] },
         { au: "list-12", words: ["غَرِيبٌ", "عَرَبَ", "خَرَجَ", "غَفُورٍ", "فَتَحَ", "غَادَرَ", "غَفَرَ", "فُـجُورًا", "بَاغٍ", "عَجِيبًا", "غَرَسَ", "عَتِيدٌ", "عَبَدَ", "عَبَدَ", "عَدِيدٍ", "تَعِبَ", "تَفِتَ", "صَعُبَ", "بَعَثَ", "ضَفِيرًا", "تَعِسَ", "عَبِيدًا"] }
       ];
+  // ---- Mots apres chaque fascicule (fournis par l'auteur) ----
+  // Chaque ligne = liste de morceaux (mot ou groupe de mots), separes par "ـ" a l'affichage.
+  // Fascicule 2 : les lignes 5-6 viennent d'un second bloc fourni sans sa ligne 1.
+  var FASC = [
+    [["أَبِي", "تَجُوبُ", "آبَاءٍ"], ["أَتُوبُ", "تَجِيبُ"], ["تَبِيتُ", "تَاجًا", "أَخِي"], ["أَبَتِي", "بَابًا"]],
+    [["جِيبُوتِي", "تَاجِرًا", "حُبِسَ"], ["سِتَارٌ", "خَابِزٌ", "طَبِيبٍ"], ["زِيدِي", "ذَابَ", "تَذُوبُ"], ["تُتِيحُ", "شَجَرَةً", "سِرَاجًا"], ["طَابَ", "شَرِيسٌ", "شَادَ"], ["تُوتٌ", "طَبَاشِيرُ"]],
+    [["يَدٌ", "غُبَارٌ", "كِلَابٍ"], ["وَلَدًا", "نُورٌ", "فَلَقٌ"], ["فَاتِحَةٌ", "بَقَرَةً", "هَرَبَ"], ["مَجِيدٌ", "لَبَنٍ", "عِبَارَة"]],
+    [["شَدَّةٍ", "كُرَّاسَةٌ", "بَلَّلَ"], ["قَلَّبَ قَلْبَهُ", "بَثَّ اللهُ رُسُلًا"], ["تُوجَدُ هِرَّةٌ فِي بَيْتٍ"], ["فِي مَنْزِلٍ كَلْبٌ كَبِير"]]
+  ];
   var AR_DIGITS = "٠١٢٣٤٥٦٧٨٩";
   function arNum(n) { return String(n).replace(/\d/g, function (d) { return AR_DIGITS.charAt(Number(d)); }); }
 
@@ -822,6 +831,34 @@
       }
     };
   }
+  function viewFasc() {
+    return {
+      title: T.fasc,
+      render: function (panel) {
+        panel.appendChild(el("p", "tr-motto", T.lectureTop));
+        FASC.forEach(function (lines, fi) {
+          var box = el("div", "reading-set");
+          var head = el("div", "reading-set-head");
+          head.appendChild(el("span", "reading-set-title", T.fascN + " " + (fi + 1)));
+          box.appendChild(head);
+          var ws = el("ol", "reading-set-words");
+          ws.lang = "ar";
+          ws.dir = "rtl";
+          ws.style.gridTemplateColumns = "1fr"; // une ligne de mots par rangee (pas deux colonnes)
+          lines.forEach(function (parts, i) {
+            var item = el("li", "reading-set-item");
+            item.appendChild(el("span", "reading-set-num", arNum(i + 1) + "-"));
+            item.appendChild(el("span", "reading-set-word", parts.join(" ـ ")));
+            ws.appendChild(item);
+          });
+          box.appendChild(ws);
+          panel.appendChild(box);
+        });
+        panel.appendChild(el("p", "tr-motto", T.taaNote));
+        panel.appendChild(el("p", "tr-motto tr-motto-bottom", T.lectureBottom));
+      }
+    };
+  }
   function viewLecture() {
     return {
       title: T.lecture,
@@ -836,7 +873,7 @@
           b.addEventListener("click", onClick);
           menu.appendChild(b);
         }
-        item("1. " + T.fasc, function () { /* contenu a venir */ }, true);
+        item("1. " + T.fasc, function () { pushView(viewFasc()); });
         item("2. " + T.book, function () { pushView(viewBook()); });
         item("3. " + T.wordsRead, function () {
           pushView({ title: T.wordsRead, render: function (p) {
