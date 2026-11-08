@@ -787,6 +787,7 @@
     return {
       title: groupName("lecture", g),
       render: function (panel) {
+        panel.appendChild(groupNav("lecture", g, viewBookGroup));
         panel.appendChild(el("p", "tr-motto", T.lectureTop));
         var BOOK = window.AHL_BOOK || {}, DATA = window.AHL_CONC || {};
         var ids = g.ids.filter(function (id) { return BOOK[id]; });
@@ -818,6 +819,7 @@
           }
         }
         renderLetter();
+        panel.appendChild(groupNav("lecture", g, viewBookGroup));
         panel.appendChild(el("p", "tr-motto tr-motto-bottom", T.lectureBottom));
       }
     };
