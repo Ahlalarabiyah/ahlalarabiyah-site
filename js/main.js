@@ -5052,19 +5052,31 @@
         for (var i = 0; i < n; i++) { dv.setInt16(44 + i * 2, Math.max(-1, Math.min(1, buf[i])) * 32767, true); }
         return URL.createObjectURL(new Blob([dv.buffer], { type: "audio/wav" }));
       }
+      var FX_DEFS = {
+        correct: [[[523.25, 0, 0.16, "triangle", 0.22], [659.25, 0.085, 0.16, "triangle", 0.22], [783.99, 0.17, 0.16, "triangle", 0.22],
+          [1046.5, 0.255, 0.16, "triangle", 0.22], [1318.5, 0.34, 0.32, "sine", 0.13]], 0.7],
+        wrong: [[[330, 0, 0.2, "triangle", 0.26, 277], [277, 0.21, 0.4, "triangle", 0.26, 185]], 0.65],
+        start: [[[660, 0, 0.09, "sine", 0.16], [990, 0.1, 0.12, "sine", 0.16]], 0.26],
+        tick: [[[880, 0, 0.1, "square", 0.08]], 0.15],
+        // fin de partie reussie (80 % et plus) : arpege montant puis accord tenu
+        cheer: [[[523.25, 0, 0.14, "triangle", 0.2], [659.25, 0.12, 0.14, "triangle", 0.2], [783.99, 0.24, 0.14, "triangle", 0.2],
+          [1046.5, 0.36, 0.6, "triangle", 0.2], [1318.5, 0.36, 0.6, "sine", 0.11], [1567.98, 0.36, 0.6, "sine", 0.09]], 1.05],
+        // score parfait : grande fanfare + petites etincelles
+        cheerBig: [[[523.25, 0, 0.12, "triangle", 0.2], [659.25, 0.11, 0.12, "triangle", 0.2], [783.99, 0.22, 0.12, "triangle", 0.2],
+          [1046.5, 0.33, 0.2, "triangle", 0.2], [783.99, 0.55, 0.12, "triangle", 0.2], [1046.5, 0.66, 0.12, "triangle", 0.2],
+          [1318.5, 0.77, 0.12, "triangle", 0.2], [1567.98, 0.88, 0.8, "triangle", 0.2], [1318.5, 0.88, 0.8, "sine", 0.11],
+          [2093, 0.88, 0.8, "sine", 0.08], [2637, 1.4, 0.12, "sine", 0.07], [3135.98, 1.52, 0.12, "sine", 0.07], [2637, 1.64, 0.3, "sine", 0.07]], 2.1]
+      };
+      // meme son avec Web Audio (secours) a partir des memes notes
+      function fxNotesWeb(name) {
+        FX_DEFS[name][0].forEach(function (x) { fxTone(x[0], x[1], x[2], x[3], x[4], x[5]); });
+      }
       function fxBuild() {
         if (fxEls) return;
         fxEls = {};
-        var defs = {
-          correct: [[[523.25, 0, 0.16, "triangle", 0.22], [659.25, 0.085, 0.16, "triangle", 0.22], [783.99, 0.17, 0.16, "triangle", 0.22],
-            [1046.5, 0.255, 0.16, "triangle", 0.22], [1318.5, 0.34, 0.32, "sine", 0.13]], 0.7],
-          wrong: [[[330, 0, 0.2, "triangle", 0.26, 277], [277, 0.21, 0.4, "triangle", 0.26, 185]], 0.65],
-          start: [[[660, 0, 0.09, "sine", 0.16], [990, 0.1, 0.12, "sine", 0.16]], 0.26],
-          tick: [[[880, 0, 0.1, "square", 0.08]], 0.15]
-        };
-        Object.keys(defs).forEach(function (k) {
-          var notes = defs[k][0].map(function (x) { return { f: x[0], d: x[1], len: x[2], type: x[3], vol: x[4], slide: x[5] }; });
-          fxEls[k] = new Audio(fxWavUrl(fxSynth(notes, defs[k][1])));
+        Object.keys(FX_DEFS).forEach(function (k) {
+          var notes = FX_DEFS[k][0].map(function (x) { return { f: x[0], d: x[1], len: x[2], type: x[3], vol: x[4], slide: x[5] }; });
+          fxEls[k] = new Audio(fxWavUrl(fxSynth(notes, FX_DEFS[k][1])));
           fxEls[k].preload = "auto";
         });
         fxEls.bell = new Audio(fxWavUrl(fxSynthBell()));
@@ -5232,6 +5244,11 @@
         // 100 % = score parfait : fete plus grande que le simple "objectif atteint"
         var mood = pct >= 100 ? "perfect" : pct >= 80 ? "win" : pct >= 50 ? "mid" : "lose";
         gameEnd.classList.add(mood === "perfect" ? "is-win" : "is-" + mood);
+        // petit delai : laisse finir le son de la derniere reponse
+        if (mood === "perfect" || mood === "win") {
+          var cheerName = mood === "perfect" ? "cheerBig" : "cheer";
+          setTimeout(function () { fxPlay(cheerName, function () { fxNotesWeb(cheerName); }); }, 450);
+        }
         if (mood === "perfect") {
           gameEnd.classList.add("is-perfect");
           var label = document.createElement("p");
