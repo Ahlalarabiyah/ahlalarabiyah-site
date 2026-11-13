@@ -2114,17 +2114,6 @@
             : isEnglish
             ? "This letter never connects to the one after it, so its “middle” and “end” shapes look the same."
             : "Cette lettre ne s'accroche jamais à la lettre suivante : ses formes « milieu » et « fin » se ressemblent donc.";
-          if (id === "alif") {
-            noteText += isGerman
-              ? " Er nimmt außerdem nie ein Sukun oder eine Schadda an."
-              : isArabic
-              ? " كما أنه لا يقبل السكون ولا الشدّة أبدًا."
-              : isRussian
-              ? " Она также никогда не принимает ни сукун, ни шадду."
-              : isEnglish
-              ? " It also never takes a sukoon or a shadda."
-              : " Elle ne prend jamais non plus de soukoune ni de chadda.";
-          }
           note.textContent = noteText;
           formLabExamples.appendChild(note);
         }
@@ -4994,7 +4983,7 @@
           });
         } catch (e) { /* pas de son : le jeu continue */ }
       }
-      var gameFx = {
+      var webFx = {
         // petite fanfare montante (do-mi-sol-do) + note finale
         correct: function () {
           [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) { fxTone(f, i * 0.085, 0.16, "triangle", 0.22); });
@@ -5014,6 +5003,108 @@
         tick: function () { fxTone(880, 0, 0.1, "square", 0.08); },
         // fin du temps : sonnerie d'ecole
         timeUp: function () { fxSchoolBell(); }
+      };
+
+      // Les memes sons, mais joues comme les audios des mots (balise audio) : sur iPhone et Safari,
+      // la synthese Web Audio reste muette (interrupteur silencieux de l'iPhone, contexte pas
+      // "debloque"), alors que les audios des mots passent toujours. On fabrique donc de petits fichiers
+      // WAV en memoire a partir des memes notes. Web Audio ne sert plus que de secours.
+      var FX_SR = 22050;
+      var fxEls = null;
+      function fxSynth(notes, total) {
+        var n = Math.ceil(total * FX_SR), buf = new Float32Array(n);
+        notes.forEach(function (nt) {
+          var i0 = Math.floor(nt.d * FX_SR), len = Math.floor((nt.len + 0.03) * FX_SR), ph = 0;
+          for (var i = 0; i < len && i0 + i < n; i++) {
+            var t = i / FX_SR;
+            var f = nt.slide ? nt.f * Math.pow(nt.slide / nt.f, Math.min(1, t / nt.len)) : nt.f;
+            ph += 2 * Math.PI * f / FX_SR;
+            var v = Math.sin(ph);
+            if (nt.type === "triangle") { v = (2 / Math.PI) * Math.asin(v); } else if (nt.type === "square") { v = v >= 0 ? 1 : -1; }
+            var g = t < 0.015 ? 0.0001 * Math.pow(nt.vol / 0.0001, t / 0.015)
+              : (t < nt.len ? nt.vol * Math.pow(0.0001 / nt.vol, (t - 0.015) / (nt.len - 0.015)) : 0);
+            buf[i0 + i] += v * g;
+          }
+        });
+        return buf;
+      }
+      // sonnerie d'ecole : trois partiels metalliques "frappes" ~18 fois par seconde puis qui s'eteignent
+      function fxSynthBell() {
+        var dur = 1.5, step = 0.055, n = Math.ceil(dur * FX_SR), buf = new Float32Array(n);
+        var parts = [[1760, 1], [2637, 0.7], [3520, 0.4]];
+        for (var i = 0; i < n; i++) {
+          var t = i / FX_SR, tt = t % step;
+          var fade = t > dur - 0.35 ? (dur - t) / 0.35 : 1;
+          var g = tt < 0.004 ? 0.2 * fade * (tt / 0.004) : 0.2 * fade * Math.pow(0.15, (tt - 0.004) / (step - 0.008));
+          var v = 0;
+          for (var k = 0; k < parts.length; k++) { v += parts[k][1] * Math.sin(2 * Math.PI * parts[k][0] * t); }
+          buf[i] = v * g * 0.6;
+        }
+        return buf;
+      }
+      function fxWavUrl(buf) {
+        var n = buf.length, dv = new DataView(new ArrayBuffer(44 + n * 2));
+        function str(o, x) { for (var i = 0; i < x.length; i++) { dv.setUint8(o + i, x.charCodeAt(i)); } }
+        str(0, "RIFF"); dv.setUint32(4, 36 + n * 2, true); str(8, "WAVEfmt ");
+        dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+        dv.setUint32(24, FX_SR, true); dv.setUint32(28, FX_SR * 2, true); dv.setUint16(32, 2, true); dv.setUint16(34, 16, true);
+        str(36, "data"); dv.setUint32(40, n * 2, true);
+        for (var i = 0; i < n; i++) { dv.setInt16(44 + i * 2, Math.max(-1, Math.min(1, buf[i])) * 32767, true); }
+        return URL.createObjectURL(new Blob([dv.buffer], { type: "audio/wav" }));
+      }
+      function fxBuild() {
+        if (fxEls) return;
+        fxEls = {};
+        var defs = {
+          correct: [[[523.25, 0, 0.16, "triangle", 0.22], [659.25, 0.085, 0.16, "triangle", 0.22], [783.99, 0.17, 0.16, "triangle", 0.22],
+            [1046.5, 0.255, 0.16, "triangle", 0.22], [1318.5, 0.34, 0.32, "sine", 0.13]], 0.7],
+          wrong: [[[330, 0, 0.2, "triangle", 0.26, 277], [277, 0.21, 0.4, "triangle", 0.26, 185]], 0.65],
+          start: [[[660, 0, 0.09, "sine", 0.16], [990, 0.1, 0.12, "sine", 0.16]], 0.26],
+          tick: [[[880, 0, 0.1, "square", 0.08]], 0.15]
+        };
+        Object.keys(defs).forEach(function (k) {
+          var notes = defs[k][0].map(function (x) { return { f: x[0], d: x[1], len: x[2], type: x[3], vol: x[4], slide: x[5] }; });
+          fxEls[k] = new Audio(fxWavUrl(fxSynth(notes, defs[k][1])));
+          fxEls[k].preload = "auto";
+        });
+        fxEls.bell = new Audio(fxWavUrl(fxSynthBell()));
+        fxEls.bell.preload = "auto";
+      }
+      // Sur iPhone chaque balise audio doit etre "debloquee" par un vrai geste : on la lance une fois en sourdine.
+      function fxUnlock() {
+        try {
+          fxBuild();
+          Object.keys(fxEls).forEach(function (k) {
+            var a = fxEls[k];
+            if (a.__unlocked || !a.paused) return;
+            a.__unlocked = true;
+            a.muted = true;
+            var done = function () { if (a.__real) return; a.pause(); try { a.currentTime = 0; } catch (e) {} a.muted = false; };
+            var pr = a.play();
+            if (pr && pr.then) { pr.then(done, function () { a.muted = false; a.__unlocked = false; }); } else { done(); }
+          });
+        } catch (e) { /* tant pis : le secours Web Audio prendra le relais */ }
+        fxContext();
+      }
+      ["touchend", "click", "keydown"].forEach(function (ev) { document.addEventListener(ev, fxUnlock, { capture: true, passive: true }); });
+      function fxPlay(name, fallback) {
+        try {
+          fxBuild();
+          var a = fxEls[name];
+          if (!a) throw new Error("fx");
+          a.__real = true;
+          a.muted = false;
+          try { a.currentTime = 0; } catch (e) {}
+          var pr = a.play();
+          if (pr && pr.catch) { pr.catch(function () { fallback(); }); }
+        } catch (e) { fallback(); }
+      }
+      var gameFx = {
+        correct: function () { fxPlay("correct", webFx.correct); },
+        wrong: function () { fxPlay("wrong", webFx.wrong); },
+        start: function () { fxPlay("start", webFx.start); },
+        tick: function () { fxPlay("tick", webFx.tick); },
+        timeUp: function () { fxPlay("bell", webFx.timeUp); }
       };
       function playResultFx(ok) { if (ok) { gameFx.correct(); } else { gameFx.wrong(); } }
 
@@ -7130,7 +7221,7 @@
       function soundStartRound() {
         var st = soundState;
         soundStopTimer();
-        fxContext();
+        fxUnlock();
         st.current = st.rounds[st.idx];
         st.locked = false;
         st.timerOn = false;

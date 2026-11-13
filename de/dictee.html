@@ -28,7 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Scheherazade+New:wght@400&family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="../css/style.css?v=266">
+<link rel="stylesheet" href="../css/style.css?v=267">
 </head>
 <body>
 
@@ -87,6 +87,10 @@
         <p class="section-lead">
           Wähle ein Element, höre die ganze diktierte Zeile und schreibe sie dann selbst auf Papier, bevor du die Antwort anzeigst.
         </p>
+        <ul class="dictee-notes">
+          <li>Am Anfang der Audiodatei geht es nur darum, die Aussprache des Buchstabens zu üben.</li>
+          <li>Das Diktat wird 2- oder 3-mal wiederholt – egal ob Buchstaben, ein Wort oder ein Satz.</li>
+        </ul>
         <div class="game-types">
           <span class="game-type-pill">🎧 Ich höre zu</span>
           <span class="game-type-pill">✍️ Ich schreibe</span>
@@ -278,6 +282,10 @@
       </div>
       <div class="game-read-panel" id="gameDictee1Panel" hidden>
         <p class="game-read-hint">🎧 Höre die ganze diktierte Zeile und schreibe sie dann selbst auf Papier.</p>
+        <ul class="dictee-notes dictee-notes-panel">
+          <li>Am Anfang der Audiodatei geht es nur darum, die Aussprache des Buchstabens zu üben.</li>
+          <li>Das Diktat wird 2- oder 3-mal wiederholt – egal ob Buchstaben, ein Wort oder ein Satz.</li>
+        </ul>
         <div class="dictee1-words" id="gameDictee1Words" hidden></div>
         <button type="button" class="btn btn-outline btn-sm" id="gameDictee1PrevBtn">← Vorheriger Buchstabe</button>
         <button type="button" class="btn btn-primary btn-sm" id="gameDictee1ListenBtn">🔊 Anhören</button>
@@ -411,6 +419,6 @@
 </div>
 
 <script src="../js/checkout-links.js?v=3"></script>
-<script src="../js/main.js?v=287"></script>
+<script src="../js/main.js?v=288"></script>
 </body>
 </html>
