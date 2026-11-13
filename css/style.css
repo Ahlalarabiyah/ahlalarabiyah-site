@@ -3184,6 +3184,24 @@ html[dir="rtl"] .testimonial, html[dir="rtl"] .tcard { direction: rtl; text-alig
 html[dir="rtl"] .testimonial::before, html[dir="rtl"] .tcard::before { left: auto; right: 20px; }
 html[dir="rtl"] .testimonial::after, html[dir="rtl"] .tcard::after { right: auto; left: 16px; transform: rotate(-12deg); }
 
+/* ---------- Le mot de l'enseignant (sous les temoignages, page A propos) ---------- */
+.teacher-word {
+  max-width: 760px; margin: 14px auto 34px; padding: 30px 32px 26px; background: #fff;
+  border: 2px solid rgba(22,160,160,0.30); border-radius: 22px; box-shadow: 0 6px 0 rgba(22,160,160,0.20), 0 16px 28px rgba(16,60,70,0.07);
+}
+.teacher-word h3 { margin: 0; text-align: center; color: var(--color-navy); font-size: 1.6rem; }
+.teacher-word-sub { margin: 6px 0 22px; text-align: center; font-style: italic; color: var(--color-text-light); }
+.teacher-word-intro {
+  margin: 0 0 22px; padding: 16px 20px; font-style: italic; line-height: 1.75; color: var(--color-text);
+  background: rgba(238,154,69,0.12); border-inline-start: 4px solid #EE9A45; border-radius: 6px 14px 14px 6px;
+}
+.teacher-word h4 { margin: 20px 0 6px; font-size: 1.05rem; color: var(--color-teal); }
+.teacher-word h4 + p { margin: 0; color: var(--color-text); line-height: 1.75; font-size: .98rem; }
+.teacher-word-end { margin: 26px 0 0; text-align: center; font-weight: 700; line-height: 1.6; color: var(--color-teal); }
+.teacher-word-sign { margin: 22px 0 0; text-align: center; display: flex; flex-direction: column; gap: 2px; font-size: .88rem; font-style: italic; color: var(--color-text-light); }
+.teacher-word-sign strong { font-family: var(--font-heading); font-style: normal; font-size: 1.05rem; color: var(--color-navy); }
+@media (max-width: 560px) { .teacher-word { padding: 24px 18px 20px; } .teacher-word h3 { font-size: 1.35rem; } }
+
 @media (max-width: 760px) {
   .testimonial-list { columns: 1; }
   .testimonial { padding: 32px 20px 18px; }
