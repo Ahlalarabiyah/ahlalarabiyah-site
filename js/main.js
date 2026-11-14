@@ -4575,6 +4575,7 @@
       var gameDicteeListenBtn = document.getElementById("gameDicteeListenBtn");
       var gameDicteeRevealBtn = document.getElementById("gameDicteeRevealBtn");
       var gameDicteeNextBtn = document.getElementById("gameDicteeNextBtn");
+      var gameDicteePrevBtn = document.getElementById("gameDicteePrevBtn");
       var gameHarakatPanel = document.getElementById("gameHarakatPanel");
       var gameHarakatListenBtn = document.getElementById("gameHarakatListenBtn");
       var harakatSlots = document.getElementById("harakatSlots");
@@ -5529,7 +5530,26 @@
       // correction" - jamais automatiquement. Reutilise le meme pool que
       // "Reconnaitre le mot"/"Lire un mot" (memes mots, memes audios),
       // avec son propre historique anti-repetition.
+      // Historique des mots de la serie : "Mot precedent" revient en arriere, "Mot suivant"
+      // repasse par les mots deja vus avant d'en tirer un nouveau. Un mot deja corrige
+      // reste affiche avec sa correction ; un mot revu laisse passer au suivant sans re-corriger.
+      function showDicteeWord(entry, revisited) {
+        gameState.current = { correct: entry.correct };
+        renderArabicText(gameDicteeWord, stretchArabic(entry.correct.arabic));
+        gameDicteeWord.hidden = !entry.revealed;
+        gameDicteeListenBtn.textContent = isGerman ? "🔊 Anhören" : isArabic ? "🔊 استماع" : isRussian ? "🔊 Слушать" : isEnglish ? "🔊 Listen" : "🔊 Écouter";
+        gameDicteeRevealBtn.hidden = !!entry.revealed;
+        gameDicteeNextBtn.hidden = !(entry.revealed || revisited);
+        gameDicteePrevBtn.hidden = gameState.questionIndex <= 1;
+        renderProgress(PROGRESS_UNIT.word, false);
+      }
       function nextDicteeQuestion() {
+        if (!gameState.dicteeHist) { gameState.dicteeHist = []; }
+        if (gameState.dicteeHist[gameState.questionIndex]) {
+          gameState.questionIndex += 1;
+          showDicteeWord(gameState.dicteeHist[gameState.questionIndex - 1], true);
+          return;
+        }
         var pool = gameState.pool;
         var recentSet = recentWordSet("dictee", gameState.moduleNumber);
 
@@ -5542,14 +5562,9 @@
         gameState.usedKeys[correct.key] = true;
         markRecentWord("dictee", gameState.moduleNumber, correct.key);
         gameState.questionIndex += 1;
-        gameState.current = { correct: correct };
-
-        renderArabicText(gameDicteeWord, stretchArabic(correct.arabic));
-        gameDicteeWord.hidden = true;
-        gameDicteeListenBtn.textContent = isGerman ? "🔊 Anhören" : isArabic ? "🔊 استماع" : isRussian ? "🔊 Слушать" : isEnglish ? "🔊 Listen" : "🔊 Écouter";
-        gameDicteeRevealBtn.hidden = false;
-        gameDicteeNextBtn.hidden = true;
-        renderProgress(PROGRESS_UNIT.word, false);
+        var entry = { correct: correct, revealed: false };
+        gameState.dicteeHist[gameState.questionIndex - 1] = entry;
+        showDicteeWord(entry, false);
       }
 
       // "J'ecoute et je place les harakat" : le squelette de lettres est
@@ -7867,6 +7882,7 @@
       });
       gameDicteeRevealBtn.addEventListener("click", function () {
         if (!gameState || !gameState.current) return;
+        if (gameState.dicteeHist && gameState.dicteeHist[gameState.questionIndex - 1]) { gameState.dicteeHist[gameState.questionIndex - 1].revealed = true; }
         gameDicteeWord.hidden = false;
         gameDicteeRevealBtn.hidden = true;
         gameDicteeNextBtn.hidden = false;
@@ -7874,6 +7890,14 @@
       gameDicteeNextBtn.addEventListener("click", function () {
         nextQuestion();
         // Dictee pure : le mot suivant se dicte tout seul.
+        autoPlayCurrent(gameDicteeListenBtn);
+      });
+      gameDicteePrevBtn.addEventListener("click", function () {
+        if (!gameState || gameState.category !== "dictee" || !gameState.dicteeHist || gameState.questionIndex <= 1) return;
+        if (gameAudio) { gameAudio.pause(); }
+        gameState.questionIndex -= 1;
+        showDicteeWord(gameState.dicteeHist[gameState.questionIndex - 1], true);
+        // le mot revu se dicte tout seul, comme le mot suivant
         autoPlayCurrent(gameDicteeListenBtn);
       });
       gameHarakatListenBtn.addEventListener("click", function () {
