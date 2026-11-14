@@ -1331,6 +1331,8 @@ section[id] { scroll-margin-top: 88px; }
 #gameDicteeNextBtn[hidden] { display: none; }
 #gameDictee1RevealBtn[hidden] { display: none; }
 #gameDictee1PrevBtn[hidden] { display: none; }
+/* tous les boutons masques du panneau (dont "Mot precedent" au premier mot) doivent vraiment disparaitre */
+.game-read-panel .btn[hidden] { display: none; }
 #gameDictee1NextBtn[hidden] { display: none; }
 .game-end {
   flex: 1;
