@@ -4555,6 +4555,7 @@
       var gameReadWord = document.getElementById("gameReadWord");
       var gameReadListenBtn = document.getElementById("gameReadListenBtn");
       var gameReadNextBtn = document.getElementById("gameReadNextBtn");
+      var gameReadPrevBtn = document.getElementById("gameReadPrevBtn");
       var gameInstruction = document.getElementById("gameInstruction");
       var gamePlayBtn = document.getElementById("gamePlayBtn");
       var gameAnswers = document.getElementById("gameAnswers");
@@ -5478,7 +5479,29 @@
       // lui-meme l'ecoute pour se corriger. Reutilise le meme pool que
       // "Reconnaitre le mot" (buildWordPool) : memes mots/pseudo-mots,
       // memes enregistrements humains, meme regle cumulative par module.
+      // "Lire un mot" garde l'historique des mots de la serie : "Mot precedent" revient en arriere,
+      // "Mot suivant" repasse par les mots deja vus avant d'en tirer un nouveau.
+      function readListenLabel(again) {
+        return again
+          ? (isGerman ? "🔊 Nochmal anhören" : isArabic ? "🔊 استمع مرة أخرى" : isRussian ? "🔊 Послушать ещё раз" : isEnglish ? "🔊 Listen again" : "🔊 Réécouter")
+          : (isGerman ? "🔊 Anhören" : isArabic ? "🔊 استماع" : isRussian ? "🔊 Слушать" : isEnglish ? "🔊 Listen" : "🔊 Écouter");
+      }
+      function showReadWord(correct, seen) {
+        gameState.current = { correct: correct, listened: !!seen };
+        renderArabicText(gameReadWord, stretchArabic(correct.arabic));
+        gameReadListenBtn.textContent = readListenLabel(seen);
+        gameReadNextBtn.hidden = !seen;
+        gameReadPrevBtn.hidden = gameState.questionIndex <= 1;
+        renderProgress(PROGRESS_UNIT.word, false);
+      }
       function nextReadQuestion() {
+        if (!gameState.readHist) { gameState.readHist = []; }
+        // on est revenu en arriere : on repasse par le mot deja vu
+        if (gameState.readHist[gameState.questionIndex]) {
+          gameState.questionIndex += 1;
+          showReadWord(gameState.readHist[gameState.questionIndex - 1], true);
+          return;
+        }
         var pool = gameState.pool;
         var recentSet = recentWordSet("read", gameState.moduleNumber);
 
@@ -5496,12 +5519,8 @@
         gameState.usedKeys[correct.key] = true;
         markRecentWord("read", gameState.moduleNumber, correct.key);
         gameState.questionIndex += 1;
-        gameState.current = { correct: correct, listened: false };
-
-        renderArabicText(gameReadWord, stretchArabic(correct.arabic));
-        gameReadListenBtn.textContent = isGerman ? "🔊 Anhören" : isArabic ? "🔊 استماع" : isRussian ? "🔊 Слушать" : isEnglish ? "🔊 Listen" : "🔊 Écouter";
-        gameReadNextBtn.hidden = true;
-        renderProgress(PROGRESS_UNIT.word, false);
+        gameState.readHist[gameState.questionIndex - 1] = correct;
+        showReadWord(correct, false);
       }
 
       // "Dictee pure" : l'enfant entend le mot (jamais affiche a l'ecran)
@@ -7831,10 +7850,16 @@
         if (!gameState || !gameState.current) return;
         playSound(gameState.current.correct);
         gameState.current.listened = true;
-        gameReadListenBtn.textContent = isGerman ? "🔊 Nochmal anhören" : isArabic ? "🔊 استمع مرة أخرى" : isRussian ? "🔊 Послушать ещё раз" : isEnglish ? "🔊 Listen again" : "🔊 Réécouter";
+        gameReadListenBtn.textContent = readListenLabel(true);
         gameReadNextBtn.hidden = false;
       });
       gameReadNextBtn.addEventListener("click", nextQuestion);
+      gameReadPrevBtn.addEventListener("click", function () {
+        if (!gameState || gameState.category !== "read" || !gameState.readHist || gameState.questionIndex <= 1) return;
+        if (gameAudio) { gameAudio.pause(); }
+        gameState.questionIndex -= 1;
+        showReadWord(gameState.readHist[gameState.questionIndex - 1], true);
+      });
       gameDicteeListenBtn.addEventListener("click", function () {
         if (!gameState || !gameState.current) return;
         playSound(gameState.current.correct);
