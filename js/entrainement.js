@@ -26,7 +26,7 @@
       defiIntro: "Écris d’abord le texte sur ton cahier, puis écoute-le, et ajoute enfin les harakāt. Vérifie ensuite avec la correction.",
       drawWith: "Avec dessins", drawWithout: "Sans dessins", drawLabel: "Choisis ta lecture", prevGroup: "Groupe précédent", nextGroup: "Groupe suivant", chooseGroup: "Choisis un groupe de lettres", showCorr: "Voir la correction", hideCorr: "Cacher la correction",
       letter: "La lettre", text: "Le texte", aLetter: "Audio de la lettre", aText: "Audio du texte",
-      fasc: "Mots après chaque partie", fascN: "Partie", taaNote: "ة = ت (ة = tāʼ marbūṭa) : dans ces mots, elle se lit comme ت.", book: "Le livre de l’alphabet (avec harakāt)", wordsRead: "Les différents mots (à lire)", soon: "Bientôt disponible",
+      fasc: "Mots après chaque partie", fascN: "Partie", prevSet: "Série précédente", nextSet: "Série suivante", prevFasc: "Partie précédente", nextFasc: "Partie suivante", taaNote: "ة = ت (ة = tāʼ marbūṭa) : dans ces mots, elle se lit comme ت.", book: "Le livre de l’alphabet (avec harakāt)", wordsRead: "Les différents mots (à lire)", soon: "Bientôt disponible",
       bookHint: "Lis chaque texte en suivant les harakāt, puis écoute l’audio."
     },
     en: {
@@ -45,7 +45,7 @@
       defiIntro: "First write the text in your notebook, then listen to it, and finally add the harakāt. Then check with the correction.",
       drawWith: "With drawings", drawWithout: "Without drawings", drawLabel: "Choose your reading", prevGroup: "Previous group", nextGroup: "Next group", chooseGroup: "Choose a group of letters", showCorr: "Show the correction", hideCorr: "Hide the correction",
       letter: "The letter", text: "The text", aLetter: "Letter audio", aText: "Text audio",
-      fasc: "Words after each part", fascN: "Part", taaNote: "ة = ت (ة = tāʼ marbūṭa): in these words, it is read like ت.", book: "The alphabet book (with harakāt)", wordsRead: "The different words (to read)", soon: "Coming soon",
+      fasc: "Words after each part", fascN: "Part", prevSet: "Previous set", nextSet: "Next set", prevFasc: "Previous part", nextFasc: "Next part", taaNote: "ة = ت (ة = tāʼ marbūṭa): in these words, it is read like ت.", book: "The alphabet book (with harakāt)", wordsRead: "The different words (to read)", soon: "Coming soon",
       bookHint: "Read each text following the harakāt, then listen to the audio."
     },
     ru: {
@@ -64,7 +64,7 @@
       defiIntro: "Сначала напиши текст в тетради, потом послушай его и в конце добавь огласовки. Затем сверься с исправленным вариантом.",
       drawWith: "С рисунками", drawWithout: "Без рисунков", drawLabel: "Выбери вариант чтения", prevGroup: "Предыдущая группа", nextGroup: "Следующая группа", chooseGroup: "Выбери группу букв", showCorr: "Показать исправленный вариант", hideCorr: "Скрыть исправленный вариант",
       letter: "Буква", text: "Текст", aLetter: "Аудио буквы", aText: "Аудио текста",
-      fasc: "Слова после каждой части", fascN: "Часть", taaNote: "ة = ت (ة = та марбута): в этих словах она читается как ت.", book: "Книга алфавита (с огласовками)", wordsRead: "Разные слова (для чтения)", soon: "Скоро будет доступно",
+      fasc: "Слова после каждой части", fascN: "Часть", prevSet: "Предыдущая серия", nextSet: "Следующая серия", prevFasc: "Предыдущая часть", nextFasc: "Следующая часть", taaNote: "ة = ت (ة = та марбута): в этих словах она читается как ت.", book: "Книга алфавита (с огласовками)", wordsRead: "Разные слова (для чтения)", soon: "Скоро будет доступно",
       bookHint: "Читай каждый текст по огласовкам, затем послушай аудио."
     },
     de: {
@@ -83,7 +83,7 @@
       defiIntro: "Schreibe zuerst den Text in dein Heft, höre ihn dir dann an und ergänze zum Schluss die Harakāt. Prüfe danach mit der Korrektur.",
       drawWith: "Mit Zeichnungen", drawWithout: "Ohne Zeichnungen", drawLabel: "Wähle deine Lektüre", prevGroup: "Vorherige Gruppe", nextGroup: "Nächste Gruppe", chooseGroup: "Wähle eine Buchstabengruppe", showCorr: "Korrektur anzeigen", hideCorr: "Korrektur ausblenden",
       letter: "Der Buchstabe", text: "Der Text", aLetter: "Audio des Buchstabens", aText: "Audio des Textes",
-      fasc: "Wörter nach jedem Teil", fascN: "Teil", taaNote: "ة = ت (ة = Tāʼ marbūṭa): In diesen Wörtern wird es wie ت gelesen.", book: "Das Alphabet-Buch (mit Harakāt)", wordsRead: "Die verschiedenen Wörter (zum Lesen)", soon: "Demnächst verfügbar",
+      fasc: "Wörter nach jedem Teil", fascN: "Teil", prevSet: "Vorherige Serie", nextSet: "Nächste Serie", prevFasc: "Vorheriger Teil", nextFasc: "Nächster Teil", taaNote: "ة = ت (ة = Tāʼ marbūṭa): In diesen Wörtern wird es wie ت gelesen.", book: "Das Alphabet-Buch (mit Harakāt)", wordsRead: "Die verschiedenen Wörter (zum Lesen)", soon: "Demnächst verfügbar",
       bookHint: "Lies jeden Text anhand der Harakāt und höre dann das Audio."
     },
     ar: {
@@ -102,7 +102,7 @@
       defiIntro: "اكتب النص أولًا في دفترك، ثم استمع إليه، ثم أضف الحركات في النهاية، ثم تحقق بالتصحيح.",
       drawWith: "مع الرسومات", drawWithout: "بدون رسومات", drawLabel: "اختر طريقة القراءة", prevGroup: "المجموعة السابقة", nextGroup: "المجموعة التالية", chooseGroup: "اختر مجموعة حروف", showCorr: "عرض التصحيح", hideCorr: "إخفاء التصحيح",
       letter: "الحرف", text: "النص", aLetter: "صوت الحرف", aText: "صوت النص",
-      fasc: "كلمات بعد كل جزء", fascN: "جزء", taaNote: "ة = ت (ة = تَاءُ المَرْبُوطَةِ)", book: "كتاب الحروف (بالحركات)", wordsRead: "الكلمات المختلفة (للقراءة)", soon: "قريبًا",
+      fasc: "كلمات بعد كل جزء", fascN: "جزء", prevSet: "المجموعة السابقة", nextSet: "المجموعة التالية", prevFasc: "الجزء السابق", nextFasc: "الجزء التالي", taaNote: "ة = ت (ة = تَاءُ المَرْبُوطَةِ)", book: "كتاب الحروف (بالحركات)", wordsRead: "الكلمات المختلفة (للقراءة)", soon: "قريبًا",
       bookHint: "اقرأ كل نص متتبعًا الحركات ثم استمع إلى الصوت."
     }
   };
@@ -620,38 +620,74 @@
   }
 
   // ---- Series de mots a lire (Lecture) ----
-  function renderSeriesRead(panel) {
-    SERIES.forEach(function (ls, li) {
-      var box = el("div", "reading-set");
-      var head = el("div", "reading-set-head");
-      var ttl = el("span", "reading-set-title", T.set + " " + (li + 1));
-      if (ls.title) {
-        var sub = el("span", "reading-set-sub");
-        sub.appendChild(document.createTextNode(ls.title[LANG] || ls.title.fr));
-        if (LANG !== "ar") {
-          var arT = el("span", "reading-set-sub-ar", ls.title.ar);
-          arT.lang = "ar";
-          arT.dir = "rtl";
-          sub.appendChild(document.createTextNode(" · "));
-          sub.appendChild(arT);
-        }
-        ttl.appendChild(sub);
+  // Affiche un seul bloc a la fois (serie / partie) avec les boutons precedent / suivant en haut et en bas.
+  function seqView(panel, count, makeBox, subFn, prevLbl, nextLbl) {
+    var holder = el("div", "tr-seq");
+    panel.appendChild(holder);
+    var cur = 0, RTL = LANG === "ar";
+    function nav() {
+      var n = el("div", "tr-group-nav");
+      function btn(target, label, arrow) {
+        if (target < 0 || target >= count) { n.appendChild(el("span", "tr-group-nav-gap")); return; }
+        var b = el("button", "btn btn-outline btn-sm tr-group-nav-btn");
+        b.type = "button";
+        b.appendChild(el("span", "tr-group-nav-arrow", arrow));
+        var txt = el("span", "tr-group-nav-text");
+        txt.appendChild(el("span", "tr-group-nav-label", label));
+        txt.appendChild(el("span", "tr-group-nav-sub", subFn(target)));
+        b.appendChild(txt);
+        b.addEventListener("click", function () { cur = target; draw(); });
+        n.appendChild(b);
       }
-      head.appendChild(ttl);
-      head.appendChild(seriesControls(AUDIO_READ + ls.au + ".m4a"));
-      box.appendChild(head);
-      var ws = el("ol", "reading-set-words");
-      ws.lang = "ar";
-      ws.dir = "rtl";
-      ls.words.forEach(function (w, i) {
-        var item = el("li", "reading-set-item");
-        item.appendChild(el("span", "reading-set-num", arNum(i + 1) + "-"));
-        item.appendChild(el("span", "reading-set-word", w));
-        ws.appendChild(item);
-      });
-      box.appendChild(ws);
-      panel.appendChild(box);
+      btn(cur - 1, prevLbl, RTL ? "›" : "‹");
+      btn(cur + 1, nextLbl, RTL ? "‹" : "›");
+      return n;
+    }
+    function draw() {
+      stopClip();
+      holder.textContent = "";
+      holder.appendChild(nav());
+      holder.appendChild(makeBox(cur));
+      holder.appendChild(nav());
+      if (labBody) labBody.scrollTop = 0;
+    }
+    draw();
+  }
+
+  function seriesBox(li) {
+    var ls = SERIES[li];
+    var box = el("div", "reading-set");
+    var head = el("div", "reading-set-head");
+    var ttl = el("span", "reading-set-title", T.set + " " + (li + 1));
+    if (ls.title) {
+      var sub = el("span", "reading-set-sub");
+      sub.appendChild(document.createTextNode(ls.title[LANG] || ls.title.fr));
+      if (LANG !== "ar") {
+        var arT = el("span", "reading-set-sub-ar", ls.title.ar);
+        arT.lang = "ar";
+        arT.dir = "rtl";
+        sub.appendChild(document.createTextNode(" · "));
+        sub.appendChild(arT);
+      }
+      ttl.appendChild(sub);
+    }
+    head.appendChild(ttl);
+    head.appendChild(seriesControls(AUDIO_READ + ls.au + ".m4a"));
+    box.appendChild(head);
+    var ws = el("ol", "reading-set-words");
+    ws.lang = "ar";
+    ws.dir = "rtl";
+    ls.words.forEach(function (w, i) {
+      var item = el("li", "reading-set-item");
+      item.appendChild(el("span", "reading-set-num", arNum(i + 1) + "-"));
+      item.appendChild(el("span", "reading-set-word", w));
+      ws.appendChild(item);
     });
+    box.appendChild(ws);
+    return box;
+  }
+  function renderSeriesRead(panel) {
+    seqView(panel, SERIES.length, seriesBox, function (i) { return T.set + " " + (i + 1); }, T.prevSet, T.nextSet);
   }
 
   // ---- Defis de concentration : textes sans harakat + correction ----
@@ -839,7 +875,8 @@
       title: T.fasc,
       render: function (panel) {
         panel.appendChild(el("p", "tr-motto", T.lectureTop));
-        FASC.forEach(function (lines, fi) {
+        function fascBox(fi) {
+          var lines = FASC[fi];
           var box = el("div", "reading-set");
           var head = el("div", "reading-set-head");
           head.appendChild(el("span", "reading-set-title", T.fascN + " " + (fi + 1)));
@@ -856,8 +893,9 @@
             ws.appendChild(item);
           });
           box.appendChild(ws);
-          panel.appendChild(box);
-        });
+          return box;
+        }
+        seqView(panel, FASC.length, fascBox, function (i) { return T.fascN + " " + (i + 1); }, T.prevFasc, T.nextFasc);
         panel.appendChild(el("p", "tr-motto", T.taaNote));
         panel.appendChild(el("p", "tr-motto tr-motto-bottom", T.lectureBottom));
       }
