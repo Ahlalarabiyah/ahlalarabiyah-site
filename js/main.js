@@ -53,8 +53,9 @@
     //   fasc    : Partie 1 des "Mots apres chaque partie"
     //   series  : Serie 1 des "Mots a lire" (Les differents mots)
     //   atelier : rien (atelier de concentration entierement payant)
+    //   pas     : etape 1 (alif) des "Dictees pas a pas" (a confirmer par l'auteur)
     // Les modules 1-2, les groupes alif (defis, livre de l'alphabet) restent regles plus haut.
-    var FREE_ITEMS = { dictee1: 4, dictee2: 3, dictee3: 2, dictee4: 0, dictee5: 0, fasc: 1, series: 1, atelier: 0 };
+    var FREE_ITEMS = { dictee1: 4, dictee2: 3, dictee3: 2, dictee4: 0, dictee5: 0, fasc: 1, series: 1, atelier: 0, pas: 1 };
     function hasContentAccess(kind, index) {
       var free = FREE_ITEMS[kind];
       if (typeof free === "number" && Number(index) < free) return true;

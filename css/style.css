@@ -3045,6 +3045,17 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .tr-lock-icon { font-size: 2.2rem; line-height: 1; margin: 0 0 8px; }
 .tr-lock-title { font-weight: 700; color: var(--color-navy); margin: 0 0 4px; }
 .tr-lock-text { color: var(--color-text-light); margin: 0 0 16px; }
+
+/* Dictees pas a pas */
+.tr-groups-pas { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); }
+.tr-group .tr-pas-word { font-family: inherit; font-size: .95rem; font-weight: 700; line-height: 1.25; min-height: 2.3rem; display: flex; align-items: center; justify-content: center; text-align: center; }
+.tr-pas-box { text-align: center; }
+.tr-pas-head { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 14px; }
+.tr-pas-step { font-size: .8rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--color-teal-dark); }
+.tr-pas-big { font-family: "Noto Naskh Arabic", var(--font-arabic); font-size: 4.2rem; line-height: 1.4; color: var(--color-navy); }
+.tr-pas-big-word { font-family: inherit; font-size: 1.7rem; font-weight: 700; }
+.tr-pas-audio { justify-content: center; }
+.tr-pas-audio audio { width: 100%; max-width: 440px; }
 .tr-group-num { font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--color-teal-dark); }
 .tr-group-letters { font-family: "Noto Naskh Arabic", var(--font-arabic); font-size: 1.8rem; line-height: 1.5; }
 .tr-group-state { font-size: .8rem; color: var(--color-text-light); min-height: 1.1em; }
