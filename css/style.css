@@ -3056,6 +3056,10 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .tr-pas-big-word { font-family: inherit; font-size: 1.7rem; font-weight: 700; }
 .tr-pas-audio { justify-content: center; }
 .tr-pas-audio audio { width: 100%; max-width: 440px; }
+.tr-pas-corr { margin-top: 14px; text-align: center; }
+.tr-pas-corr-out { margin-top: 12px; }
+.tr-pas-corr-link { display: block; }
+.tr-pas-corr-img { display: block; width: 100%; max-width: 600px; height: auto; margin: 0 auto; border-radius: 12px; border: 1px solid var(--color-border); background: #fff; }
 .tr-group-num { font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--color-teal-dark); }
 .tr-group-letters { font-family: "Noto Naskh Arabic", var(--font-arabic); font-size: 1.8rem; line-height: 1.5; }
 .tr-group-state { font-size: .8rem; color: var(--color-text-light); min-height: 1.1em; }

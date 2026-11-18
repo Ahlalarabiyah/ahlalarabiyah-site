@@ -20,7 +20,7 @@
       atelier: "Atelier de concentration", atelierSub: "Écouter : lettres et mots proches", atelierBtn: "Entrer",
       defi: "Défis de concentration", defiSub: "Écoute et ajoute les harakāt", defiBtn: "Entrer",
       lecture: "Lecture", lectureSub: "Mots des parties, livre, mots à lire", lectureBtn: "Entrer",
-      back: "Retour", close: "Fermer", group: "Groupe", free: "Gratuit", locked: "🔒 Payant", lockedBox: "Contenu payant", unlockBtn: "Débloquer", pas: "Dictées pas à pas", pasSub: "Étape par étape, lettre après lettre", pasBtn: "Ouvrir", pasChoose: "Choisis une étape", pasIntro: "Écoute l’audio, puis écris ce que tu entends sur une feuille.", step: "Étape", prevStep: "Étape précédente", nextStep: "Étape suivante", pasAudio: "Audio de la dictée", pasL7: "Les 7 lettres", pasL17: "Les 17 lettres", pasAll: "Toutes les lettres", pasSuk: "Soukoun", pasChad: "Chadda",
+      back: "Retour", close: "Fermer", group: "Groupe", free: "Gratuit", locked: "🔒 Payant", lockedBox: "Contenu payant", unlockBtn: "Débloquer", pas: "Dictées pas à pas", pasSub: "Étape par étape, lettre après lettre", pasBtn: "Ouvrir", pasChoose: "Choisis une étape", pasIntro: "Écoute l’audio, écris ce que tu entends sur une feuille, puis vérifie avec la correction.", step: "Étape", prevStep: "Étape précédente", nextStep: "Étape suivante", pasAudio: "Audio de la dictée", pasL7: "Les 7 lettres", pasL17: "Les 17 lettres", pasAll: "Toutes les lettres", pasSuk: "Soukoun", pasChad: "Chadda", pasCorrAlt: "Correction de la dictée, étape",
       pairs: "Lettres proches", words: "Mots proches", legend: "✅ juste · ❌ faux", seriesAudio: "Les différents mots (à écouter)", seriesRead: "Les différents mots (à lire)",
       set: "Série", listen: "Écouter", listenHint: "Écoute chaque série.",
       defiIntro: "Écris d’abord le texte sur ton cahier, puis écoute-le, et ajoute enfin les harakāt. Vérifie ensuite avec la correction.",
@@ -39,7 +39,7 @@
       atelier: "Concentration workshop", atelierSub: "Listen: similar letters and words", atelierBtn: "Enter",
       defi: "Concentration challenges", defiSub: "Listen and add the harakāt", defiBtn: "Enter",
       lecture: "Reading", lectureSub: "Words from the parts, book, words to read", lectureBtn: "Enter",
-      back: "Back", close: "Close", group: "Group", free: "Free", locked: "🔒 Premium", lockedBox: "Premium content", unlockBtn: "Unlock", pas: "Step-by-step dictations", pasSub: "Step by step, letter after letter", pasBtn: "Open", pasChoose: "Choose a step", pasIntro: "Listen to the audio, then write what you hear on a sheet of paper.", step: "Step", prevStep: "Previous step", nextStep: "Next step", pasAudio: "Dictation audio", pasL7: "The 7 letters", pasL17: "The 17 letters", pasAll: "All the letters", pasSuk: "Sukūn", pasChad: "Shadda",
+      back: "Back", close: "Close", group: "Group", free: "Free", locked: "🔒 Premium", lockedBox: "Premium content", unlockBtn: "Unlock", pas: "Step-by-step dictations", pasSub: "Step by step, letter after letter", pasBtn: "Open", pasChoose: "Choose a step", pasIntro: "Listen to the audio, write what you hear on a sheet of paper, then check with the correction.", step: "Step", prevStep: "Previous step", nextStep: "Next step", pasAudio: "Dictation audio", pasL7: "The 7 letters", pasL17: "The 17 letters", pasAll: "All the letters", pasSuk: "Sukūn", pasChad: "Shadda", pasCorrAlt: "Dictation correction, step",
       pairs: "Similar letters", words: "Similar words", legend: "✅ correct · ❌ wrong", seriesAudio: "The different words (to listen to)", seriesRead: "The different words (to read)",
       set: "Set", listen: "Listen", listenHint: "Listen to each set.",
       defiIntro: "First write the text in your notebook, then listen to it, and finally add the harakāt. Then check with the correction.",
@@ -58,7 +58,7 @@
       atelier: "Мастерская концентрации", atelierSub: "Слушать: похожие буквы и слова", atelierBtn: "Войти",
       defi: "Задания на концентрацию", defiSub: "Слушай и добавляй огласовки", defiBtn: "Войти",
       lecture: "Чтение", lectureSub: "Слова из частей, книга, слова для чтения", lectureBtn: "Войти",
-      back: "Назад", close: "Закрыть", group: "Группа", free: "Бесплатно", locked: "🔒 Платно", lockedBox: "Платный материал", unlockBtn: "Открыть", pas: "Диктанты шаг за шагом", pasSub: "Шаг за шагом, буква за буквой", pasBtn: "Открыть", pasChoose: "Выбери шаг", pasIntro: "Послушай аудио, затем запиши на листе то, что слышишь.", step: "Шаг", prevStep: "Предыдущий шаг", nextStep: "Следующий шаг", pasAudio: "Аудио диктанта", pasL7: "7 букв", pasL17: "17 букв", pasAll: "Все буквы", pasSuk: "Сукун", pasChad: "Шадда",
+      back: "Назад", close: "Закрыть", group: "Группа", free: "Бесплатно", locked: "🔒 Платно", lockedBox: "Платный материал", unlockBtn: "Открыть", pas: "Диктанты шаг за шагом", pasSub: "Шаг за шагом, буква за буквой", pasBtn: "Открыть", pasChoose: "Выбери шаг", pasIntro: "Послушай аудио, запиши на листе то, что слышишь, затем проверь по исправлению.", step: "Шаг", prevStep: "Предыдущий шаг", nextStep: "Следующий шаг", pasAudio: "Аудио диктанта", pasL7: "7 букв", pasL17: "17 букв", pasAll: "Все буквы", pasSuk: "Сукун", pasChad: "Шадда", pasCorrAlt: "Исправление диктанта, шаг",
       pairs: "Похожие буквы", words: "Похожие слова", legend: "✅ верно · ❌ неверно", seriesAudio: "Разные слова (для прослушивания)", seriesRead: "Разные слова (для чтения)",
       set: "Серия", listen: "Слушать", listenHint: "Слушай каждую серию.",
       defiIntro: "Сначала напиши текст в тетради, потом послушай его и в конце добавь огласовки. Затем сверься с исправленным вариантом.",
@@ -77,7 +77,7 @@
       atelier: "Konzentrationswerkstatt", atelierSub: "Hören: ähnliche Buchstaben und Wörter", atelierBtn: "Eintreten",
       defi: "Konzentrationsaufgaben", defiSub: "Hören und die Harakāt ergänzen", defiBtn: "Eintreten",
       lecture: "Lesen", lectureSub: "Wörter der Teile, Buch, Wörter zum Lesen", lectureBtn: "Eintreten",
-      back: "Zurück", close: "Schließen", group: "Gruppe", free: "Kostenlos", locked: "🔒 Premium", lockedBox: "Kostenpflichtiger Inhalt", unlockBtn: "Freischalten", pas: "Diktate Schritt für Schritt", pasSub: "Schritt für Schritt, Buchstabe für Buchstabe", pasBtn: "Öffnen", pasChoose: "Wähle einen Schritt", pasIntro: "Höre dir die Audiodatei an und schreibe dann auf ein Blatt, was du hörst.", step: "Schritt", prevStep: "Vorheriger Schritt", nextStep: "Nächster Schritt", pasAudio: "Diktat-Audio", pasL7: "Die 7 Buchstaben", pasL17: "Die 17 Buchstaben", pasAll: "Alle Buchstaben", pasSuk: "Sukun", pasChad: "Schadda",
+      back: "Zurück", close: "Schließen", group: "Gruppe", free: "Kostenlos", locked: "🔒 Premium", lockedBox: "Kostenpflichtiger Inhalt", unlockBtn: "Freischalten", pas: "Diktate Schritt für Schritt", pasSub: "Schritt für Schritt, Buchstabe für Buchstabe", pasBtn: "Öffnen", pasChoose: "Wähle einen Schritt", pasIntro: "Höre dir die Audiodatei an, schreibe auf ein Blatt, was du hörst, und überprüfe es dann mit der Korrektur.", step: "Schritt", prevStep: "Vorheriger Schritt", nextStep: "Nächster Schritt", pasAudio: "Diktat-Audio", pasL7: "Die 7 Buchstaben", pasL17: "Die 17 Buchstaben", pasAll: "Alle Buchstaben", pasSuk: "Sukun", pasChad: "Schadda", pasCorrAlt: "Korrektur des Diktats, Schritt",
       pairs: "Ähnliche Buchstaben", words: "Ähnliche Wörter", legend: "✅ richtig · ❌ falsch", seriesAudio: "Die verschiedenen Wörter (zum Hören)", seriesRead: "Die verschiedenen Wörter (zum Lesen)",
       set: "Serie", listen: "Anhören", listenHint: "Höre jede Serie.",
       defiIntro: "Schreibe zuerst den Text in dein Heft, höre ihn dir dann an und ergänze zum Schluss die Harakāt. Prüfe danach mit der Korrektur.",
@@ -96,7 +96,7 @@
       atelier: "ورشة التركيز", atelierSub: "استماع: حروف وكلمات متقاربة", atelierBtn: "ادخل",
       defi: "تحديات التركيز", defiSub: "استمع وأضف الحركات", defiBtn: "ادخل",
       lecture: "القراءة", lectureSub: "كلمات الأجزاء، الكتاب، كلمات للقراءة", lectureBtn: "ادخل",
-      back: "رجوع", close: "إغلاق", group: "المجموعة", free: "مجاني", locked: "🔒 مدفوع", lockedBox: "محتوى مدفوع", unlockBtn: "فتح", pas: "الإملاء خطوة بخطوة", pasSub: "خطوة بخطوة، حرفًا بعد حرف", pasBtn: "افتح", pasChoose: "اختر خطوة", pasIntro: "استمع إلى الصوت ثم اكتب على ورقة ما تسمعه.", step: "خطوة", prevStep: "الخطوة السابقة", nextStep: "الخطوة التالية", pasAudio: "صوت الإملاء", pasL7: "الحروف السبعة", pasL17: "الحروف السبعة عشر", pasAll: "كل الحروف", pasSuk: "السكون", pasChad: "الشدّة",
+      back: "رجوع", close: "إغلاق", group: "المجموعة", free: "مجاني", locked: "🔒 مدفوع", lockedBox: "محتوى مدفوع", unlockBtn: "فتح", pas: "الإملاء خطوة بخطوة", pasSub: "خطوة بخطوة، حرفًا بعد حرف", pasBtn: "افتح", pasChoose: "اختر خطوة", pasIntro: "استمع إلى الصوت، واكتب على ورقة ما تسمعه، ثم تحقق بالتصحيح.", step: "خطوة", prevStep: "الخطوة السابقة", nextStep: "الخطوة التالية", pasAudio: "صوت الإملاء", pasL7: "الحروف السبعة", pasL17: "الحروف السبعة عشر", pasAll: "كل الحروف", pasSuk: "السكون", pasChad: "الشدّة", pasCorrAlt: "تصحيح الإملاء، الخطوة",
       pairs: "حروف متقاربة", words: "كلمات متقاربة", legend: "✅ صحيح · ❌ خطأ", seriesAudio: "الكلمات المختلفة (للاستماع)", seriesRead: "الكلمات المختلفة (للقراءة)",
       set: "المجموعة", listen: "استماع", listenHint: "استمع إلى كل مجموعة.",
       defiIntro: "اكتب النص أولًا في دفترك، ثم استمع إليه، ثم أضف الحركات في النهاية، ثم تحقق بالتصحيح.",
@@ -812,8 +812,9 @@
 
   // ---- Dictees pas a pas : 34 audios fournis par l'auteur (un par etape) ----
   // 28 lettres, 3 revisions (7 / 17 / toutes les lettres), puis soukoun, chadda et "al".
-  // Pas de texte de correction pour l'instant (non fourni) : l'eleve ecoute et ecrit sur sa feuille.
+  // Correction : une image par etape (fiches de l'auteur, assets/img/dictees-fiches/NN.webp, NN = numero de l'etape).
   var AUDIO_PAS = ROOT_BASE + "assets/audio/dictees-pas-a-pas/";
+  var IMG_PAS = ROOT_BASE + "assets/img/dictees-fiches/";   // fiches de correction (une image par etape, fournies par l'auteur)
   var PAS = [
     ["01-alif", "أ"], ["02-ba", "ب"], ["03-ta", "ت"], ["04-tha", "ث"], ["05-jim", "ج"], ["06-ha", "ح"], ["07-kha", "خ"], ["08-7-lettres", "", "pasL7"],
     ["09-dal", "د"], ["10-dhal", "ذ"], ["11-ra", "ر"], ["12-zay", "ز"], ["13-sin", "س"], ["14-shin", "ش"], ["15-sad", "ص"], ["16-dad", "ض"], ["17-taa", "ط"], ["18-dhaa", "ظ"], ["19-17-lettres", "", "pasL17"],
@@ -837,6 +838,36 @@
     a.setAttribute("aria-label", T.pasAudio + " " + (i + 1));
     wrap.appendChild(a);
     box.appendChild(wrap);
+    // Correction : image de la fiche de l'auteur (chargee seulement au premier clic).
+    var corr = el("div", "tr-pas-corr");
+    var cbtn = el("button", "btn btn-outline btn-sm tr-corr-btn", T.showCorr);
+    cbtn.type = "button";
+    var cout = el("div", "tr-pas-corr-out");
+    cout.hidden = true;
+    var built = false;
+    cbtn.addEventListener("click", function () {
+      if (!built) {
+        var img = el("img", "tr-pas-corr-img");
+        img.alt = T.pasCorrAlt + " " + (i + 1);
+        img.loading = "lazy";
+        img.decoding = "async";
+        img.src = IMG_PAS + (i < 9 ? "0" : "") + (i + 1) + ".webp";
+        // Un clic ouvre l'image en grand (utile sur telephone pour les fiches a deux colonnes).
+        var link = el("a", "tr-pas-corr-link");
+        link.href = img.src;
+        link.target = "_blank";
+        link.rel = "noopener";
+        link.setAttribute("aria-label", img.alt);
+        link.appendChild(img);
+        cout.appendChild(link);
+        built = true;
+      }
+      cout.hidden = !cout.hidden;
+      cbtn.textContent = cout.hidden ? T.showCorr : T.hideCorr;
+    });
+    corr.appendChild(cbtn);
+    corr.appendChild(cout);
+    box.appendChild(corr);
     return box;
   }
   function viewPasStep(start) {
