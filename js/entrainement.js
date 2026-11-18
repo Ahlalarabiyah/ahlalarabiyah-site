@@ -20,7 +20,7 @@
       atelier: "Atelier de concentration", atelierSub: "Écouter : lettres et mots proches", atelierBtn: "Entrer",
       defi: "Défis de concentration", defiSub: "Écoute et ajoute les harakāt", defiBtn: "Entrer",
       lecture: "Lecture", lectureSub: "Mots des parties, livre, mots à lire", lectureBtn: "Entrer",
-      back: "Retour", close: "Fermer", group: "Groupe", free: "Gratuit", locked: "🔒 Payant",
+      back: "Retour", close: "Fermer", group: "Groupe", free: "Gratuit", locked: "🔒 Payant", lockedBox: "Contenu payant", unlockBtn: "Débloquer",
       pairs: "Lettres proches", words: "Mots proches", legend: "✅ juste · ❌ faux", seriesAudio: "Les différents mots (à écouter)", seriesRead: "Les différents mots (à lire)",
       set: "Série", listen: "Écouter", listenHint: "Écoute chaque série.",
       defiIntro: "Écris d’abord le texte sur ton cahier, puis écoute-le, et ajoute enfin les harakāt. Vérifie ensuite avec la correction.",
@@ -39,7 +39,7 @@
       atelier: "Concentration workshop", atelierSub: "Listen: similar letters and words", atelierBtn: "Enter",
       defi: "Concentration challenges", defiSub: "Listen and add the harakāt", defiBtn: "Enter",
       lecture: "Reading", lectureSub: "Words from the parts, book, words to read", lectureBtn: "Enter",
-      back: "Back", close: "Close", group: "Group", free: "Free", locked: "🔒 Premium",
+      back: "Back", close: "Close", group: "Group", free: "Free", locked: "🔒 Premium", lockedBox: "Premium content", unlockBtn: "Unlock",
       pairs: "Similar letters", words: "Similar words", legend: "✅ correct · ❌ wrong", seriesAudio: "The different words (to listen to)", seriesRead: "The different words (to read)",
       set: "Set", listen: "Listen", listenHint: "Listen to each set.",
       defiIntro: "First write the text in your notebook, then listen to it, and finally add the harakāt. Then check with the correction.",
@@ -58,7 +58,7 @@
       atelier: "Мастерская концентрации", atelierSub: "Слушать: похожие буквы и слова", atelierBtn: "Войти",
       defi: "Задания на концентрацию", defiSub: "Слушай и добавляй огласовки", defiBtn: "Войти",
       lecture: "Чтение", lectureSub: "Слова из частей, книга, слова для чтения", lectureBtn: "Войти",
-      back: "Назад", close: "Закрыть", group: "Группа", free: "Бесплатно", locked: "🔒 Платно",
+      back: "Назад", close: "Закрыть", group: "Группа", free: "Бесплатно", locked: "🔒 Платно", lockedBox: "Платный материал", unlockBtn: "Открыть",
       pairs: "Похожие буквы", words: "Похожие слова", legend: "✅ верно · ❌ неверно", seriesAudio: "Разные слова (для прослушивания)", seriesRead: "Разные слова (для чтения)",
       set: "Серия", listen: "Слушать", listenHint: "Слушай каждую серию.",
       defiIntro: "Сначала напиши текст в тетради, потом послушай его и в конце добавь огласовки. Затем сверься с исправленным вариантом.",
@@ -77,7 +77,7 @@
       atelier: "Konzentrationswerkstatt", atelierSub: "Hören: ähnliche Buchstaben und Wörter", atelierBtn: "Eintreten",
       defi: "Konzentrationsaufgaben", defiSub: "Hören und die Harakāt ergänzen", defiBtn: "Eintreten",
       lecture: "Lesen", lectureSub: "Wörter der Teile, Buch, Wörter zum Lesen", lectureBtn: "Eintreten",
-      back: "Zurück", close: "Schließen", group: "Gruppe", free: "Kostenlos", locked: "🔒 Premium",
+      back: "Zurück", close: "Schließen", group: "Gruppe", free: "Kostenlos", locked: "🔒 Premium", lockedBox: "Kostenpflichtiger Inhalt", unlockBtn: "Freischalten",
       pairs: "Ähnliche Buchstaben", words: "Ähnliche Wörter", legend: "✅ richtig · ❌ falsch", seriesAudio: "Die verschiedenen Wörter (zum Hören)", seriesRead: "Die verschiedenen Wörter (zum Lesen)",
       set: "Serie", listen: "Anhören", listenHint: "Höre jede Serie.",
       defiIntro: "Schreibe zuerst den Text in dein Heft, höre ihn dir dann an und ergänze zum Schluss die Harakāt. Prüfe danach mit der Korrektur.",
@@ -96,7 +96,7 @@
       atelier: "ورشة التركيز", atelierSub: "استماع: حروف وكلمات متقاربة", atelierBtn: "ادخل",
       defi: "تحديات التركيز", defiSub: "استمع وأضف الحركات", defiBtn: "ادخل",
       lecture: "القراءة", lectureSub: "كلمات الأجزاء، الكتاب، كلمات للقراءة", lectureBtn: "ادخل",
-      back: "رجوع", close: "إغلاق", group: "المجموعة", free: "مجاني", locked: "🔒 مدفوع",
+      back: "رجوع", close: "إغلاق", group: "المجموعة", free: "مجاني", locked: "🔒 مدفوع", lockedBox: "محتوى مدفوع", unlockBtn: "فتح",
       pairs: "حروف متقاربة", words: "كلمات متقاربة", legend: "✅ صحيح · ❌ خطأ", seriesAudio: "الكلمات المختلفة (للاستماع)", seriesRead: "الكلمات المختلفة (للقراءة)",
       set: "المجموعة", listen: "استماع", listenHint: "استمع إلى كل مجموعة.",
       defiIntro: "اكتب النص أولًا في دفترك، ثم استمع إليه، ثم أضف الحركات في النهاية، ثم تحقق بالتصحيح.",
@@ -517,6 +517,11 @@
     document.body.style.overflow = "";
   }
 
+  // ---- Contenus payants hors groupes (parties, series, atelier) : voir ahlAccess.hasContent ----
+  function contentOpen(kind, i) {
+    return !window.ahlAccess || !window.ahlAccess.hasContent || window.ahlAccess.hasContent(kind, i);
+  }
+
   // ---- Groupes (avec cadenas) ----
   function accessKey(kind, g) { return kind + "-" + g.n; }
   function isOpen(kind, g) {
@@ -621,10 +626,27 @@
 
   // ---- Series de mots a lire (Lecture) ----
   // Affiche un seul bloc a la fois (serie / partie) avec les boutons precedent / suivant en haut et en bas.
-  function seqView(panel, count, makeBox, subFn, prevLbl, nextLbl) {
+  // kind (facultatif) : famille d'acces ("fasc", "series") ; un bloc payant non debloque
+  // affiche un cadenas au lieu du contenu, la navigation precedent / suivant reste libre.
+  function seqView(panel, count, makeBox, subFn, prevLbl, nextLbl, kind) {
     var holder = el("div", "tr-seq");
     panel.appendChild(holder);
     var cur = 0, RTL = LANG === "ar";
+    function lockBox(i) {
+      var label = subFn(i);
+      var box = el("div", "tr-lock");
+      box.appendChild(el("p", "tr-lock-icon", "🔒"));
+      box.appendChild(el("p", "tr-lock-title", label));
+      box.appendChild(el("p", "tr-lock-text", T.lockedBox));
+      var b = el("button", "btn btn-primary btn-sm", T.unlockBtn);
+      b.type = "button";
+      b.addEventListener("click", function () {
+        if (contentOpen(kind, i)) draw();
+        else if (window.ahlOpenPaywall) window.ahlOpenPaywall(T.lecture + " · " + label, b, true);
+      });
+      box.appendChild(b);
+      return box;
+    }
     function nav() {
       var n = el("div", "tr-group-nav");
       function btn(target, label, arrow) {
@@ -634,7 +656,7 @@
         b.appendChild(el("span", "tr-group-nav-arrow", arrow));
         var txt = el("span", "tr-group-nav-text");
         txt.appendChild(el("span", "tr-group-nav-label", label));
-        txt.appendChild(el("span", "tr-group-nav-sub", subFn(target)));
+        txt.appendChild(el("span", "tr-group-nav-sub", subFn(target) + (kind && !contentOpen(kind, target) ? " 🔒" : "")));
         b.appendChild(txt);
         b.addEventListener("click", function () { cur = target; draw(); });
         n.appendChild(b);
@@ -647,7 +669,7 @@
       stopClip();
       holder.textContent = "";
       holder.appendChild(nav());
-      holder.appendChild(makeBox(cur));
+      holder.appendChild(!kind || contentOpen(kind, cur) ? makeBox(cur) : lockBox(cur));
       holder.appendChild(nav());
       if (labBody) labBody.scrollTop = 0;
     }
@@ -687,7 +709,7 @@
     return box;
   }
   function renderSeriesRead(panel) {
-    seqView(panel, SERIES.length, seriesBox, function (i) { return T.set + " " + (i + 1); }, T.prevSet, T.nextSet);
+    seqView(panel, SERIES.length, seriesBox, function (i) { return T.set + " " + (i + 1); }, T.prevSet, T.nextSet, "series");
   }
 
   // ---- Defis de concentration : textes sans harakat + correction ----
@@ -895,7 +917,7 @@
           box.appendChild(ws);
           return box;
         }
-        seqView(panel, FASC.length, fascBox, function (i) { return T.fascN + " " + (i + 1); }, T.prevFasc, T.nextFasc);
+        seqView(panel, FASC.length, fascBox, function (i) { return T.fascN + " " + (i + 1); }, T.prevFasc, T.nextFasc, "fasc");
         panel.appendChild(el("p", "tr-motto", T.taaNote));
         panel.appendChild(el("p", "tr-motto tr-motto-bottom", T.lectureBottom));
       }
@@ -937,12 +959,18 @@
   intro.appendChild(el("p", "section-lead", T.lead));
   root.appendChild(intro);
   var grid = el("div", "module-grid tr-cards");
-  function card(name, sub, btnText, icon, onOpen, href) {
+  function card(name, sub, btnText, icon, onOpen, href, lockKind) {
     var c = el("article", "module-card module-card-intro tr-card");
     c.appendChild(el("span", "module-number", name));
     c.appendChild(el("p", "module-letters", icon));
     c.appendChild(el("p", "module-progress", sub));
     var b;
+    var lockBadge = null;
+    if (lockKind && !contentOpen(lockKind, 0)) {
+      c.classList.add("module-card-locked");
+      lockBadge = el("p", "module-paywall", T.locked);
+      c.appendChild(lockBadge);
+    }
     if (href) {
       b = el("a", "btn btn-outline btn-sm module-listen", btnText);
       b.href = href;
@@ -952,10 +980,24 @@
       b.addEventListener("click", onOpen);
     }
     c.appendChild(b);
+    if (lockKind) {
+      document.addEventListener("ahl-access-changed", function () {
+        if (!contentOpen(lockKind, 0)) return;
+        c.classList.remove("module-card-locked");
+        if (lockBadge && lockBadge.parentNode) lockBadge.parentNode.removeChild(lockBadge);
+        lockBadge = null;
+      });
+    }
     grid.appendChild(c);
   }
   card(T.dict, T.dictSub, T.dictBtn, "✍️", null, "dictee.html");
-  card(T.atelier, T.atelierSub, T.atelierBtn, "🎧", function () { openView(viewAtelier()); });
+  card(T.atelier, T.atelierSub, T.atelierBtn, "🎧", function (ev) {
+    if (!contentOpen("atelier", 0)) {
+      if (window.ahlOpenPaywall) window.ahlOpenPaywall(T.atelier, ev && ev.currentTarget, true);
+      return;
+    }
+    openView(viewAtelier());
+  }, null, "atelier");
   card(T.defi, T.defiSub, T.defiBtn, "🧠", function () { openView(viewDefi()); });
   card(T.lecture, T.lectureSub, T.lectureBtn, "📖", function () { openView(viewLecture()); });
   root.appendChild(grid);

@@ -30,6 +30,7 @@
     function writeAccess(a) {
       try { localStorage.setItem(ACCESS_KEY, JSON.stringify(a)); } catch (e) { /* stockage indisponible */ }
       refreshLocks();
+      try { document.dispatchEvent(new CustomEvent("ahl-access-changed")); } catch (e) { /* ancien navigateur */ }
     }
     function hasModuleAccess(n) {
       n = Number(n);
@@ -45,13 +46,29 @@
       var a = readAccess();
       return !!a.all || (Array.isArray(a.groups) && a.groups.indexOf(String(key)) !== -1);
     }
+    // Contenus dont seul le DEBUT de la liste est gratuit. Valeur = nombre d'elements
+    // gratuits (0 = tout est payant). Liste fournie par l'auteur :
+    //   dictee1 : alif, ba, ta, tha (4)   dictee2 : alif, ba, ta (3)
+    //   dictee3 : paires "alif-ba" et "ta-tha" (2)   dictee4 / dictee5 : rien
+    //   fasc    : Partie 1 des "Mots apres chaque partie"
+    //   series  : Serie 1 des "Mots a lire" (Les differents mots)
+    //   atelier : rien (atelier de concentration entierement payant)
+    // Les modules 1-2, les groupes alif (defis, livre de l'alphabet) restent regles plus haut.
+    var FREE_ITEMS = { dictee1: 4, dictee2: 3, dictee3: 2, dictee4: 0, dictee5: 0, fasc: 1, series: 1, atelier: 0 };
+    function hasContentAccess(kind, index) {
+      var free = FREE_ITEMS[kind];
+      if (typeof free === "number" && Number(index) < free) return true;
+      return !!readAccess().all;
+    }
     window.ahlAccess = {
       grantAll: function () { writeAccess({ all: true }); },
       grantModules: function (list) { writeAccess({ modules: (list || []).map(Number) }); },
       grantGroups: function (list) { var a = readAccess(); a.groups = (list || []).map(String); writeAccess(a); },
       reset: function () { writeAccess({}); },
       has: hasModuleAccess,
-      hasGroup: hasGroupAccess
+      hasGroup: hasGroupAccess,
+      hasContent: hasContentAccess,
+      freeCount: function (kind) { return FREE_ITEMS[kind] || 0; }
     };
 
     // Numero de module d'un bouton : lu sur sa carte ("Module 7", "Модуль 7"...).
@@ -67,7 +84,7 @@
     var TXT = {
       fr: {
         codeLink: "J’ai un code d’accès", codePlaceholder: "Code d’accès", codeSubmit: "Valider", codeWrong: "Code incorrect.",
-        groupTitle: "{name} : accès payant", groupSub: "Le premier groupe (alif) est gratuit. Choisis une formule pour débloquer ce groupe.",
+        groupTitle: "{name} : accès payant", groupSub: "Le premier groupe (alif) est gratuit. Choisis une formule pour débloquer ce groupe.", contentSub: "Ce contenu est payant. Choisis une formule pour le débloquer.",
         badge: "🔒 Payant", title: "Module {n} : accès payant",
         sub: "Les modules 1 et 2 sont gratuits. Choisis une formule pour débloquer ce module.",
         single: "Ce module seul", singleDesc: "Module {n}, accès à vie",
@@ -78,7 +95,7 @@
       },
       en: {
         codeLink: "I have an access code", codePlaceholder: "Access code", codeSubmit: "Unlock", codeWrong: "Incorrect code.",
-        groupTitle: "{name}: paid access", groupSub: "The first group (alif) is free. Choose a plan to unlock this group.",
+        groupTitle: "{name}: paid access", groupSub: "The first group (alif) is free. Choose a plan to unlock this group.", contentSub: "This content is paid. Choose a plan to unlock it.",
         badge: "🔒 Premium", title: "Module {n}: paid access",
         sub: "Modules 1 and 2 are free. Choose a plan to unlock this module.",
         single: "This module only", singleDesc: "Module {n}, lifetime access",
@@ -89,7 +106,7 @@
       },
       ru: {
         codeLink: "У меня есть код доступа", codePlaceholder: "Код доступа", codeSubmit: "Открыть", codeWrong: "Неверный код.",
-        groupTitle: "{name}: платный доступ", groupSub: "Первая группа (алиф) бесплатна. Выбери тариф, чтобы открыть эту группу.",
+        groupTitle: "{name}: платный доступ", groupSub: "Первая группа (алиф) бесплатна. Выбери тариф, чтобы открыть эту группу.", contentSub: "Этот материал платный. Выбери тариф, чтобы открыть его.",
         badge: "🔒 Платно", title: "Модуль {n}: платный доступ",
         sub: "Модули 1 и 2 бесплатны. Выбери тариф, чтобы открыть этот модуль.",
         single: "Только этот модуль", singleDesc: "Модуль {n}, доступ навсегда",
@@ -100,7 +117,7 @@
       },
       de: {
         codeLink: "Ich habe einen Zugangscode", codePlaceholder: "Zugangscode", codeSubmit: "Freischalten", codeWrong: "Falscher Code.",
-        groupTitle: "{name}: kostenpflichtiger Zugang", groupSub: "Die erste Gruppe (Alif) ist kostenlos. Wähle ein Angebot, um diese Gruppe freizuschalten.",
+        groupTitle: "{name}: kostenpflichtiger Zugang", groupSub: "Die erste Gruppe (Alif) ist kostenlos. Wähle ein Angebot, um diese Gruppe freizuschalten.", contentSub: "Dieser Inhalt ist kostenpflichtig. Wähle ein Angebot, um ihn freizuschalten.",
         badge: "🔒 Kostenpflichtig", title: "Modul {n}: kostenpflichtiger Zugang",
         sub: "Die Module 1 und 2 sind kostenlos. Wähle ein Angebot, um dieses Modul freizuschalten.",
         single: "Nur dieses Modul", singleDesc: "Modul {n}, lebenslanger Zugang",
@@ -111,7 +128,7 @@
       },
       ar: {
         codeLink: "لدي رمز وصول", codePlaceholder: "رمز الوصول", codeSubmit: "فتح", codeWrong: "الرمز غير صحيح.",
-        groupTitle: "{name}: وصول مدفوع", groupSub: "المجموعة الأولى (الألف) مجانية. اختر باقة لفتح هذه المجموعة.",
+        groupTitle: "{name}: وصول مدفوع", groupSub: "المجموعة الأولى (الألف) مجانية. اختر باقة لفتح هذه المجموعة.", contentSub: "هذا المحتوى مدفوع. اختر باقة لفتحه.",
         badge: "🔒 مدفوع", title: "الوحدة {n}: وصول مدفوع",
         sub: "الوحدتان 1 و2 مجانيتان. اختر باقة لفتح هذه الوحدة.",
         single: "هذه الوحدة فقط", singleDesc: "الوحدة {n}، وصول دائم",
@@ -232,7 +249,7 @@
       title.id = "paywallTitle";
       paywallEl.setAttribute("aria-labelledby", "paywallTitle");
       box.appendChild(title);
-      box.appendChild(el("p", "paywall-sub", opts.name ? T.groupSub : T.sub));
+      box.appendChild(el("p", "paywall-sub", opts.name ? (opts.generic ? T.contentSub : T.groupSub) : T.sub));
 
       // Achat du module seul : possible pour les modules 3 a 12 (les jeux
       // bonus 13 a 16 se debloquent avec un abonnement ou l'acces a vie).
@@ -310,7 +327,8 @@
     }, true);
 
     // Ouvre la fenetre de paiement pour un groupe de l'Espace entrainement.
-    window.ahlOpenPaywall = function (name, trigger) { openPaywall(0, trigger || null, { name: name }); };
+    // generic = true : message neutre "contenu payant" (dictees, lectures...) au lieu de "premier groupe gratuit".
+    window.ahlOpenPaywall = function (name, trigger, generic) { openPaywall(0, trigger || null, { name: name, generic: !!generic }); };
 
     refreshLocks();
   })();
@@ -7429,6 +7447,59 @@
         gameDictee1Panel.hidden = true;
       }
 
+      // ---- Acces payant des dictees : seules les premieres entrees de chaque niveau sont
+      // gratuites (voir FREE_ITEMS dans ahlAccess) ; les autres affichent un cadenas.
+      var DICTEE_LOCKED_WORD = isGerman ? "Kostenpflichtig" : isArabic ? "مدفوع" : isRussian ? "Платно" : isEnglish ? "Premium" : "Payant";
+      function dicteeOpen(levelId, index) {
+        return !window.ahlAccess || !window.ahlAccess.hasContent || window.ahlAccess.hasContent("dictee" + levelId, index);
+      }
+      function dicteeLevelTitle(level) {
+        return isGerman ? level.titleDe : isArabic ? level.titleAr : isRussian ? level.titleRu : isEnglish ? level.titleEn : level.titleFr;
+      }
+      function dicteePaywall(name, trigger) {
+        if (window.ahlOpenPaywall) window.ahlOpenPaywall(name, trigger || null, true);
+      }
+      function dicteeEntryLabel(entry, idx) {
+        var d = dictee1EntryDisplay(entry);
+        return d ? d.picker : String(idx + 1);
+      }
+      // Cartes de la page Dictees : un niveau entierement payant (4 et 5) porte le cadenas.
+      function refreshDicteeCards() {
+        document.querySelectorAll(".js-open-dictee-level").forEach(function (b) {
+          var card = b.closest ? b.closest(".module-card") : null;
+          if (!card) return;
+          var lv = b.getAttribute("data-level");
+          var locked = !dicteeOpen(lv, 0);
+          card.classList.toggle("module-card-locked", locked);
+          b.classList.toggle("is-paywalled", locked);
+          var badge = card.querySelector(".module-paywall");
+          if (locked && !badge) {
+            badge = document.createElement("p");
+            badge.className = "module-paywall";
+            badge.textContent = "🔒 " + DICTEE_LOCKED_WORD;
+            card.insertBefore(badge, b);
+          } else if (!locked && badge) { badge.remove(); }
+        });
+      }
+      // Cases du menu d'un niveau : met a jour les cadenas (apres un deblocage).
+      function refreshDicteeCells() {
+        if (!dictee1Level || !gameMenuGrid) return;
+        Array.prototype.forEach.call(gameMenuGrid.querySelectorAll(".letterlab-cell"), function (cell, idx) {
+          var open = dicteeOpen(dictee1Level.id, idx);
+          cell.classList.toggle("is-locked", !open);
+          var lk = cell.querySelector(".cell-lock");
+          if (open && lk) lk.remove();
+          if (!open && !lk) {
+            lk = document.createElement("span");
+            lk.className = "cell-lock";
+            lk.setAttribute("aria-hidden", "true");
+            lk.textContent = "🔒";
+            cell.appendChild(lk);
+          }
+        });
+      }
+      document.addEventListener("ahl-access-changed", function () { refreshDicteeCards(); refreshDicteeCells(); });
+
       // Texte d'affichage d'une entree : les lettres (niveaux 1 et 2)
       // utilisent ALL_LETTERS_BY_ID (char + nom complet) ; les paires
       // (niveau 3) leur "label" explicite (pas un spoiler : identifie la
@@ -7465,7 +7536,19 @@
           btn.type = "button";
           btn.className = "letterlab-cell";
           btn.textContent = display ? display.picker : String(idx + 1);
-          btn.addEventListener("click", function () { enterDictee1Letter(idx); });
+          if (!dicteeOpen(levelId, idx)) {
+            btn.classList.add("is-locked");
+            btn.setAttribute("aria-label", btn.textContent + " — " + DICTEE_LOCKED_WORD);
+            var lk = document.createElement("span");
+            lk.className = "cell-lock";
+            lk.setAttribute("aria-hidden", "true");
+            lk.textContent = "🔒";
+            btn.appendChild(lk);
+          }
+          btn.addEventListener("click", function () {
+            if (!dicteeOpen(levelId, idx)) { dicteePaywall(dicteeLevelTitle(dictee1Level) + " · " + dicteeEntryLabel(entry, idx), btn); return; }
+            enterDictee1Letter(idx);
+          });
           gameMenuGrid.appendChild(btn);
         });
         gamePrestartWarning.hidden = true;
@@ -7686,9 +7769,12 @@
       soundAgainBtn.addEventListener("click", showSoundSetup);
       document.querySelectorAll(".js-open-dictee-level").forEach(function (btn) {
         btn.addEventListener("click", function () {
-          openDictee1LetterMenu(btn.getAttribute("data-level"), btn.getAttribute("data-title"));
+          var lv = btn.getAttribute("data-level");
+          if (!dicteeOpen(lv, 0)) { dicteePaywall(btn.getAttribute("data-title"), btn); return; }
+          openDictee1LetterMenu(lv, btn.getAttribute("data-title"));
         });
       });
+      refreshDicteeCards();
       sortAllSunZone.addEventListener("click", function () { placeSortAllLetter("sun"); });
       sortAllMoonZone.addEventListener("click", function () { placeSortAllLetter("moon"); });
       sortAllReplayBtn.addEventListener("click", startSortAllGame);
@@ -7835,7 +7921,12 @@
       });
       gameDictee1NextBtn.addEventListener("click", function () {
         if (!dictee1State) return;
-        dictee1State.index = (dictee1State.index + 1) % dictee1Level.entries.length;
+        var nextIdx = (dictee1State.index + 1) % dictee1Level.entries.length;
+        if (!dicteeOpen(dictee1Level.id, nextIdx)) {
+          dicteePaywall(dicteeLevelTitle(dictee1Level) + " · " + dicteeEntryLabel(dictee1Level.entries[nextIdx], nextIdx), gameDictee1NextBtn);
+          return;
+        }
+        dictee1State.index = nextIdx;
         renderDictee1Letter();
         autoPlayDictee1();
       });

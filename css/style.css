@@ -562,9 +562,11 @@ section[id] { scroll-margin-top: 88px; }
 /* ---------- Hub (accueil -> modules / jeux) ---------- */
 .hub-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
 }
+.hub-card .btn { max-width: 100%; white-space: normal; line-height: 1.3; }
+@media (max-width: 900px) { .hub-grid { grid-template-columns: 1fr; } }
 .hub-card {
   background: #fff;
   border-radius: var(--radius-md);
@@ -3035,6 +3037,14 @@ html[dir="rtl"] .paywall-title { margin: 0 0 6px 36px; }
 .tr-group { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 8px; border-radius: 14px; border: 1.5px solid var(--color-border); background: #fff; font: inherit; color: var(--color-navy); cursor: pointer; }
 .tr-group:hover { border-color: var(--color-teal); }
 .tr-group.is-locked { background: var(--color-bg); }
+
+/* Cadenas : cases des dictees et blocs de lecture payants (parties, series) */
+.letterlab-cell.is-locked { opacity: .62; }
+.letterlab-cell .cell-lock { font-size: .55em; margin-inline-start: 5px; vertical-align: middle; }
+.tr-lock { text-align: center; padding: 34px 20px; margin: 14px 0; border: 1.5px dashed var(--color-border); border-radius: 16px; background: var(--color-bg); }
+.tr-lock-icon { font-size: 2.2rem; line-height: 1; margin: 0 0 8px; }
+.tr-lock-title { font-weight: 700; color: var(--color-navy); margin: 0 0 4px; }
+.tr-lock-text { color: var(--color-text-light); margin: 0 0 16px; }
 .tr-group-num { font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--color-teal-dark); }
 .tr-group-letters { font-family: "Noto Naskh Arabic", var(--font-arabic); font-size: 1.8rem; line-height: 1.5; }
 .tr-group-state { font-size: .8rem; color: var(--color-text-light); min-height: 1.1em; }
