@@ -642,7 +642,7 @@
       b.type = "button";
       b.addEventListener("click", function () {
         if (contentOpen(kind, i)) draw();
-        else if (window.ahlOpenPaywall) window.ahlOpenPaywall((ctx || T.lecture) + " · " + label, b, true);
+        else if (window.ahlOpenPaywall) window.ahlOpenPaywall((ctx || T.lecture) + " · " + label, b, true, kind === "pas" ? "pas" : "");
       });
       box.appendChild(b);
       return box;
@@ -908,7 +908,7 @@
           cells.push({ b: b, state: stateEl });
           b.addEventListener("click", function () {
             if (contentOpen("pas", i)) pushView(viewPasStep(i));
-            else if (window.ahlOpenPaywall) window.ahlOpenPaywall(T.pas + " · " + (i + 1) + ". " + pasLabel(i), b, true);
+            else if (window.ahlOpenPaywall) window.ahlOpenPaywall(T.pas + " · " + (i + 1) + ". " + pasLabel(i), b, true, "pas");
           });
           grid.appendChild(b);
         });

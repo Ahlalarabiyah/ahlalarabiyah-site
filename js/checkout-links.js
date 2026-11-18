@@ -19,6 +19,7 @@ window.AHL_CHECKOUT_LINKS = {
   "dictee-4": "",
   "dictee-5": "",
   "dictee-pack": "",
+  "dictees-pas": "",   // Dictees pas a pas : achat unique, 6,99 EUR (les 34 etapes)
   "atelier": "",
   "defis-group": "",
   "defis-pack": "",

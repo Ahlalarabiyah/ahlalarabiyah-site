@@ -56,15 +56,24 @@
     //   pas     : etape 1 (alif) des "Dictees pas a pas" (a confirmer par l'auteur)
     // Les modules 1-2, les groupes alif (defis, livre de l'alphabet) restent regles plus haut.
     var FREE_ITEMS = { dictee1: 4, dictee2: 3, dictee3: 2, dictee4: 0, dictee5: 0, fasc: 1, series: 1, atelier: 0, pas: 1 };
+    // Produits achetes a l'unite (achat unique) : "pas" = Dictees pas a pas (6,99 EUR, les 34 etapes).
+    // Apres paiement, le deblocage appellera ahlAccess.grantProducts(["pas"]).
+    function hasProduct(name) {
+      var a = readAccess();
+      return Array.isArray(a.products) && a.products.indexOf(name) !== -1;
+    }
     function hasContentAccess(kind, index) {
       var free = FREE_ITEMS[kind];
       if (typeof free === "number" && Number(index) < free) return true;
-      return !!readAccess().all;
+      var a = readAccess();
+      if (a.all) return true;
+      return kind === "pas" && hasProduct("pas");
     }
     window.ahlAccess = {
       grantAll: function () { writeAccess({ all: true }); },
       grantModules: function (list) { writeAccess({ modules: (list || []).map(Number) }); },
       grantGroups: function (list) { var a = readAccess(); a.groups = (list || []).map(String); writeAccess(a); },
+      grantProducts: function (list) { var a = readAccess(); a.products = (list || []).map(String); writeAccess(a); },
       reset: function () { writeAccess({}); },
       has: hasModuleAccess,
       hasGroup: hasGroupAccess,
@@ -85,7 +94,7 @@
     var TXT = {
       fr: {
         codeLink: "J’ai un code d’accès", codePlaceholder: "Code d’accès", codeSubmit: "Valider", codeWrong: "Code incorrect.",
-        groupTitle: "{name} : accès payant", groupSub: "Le premier groupe (alif) est gratuit. Choisis une formule pour débloquer ce groupe.", contentSub: "Ce contenu est payant. Choisis une formule pour le débloquer.",
+        groupTitle: "{name} : accès payant", groupSub: "Le premier groupe (alif) est gratuit. Choisis une formule pour débloquer ce groupe.", contentSub: "Ce contenu est payant. Choisis une formule pour le débloquer.", pasOnly: "Dictées pas à pas seules", pasOnlyDesc: "Achat unique, les 34 étapes",
         badge: "🔒 Payant", title: "Module {n} : accès payant",
         sub: "Les modules 1 et 2 sont gratuits. Choisis une formule pour débloquer ce module.",
         single: "Ce module seul", singleDesc: "Module {n}, accès à vie",
@@ -96,7 +105,7 @@
       },
       en: {
         codeLink: "I have an access code", codePlaceholder: "Access code", codeSubmit: "Unlock", codeWrong: "Incorrect code.",
-        groupTitle: "{name}: paid access", groupSub: "The first group (alif) is free. Choose a plan to unlock this group.", contentSub: "This content is paid. Choose a plan to unlock it.",
+        groupTitle: "{name}: paid access", groupSub: "The first group (alif) is free. Choose a plan to unlock this group.", contentSub: "This content is paid. Choose a plan to unlock it.", pasOnly: "Step-by-step dictations only", pasOnlyDesc: "One-time purchase, all 34 steps",
         badge: "🔒 Premium", title: "Module {n}: paid access",
         sub: "Modules 1 and 2 are free. Choose a plan to unlock this module.",
         single: "This module only", singleDesc: "Module {n}, lifetime access",
@@ -107,7 +116,7 @@
       },
       ru: {
         codeLink: "У меня есть код доступа", codePlaceholder: "Код доступа", codeSubmit: "Открыть", codeWrong: "Неверный код.",
-        groupTitle: "{name}: платный доступ", groupSub: "Первая группа (алиф) бесплатна. Выбери тариф, чтобы открыть эту группу.", contentSub: "Этот материал платный. Выбери тариф, чтобы открыть его.",
+        groupTitle: "{name}: платный доступ", groupSub: "Первая группа (алиф) бесплатна. Выбери тариф, чтобы открыть эту группу.", contentSub: "Этот материал платный. Выбери тариф, чтобы открыть его.", pasOnly: "Только диктанты шаг за шагом", pasOnlyDesc: "Разовая покупка, все 34 шага",
         badge: "🔒 Платно", title: "Модуль {n}: платный доступ",
         sub: "Модули 1 и 2 бесплатны. Выбери тариф, чтобы открыть этот модуль.",
         single: "Только этот модуль", singleDesc: "Модуль {n}, доступ навсегда",
@@ -118,7 +127,7 @@
       },
       de: {
         codeLink: "Ich habe einen Zugangscode", codePlaceholder: "Zugangscode", codeSubmit: "Freischalten", codeWrong: "Falscher Code.",
-        groupTitle: "{name}: kostenpflichtiger Zugang", groupSub: "Die erste Gruppe (Alif) ist kostenlos. Wähle ein Angebot, um diese Gruppe freizuschalten.", contentSub: "Dieser Inhalt ist kostenpflichtig. Wähle ein Angebot, um ihn freizuschalten.",
+        groupTitle: "{name}: kostenpflichtiger Zugang", groupSub: "Die erste Gruppe (Alif) ist kostenlos. Wähle ein Angebot, um diese Gruppe freizuschalten.", contentSub: "Dieser Inhalt ist kostenpflichtig. Wähle ein Angebot, um ihn freizuschalten.", pasOnly: "Nur Diktate Schritt für Schritt", pasOnlyDesc: "Einmaliger Kauf, alle 34 Schritte",
         badge: "🔒 Kostenpflichtig", title: "Modul {n}: kostenpflichtiger Zugang",
         sub: "Die Module 1 und 2 sind kostenlos. Wähle ein Angebot, um dieses Modul freizuschalten.",
         single: "Nur dieses Modul", singleDesc: "Modul {n}, lebenslanger Zugang",
@@ -129,7 +138,7 @@
       },
       ar: {
         codeLink: "لدي رمز وصول", codePlaceholder: "رمز الوصول", codeSubmit: "فتح", codeWrong: "الرمز غير صحيح.",
-        groupTitle: "{name}: وصول مدفوع", groupSub: "المجموعة الأولى (الألف) مجانية. اختر باقة لفتح هذه المجموعة.", contentSub: "هذا المحتوى مدفوع. اختر باقة لفتحه.",
+        groupTitle: "{name}: وصول مدفوع", groupSub: "المجموعة الأولى (الألف) مجانية. اختر باقة لفتح هذه المجموعة.", contentSub: "هذا المحتوى مدفوع. اختر باقة لفتحه.", pasOnly: "الإملاء خطوة بخطوة فقط", pasOnlyDesc: "دفعة واحدة، الخطوات الـ34 كلها",
         badge: "🔒 مدفوع", title: "الوحدة {n}: وصول مدفوع",
         sub: "الوحدتان 1 و2 مجانيتان. اختر باقة لفتح هذه الوحدة.",
         single: "هذه الوحدة فقط", singleDesc: "الوحدة {n}، وصول دائم",
@@ -252,6 +261,11 @@
       box.appendChild(title);
       box.appendChild(el("p", "paywall-sub", opts.name ? (opts.generic ? T.contentSub : T.groupSub) : T.sub));
 
+      // Dictees pas a pas : achat unique a 6,99 EUR, propose en premier.
+      if (opts.product === "pas") {
+        box.appendChild(option(checkoutHref("dictees-pas", "dictees-pas"), T.pasOnly, T.pasOnlyDesc, "6,99 €"));
+      }
+
       // Achat du module seul : possible pour les modules 3 a 12 (les jeux
       // bonus 13 a 16 se debloquent avec un abonnement ou l'acces a vie).
       if (!opts.name && n >= 3 && n <= 12) {
@@ -329,7 +343,8 @@
 
     // Ouvre la fenetre de paiement pour un groupe de l'Espace entrainement.
     // generic = true : message neutre "contenu payant" (dictees, lectures...) au lieu de "premier groupe gratuit".
-    window.ahlOpenPaywall = function (name, trigger, generic) { openPaywall(0, trigger || null, { name: name, generic: !!generic }); };
+    // product = "pas" : ajoute l'offre d'achat unique des Dictees pas a pas.
+    window.ahlOpenPaywall = function (name, trigger, generic, product) { openPaywall(0, trigger || null, { name: name, generic: !!generic, product: product || "" }); };
 
     // Les boutons ajoutes plus tard (ex. "Ecrire les lettres") rappellent cette fonction pour recevoir leur cadenas.
     window.ahlRefreshLocks = refreshLocks;
