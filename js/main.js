@@ -331,6 +331,8 @@
     // generic = true : message neutre "contenu payant" (dictees, lectures...) au lieu de "premier groupe gratuit".
     window.ahlOpenPaywall = function (name, trigger, generic) { openPaywall(0, trigger || null, { name: name, generic: !!generic }); };
 
+    // Les boutons ajoutes plus tard (ex. "Ecrire les lettres") rappellent cette fonction pour recevoir leur cadenas.
+    window.ahlRefreshLocks = refreshLocks;
     refreshLocks();
   })();
 
@@ -3687,6 +3689,7 @@
         b.addEventListener("click", function () { openWriteLab(n); });
         card.appendChild(b);
       });
+      if (window.ahlRefreshLocks) window.ahlRefreshLocks();
 
 
       document.querySelectorAll(".js-open-sunmoon").forEach(function (btn) {
