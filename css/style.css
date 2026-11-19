@@ -327,6 +327,14 @@ section[id] { scroll-margin-top: 88px; }
   direction: rtl;
   margin-bottom: 18px;
 }
+.hero-tagline {
+  color: var(--color-teal-dark);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.5;
+  max-width: 540px;
+  margin: -6px 0 0;
+}
 .hero-text {
   color: var(--color-text-light);
   font-size: 1.05rem;
