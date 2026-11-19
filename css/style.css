@@ -693,8 +693,8 @@ section[id] { scroll-margin-top: 88px; }
 /* ---------- Gallery ---------- */
 .gallery {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
 }
 .gallery-item {
   position: relative;
@@ -1622,7 +1622,7 @@ section[id] { scroll-margin-top: 88px; }
   .program-grid { grid-template-columns: repeat(2, 1fr); }
   .module-grid { grid-template-columns: repeat(3, 1fr); }
   .audience-grid { grid-template-columns: repeat(2, 1fr); }
-  .gallery { grid-template-columns: repeat(2, 1fr); }
+  .gallery { grid-template-columns: repeat(3, 1fr); }
   .hero-inner {
     grid-template-columns: 1fr;
     grid-template-areas: "intro" "visual" "details";
@@ -1701,6 +1701,7 @@ section[id] { scroll-margin-top: 88px; }
   .module-write { font-size: 0.72rem; padding: 8px 10px; gap: 5px; }
   .audience-grid { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr 1fr; }
+  .gallery-item:last-child:nth-child(odd) { grid-column: 1 / -1; width: calc(50% - 10px); justify-self: center; }
   .hero-stats { gap: 22px; }
   .footer-inner { grid-template-columns: 1fr; }
 }
