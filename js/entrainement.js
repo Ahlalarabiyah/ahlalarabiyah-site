@@ -813,7 +813,8 @@
   // ---- Dictees pas a pas : 34 audios fournis par l'auteur (un par etape) ----
   // 28 lettres, 3 revisions (7 / 17 / toutes les lettres), puis soukoun, chadda et "al".
   // Correction : une image par etape (fiches de l'auteur, assets/img/dictees-fiches/NN.webp, NN = numero de l'etape).
-  var AUDIO_PAS = ROOT_BASE + "assets/audio/dictees-pas-a-pas/";
+  // Dossier fixe : les QR codes imprimes dans le livret pointent vers https://ahlalarabiyah.com/audios/dictees/NN-nom.mp3 (ne pas renommer ni deplacer).
+  var AUDIO_PAS = ROOT_BASE + "audios/dictees/";
   var IMG_PAS = ROOT_BASE + "assets/img/dictees-fiches/";   // fiches de correction (une image par etape, fournies par l'auteur)
   var PAS = [
     ["01-alif", "أ"], ["02-ba", "ب"], ["03-ta", "ت"], ["04-tha", "ث"], ["05-jim", "ج"], ["06-ha", "ح"], ["07-kha", "خ"], ["08-7-lettres", "", "pasL7"],

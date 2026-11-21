@@ -530,10 +530,13 @@ section[id] { scroll-margin-top: 88px; }
   color: #fff;
   font-family: var(--font-heading);
   font-weight: 700;
-  font-size: 0.7rem;
-  letter-spacing: .04em;
+  font-size: 0.64rem;
+  letter-spacing: .03em;
+  line-height: 1.25;
+  text-align: center;
+  max-width: calc(100% - 24px);
   text-transform: uppercase;
-  padding: 5px 12px;
+  padding: 5px 11px;
   border-radius: 999px;
   box-shadow: var(--shadow-sm);
 }
