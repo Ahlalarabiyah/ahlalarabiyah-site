@@ -348,6 +348,8 @@
 
     // Les boutons ajoutes plus tard (ex. "Ecrire les lettres") rappellent cette fonction pour recevoir leur cadenas.
     window.ahlRefreshLocks = refreshLocks;
+    // Fenetre "Module N : acces payant" (avec achat du module seul), appelee par le labo de lettres de l'accueil.
+    window.ahlOpenModulePaywall = function (n, trigger) { openPaywall(Number(n), trigger || null); };
     refreshLocks();
   })();
 
@@ -1699,7 +1701,22 @@
       });
     }
 
-    function buildTabs(letters) {
+    // ---- Acces payant du labo de lettres de l'accueil (Parties 1 a 4) ----
+    // Chaque lettre suit le module auquel elle appartient (MODULES) : les modules 1 et 2
+    // (alif, ba, ta, tha) sont gratuits, les autres lettres ouvrent la fenetre de deblocage
+    // du module, exactement comme sur la page Modules.
+    function moduleOfLetter(id) {
+      var found = MODULES.filter(function (mm) { return mm.letterIds.indexOf(id) !== -1; })[0];
+      return found ? found.number : 0;
+    }
+    function letterOpen(id) {
+      var n = moduleOfLetter(id);
+      return !n || !window.ahlAccess || !window.ahlAccess.has || window.ahlAccess.has(n);
+    }
+    var letterLabGated = false;
+
+    function buildTabs(letters, gated) {
+      letterLabGated = !!gated;
       letterLabTabs.innerHTML = "";
       letters.forEach(function (letter) {
         var tab = document.createElement("button");
@@ -1710,19 +1727,50 @@
         tabChar.className = "letterlab-tab-char";
         tabChar.textContent = letter.char;
         tab.appendChild(tabChar);
-        tab.addEventListener("click", function () { renderLetter(letter); });
+        if (gated && !letterOpen(letter.id)) {
+          tab.classList.add("is-locked");
+          var lk = document.createElement("span");
+          lk.className = "letterlab-tab-lock";
+          lk.setAttribute("aria-hidden", "true");
+          lk.textContent = "🔒";
+          tab.appendChild(lk);
+        }
+        tab.addEventListener("click", function () {
+          if (gated && !letterOpen(letter.id)) {
+            if (window.ahlOpenModulePaywall) window.ahlOpenModulePaywall(moduleOfLetter(letter.id), tab);
+            return;
+          }
+          renderLetter(letter);
+        });
         letterLabTabs.appendChild(tab);
       });
     }
+    // Apres un deblocage : on retire les cadenas des lettres desormais accessibles.
+    document.addEventListener("ahl-access-changed", function () {
+      if (!letterLabGated || !letterLabTabs) return;
+      Array.prototype.forEach.call(letterLabTabs.children, function (tab) {
+        var open = letterOpen(tab.getAttribute("data-letter"));
+        tab.classList.toggle("is-locked", !open);
+        var lk = tab.querySelector(".letterlab-tab-lock");
+        if (open && lk) lk.remove();
+      });
+    });
 
-    function openLetterLab(fascicule, title) {
+    function openLetterLab(fascicule, title, trigger) {
       var letters = LETTERS_BY_FASCICULE[fascicule];
       if (!letters) return;
+      // Premiere lettre accessible de la partie ; si aucune (parties 2 et 3 sans achat),
+      // on ouvre directement la fenetre de deblocage au lieu du labo.
+      var first = letters.filter(function (l) { return letterOpen(l.id); })[0];
+      if (!first) {
+        if (window.ahlOpenPaywall) window.ahlOpenPaywall(title, trigger || null, true);
+        return;
+      }
       currentGroupKeys = GROUPS_BY_FASCICULE[fascicule] || GROUPS_BY_FASCICULE["1"];
       currentAudioBase = ROOT_BASE + "assets/audio/fascicule-" + fascicule + "/";
       letterLabTitle.textContent = title;
-      buildTabs(letters);
-      renderLetter(letters[0]);
+      buildTabs(letters, true);
+      renderLetter(first);
       letterLab.classList.add("is-open");
       document.body.style.overflow = "hidden";
     }
@@ -1782,7 +1830,7 @@
 
     letterLabBtns.forEach(function (btn) {
       btn.addEventListener("click", function () {
-        openLetterLab(btn.getAttribute("data-fascicule"), btn.getAttribute("data-title"));
+        openLetterLab(btn.getAttribute("data-fascicule"), btn.getAttribute("data-title"), btn);
       });
     });
     document.querySelectorAll(".js-open-module").forEach(function (btn) {

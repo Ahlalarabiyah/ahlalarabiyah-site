@@ -897,6 +897,9 @@ section[id] { scroll-margin-top: 88px; }
 .letterlab-tab-char { display: block; transform: translateY(-50%); }
 .letterlab-tab:hover { background: rgba(255,255,255,0.16); }
 .letterlab-tab.is-active { background: var(--color-teal); border-color: #fff; }
+.letterlab-tab { position: relative; }
+.letterlab-tab.is-locked { opacity: .55; }
+.letterlab-tab-lock { position: absolute; top: 2px; right: 3px; font-size: .62rem; line-height: 1; }
 
 .letterlab-panel {
   flex: 1;
